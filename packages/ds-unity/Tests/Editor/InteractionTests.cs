@@ -1105,5 +1105,58 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Name", "AriaLabel", "DataChecked" })
                 Assert.That(typeof(FullStackDS.RadioGroup).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void SelectBuildsItsListboxAndOwnsBothChannels()
+        {
+            var select = Mount(new FullStackDS.Select());
+            select.Placeholder = "Pick a page";
+            Assert.That(select.Text.text, Is.EqualTo("Pick a page"));
+            select.Options = new[]
+            {
+                new FullStackDS.Select.SelectOption("alpha", false, "Alpha"),
+                new FullStackDS.Select.SelectOption("beta", false, "Beta"),
+                new FullStackDS.Select.SelectOption("gamma", true, "Gamma"),
+            };
+            Assert.That(select.OptionsControl.childCount, Is.EqualTo(3));
+            var options = select.OptionsControl.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(options.Count, Is.EqualTo(3));
+            Assert.That(options[0].ClassListContains("select__option"), Is.True);
+            Assert.That(options[0].text, Is.EqualTo("Alpha"));
+            Assert.That(options[2].enabledSelf, Is.False);
+            Assert.That(select.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            select.Open = true;
+            Assert.That(select.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(select.ClassListContains("select--open"), Is.True);
+            bool? openChanged = null;
+            string changed = null;
+            select.OnOpenChange += value => openChanged = value;
+            select.OnChange += value => changed = value;
+            Submit(select.Trigger);
+            Assert.That(openChanged, Is.False);
+            Assert.That(select.Open, Is.False);
+            select.Open = true;
+            Submit(options[1]);
+            Assert.That(select.Value, Is.EqualTo("beta"));
+            Assert.That(changed, Is.EqualTo("beta"));
+            Assert.That(select.Text.text, Is.EqualTo("Beta"));
+            Assert.That(select.Open, Is.False);
+            select.Controlled = true;
+            string requested = null;
+            select.ValueRequested += value => requested = value;
+            select.Open = true;
+            Submit(options[0]);
+            Assert.That(requested, Is.EqualTo("alpha"));
+            Assert.That(select.Value, Is.EqualTo("beta"));
+            select.OpenControlled = true;
+            bool? openRequested = null;
+            select.OpenRequested += value => openRequested = value;
+            Submit(select.Trigger);
+            Assert.That(openRequested, Is.True);
+            select.Disabled = true;
+            Assert.That(select.Trigger.enabledSelf, Is.False);
+            select.Size = "lg";
+            Assert.That(select.ClassListContains("select--lg"), Is.True);
+            foreach (var prop in new[] { "Searchable", "SearchInput", "TriggerLabel", "SearchLabel", "Multiple" })
+                Assert.That(typeof(FullStackDS.Select).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

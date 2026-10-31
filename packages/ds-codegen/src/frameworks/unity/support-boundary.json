@@ -354,6 +354,13 @@
       "via": "walker.ts (value-fill): a decoration element whose CSS-variable style binding is driven by a declared numeric prop is owned by the Progress behavior, whose runtime converts the value to a clamped native percentage width; the walker asserts the bound prop is numeric and refuses anything else."
     },
     {
+      "id": "anatomy-select-aria-expanded-refused",
+      "match": ["contract:/anatomy/dom/children/trigger/bindings/aria-expanded"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "refused",
+      "reason": "The aria-expanded mirror has no UI Toolkit assistive consumer; the runtime exposes open state through the listbox surface presence and the authored open class instead."
+    },
+    {
       "id": "anatomy-channel-binding",
       "match": ["contract:/anatomy/dom/bindings/*", "contract:/anatomy/dom/**/children/*/bindings/*"],
       "valuePattern": "^channel:[A-Za-z_$][\\w$-]*\\.value$",
@@ -477,6 +484,20 @@
       "via": "walker.ts (Otp)/OtpControl: the disabled prop drives every runtime-built field's enabled state."
     },
     {
+      "id": "anatomy-select-trigger-disabled-lowered",
+      "match": ["contract:/anatomy/dom/children/trigger/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the disabled prop drives the native trigger's enabled state and every runtime-built option button."
+    },
+    {
+      "id": "anatomy-select-search-bindings-refused",
+      "match": ["contract:/anatomy/dom/**/children/search/**/bindings/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:searchable/**"] }],
+      "disposition": "refused",
+      "reason": "The search subtree is omitted because the select runtime does not own filtering; its input bindings are withheld with it."
+    },
+    {
       "id": "anatomy-disabled-binding",
       "match": ["contract:/anatomy/dom/bindings/disabled", "contract:/anatomy/dom/**/children/*/bindings/disabled"],
       "valuePattern": "^prop:[A-Za-z_$][\\w$-]*$",
@@ -517,6 +538,55 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
       "disposition": "refused",
       "reason": "The authored data-state attributes only drive CSS state selectors USS cannot reproduce; the runtime tracks selection and the native radio carries the checked indication instead."
+    },
+    {
+      "id": "anatomy-select-trigger-toggle-lowered",
+      "match": ["contract:/anatomy/dom/children/trigger/events/click", "contract:/anatomy/dom/children/trigger/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the trigger's channel-bound activation toggles the open channel (commit or request by the open-controlled flag) and the disabled binding drives the native trigger's enabled state."
+    },
+    {
+      "id": "anatomy-select-label-projection-lowered",
+      "match": ["contract:/anatomy/dom/children/trigger/children/*/content"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the trigger label projection is painted by the runtime from the current option label or the declared placeholder."
+    },
+    {
+      "id": "anatomy-select-content-guard-lowered",
+      "match": ["contract:/anatomy/dom/children/content/if"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the listbox surface presence follows the open channel through runtime display and the authored open class."
+    },
+    {
+      "id": "anatomy-select-search-refused",
+      "match": ["contract:/anatomy/dom/**/children/search/if"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:searchable/**"] }],
+      "disposition": "refused",
+      "reason": "The search field and its guarded subtree need filtering and text-input wiring the select runtime does not own; they are omitted rather than rendered inert."
+    },
+    {
+      "id": "anatomy-select-empty-refused",
+      "match": ["contract:/anatomy/dom/**/children/emptyState/if"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:empty/**"] }],
+      "disposition": "refused",
+      "reason": "The empty-state subtree is guarded by a declared empty flag; the select runtime omits it rather than rendering an unowned placeholder."
+    },
+    {
+      "id": "anatomy-select-option-bindings-lowered",
+      "match": ["contract:/anatomy/dom/**/children/option/bindings/disabled", "contract:/anatomy/dom/**/children/option/bindings/data-value", "contract:/anatomy/dom/**/children/options/children/option/bindings/disabled", "contract:/anatomy/dom/**/children/options/children/option/bindings/data-value"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the option value/value-identity and disabled leaves drive the runtime-built option buttons; no data attribute is emitted."
+    },
+    {
+      "id": "anatomy-select-option-label-lowered",
+      "match": ["contract:/anatomy/dom/**/children/option/children/*/content", "contract:/anatomy/dom/**/children/options/children/option/children/*/content"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the option label content leaf is painted by the runtime-built option button."
     },
     {
       "id": "anatomy-conditional-data-binding",
@@ -723,6 +793,27 @@
       "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
       "disposition": "refused",
       "reason": "Steps/anchor data, storage, auto-start, complete/step-change callbacks, placement, outside-click dismissal and disabled props exceed the inline scaffold; they are withheld rather than approximated."
+    },
+    {
+      "id": "prop-select-open-channel-lowered",
+      "match": ["contract:/props/*/members/channel-value:open/**", "contract:/props/*/members/channel-default:defaultOpen/**", "contract:/props/*/members/channel-change:onOpenChange/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the open channel's value, default and change props become the generated Open/DefaultOpen attributes and the OpenChanged action owned by the listbox runtime."
+    },
+    {
+      "id": "focus-select-refused",
+      "match": ["contract:/focus/returnFocus"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "refused",
+      "reason": "Focus return to the trigger after closing needs a focus runtime the select scaffold does not own; it is withheld rather than approximated."
+    },
+    {
+      "id": "dismissal-select-refused",
+      "match": ["contract:/dismissal/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "refused",
+      "reason": "Escape and outside-click dismissal are not wired by the select runtime; it closes after a single selection only, so the declared dismissal family stays unclaimed."
     },
     {
       "id": "prop-channel-value",
@@ -1331,6 +1422,35 @@
       "reason": "The HTML form-group name has no UI Toolkit counterpart and the group is not submitted with a form; the generated control withholds it."
     },
     {
+      "id": "prop-select-options-lowered",
+      "match": ["contract:/props/*/members/plain:options/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select): the option array becomes the generated Options API over the nested option type translated to parallel leaf arrays."
+    },
+    {
+      "id": "prop-select-placeholder-lowered",
+      "match": ["contract:/props/*/members/plain:placeholder/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Select): the placeholder becomes the generated Placeholder attribute painted by the trigger label when no option matches."
+    },
+    {
+      "id": "prop-select-refused",
+      "match": ["contract:/props/*/members/plain:multiple/**", "contract:/props/*/members/plain:filterFn/**", "contract:/props/*/members/plain:searchable/**", "contract:/props/*/members/plain:empty/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "refused",
+      "reason": "Multi-select, custom filtering, searchable mode and the empty-state flag exceed the single-selection runtime; they are withheld rather than approximated."
+    },
+    {
+      "id": "prop-select-a11y-labels-refused",
+      "match": ["contract:/props/*/members/plain:triggerLabel/**", "contract:/props/*/members/plain:searchLabel/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "refused",
+      "reason": "The trigger and search accessible labels only feed aria attributes with no UI Toolkit consumer; they are withheld."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -1347,6 +1467,13 @@
       "via": "walker.ts (Coachmark): the numeric step channel is exposed as a generated int UXML attribute the consumer manages; no controlled/request semantics are claimed."
     },
     {
+      "id": "channels-select-open-lowered",
+      "match": ["contract:/channels/open/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the open channel is exposed as the generated Open/DefaultOpen API with OpenChanged/OpenRequested semantics; the selected-channel realisation check covers the selection channel only."
+    },
+    {
       "id": "channels",
       "match": ["contract:/channels/**"],
       "disposition": "lowered",
@@ -1359,6 +1486,21 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
       "disposition": "lowered",
       "via": "walker.ts (ChoiceGroup): the orientation union vocabulary backs the generated orientation carrier attribute."
+    },
+    {
+      "id": "types-select-lowered",
+      "match": ["contract:/types/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select): the option alias backs the generated nested option type and the size union backs the generated size carrier attribute."
+    },
+    {
+      "id": "messages-select-pending",
+      "match": ["contract:/messages/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The trigger/search accessible message strings need the P4 message/a11y family; the visible placeholder and option labels remain consumer-authored."
     },
     {
       "id": "types",
@@ -1459,6 +1601,13 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
       "disposition": "lowered",
       "via": "TextControl commits on the native text change event, which is the input-committed update the contract declares for a root input control."
+    },
+    {
+      "id": "composite-control-select-lowered",
+      "match": ["contract:/compositeControl/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Select)/SelectControl: the collection-selection model is realised as a single-selection runtime listbox with activation commit and listbox closing; multi-select update semantics are withheld."
     },
     {
       "id": "composite-control",
@@ -1562,14 +1711,6 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "DOM focus-target ids and page scroll-lock have no native counterpart for the modal runtime; they stay pending P4 and the generated control exposes no property for them."
-    },
-    {
-      "id": "focus",
-      "match": ["contract:/focus/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Focus trapping, restoration and other focus facts are not lowered and need an explicit decision here."
     },
     {
       "id": "portal-enabled",
@@ -1909,6 +2050,14 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }, { "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
       "disposition": "refused",
       "reason": "USS has no object-fit/object-position; the native Image element exposes only low-level scale/source-rect primitives that the generated media API does not claim."
+    },
+    {
+      "id": "styles-select-modifier-selectors-refused",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "^[.]select--" },
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
+      "disposition": "refused",
+      "reason": "The select modifier descendant selectors pair authored state classes with trigger descendants the generated stylesheet cannot compose; the declarations are withheld rather than emitted partially."
     },
     {
       "id": "styles-pagestrip-presentation-label-refused",

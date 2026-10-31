@@ -4131,6 +4131,574 @@
       "reason": "uss-property"
     },
     {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "opacity",
+      "value": "0.5",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "select.color.background",
+      "value": "#d0d0d0",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "select.color.border",
+      "value": "#b8b8b8",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "select.color.foreground",
+      "value": "#727272",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--open .select__trigger",
+      "part": "trigger",
+      "property": "select.color.border",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select__option[aria-selected=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select__searchInput:focus-visible",
+      "part": "searchInput",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select__trigger:focus-visible",
+      "part": "trigger",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "option",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "option",
+      "property": "border-radius",
+      "value": "2px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "option",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "option",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "option",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "option",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "option",
+      "property": "border-radius",
+      "value": "2px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "option",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "option",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "option",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "0 4px 16px rgba(0,0,0,0.12)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "emptyState",
+      "part": "emptyState",
+      "property": "text-align",
+      "value": "center",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "option",
+      "part": "option",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "option",
+      "part": "option",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "option",
+      "part": "option",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "options",
+      "part": "options",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "searchInput",
+      "part": "searchInput",
+      "property": "font-family",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "searchInput",
+      "part": "searchInput",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "text",
+      "part": "text",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
       "component": "Sheet",
       "sourceKey": ".sheet--left .sheet__content",
       "part": "content",

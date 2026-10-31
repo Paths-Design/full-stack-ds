@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -280,6 +280,29 @@ export interface ChoiceGroupLowering {
   fields: { name: string; type: "string" | "bool"; role: "value" | "label" | "description" | "disabled" | "other" }[];
   orientationProp?: string;
 }
+/**
+ * A select listbox: a selection channel plus an open channel. The runtime builds
+ * the option buttons from the declared option leaves, paints the trigger label
+ * from the current selection or placeholder, toggles the listbox surface from
+ * the open channel and closes after a single selection. Multi-select, search,
+ * empty-state and the authored aria/data styling are withheld.
+ */
+export interface SelectLowering {
+  behavior: "Select";
+  channel: NormalizedChannelIR;
+  openChannel: NormalizedChannelIR;
+  optionsProp: string;
+  triggerPart: string;
+  textPart: string;
+  contentPart: string;
+  optionsContainerPart: string;
+  optionPart: string;
+  fields: { name: string; role: "value" | "label" | "disabled" }[];
+  placeholderProp?: string;
+  disabledProp?: string;
+  sizeAxis?: string;
+  itemType: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -293,7 +316,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -619,6 +642,64 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A select listbox: a selection channel plus a boolean open channel driven by
+  // the trigger and a guarded content surface that contains the option array.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.dom !== undefined &&
+      ir.behavior.normalizedChannels.length === 2) {
+    const selection = ir.behavior.normalizedChannels.find(channel => (channel.valueType ?? "").startsWith("string"));
+    const open = ir.behavior.normalizedChannels.find(channel => channel.valueType === "boolean");
+    const trigger = ir.dom.children.find(node => node.part !== undefined && node.events.click?.kind === "channel" &&
+      (node.events.click as { channel?: string }).channel === open?.name);
+    if (selection !== undefined && open !== undefined && trigger?.part !== undefined) {
+      const content = ir.dom.children.find(node => node.part !== undefined && node.ifProp === open.valueProp);
+      const findIteration = (node: DomNodeIR): DomNodeIR | undefined =>
+        node.iteration?.kind === "array" ? node : node.children.map(findIteration).find(Boolean);
+      const option = content === undefined ? undefined : findIteration(content);
+      const source = option?.iteration?.source;
+      const optionsProp = source?.kind === "prop" && !source.path?.length ? source.prop : undefined;
+      const text = trigger.children.find(node => node.part !== undefined && node.content !== undefined);
+      if (content?.part !== undefined && option?.part !== undefined && optionsProp !== undefined &&
+          option.iteration?.itemType !== undefined && text?.part !== undefined) {
+        const fields: { name: string; role: "value" | "label" | "disabled" }[] = [];
+        const addField = (path: string[], role: "value" | "label" | "disabled"): void => {
+          const name = path.map(segment => segment[0]!.toUpperCase() + segment.slice(1)).join("");
+          if (!fields.some(field => field.name === name)) fields.push({ name, role });
+        };
+        const visit = (node: DomNodeIR): void => {
+          for (const [attribute, binding] of Object.entries(node.bindings)) {
+            if (binding.kind !== "iterationLocal" || binding.path === undefined) continue;
+            if (attribute === "disabled") addField(binding.path, "disabled");
+            else addField(binding.path, "value");
+          }
+          if (node.content !== undefined && "kind" in node.content && node.content.kind === "iterationLocal" && node.content.path !== undefined) addField(node.content.path, "label");
+          for (const child of node.children) visit(child);
+        };
+        visit(option);
+        const triggerDisabled = trigger.bindings.disabled;
+        const sizeAxis = Object.keys(ir.variants).find(axis => ir.styledProps.some(prop => prop.name === axis && prop.propType.kind === "ref"));
+        const placeholderProp = text.content !== undefined && "kind" in text.content && text.content.kind === "projection" &&
+          text.content.fallback?.kind === "prop" && !text.content.fallback.path?.length ? text.content.fallback.prop : undefined;
+        if (fields.length > 0) {
+          return {
+            behavior: "Select",
+            channel: selection,
+            openChannel: open,
+            optionsProp,
+            triggerPart: trigger.part,
+            textPart: text.part,
+            contentPart: content.part,
+            optionsContainerPart: (optionsProp === undefined ? undefined : content.children.find(node => node.children.some(child => child === option))?.part) ?? content.part,
+            optionPart: option.part,
+            fields,
+            itemType: option.iteration.itemType,
+            ...(placeholderProp === undefined ? {} : { placeholderProp }),
+            ...(triggerDisabled?.kind === "prop" && !triggerDisabled.path?.length ? { disabledProp: triggerDisabled.prop } : {}),
+            ...(sizeAxis === undefined ? {} : { sizeAxis }),
+          };
+        }
+      }
+    }
   }
   // A native choice group: one string channel over an option array whose item
   // carries a checked comparison against the channel.

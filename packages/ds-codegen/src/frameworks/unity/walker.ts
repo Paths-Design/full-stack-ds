@@ -119,6 +119,7 @@ const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!nod
 function isEmittedApiName(ctx: Context, name: string): boolean {
   if (ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined && name === ctx.lowering.title.name) return true;
   if (ctx.lowering.behavior === "Avatar" && name === ctx.lowering.initialsProp) return true;
+  if (ctx.lowering.behavior === "Select" && name === ctx.lowering.optionsProp) return true;
   if (ctx.lowering.behavior === "Progress" && (name === ctx.lowering.valueProp || (ctx.lowering.value !== undefined && name === ctx.lowering.value.presenceProp))) return true;
   if (hasChannel(ctx.lowering) && [ctx.lowering.channel.valueProp, ctx.lowering.channel.defaultValueProp, ctx.lowering.channel.changeHandlerProp].includes(name)) return true;
   const prop = ctx.ir.styledProps.find(candidate => candidate.name === name);
@@ -170,6 +171,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     node.part === ctx.lowering.title.name && node.ifProp !== undefined && node.content !== undefined &&
     "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
   const treeGuard = ctx.lowering.behavior === "Tree" && node.ifProp === ctx.lowering.hrefProp;
+  const selectGuard = ctx.lowering.behavior === "Select" && node.ifProp === ctx.lowering.openChannel.valueProp;
   const avatarGuard = ctx.lowering.behavior === "Avatar" &&
     ((node.componentRef !== undefined && node.ifProp !== undefined) ||
       (node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.ifProp === node.content.prop)) && !node.ifNegated;
@@ -180,7 +182,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
       (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
     node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard && !treeGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard && !treeGuard && !selectGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -278,7 +280,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && ctx.lowering.behavior !== "Otp" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && ctx.lowering.behavior !== "Otp" && ctx.lowering.behavior !== "Select" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -294,7 +296,8 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (ctx.lowering.behavior === "Tree" && (node.iconGlyph !== undefined || node.children.some(child => child.iconGlyph !== undefined))) continue;
-    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "ChoiceGroup") && node.iteration !== undefined) continue;
+    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "ChoiceGroup" || ctx.lowering.behavior === "Select") && node.iteration !== undefined) continue;
+    if (ctx.lowering.behavior === "Select" && node.ifProp !== undefined && node.ifProp !== ctx.lowering.openChannel.valueProp) continue;
     if (isOmittedActionChrome(ctx, node)) continue;
     if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
     if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
@@ -457,7 +460,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
-    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp") continue;
+    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -1119,6 +1122,93 @@ function choiceGroupRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the select listbox: a nested option type is generated from the
+ * iteration leaves, the class exposes both channel APIs (selection value/open),
+ * the placeholder, disabled flag, options API and the size carrier, and
+ * SelectControl builds the option buttons and owns the listbox surface. The
+ * search/empty states, multi-select, authored aria/data styling are withheld.
+ */
+function selectRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Select") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a select lowering`);
+  const root = classes[0]!;
+  const trigger = root.members.find(member => member.part === lowering.triggerPart);
+  const text = root.members.find(member => member.part === lowering.textPart);
+  const content = root.members.find(member => member.part === lowering.contentPart);
+  const optionsHost = root.members.find(member => member.part === lowering.optionsContainerPart);
+  if (!trigger || trigger.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its select trigger as no native button`);
+  if (!text || text.type !== "Label") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its select label as no text leaf`);
+  if (!content) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its listbox surface outside the root class`);
+  if (!optionsHost) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders no options host`);
+  const optionType = identifier(lowering.itemType);
+  const fieldType = (role: string): string => role === "disabled" ? "bool" : "string";
+  const optionField = (role: string): string | undefined => lowering.fields.find(field => field.role === role)?.name;
+  const struct = [
+    `        public readonly struct ${optionType}`,
+    "        {",
+    ...lowering.fields.map(field => `            public readonly ${fieldType(field.role)} ${identifier(field.name)};`),
+    `            public ${optionType}(${lowering.fields.map(field => `${fieldType(field.role)} ${identifier(field.name).toLowerCase()}`).join(", ")})`,
+    "            {",
+    ...lowering.fields.map(field => `                this.${identifier(field.name)} = ${identifier(field.name).toLowerCase()};`),
+    "            }",
+    "        }",
+  ].join("\n");
+  const channel = lowering.channel;
+  const open = lowering.openChannel;
+  const members: string[] = [
+    "        public SelectControl Control { get; }",
+    struct,
+    `        [UxmlAttribute] public string ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`,
+    `        [UxmlAttribute] public bool ${identifier(pascal(open.valueProp))} { get => Control.Open; set => Control.Open = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = SelectControl.Attach(this, trigger: ${trigger.ref}, text: ${text.ref}, content: ${content.ref}, optionsHost: ${optionsHost.ref}, prefix: ${quote(ctx.prefix!)}, stateClass: ${quote(`${ctx.prefix}--${open.valueProp}`)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultValue; set => Control.DefaultValue = value; }`);
+  if (open.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(open.defaultValueProp))} { get => Control.DefaultOpen; set => Control.DefaultOpen = value; }`);
+  if (lowering.placeholderProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.placeholderProp))} { get => Control.Placeholder; set => Control.Placeholder = value; }`);
+  if (lowering.disabledProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.disabledProp))} { get => Control.Disabled; set => Control.Disabled = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  const openHandler = open.changeHandlerProp ?? `${open.valueProp}Changed`;
+  members.push(`        public Action<string> ${identifier(pascal(changeHandler))} { get => Control.ValueChanged; set => Control.ValueChanged = value; }`);
+  members.push(`        public Action<bool> ${identifier(pascal(openHandler))} { get => Control.OpenChanged; set => Control.OpenChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<string> ValueRequested { get => Control.ValueRequested; set => Control.ValueRequested = value; }");
+  members.push("        public bool OpenControlled { get => Control.OpenControlled; set => Control.OpenControlled = value; }");
+  members.push("        public Action<bool> OpenRequested { get => Control.OpenRequested; set => Control.OpenRequested = value; }");
+  const valueField = optionField("value");
+  const labelField = optionField("label");
+  const disabledField = optionField("disabled");
+  const getterArgs = lowering.fields.map(field => field.role === "value" ? "value" : field.role === "label" ? "label" : field.role === "disabled" ? "disabled" : fieldType(field.role) === "bool" ? "false" : "\"\"").join(", ");
+  const optionName = identifier(pascal(lowering.optionsProp));
+  members.push(
+    [
+      `        public ${optionType}[] ${optionName}`,
+      "        {",
+      `            get => Control.GetOptions<${optionType}>((value, label, disabled) => new ${optionType}(${getterArgs}));`,
+      "            set",
+      "            {",
+      `                var list = value ?? System.Array.Empty<${optionType}>();`,
+      `                Control.SetOptions(${valueField === undefined ? "System.Array.Empty<string>()" : `list.Length == 0 ? System.Array.Empty<string>() : System.Array.ConvertAll(list, option => option.${identifier(valueField)})`}, ${labelField === undefined ? "System.Array.Empty<string>()" : `list.Length == 0 ? System.Array.Empty<string>() : System.Array.ConvertAll(list, option => option.${identifier(labelField)})`}, ${disabledField === undefined ? "System.Array.Empty<bool>()" : `list.Length == 0 ? System.Array.Empty<bool>() : System.Array.ConvertAll(list, option => option.${identifier(disabledField)})`});`,
+      "            }",
+      "        }",
+    ].join("\n"),
+  );
+  void fieldType;
+  if (lowering.sizeAxis !== undefined) {
+    const prop = ir.styledProps.find(candidate => candidate.name === lowering.sizeAxis);
+    const values = ir.variants[lowering.sizeAxis];
+    if (prop !== undefined && values !== undefined && ctx.projection.carrierAxes.has(lowering.sizeAxis)) {
+      members.push(variantProperty(ctx, prop, values, undefined));
+      const literal = defaultLiteral(ir, prop, values);
+      if (literal !== undefined) defaults.push(`${identifier(pascal(lowering.sizeAxis))} = ${literal};`);
+    }
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1135,6 +1225,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "PageStrip") return pageStripRootApi(ctx);
   if (lowering.behavior === "Otp") return otpRootApi(ctx, classes);
   if (lowering.behavior === "ChoiceGroup") return choiceGroupRootApi(ctx);
+  if (lowering.behavior === "Select") return selectRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
