@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T16:27:17.294Z"
     artifact_path: packages/ds-unity/Runtime/Components/Select/Select.cs
     commit_sha: "1ca4cf2bbd636c035f1ee9815838b1d845261cae"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 60e2560eb (sourceDirty false): 87/87 passed, zero failed/skipped (test-run start 2026-10-31 16:26:07Z; resultsSha256 ed1d5e5c9eaa64552136122060407ee02e0f67f2d7c56e1fc27ae0e7b46faf12). The added case builds the runtime options (label, class, disabled option), paints the placeholder, opens/closes the listbox with the state class, commits an option selection and label paint, requests a controlled selection without committing, requests an open toggle in open-controlled mode, disables the trigger and projects the size carrier while asserting the absent search/multi/a11y API. The lane caught a placeholder repaint defect fixed before landing. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T16:27:17.824Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.SelectBuildsItsListboxAndOwnsBothChannels
+    exit_code: 0
+    commit_sha: "60e2560eb7312c22c76ff49b191dbf458283d883"
