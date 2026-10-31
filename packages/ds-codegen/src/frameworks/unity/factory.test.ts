@@ -30,11 +30,15 @@ describe("Unity capability lowering", () => {
     expect(source).toContain(` = ${expected}.Attach(this, `);
     expect(source).not.toMatch(/: (?:BooleanControl|ItemGroup|AnchoredSurface)\b/);
   });
-  it("routes channel-free content and rule leaves through a passive host while refusing modal surfaces", () => {
+  it("routes channel-free content and rule leaves through a passive host and lowers blocking dialogs", () => {
     expect(unityLowering(buildComponentIR(fixture("Text"))).behavior).toBe("Passive");
     expect(unityLowering(buildComponentIR(fixture("Divider"))).behavior).toBe("Passive");
     for (const name of ["Text", "Divider", "Icon"]) expect(emit(fixture(name))).toContain("Theme.AddStyleSheet(this);");
-    expect(() => emit(fixture("Dialog"))).toThrow("UNITY_UNSUPPORTED_SURFACE");
+    const dialogIr = buildComponentIR(fixture("Dialog"));
+    expect(unityLowering(dialogIr).behavior).toBe("Modal");
+    const unsupportedDismissal = fixture("Dialog") as unknown as Record<string, any>;
+    unsupportedDismissal.surface.dismissal = [...unsupportedDismissal.surface.dismissal, "routeChange"];
+    expect(() => unityLowering(buildComponentIR(unsupportedDismissal as unknown as ComponentContract))).toThrow("UNITY_UNSUPPORTED_SURFACE");
   });
   it("carries channel and anatomy names rather than assuming checked/input", () => {
     const ir = buildComponentIR(fixture("Switch"));
@@ -146,7 +150,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });

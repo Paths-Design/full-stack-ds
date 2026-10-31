@@ -606,6 +606,29 @@
       "reason": "The value-fill size axis has no USS carrier in the Progress sidecar, so the generated control withholds it until a native carrier exists."
     },
     {
+      "id": "prop-modal-modality-pending",
+      "match": ["contract:/props/*/members/plain:modal/**"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "ModalSurface always realises the blocking modality; the contract's optional non-modal mode needs a runtime mode switch, so the generated control withholds the modal prop until P4."
+    },
+    {
+      "id": "prop-modal-backdrop-knob-lowered",
+      "match": ["contract:/props/*/members/plain:closeOnBackdropClick/**"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Modal): the backdrop-dismissal gate prop becomes a generated boolean attribute wrapping ModalSurface.CloseOnOverlayClick."
+    },
+    {
+      "id": "prop-modal-focus-targets-refused",
+      "match": ["contract:/props/*/members/plain:initialFocus/**", "contract:/props/*/members/plain:returnFocus/**"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "refused",
+      "reason": "Initial/return focus targets are DOM ids the runtime cannot resolve; ModalSurface traps focus inside the content and returns focus to the previously focused element instead."
+    },
+    {
       "id": "prop-passive-style-axis",
       "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**", "contract:/props/*/members/plain:density/**", "contract:/props/*/members/plain:animate/**"],
       "disposition": "lowered",
@@ -944,6 +967,13 @@
       "reason": "A dual-listbox transfer (Shuttle) needs a transfer-list runtime behavior: the available and selected lists derived from the options prop and the value channel, a mark per item, add and remove, and per-list focus; its iterated options are refused with the rest of anatomy iteration."
     },
     {
+      "id": "interaction-close-operation",
+      "match": ["contract:/interaction/triggers/*/operation"],
+      "valueIn": ["close"],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Modal / AnchoredSurface): a close trigger's native activation requests the closed value; ModalSurface wires the close button to the open channel."
+    },
+    {
       "id": "interaction-operation",
       "match": ["contract:/interaction/triggers/*/operation"],
       "valueIn": ["select", "toggle-item", "toggle", "open"],
@@ -1004,6 +1034,21 @@
       "reason": "Prose description of the focus strategy; documentation only."
     },
     {
+      "id": "focus-modal-lowered",
+      "match": ["contract:/focus/strategy"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Modal): ModalSurface traps Tab/Shift+Tab inside the content while open and returns focus to the previously focused element on close; no focus-visible distinction exists in UI Toolkit."
+    },
+    {
+      "id": "focus-modal-return-pending",
+      "match": ["contract:/focus/returnFocus", "contract:/focus/scrollLock"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "DOM focus-target ids and page scroll-lock have no native counterpart for the modal runtime; they stay pending P4 and the generated control exposes no property for them."
+    },
+    {
       "id": "focus",
       "match": ["contract:/focus/**"],
       "disposition": "pending",
@@ -1046,12 +1091,33 @@
       "reason": "USS has no z-index: UI Toolkit orders siblings by hierarchy and AnchoredSurface brings floating content to the front of the panel root, so named layers have no USS realisation."
     },
     {
+      "id": "surface-modal-portal-lowered",
+      "match": ["contract:/portal/positioning", "contract:/portal/backdrop", "contract:/portal/enabled", "contract:/surface/modalityProp"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Modal): ModalSurface portals the host to the panel root and renders the contract's backdrop as the overlay; the modality gate prop is consumed by the selected blocking mode."
+    },
+    {
       "id": "portal",
       "match": ["contract:/portal/**"],
       "disposition": "pending",
       "phase": "P4",
       "catchAll": true,
       "reason": "Other portal targets, positioning or collision policies need an explicit decision here."
+    },
+    {
+      "id": "dismissal-modal-supported",
+      "match": ["contract:/surface/dismissal/*", "contract:/behavior/dismissalTriggers/**"],
+      "valueIn": ["escape", "outside-click", "close-button", "escape", "overlayClick", "closeButton", true, false],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Modal): ModalSurface realises escape and backdrop-click dismissal through generated CloseOn* knobs and close-button dismissal through the trigger's native activation."
+    },
+    {
+      "id": "dismissal-modal-normalized-lowered",
+      "match": ["contract:/dismissal/triggers/**", "contract:/dismissal/enabled", "contract:/dismissal/policy"],
+      "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Modal): the declared escape/overlay/close-button dismissal triggers become the generated CloseOn* knobs and the trigger's native close activation; enabledBy props gate the knobs' defaults."
     },
     {
       "id": "dismissal-supported",
@@ -1099,6 +1165,13 @@
       "match": ["contract:/surface/anchor/part", "contract:/surface/content/part"],
       "disposition": "lowered",
       "via": "The anchor and content parts are generated sub-elements (R1, R4) AnchoredSurface.Attach discovers under the host by <cssPrefix>__<part> class."
+    },
+    {
+      "id": "surface-modal-dialog-lowered",
+      "match": ["contract:/surface/kind", "contract:/surface/modality", "contract:/surface/presence", "contract:/surface/content/part", "contract:/surface/attachment", "contract:/surface/positioning/**"],
+      "valueIn": ["dialog", "blocking", "persistent", "viewport", "centered"],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Modal): a centered, persistent, viewport-attached blocking dialog surface lowers to ModalSurface, which portals the host, fills the panel, centers the content and renders the overlay backdrop."
     },
     {
       "id": "surface-content-interactive",
@@ -1298,9 +1371,9 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis, tab-size or order handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis, tab-size, order, inset or overflow-wrap handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-inherit-keyword-refused",
@@ -1350,6 +1423,20 @@
       "declaration": { "keyPattern": ":indeterminate\\b" },
       "disposition": "refused",
       "reason": "The web indeterminate (mixed) pseudo-class has no Unity state; the projection lists its declarations uss-pseudo."
+    },
+    {
+      "id": "styles-viewport-length-refused",
+      "match": ["styles:/**"],
+      "declaration": { "valuePattern": "([0-9]+([.][0-9]+)?(vw|vh|vmin|vmax|dvh|dvw)|min[(]|max[(]|calc[(])" },
+      "disposition": "refused",
+      "reason": "Viewport units, min()/max()/calc() length expressions and other relative viewport sizing are not projected; the projection lists the declaration uss-scalar, and the modal runtime owns the blocking layout."
+    },
+    {
+      "id": "styles-position-fixed-refused",
+      "match": ["styles:/**/position/**"],
+      "declaration": { "valuePattern": "^(?:fixed|sticky)$" },
+      "disposition": "refused",
+      "reason": "UI Toolkit has no fixed/sticky positioning; the projection lists the declaration uss-scalar and ModalSurface sets its own absolute blocking layout."
     },
     {
       "id": "styles",

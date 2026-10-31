@@ -18,7 +18,7 @@ describe("Unity capability accounting", () => {
     expect(rows.map(r => r.component)).toEqual(listComponentContracts(path.join(root, "packages/ds-contracts")).map(e => e.name));
     expect(rows.find(r => r.component === "Text")!.status).toBe("pilot-partial");
     expect(rows.find(r => r.component === "Divider")!.status).toBe("pilot-partial");
-    expect(rows.find(r => r.component === "Dialog")!.status).toBe("unsupported-shape");
+    expect(rows.find(r => r.component === "Dialog")!.status).toBe("pilot-partial");
     expect(rows.find(r => r.component === "Switch")!.status).toBe("pilot-partial");
     expect(rows.every(r => r.proof === "source-accounting-only")).toBe(true);
     // Every leaf of every component, sidecars included, carries a boundary rule.
@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Progress", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Progress", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -116,6 +116,7 @@ describe("Unity capability accounting", () => {
       "ledger Card .card--interactive:hover transform (uss-selector)",
       "ledger Card root box-shadow (uss-property)",
       "ledger CodeSnippet --kbd box-shadow (uss-property)",
+      "ledger Dialog modal box-shadow (uss-property)",
       "ledger Popover content box-shadow (uss-property)",
       "ledger Switch thumb box-shadow (uss-property)",
     ]);
@@ -129,6 +130,13 @@ describe("Unity capability accounting", () => {
       "ledger Card tokens card.elevation.raised (uss-scalar)",
       "ledger Card tokens card.elevation.resting (uss-scalar)",
       "ledger CodeSnippet tokens code-snippet.elevation.kbd (uss-scalar)",
+      "ledger Dialog tokens dialog.elevation (uss-scalar)",
+      "ledger Dialog tokens dialog.size.full.height (uss-scalar)",
+      "ledger Dialog tokens dialog.size.full.width (uss-scalar)",
+      "ledger Dialog tokens dialog.size.lg.maxWidth (uss-scalar)",
+      "ledger Dialog tokens dialog.size.md.maxWidth (uss-scalar)",
+      "ledger Dialog tokens dialog.size.sm.maxWidth (uss-scalar)",
+      "ledger Dialog tokens dialog.size.xl.maxWidth (uss-scalar)",
       "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Skeleton tokens skeleton.anim.easing (uss-scalar)",
       "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
@@ -150,6 +158,7 @@ describe("Unity capability accounting", () => {
       'ledger CodeBlock .code-block__token[data-token="string"] (uss-selector)',
       'ledger CodeBlock .code-block__token[data-token="tag"] (uss-selector)',
       "ledger Details .details[open] .details__icon (uss-selector)",
+      'ledger Dialog .dialog:has(> .dialog__modal[aria-modal="false"]) > .dialog__backdrop (uss-selector)',
       "ledger List .list--spacing-lg > * + * (uss-selector)",
       "ledger List .list--spacing-md > * + * (uss-selector)",
       "ledger List .list--spacing-none > * + * (uss-selector)",
