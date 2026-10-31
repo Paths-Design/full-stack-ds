@@ -2,7 +2,6 @@ id: UNITY-INPUT-01
 title: 'Admit Input to the Unity target with a native TextField text channel'
 mode: feature
 lifecycle_state: active
-worktree: unity-input
 created_at: '2026-10-31T13:25:33.107Z'
 updated_at: '2026-10-31T13:40:40.873Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
