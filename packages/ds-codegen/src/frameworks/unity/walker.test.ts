@@ -455,7 +455,7 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public string DefaultValue { get => Control.DefaultValue; set => Control.DefaultValue = value; }");
     expect(source).toContain("[UxmlAttribute] public int Length { get => Control.Length; set => Control.Length = value; }");
     expect(source).toContain("[UxmlAttribute] public string Mode { get => Control.Mode; set => Control.Mode = value; }");
-    expect(source).toContain("OtpControl.Attach(this, group: Group, prefix: \"otp\", fieldPart: \"field\");");
+    expect(source).toContain("OtpControl.Attach(group: Group, prefix: \"otp\", fieldPart: \"field\");");
     expect(source).not.toMatch(/FieldLabel|AriaDescribedby|data-otp/);
   });
 
