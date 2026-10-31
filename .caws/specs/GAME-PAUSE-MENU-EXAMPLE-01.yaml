@@ -57,3 +57,12 @@ contracts:
   - name: 'pause-menu-app-spec'
     type: behavior
     path: 'examples/game-pause-menu/spec.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "orion brand is source-controlled and gate-clean: 162/162 token files validate; tokens build 3/3; brand-refs 4307 refs across 11 brands incl orion 0 unresolved; contrast 648 curated pairs across base + 11 brands x 2 themes all meet WCAG AA; tokens:build:check clean; generated Unity sheet carries .fsds-theme.fsds-brand-orion light+dark and regenerates byte-stable"
+    recorded_at: "2026-10-31T17:45:03.976Z"
+    command: "pnpm --filter @full-stack-ds/tokens run validate && pnpm --filter @full-stack-ds/tokens run build && pnpm --filter @full-stack-ds/tokens run check-brand-refs && pnpm --filter @full-stack-ds/tokens run check-contrast && pnpm run tokens:build:check && pnpm run generate:unity"
+    exit_code: 0
+    artifact_path: packages/ds-tokens/src/brands/orion.tokens.json
+    commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
