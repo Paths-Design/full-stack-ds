@@ -54,3 +54,11 @@ contracts:
   - name: 'select-two-channel'
     type: behavior
     path: 'packages/ds-contracts/components/Select/Select.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 1ca4cf2bb: focused unity codegen + cli seam 238/238 pass, including the two-channel Select lowering (selection + boolean open channel driven by the trigger over a guarded listbox surface), the nested SelectOption type with role-derived leaves, the Value/Open/Default/Placeholder/Disabled/both-callback API, the size carrier, the omitted search/empty/iterated markup, the trigger label projection lowering and the composite/guard/binding/focus/dismissal boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The lore identity literal for the placeholder was replaced by the projection fallback fact and the style modifier selectors are refused."
+    recorded_at: "2026-10-31T16:27:16.617Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a two-channel listbox with runtime options for Select"
+    exit_code: 0
+    commit_sha: "1ca4cf2bbd636c035f1ee9815838b1d845261cae"
