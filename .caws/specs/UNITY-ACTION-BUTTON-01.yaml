@@ -45,7 +45,7 @@ acceptance:
       catch-all rule
   - id: A2
     given: 'a regenerated package on main before the orion parent slice merges'
-    when: 'generate --target=all is run and the committed package is compared'
+    when: 'generate --target=unity is run twice and the committed package is compared'
     then: >-
       packages/ds-unity contains the generated Button control, component catalog
       entry and USS carriers byte-stably across two generate:unity runs, and the
