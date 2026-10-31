@@ -77,3 +77,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: fa017e2478ddc1fd3875a84ca22f667f0b3b2845
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at fa017e247: packages/ds-unity/README.md admits Tooltip with its hover/focus open mode, non-interactive ephemeral content and dismissal boundaries, and records the 60/60 lane; docs/architecture/unity-target.md records the two AnchoredSurface modes and the 60/60 lane; docs/current-implementation-snapshot.md records the twentieth admitted control with those facts and lane evidence."
+    recorded_at: "2026-10-31T10:40:34.780Z"
+    commit_sha: fa017e2478ddc1fd3875a84ca22f667f0b3b2845
