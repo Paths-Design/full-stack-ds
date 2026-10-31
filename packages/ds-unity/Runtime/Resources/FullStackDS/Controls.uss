@@ -95,6 +95,7 @@
     --fsds-semantic-color-border-focus: #0566fe;
     --fsds-semantic-color-border-hover: #888889;
     --fsds-semantic-color-border-info: #034fd6;
+    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-border-success: #3a6614;
@@ -106,6 +107,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #d92d2e;
+    --fsds-semantic-color-foreground-link-hover: #b31b1b;
+    --fsds-semantic-color-foreground-link-visited: #e55b5a;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #013ab0;
@@ -255,6 +258,7 @@
     --fsds-semantic-color-border-focus: #0089fe;
     --fsds-semantic-color-border-hover: #727272;
     --fsds-semantic-color-border-info: #0566fe;
+    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-primary: #5c5b5c;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-border-success: #497f21;
@@ -266,6 +270,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #e55b5a;
+    --fsds-semantic-color-foreground-link-hover: #ee8181;
+    --fsds-semantic-color-foreground-link-visited: #d92d2e;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #00a9fb;
@@ -337,6 +343,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #755600;
     --fsds-semantic-color-border-hover: #b28000;
+    --fsds-semantic-color-border-light: #fcca30;
     --fsds-semantic-color-border-primary: #d39500;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -346,6 +353,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #755600;
+    --fsds-semantic-color-foreground-link-hover: #594300;
+    --fsds-semantic-color-foreground-link-visited: #946b00;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #004c63;
@@ -419,6 +428,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #b28000;
     --fsds-semantic-color-border-hover: #946b00;
+    --fsds-semantic-color-border-light: #412e00;
     --fsds-semantic-color-border-primary: #755600;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -428,6 +438,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #d39500;
+    --fsds-semantic-color-foreground-link-hover: #e8af1b;
+    --fsds-semantic-color-foreground-link-visited: #b28000;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #3eacd2;
@@ -489,6 +501,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #034fd6;
     --fsds-semantic-color-border-hover: #0089fe;
+    --fsds-semantic-color-border-light: #95dafb;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -498,6 +511,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #034fd6;
+    --fsds-semantic-color-foreground-link-hover: #013ab0;
+    --fsds-semantic-color-foreground-link-visited: #0566fe;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #013ab0;
@@ -574,6 +589,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #0089fe;
     --fsds-semantic-color-border-hover: #0566fe;
+    --fsds-semantic-color-border-light: #013ab0;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -583,6 +599,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0089fe;
+    --fsds-semantic-color-foreground-link-hover: #00a9fb;
+    --fsds-semantic-color-foreground-link-visited: #034fd6;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #00a9fb;
@@ -644,6 +662,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #d92d2e;
     --fsds-semantic-color-border-hover: #888889;
+    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -653,6 +672,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #d92d2e;
+    --fsds-semantic-color-foreground-link-hover: #b31b1b;
+    --fsds-semantic-color-foreground-link-visited: #e55b5a;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #013ab0;
@@ -726,6 +747,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #e55b5a;
     --fsds-semantic-color-border-hover: #727272;
+    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -735,6 +757,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #e55b5a;
+    --fsds-semantic-color-foreground-link-hover: #ee8181;
+    --fsds-semantic-color-foreground-link-visited: #d92d2e;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #00a9fb;
@@ -796,6 +820,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #4548d0;
     --fsds-semantic-color-border-hover: #797dec;
+    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -805,6 +830,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #4548d0;
+    --fsds-semantic-color-foreground-link-hover: #3637a3;
+    --fsds-semantic-color-foreground-link-visited: #c22abd;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #3637a3;
@@ -878,6 +905,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #797dec;
     --fsds-semantic-color-border-hover: #5d62e5;
+    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-primary: #5c5b5c;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -887,6 +915,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #797dec;
+    --fsds-semantic-color-foreground-link-hover: #9698f2;
+    --fsds-semantic-color-foreground-link-visited: #da4dd4;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #9698f2;
@@ -948,6 +978,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #0a6847;
     --fsds-semantic-color-border-hover: #0f9c6a;
+    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -957,6 +988,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #005134;
+    --fsds-semantic-color-foreground-link-hover: #00391e;
+    --fsds-semantic-color-foreground-link-visited: #0c8258;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #013ab0;
@@ -1030,6 +1063,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #0f9c6a;
     --fsds-semantic-color-border-hover: #0c8258;
+    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-primary: #5c5b5c;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -1039,6 +1073,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0f9c6a;
+    --fsds-semantic-color-foreground-link-hover: #38b483;
+    --fsds-semantic-color-foreground-link-visited: #0c8258;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #00a9fb;
@@ -1101,6 +1137,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #3a6614;
     --fsds-semantic-color-border-hover: #38b483;
+    --fsds-semantic-color-border-light: #badc83;
     --fsds-semantic-color-border-primary: #55cd9d;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -1110,6 +1147,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0a6847;
+    --fsds-semantic-color-foreground-link-hover: #005134;
+    --fsds-semantic-color-foreground-link-visited: #2c4f09;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #1e4d4d;
@@ -1184,6 +1223,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #0f9c6a;
     --fsds-semantic-color-border-hover: #0c8258;
+    --fsds-semantic-color-border-light: #1e3703;
     --fsds-semantic-color-border-primary: #0a6847;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -1193,6 +1233,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0f9c6a;
+    --fsds-semantic-color-foreground-link-hover: #82ae47;
+    --fsds-semantic-color-foreground-link-visited: #497f21;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #22b2b2;
@@ -1254,6 +1296,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #087b9e;
     --fsds-semantic-color-border-hover: #1a94ba;
+    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-primary: #888889;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -1263,6 +1306,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #07637f;
+    --fsds-semantic-color-foreground-link-hover: #004c63;
+    --fsds-semantic-color-foreground-link-visited: #247e7e;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #004c63;
@@ -1336,6 +1381,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #1a94ba;
     --fsds-semantic-color-border-hover: #1a94ba;
+    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -1345,6 +1391,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #3eacd2;
+    --fsds-semantic-color-foreground-link-hover: #5ac5ea;
+    --fsds-semantic-color-foreground-link-visited: #249797;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #3eacd2;
@@ -1406,6 +1454,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #313131;
     --fsds-semantic-color-border-hover: #727272;
+    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-primary: #888889;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #474647;
@@ -1415,6 +1464,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #474647;
+    --fsds-semantic-color-foreground-link-hover: #1d1d1d;
+    --fsds-semantic-color-foreground-link-visited: #727272;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #313131;
     --fsds-semantic-color-foreground-on-info-subtle: #313131;
@@ -1491,6 +1542,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #b8b8b8;
     --fsds-semantic-color-border-hover: #888889;
+    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #a0a0a1;
@@ -1500,6 +1552,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #a0a0a1;
+    --fsds-semantic-color-foreground-link-hover: #d0d0d0;
+    --fsds-semantic-color-foreground-link-visited: #727272;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-on-info-subtle: #d0d0d0;
@@ -1561,6 +1615,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #8b4b00;
     --fsds-semantic-color-border-hover: #cc7201;
+    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
@@ -1570,6 +1625,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #8b4b00;
+    --fsds-semantic-color-foreground-link-hover: #6c3a00;
+    --fsds-semantic-color-foreground-link-visited: #ae5d00;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #900909;
     --fsds-semantic-color-foreground-on-info-subtle: #1e4d4d;
@@ -1643,6 +1700,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #cc7201;
     --fsds-semantic-color-border-hover: #ae5d00;
+    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
@@ -1652,6 +1710,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #ec8802;
+    --fsds-semantic-color-foreground-link-hover: #f4a850;
+    --fsds-semantic-color-foreground-link-visited: #cc7201;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ee8181;
     --fsds-semantic-color-foreground-on-info-subtle: #22b2b2;
@@ -1713,6 +1773,7 @@
     --fsds-semantic-color-border-disabled: #b8b8b8;
     --fsds-semantic-color-border-focus: #446416;
     --fsds-semantic-color-border-hover: #69952c;
+    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-primary: #b8b8b8;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-feedback-foreground-danger-default: #d81e73;
@@ -1722,6 +1783,8 @@
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #446416;
+    --fsds-semantic-color-foreground-link-hover: #364d10;
+    --fsds-semantic-color-foreground-link-visited: #557d1b;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #891048;
     --fsds-semantic-color-foreground-on-info-subtle: #7b1878;
@@ -1795,6 +1858,7 @@
     --fsds-semantic-color-border-disabled: #474647;
     --fsds-semantic-color-border-focus: #69952c;
     --fsds-semantic-color-border-hover: #557d1b;
+    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-primary: #474647;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-feedback-foreground-danger-default: #e4558e;
@@ -1804,6 +1868,8 @@
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #82ae47;
+    --fsds-semantic-color-foreground-link-hover: #9bc55e;
+    --fsds-semantic-color-foreground-link-visited: #69952c;
     --fsds-semantic-color-foreground-on-brand: #ffffff;
     --fsds-semantic-color-foreground-on-danger-subtle: #ef7ba8;
     --fsds-semantic-color-foreground-on-info-subtle: #f26bec;
@@ -5942,4 +6008,87 @@
 .walkthrough__counter {
     color: var(--fsds-walkthrough-description-color, #474647);
     font-size: var(--fsds-walkthrough-description-font-size, 16px);
+}
+
+/* Links (.links) */
+.links {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: var(--fsds-semantic-display-size-gap, 4px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-links-color-foreground-default: var(--fsds-semantic-color-foreground-link, #d92d2e);
+    --fsds-links-color-foreground-hover: var(--fsds-semantic-color-foreground-link-hover, #b31b1b);
+    --fsds-links-color-foreground-visited: var(--fsds-semantic-color-foreground-link-visited, #e55b5a);
+    --fsds-links-color-foreground-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+    --fsds-links-color-underline: var(--fsds-semantic-color-border-light, #b8b8b8);
+    --fsds-links-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
+    --fsds-links-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+    --fsds-links-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+    --fsds-links-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+    --fsds-links-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+    --fsds-links-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+    --fsds-links-focus-ring-radius: var(--fsds-semantic-shape-radius-small, 4px);
+    --fsds-links-size-font-size-small: var(--fsds-core-typography-ramp-3, 14px);
+    --fsds-links-size-font-size-medium: var(--fsds-core-typography-ramp-4, 16px);
+    --fsds-links-size-font-size-large: var(--fsds-core-typography-ramp-5, 18px);
+}
+
+.links {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 4px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.links {
+    color: var(--fsds-links-color-foreground-default, #d92d2e);
+    font-size: var(--fsds-links-size-font-size-medium, 16px);
+    --fsds-gap: var(--fsds-links-spacing-gap, 2px);
+}
+
+.links.links--small {
+    --fsds-links-size-font-size-medium: var(--fsds-links-size-font-size-small, 14px);
+    font-size: var(--fsds-links-size-font-size-medium, 16px);
+}
+
+.links.links--medium {
+    --fsds-links-size-font-size-medium: var(--fsds-core-typography-ramp-4, 16px);
+    font-size: var(--fsds-links-size-font-size-medium, 16px);
+}
+
+.links.links--large {
+    --fsds-links-size-font-size-medium: var(--fsds-links-size-font-size-large, 18px);
+    font-size: var(--fsds-links-size-font-size-medium, 16px);
+}
+
+.links:hover {
+    color: var(--fsds-links-color-foreground-hover, #b31b1b);
+}
+
+.links:disabled {
+    color: var(--fsds-links-color-foreground-disabled, #727272);
+}
+
+.links:focus {
+    border-width: var(--fsds-links-focus-ring-width, 2px);
+    border-color: var(--fsds-links-focus-ring-color, #0566fe);
+    border-radius: var(--fsds-links-focus-ring-radius, 4px);
 }

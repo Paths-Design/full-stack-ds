@@ -898,5 +898,30 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Steps", "Placement", "CloseOnOutsideClick", "AutoStart", "StorageKey" })
                 Assert.That(typeof(FullStackDS.Walkthrough).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void LinksCarriesItsDestinationAndRaisesAnActivationRequest()
+        {
+            var link = Mount(new FullStackDS.Links());
+            link.Add(new UnityEngine.UIElements.Label("Open settings"));
+            Assert.That(link.ClassListContains("links"), Is.True);
+            link.Href = "/settings";
+            link.Target = "_blank";
+            link.Rel = "noopener";
+            Assert.That(link.Href, Is.EqualTo("/settings"));
+            Assert.That(link.Target, Is.EqualTo("_blank"));
+            Assert.That(link.Rel, Is.EqualTo("noopener"));
+            string activated = null;
+            link.Activated += href => activated = href;
+            Click(link);
+            Assert.That(activated, Is.EqualTo("/settings"));
+            link.Disabled = true;
+            activated = null;
+            Click(link);
+            Assert.That(activated, Is.Null);
+            link.Disabled = false;
+            link.Size = "large";
+            Assert.That(link.ClassListContains("links--large"), Is.True);
+            foreach (var prop in new[] { "Visited", "Navigate", "OnClick" })
+                Assert.That(typeof(FullStackDS.Links).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

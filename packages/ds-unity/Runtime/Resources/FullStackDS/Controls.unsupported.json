@@ -3011,6 +3011,102 @@
       "reason": "uss-property"
     },
     {
+      "component": "Links",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "text-decoration-line",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "hover",
+      "part": "root",
+      "property": "text-decoration-color",
+      "value": "#b31b1b",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "text-decoration-color",
+      "value": "#b8b8b8",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "text-decoration-line",
+      "value": "underline",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "text-underline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-property",
+      "value": "color, text-decoration-color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "visited",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
       "component": "List",
       "sourceKey": ".list--marker-alpha",
       "part": "root",

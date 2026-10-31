@@ -404,6 +404,13 @@
       "reason": "The label's DOM field-association bindings have no UI Toolkit form model; the passive wrapper ignores them and the field family is P4."
     },
     {
+      "id": "anatomy-anchor-destination-bindings-lowered",
+      "match": ["contract:/anatomy/dom/bindings/href", "contract:/anatomy/dom/bindings/target", "contract:/anatomy/dom/bindings/rel"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["a"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Anchor)/LinkControl: the prop-bound href/target/rel destination metadata becomes generated string attributes the runtime carries; the host never navigates."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
@@ -573,6 +580,14 @@
       "match": ["contract:/props/*/members/form-field:*/**"],
       "disposition": "refused",
       "reason": "HTML form submission fields (name, value) have no UI Toolkit counterpart: there is no form element to serialise into."
+    },
+    {
+      "id": "prop-anchor-destination-lowered",
+      "match": ["contract:/props/*/members/plain:href/**", "contract:/props/*/members/plain:target/**", "contract:/props/*/members/plain:rel/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["a"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Anchor): the destination strings become generated attributes backed by LinkControl; activation raises them to the consumer rather than navigating."
     },
     {
       "id": "prop-disabled",
@@ -1567,7 +1582,7 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/inset-inline/**", "styles:/**/align-items/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/inset-inline/**", "styles:/**/align-items/**", "styles:/**/text-decoration-line/**", "styles:/**/text-decoration-color/**", "styles:/**/text-underline-offset/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
       "disposition": "refused",
       "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis, tab-size, order, inset or overflow-wrap handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },

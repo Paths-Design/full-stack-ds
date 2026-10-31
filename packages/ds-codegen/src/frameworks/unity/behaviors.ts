@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -170,6 +170,19 @@ export interface CoachmarkLowering {
   callbacks: { part: string; prop: string }[];
   disabled?: { part: string; prop: string };
 }
+/**
+ * A navigable anchor scaffold: the generated host carries the declared
+ * destination metadata (href/target/rel) and, on activation while enabled,
+ * raises an activation request through LinkControl. It never navigates itself
+ * and does not model visited state.
+ */
+export interface AnchorLowering {
+  behavior: "Anchor";
+  hrefProp: string;
+  targetProp?: string;
+  relProp?: string;
+  disabledProp?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -183,7 +196,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -509,6 +522,27 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A navigable anchor: an `<a>` root whose destination metadata is
+  // prop-bound. The generated host never navigates; the runtime raises an
+  // activation request while enabled.
+  if (ir.dom?.tag === "a" && ir.dom.bindings.href?.kind === "prop" && !ir.interaction && !ir.formControl &&
+      ir.surface === undefined && ir.behavior.normalizedChannels.length === 0) {
+    const propOf = (attribute: string): string | undefined => {
+      const binding = ir.dom!.bindings[attribute];
+      return binding?.kind === "prop" && !binding.path?.length ? binding.prop : undefined;
+    };
+    const hrefProp = propOf("href")!;
+    const targetProp = propOf("target");
+    const relProp = propOf("rel");
+    const disabled = propIsBoolean(ir, "disabled") ? "disabled" : disabledProp(ir);
+    return {
+      behavior: "Anchor",
+      hrefProp,
+      ...(targetProp === undefined ? {} : { targetProp }),
+      ...(relProp === undefined ? {} : { relProp }),
+      ...(disabled === undefined ? {} : { disabledProp: disabled }),
+    };
   }
   const textProp = textContentProp(ir);
   if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir) || textProp !== undefined)) {

@@ -3,6 +3,6 @@ namespace FullStackDS
 {
     public static class ComponentCatalog
     {
-        public static readonly string[] Names = { "Accordion", "Alert", "AlertNotice", "Badge", "Blockquote", "Breadcrumbs", "Button", "Card", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Details", "Dialog", "Divider", "Field", "Icon", "Input", "Label", "List", "NavList", "Popover", "ProfileFlag", "Progress", "Sheet", "Skeleton", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Walkthrough" };
+        public static readonly string[] Names = { "Accordion", "Alert", "AlertNotice", "Badge", "Blockquote", "Breadcrumbs", "Button", "Card", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Details", "Dialog", "Divider", "Field", "Icon", "Input", "Label", "Links", "List", "NavList", "Popover", "ProfileFlag", "Progress", "Sheet", "Skeleton", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Walkthrough" };
     }
 }
