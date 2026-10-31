@@ -74,3 +74,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Breadcrumbs/Breadcrumbs.cs
     commit_sha: f9ced227b32be4f3a9ddaf6a216478ffc23f045b
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 24b8ea1c6 (sourceDirty false): 59/59 passed, zero failed/skipped (test-run start 2026-10-31 10:22:14Z; resultsSha256 3e34469f894f4b9b3f087dd7cfae11b4d5220e87c125151f713a65e85eeca33f). The added case sets the Label text, composes BreadcrumbsList/BreadcrumbsItem parts and asserts the absent HtmlFor/Form/AriaLabel/Separator API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T10:22:55.348Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.SemanticWrappersComposeContentAndIgnoreDomMetadata
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "24b8ea1c6213a1a4fd77d05146074d62e51e0311"
