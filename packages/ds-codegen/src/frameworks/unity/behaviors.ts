@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "Command" | "MotionLoop" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "Command" | "MotionLoop" | "TextSource" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -428,6 +428,16 @@ export interface MotionLoopLowering {
   easing?: [number, number, number, number];
   reducedValue: number;
 }
+/**
+ * A content-transform host with no channels: the declared transform (markdown,
+ * highlight) degrades to painting its source string on the native text element.
+ * This is the same degradation the Jetpack Compose target documents; block/mark
+ * structure, links and transform-specific styling are withheld.
+ */
+export interface TextSourceLowering {
+  behavior: "TextSource";
+  textProp: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -441,7 +451,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | CommandLowering | MotionLoopLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | CommandLowering | MotionLoopLowering | TextSourceLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -604,6 +614,13 @@ function valueFillLowering(ir: ComponentIR): ProgressLowering | undefined {
 /** Source: IR control/interaction/attachment axes. Applies by value model,
  * operation and attachment, never identity. Extend when new axes are admitted. */
 export function unityLowering(ir: ComponentIR): UnityLowering {
+  // A content-transform host degrades to painting its declared source string on
+  // the native text element; the transform's block/mark structure is not
+  // rendered. The Jetpack Compose target documents the same degradation.
+  if (ir.behavior.normalizedChannels.length === 0 && ir.dom !== undefined && ir.dom.children.length === 0 &&
+      ir.dom.content !== undefined && "transform" in ir.dom.content && typeof ir.dom.content.transform === "string") {
+    return { behavior: "TextSource", textProp: ir.dom.content.sourceProp };
+  }
   // A self-animating rotation loop: no channels, one repeat rotation loop that
   // turns the declared target a full turn. The runtime executes the declared
   // period; other loop shapes fail closed rather than approximating.

@@ -7990,3 +7990,44 @@
 .spinner--bold .spinner__visual {
     border-width: var(--fsds-spinner-thickness-bold, 4px);
 }
+
+/* Markdown (.markdown) */
+.markdown {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-markdown-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-markdown-typography-font-size: var(--fsds-core-typography-ramp-3, 14px);
+    --fsds-markdown-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+}
+
+.markdown {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.markdown {
+    color: var(--fsds-markdown-color-foreground, #141414);
+    font-size: var(--fsds-markdown-typography-font-size, 14px);
+}

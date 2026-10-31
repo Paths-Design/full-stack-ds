@@ -646,6 +646,16 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Size|Thickness|ShowAfterMs|Inline|ariaHidden/);
   });
 
+  it("degrades the markdown content transform to a text source for Markdown", () => {
+    const contract = loadContractWithSidecars(root, "Markdown") as ComponentContract;
+    const markdownIr = buildComponentIR(contract);
+    markdownIr.name = "UnrelatedMarkdown";
+    const source = createUnityEmitter().emitComponent(markdownIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedMarkdown : TextElement");
+    expect(source).toContain('[UxmlAttribute] public string Content { get => text; set => text = value ?? ""; }');
+    expect(source).not.toMatch(/Heading|Paragraph|CodeBlock|Blockquote|Emphasis|Strong|Link/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

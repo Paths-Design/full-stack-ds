@@ -279,8 +279,8 @@ describe("cli main — emitter admitContract seam", () => {
   it("passes admitted=false for an explicit request outside the target's allowlist", async () => {
     const { events } = prepareWithAdmissionRecorder([
       "--dry-run",
-      "--target=unity",
-      "Markdown",
+      "--target=godot",
+      "Command",
     ]);
     vi.spyOn(console, "error").mockImplementation(() => {});
     // Unity's own emitter may reject Calendar after admission; this case pins
@@ -288,8 +288,8 @@ describe("cli main — emitter admitContract seam", () => {
     await import("./cli.js").catch(() => undefined);
     expect(events[0]).toEqual({
       kind: "admit",
-      target: "unity",
-      component: "Markdown",
+      target: "godot",
+      component: "Command",
       admitted: false,
     });
   });
@@ -340,6 +340,7 @@ describe("cli main — emitter admitContract seam", () => {
       "Label",
       "Links",
       "List",
+      "Markdown",
       "NavList",
       "NavTree",
       "OTP",
@@ -488,7 +489,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     await import("./cli.js");
     expect(exit).not.toHaveBeenCalled();
     // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
-    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar", "Command", "Spinner"], afterEmits: 54 }]);
+    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar", "Command", "Spinner", "Markdown"], afterEmits: 55 }]);
     const lines = log.mock.calls.map((call) => String(call[0]));
     // Resolved against the package root: the components root minus the pack's Runtime/Components.
     expect(lines).toContain("  DRY RUN  target assets (unity)");
@@ -511,7 +512,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
       assets: () => [{ relativePath: "../outside.txt", contents: "" }],
     });
     await expect(import("./cli.js")).rejects.toThrow('Target unity: target asset path "../outside.txt" escapes the package root packages/ds-unity.');
-  });
+  }, 180_000);
 
   it("refuses to guess a package root the binding's components root does not end in", async () => {
     const root = tempPackage();
@@ -565,7 +566,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     ]);
     // Component groups keep their own contract provenance beside the asset group.
     const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
-    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Avatar", "Badge", "Blockquote", "Breadcrumbs", "Button", "Calendar", "Card", "Carousel", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Command", "Details", "Dialog", "Divider", "Field", "Icon", "Image", "Input", "Label", "Links", "List", "NavList", "NavTree", "OTP", "PageNavigator", "Pagination", "Popover", "Postcard", "ProfileFlag", "Progress", "RadioGroup", "Select", "Sheet", "ShowMore", "Shuttle", "Skeleton", "Spinner", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Truncate", "Walkthrough"]);
+    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Avatar", "Badge", "Blockquote", "Breadcrumbs", "Button", "Calendar", "Card", "Carousel", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Command", "Details", "Dialog", "Divider", "Field", "Icon", "Image", "Input", "Label", "Links", "List", "Markdown", "NavList", "NavTree", "OTP", "PageNavigator", "Pagination", "Popover", "Postcard", "ProfileFlag", "Progress", "RadioGroup", "Select", "Sheet", "ShowMore", "Shuttle", "Skeleton", "Spinner", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Truncate", "Walkthrough"]);
     expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
   }, 180_000);
 

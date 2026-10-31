@@ -420,6 +420,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     assertRenderable(ctx, ir.dom);
     // A passive text host paints consumer string content itself; a generic
     // VisualElement has no text surface. Child elements remain composable.
+    const sourceText = ctx.lowering.behavior === "TextSource";
     const passiveText = ctx.lowering.behavior === "Passive" &&
       ((TEXT_LEAF_TAGS.has(ir.dom.tag) && ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!)) || ctx.lowering.textProp !== undefined);
     // A boolean form control whose form-control part IS the root is the button
@@ -429,7 +430,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     const textInputRoot = ctx.lowering.behavior === "TextInput" && ctx.lowering.control.name === ir.dom.part;
     const mediaRoot = ctx.lowering.behavior === "Media";
     const root = newClass(name,
-      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : textInputRoot ? NATIVE_TEXTFIELD : mediaRoot ? NATIVE_IMAGE : passiveText ? "TextElement" : "VisualElement",
+      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : textInputRoot ? NATIVE_TEXTFIELD : mediaRoot ? NATIVE_IMAGE : passiveText || sourceText ? "TextElement" : "VisualElement",
       true, rootIdentity(ctx, ir.dom.part));
     // A native action control projects the consumer's children itself: the
     // contract's guarded loading chrome is omitted (pending P4) and a wrapper
@@ -1426,6 +1427,19 @@ function motionLoopRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults: [] };
 }
 
+/** R6-R8 for the content-transform host: the declared source string painted on
+ * the native text element. Block/mark structure and transform styling are
+ * withheld; this is the documented Compose-target degradation. */
+function textSourceRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "TextSource") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a text-source lowering`);
+  return {
+    members: [`        [UxmlAttribute] public string ${identifier(pascal(lowering.textProp))} { get => text; set => text = value ?? ""; }`],
+    attach: [],
+    defaults: [],
+  };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1450,6 +1464,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "DateGrid") return dateGridRootApi(ctx);
   if (lowering.behavior === "Command") return commandRootApi(ctx);
   if (lowering.behavior === "MotionLoop") return motionLoopRootApi(ctx, classes);
+  if (lowering.behavior === "TextSource") return textSourceRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
