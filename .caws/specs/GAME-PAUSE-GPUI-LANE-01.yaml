@@ -1,10 +1,11 @@
 id: GAME-PAUSE-GPUI-LANE-01
 title: 'Game pause menu gpui lane (Orion N5)'
 mode: feature
-lifecycle_state: active
-worktree: game-pause-gpui
+lifecycle_state: closed
+resolution: superseded
+closure_notes: 'Lane source integrated into parent slice GAME-PAUSE-MENU-EXAMPLE-01 and merged to main in d468c4503; lane commit 6b4c17b03.'
 created_at: '2026-10-31T07:28:39.674Z'
-updated_at: '2026-10-31T07:29:52.115Z'
+updated_at: '2026-10-31T17:47:47.515Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
