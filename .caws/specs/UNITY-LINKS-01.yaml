@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T14:44:17.876Z"
     artifact_path: packages/ds-unity/Runtime/Components/Links/Links.cs
     commit_sha: e53fdb35a56cca042f14dae870b02026beb2db6b
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 5bbcf5495 (sourceDirty false): 79/79 passed, zero failed/skipped (test-run start 2026-10-31 14:43:40Z; resultsSha256 e6c7be48640362063634a326ca6298e50647cdd1cd27f886b377c925848f1d5b). The added case sets Href/Target/Rel, observes the activation request carrying the href, confirms the disabled host raises nothing, checks the size carrier and asserts no navigation/visited API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T14:44:18.441Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.LinksCarriesItsDestinationAndRaisesAnActivationRequest
+    exit_code: 0
+    commit_sha: "5bbcf549598d64f1bb60696264d262ff0dd3c845"
