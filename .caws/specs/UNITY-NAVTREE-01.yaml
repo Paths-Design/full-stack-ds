@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T15:19:45.436Z"
     artifact_path: packages/ds-unity/Runtime/Components/NavTree/NavTree.cs
     commit_sha: "17d603ca7bf1d77ab5db366245e4b4b3cd340971"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 8fcb69d46 (sourceDirty false): 82/82 passed, zero failed/skipped (test-run start 2026-10-31 15:19:07Z; resultsSha256 2ad7d2cccce96aaebb9483d0b86c082ed7111b83947365515f691d6a6b3514d0). The added case paints the label on both polarities, switches them with the href, fires the activation request with the href, clears the href back to the label, composes a child tree into the List content container and asserts the omitted icon/current-page API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T15:19:45.947Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.NavTreeSwitchesItsHeadingPairAndComposesChildItems
+    exit_code: 0
+    commit_sha: "8fcb69d463b8f8332d374888d0578cea1395baa0"
