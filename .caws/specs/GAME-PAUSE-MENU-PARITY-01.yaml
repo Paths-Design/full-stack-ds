@@ -1,0 +1,46 @@
+id: GAME-PAUSE-MENU-PARITY-01
+title: 'Orion pause menu parity pass across GPUI, Unity and Godot'
+mode: refactor
+lifecycle_state: draft
+created_at: '2026-10-31T19:16:40.858Z'
+updated_at: '2026-10-31T19:16:40.858Z'
+created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
+blast_radius:
+  modules:
+    - 'pause-menu parity design authority and three engine lane realizations'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/game-pause-menu'
+    - 'examples/README.md'
+  out: []
+invariants:
+  - 'The landed orion brand, lane interaction semantics and tests remain intact'
+  - 'All three lanes implement one shared geometry spec rather than lane-specific designs'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given parity.md as the single design authority; when it is read; then it pins the 1280x800 grid, component geometry, switch pill geometry and every tab state identically for all engines'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the three lanes; when they render the four tabs; then header, tab bar, panels, lists, cards, switches, sliders and controls occupy the same positions and use the same colours, with only font rasterization differing'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the switch component on each engine; when rendered checked and unchecked; then it is a 64x32 pill with a 24px circular thumb, signal-orange checked track and graphite unchecked track, with no oval or rounded-square thumb'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the parity rework; when lane tests and four-tab captures run; then interactions still pass, captures are regenerated and the lane READMEs carry the parity section and switch root-cause note'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the merged parity pass; when the comparison document is read; then it states the parity design authority, the switch root causes and the remaining font-rasterization non-claims'
+non_functional: {}
+contracts:
+  - name: 'pause-menu-parity-spec'
+    type: behavior
+    path: 'examples/game-pause-menu/parity.md'
