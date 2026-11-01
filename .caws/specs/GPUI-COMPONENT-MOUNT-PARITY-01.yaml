@@ -1,9 +1,11 @@
 id: GPUI-COMPONENT-MOUNT-PARITY-01
 title: 'GPUI mount parity: every admitted component carries an executed mount witness'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Every admitted GPUI component now emits an executed mount witness, the pilot ratchets allowlist against witnesses in both directions, and all 55 pass on the pinned lane.'
 created_at: '2026-11-01T08:24:37.941Z'
-updated_at: '2026-11-01T08:24:43.302Z'
+updated_at: '2026-11-01T08:33:43.670Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
