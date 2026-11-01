@@ -164,7 +164,8 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomySt
       }
       if (!instance) refOmissions.push({ kind: 'ref-instance', source: field, reason: 'component instance facts were unavailable at IR build time', boundary: 'anatomy-component-ref', disposition: 'pending' });
       omissions.push(...refOmissions);
-      refs.push({ field, refType: node.componentRef, attrs, dynamic, events, omissions: refOmissions });
+      const children = node.children.flatMap(child => collectRefs(child, omissions, state));
+      refs.push({ field, refType: node.componentRef, attrs, dynamic, events, children, omissions: refOmissions });
       return;
     }
     for (const child of node.children) visit(child);
@@ -192,19 +193,21 @@ function omit(state: AnatomyState, omission: GpuiOmission): void {
 function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   if (node.componentRef) {
     // By-reference composition: the node renders a retained child component.
-    // Consumer children nested in the reference would need the child's content
-    // API; they are named here instead of being dropped silently.
+    // Nested references become that child's content; other nested children are
+    // named as omissions (they would need the content API too).
     const copy: DomNodeIR = structuredClone(node);
-    if (copy.children.length) {
-      omit(state, {
-        kind: 'ref-children',
-        source: `${node.componentRef}${node.part ? `.${node.part}` : ''}`,
-        reason: 'children nested inside a by-reference node need the referenced component content API; they are not projected',
-        boundary: 'anatomy-component-ref-dynamic',
-        disposition: 'pending',
-      });
+    for (const child of copy.children) {
+      if (!child.componentRef) {
+        omit(state, {
+          kind: 'ref-children',
+          source: `${node.componentRef}${node.part ? `.${node.part}` : ''}`,
+          reason: 'non-reference child nested inside a by-reference node has no content projection',
+          boundary: 'anatomy-component-ref-dynamic',
+          disposition: 'pending',
+        });
+      }
     }
-    copy.children = [];
+    copy.children = copy.children.filter(child => child.componentRef);
     copy.bindings = {};
     copy.events = {};
     copy.attrs = {};
