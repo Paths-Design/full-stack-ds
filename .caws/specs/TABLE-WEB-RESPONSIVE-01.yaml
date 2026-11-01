@@ -89,3 +89,8 @@ evidence:
     evidence_ref: "At source 6362aa9c7, raw installed-consumer browser-{react,vue,svelte,angular,lit}.json in .caws/state/release-evidence/TABLE-WEB-RESPONSIVE-01/runs/fsds-release-packages-4Uwrj0/ each passed with no failures. Inspected viewport policies default/true/false/true/default: 240px viewport and 822px content, scroll120/120/0/120/120, overflow auto/auto/visible/auto/auto, tab0/0/-1/0/0, and stable native table/cell identity. French and Arabic metadata and header IDREFs are preserved. Commit verification checks identity only; raw browser execution was inspected separately."
     recorded_at: "2026-11-01T14:08:46.341Z"
     commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At source 6362aa9c7, the same five installed browser reports and AX/screenshots show the localizable region name Contenu du tableau, real Tab focus and native arrows. LTR14/RTL6 arrow steps reveal the Arabic edit button fully inside both viewport axes from initially clipped bounds, with focus retained; disabled policy is untabbable. The authoritative harness is scripts/release-package-check/browser.mjs. Evidence is scoped to Chromium web behavior, not assistive-technology announcements or native scrolling."
+    recorded_at: "2026-11-01T14:08:55.125Z"
+    commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"
