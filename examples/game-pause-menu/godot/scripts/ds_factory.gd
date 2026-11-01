@@ -221,6 +221,9 @@ static func prepare_popover(node) -> void:
 	node.label = ""
 	# NOT FSDS: generated Popover is trigger-driven; the app drives the surface
 	# from external app state and closes it from app state.
+	# The app owns outside dismissal so a click on another tab can activate that
+	# tab before the old surface closes. The generated handler consumes the press.
+	node.close_on_outside_click = false
 	node.trigger.hide()
 	node.trigger.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
