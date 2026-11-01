@@ -40,7 +40,7 @@
     "prepack": "pnpm run build"
   },
   "peerDependencies": {
-    "svelte": ">=5.0.0"
+    "svelte": ">=5.20.0"
   },
   "devDependencies": {
     "@sveltejs/package": "^2.3.0",
