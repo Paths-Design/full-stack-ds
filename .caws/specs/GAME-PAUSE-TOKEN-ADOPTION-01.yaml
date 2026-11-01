@@ -54,3 +54,8 @@ contracts:
   - name: 'pause-menu-parity-spec'
     type: behavior
     path: 'examples/game-pause-menu/parity.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "cargo +1.94.1 test --locked in examples/game-pause-menu/gpui: 69 passed; node examples/game-pause-menu/parity-check.mjs: 117 typography bbox+ink measurements, 0 failures"
+    recorded_at: "2026-11-01T05:44:56.160Z"
