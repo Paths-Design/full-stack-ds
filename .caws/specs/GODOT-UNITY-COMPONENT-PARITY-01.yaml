@@ -89,3 +89,7 @@ evidence:
     status: pass
     evidence_ref: "FSDS_ENGINE_OUT=/tmp/godot-pilot-final node scripts/godot-pilot.mjs (Godot 4.7.2 headless) -> exit 0, receipt passed:true, 22 rows; catalog-load row {'admitted':55,'failures':[]}; all 21 pre-existing rows unchanged versus the pre-slice baseline run /tmp/godot-pilot-baseline"
     recorded_at: "2026-11-01T07:59:03.860Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Corpus-wide admission and the support boundary' section + docs/current-implementation-snapshot.md Godot row + packages/ds-godot/README.md 'Admission set and boundary audit' state emission-parity-not-behaviour, the receipt omissions, and the catalog-load structural-only witness; pnpm run docs:check-claims and docs:check-links pass"
+    recorded_at: "2026-11-01T07:59:06.225Z"
