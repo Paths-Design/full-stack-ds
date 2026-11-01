@@ -64,3 +64,10 @@ evidence:
     exit_code: 0
     artifact_path: scripts/gpui-pilot.mjs
     commit_sha: d59cd27dd
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "negative run proves the ratchet bites: deleting packages/ds-gpui/src/components/Dialog/Dialog.test.rs made node scripts/gpui-pilot.mjs exit 1 with 'GPUI_MOUNT_WITNESS_GENERATION_REQUIRED: Dialog' before any cargo work; the executed-test direction is enforced by comparing expectedMountWitnesses (derived from the allowlist) against passed cargo test names and failing with GPUI_MOUNT_WITNESS_MISSING"
+    recorded_at: "2026-11-01T08:33:31.147Z"
+    command: node scripts/gpui-pilot.mjs
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: d59cd27dd
