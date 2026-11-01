@@ -101,3 +101,8 @@ evidence:
     evidence_ref: "Primary inspected ignored evidence: .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01/packed-full-timestamp.log and runs/fsds-release-packages-iM9TgC/browser-postcard-*.json. All five installed web frameworks: three labeled counts incl zero; updates; partial catalog fallback; translated word order. Seven stages each. Native host assertions in final frameworks.log. Candidate 6299e9876 consumer diff empty from retained witness. CLI verify checks commit reachability only, not execution or ignored log contents. No automatic number/date/plural formatting claim."
     recorded_at: "2026-11-01T21:06:31.346Z"
     commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01/runs/fsds-release-packages-iM9TgC/browser-postcard-{react,vue,svelte,angular,lit}-{stage}.json and matching AX/PNG. Seven stages each include Arabic formatted counts, Japanese/Arabic author/body, ancestor RTL, long German labels and full microsecond ISO timestamp at 240px/320px. Assertions require exact values and article AX content, positive text ranges, no own/ancestor clipping or viewport overflow. Consumer sources unchanged at 6299e9876. This does not qualify avatar/media, arbitrary layouts or OS screen readers. Evidence under .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01; primary evidence inspected manually. CLI verify establishes commit reachability, not test execution."
+    recorded_at: "2026-11-01T21:07:07.545Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
