@@ -209,10 +209,15 @@ realized boolean set true, renders it in GPUI's test window, and asserts the roo
 part reached layout — or, where the contract guards the root on consumer-supplied
 content, that the default view renders without panicking. That proves the
 component mounts and renders; it does not prove interaction, styling correctness or
-pixels. The **seven** bounded control/static components additionally carry the
-hand-written interaction witnesses (owner requests, focus, disabled suppression,
-variants, retained content, slots). The other 48 are mount-witnessed only, with
-their unrealized semantics named in the receipt.
+pixels. **Sixteen** capability witnesses are required by name by the pilot lane:
+the bounded controls (owner requests, focus, disabled suppression, variants,
+retained content, slots) plus disclosure, surface presence, collection open value,
+expansion, root/part action callbacks, reference-event forwarding, nested
+references, focus/tab order, fractional layout and style/token reach — the
+mapping from capability to witness is the inventory in
+[GPUI ↔ web consistency](gpui-web-consistency.md#mounted-witness-inventory). The
+other 39 components are mount-witnessed only, with their unrealized semantics
+named in the receipt.
 
 ## Input and owner updates
 
