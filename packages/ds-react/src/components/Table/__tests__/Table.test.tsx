@@ -42,7 +42,7 @@ describe("Table — unit", () => {
 
 describe("Table — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const { baseElement } = render(<><Table ariaLabel="Test Table"><tbody><tr><td>content</td></tr></tbody></Table></>);
+    const { baseElement } = render(<><Table contentLabel="Test Table"><tbody><tr><td>content</td></tr></tbody></Table></>);
     const component = baseElement.querySelector('[data-fsds-component="table"]');
     expect(component).not.toBeNull();
     const results = await axe(component!, componentAxeOptions) as unknown as { violations: Array<{ id: string }> };

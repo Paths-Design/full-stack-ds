@@ -60,6 +60,14 @@
     "dom": {
       "tag": "div",
       "part": "root",
+      "attrs": {
+        "role": "region"
+      },
+      "bindings": {
+        "data-responsive": "conditional:prop:responsive|literal:true|literal:false",
+        "tabindex": "conditional:prop:responsive|literal:0|literal:-1",
+        "aria-label": "prop:contentLabel"
+      },
       "children": [
         {
           "tag": "table",
@@ -76,6 +84,12 @@
       ]
     }
   },
+  "messages": {
+    "content": {
+      "defaultMessage": "Table content",
+      "description": "Accessible name of the region containing the table, including its scrollable viewport on the web."
+    }
+  },
   "props": {
     "styled": {
       "description": "Props for the <Table> component.",
@@ -83,7 +97,14 @@
         {
           "name": "responsive",
           "type": "boolean",
-          "description": "Enable responsive horizontal scrolling"
+          "default": true,
+          "description": "Enable a keyboard-focusable horizontal scrolling viewport on the web. Defaults to true; false allows content to overflow without a scrolling viewport."
+        },
+        {
+          "name": "contentLabel",
+          "type": "string",
+          "defaultMessage": "content",
+          "description": "Accessible name of the surrounding table content region. Defaults to the localized Table content message."
         },
         {
           "name": "ariaLabel",
@@ -135,7 +156,7 @@
   },
   "focus": {
     "strategy": "none",
-    "description": "The table itself does not manage focus. Individual interactive cells (sortable headers, checkboxes) are reachable via standard tab order."
+    "description": "The table does not manage cell focus. Its responsive web viewport is in the standard tab order for native horizontal arrow-key scrolling. Interactive cells remain in the standard tab order."
   },
   "portal": {
     "enabled": false

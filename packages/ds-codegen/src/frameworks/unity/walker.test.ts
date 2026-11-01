@@ -193,7 +193,13 @@ describe("Unity passive anatomy path", () => {
     for (const part of ["Caption", "Head", "Body", "Footer", "Row", "Cell", "HeaderCell"]) {
       expect(source).toContain(`public partial class UnrelatedGrid${part} : VisualElement`);
     }
-    expect(source).not.toMatch(/Responsive|AriaLabel/);
+    expect(source).not.toMatch(/Responsive|ContentLabel|AriaLabel|ScrollView|tabIndex|focusable/);
+  });
+
+  it("refuses unrelated passive bindings beside omitted DOM tab metadata", () => {
+    const ir = irFor("Table", "UnrelatedGrid");
+    ir.dom!.bindings.title = { kind: "prop", prop: "contentLabel" };
+    expect(() => emit(ir)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY");
   });
 
   it("omits the content-transform chrome and keeps a consumer code region for CodeBlock", () => {

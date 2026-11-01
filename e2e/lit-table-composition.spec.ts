@@ -99,6 +99,10 @@ for (const mode of ["template", "library"] as const) {
     expect(focus.sameNode).toBe(true);
     await page.getByRole("button", { name: "Before table", exact: true }).focus();
     await page.keyboard.press("Tab");
+    if (mode === "library") {
+      await expect(page.locator("[data-table-consumer]").getByRole("region", { name: "Table content", exact: true })).toBeFocused();
+      await page.keyboard.press("Tab");
+    }
     await expect(table.getByRole("button", { name: "Edit A" })).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(page.locator("body")).toHaveAttribute("data-activations", "2");

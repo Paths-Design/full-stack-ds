@@ -5958,6 +5958,14 @@
     },
     {
       "component": "Table",
+      "sourceKey": ".table[data-responsive=\"false\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Table",
       "sourceKey": "caption",
       "part": "caption",
       "property": "text-align",

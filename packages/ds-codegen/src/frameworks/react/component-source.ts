@@ -3478,7 +3478,9 @@ function renderReactBinding(
       return appendPath(base, expr.path);
     }
     case "literal":
-      return JSON.stringify(expr.value);
+      return NUMERIC_JSX_ATTRS.has(jsxAttrName(attr)) && /^-?\d+$/.test(expr.value)
+        ? expr.value
+        : JSON.stringify(expr.value);
     case "message":
       return composeMessageExpression("fsdsMessages", expr, (value) =>
         renderReactBinding("__message_param__", value, ctx));
@@ -3597,8 +3599,9 @@ function renderReactBinding(
     }
     case "conditional": {
       const condition = renderReactBinding("__conditional_condition__", expr.condition, ctx);
-      const whenTrue = renderReactBinding("__conditional_true__", expr.whenTrue, ctx);
-      const whenFalse = renderReactBinding("__conditional_false__", expr.whenFalse, ctx);
+      const branchAttr = NUMERIC_JSX_ATTRS.has(jsxAttrName(attr)) ? attr : "__conditional_branch__";
+      const whenTrue = renderReactBinding(branchAttr, expr.whenTrue, ctx);
+      const whenFalse = renderReactBinding(branchAttr, expr.whenFalse, ctx);
       if (condition === null || whenTrue === null || whenFalse === null) return null;
       return `(${condition} ? ${whenTrue} : ${whenFalse})`;
     }

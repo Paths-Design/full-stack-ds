@@ -47,6 +47,12 @@ identity. Consumers own focus policy when reordering or removing interactive
 rows. These helpers do not add
 sorting, selection or pagination behavior.
 
+`responsive` defaults to `true`: wide content scrolls horizontally, and the
+content viewport is in the tab order for native arrow-key scrolling. Set it
+to `false` to allow visible overflow and remove that viewport tab stop.
+`contentLabel` names the surrounding region and defaults to the localized
+“Table content” message. `ariaLabel` separately names the native table.
+
 ## License
 
 MIT, copyright DesignPaths, LLC. The bundled THIRD_PARTY_NOTICES preserves the Lucide and Feather notices applicable to adapted icon geometry.

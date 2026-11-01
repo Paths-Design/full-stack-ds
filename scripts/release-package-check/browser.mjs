@@ -17,6 +17,8 @@ function App() {
   const [disabled, setDisabled] = React.useState(false);
   const [tableCount, setTableCount] = React.useState(0);
   const [sort, setSort] = React.useState<"ascending" | "descending">("ascending");
+  const [responsive, setResponsive] = React.useState<boolean | undefined>();
+  const [contentLabel, setContentLabel] = React.useState<string | undefined>();
   const messages = useFsdsMessages("ReleaseProbe", { label: "Untranslated" });
   return React.createElement("main", null,
     React.createElement(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled, onClick: () => setCount(value => value + 1) }, "Packed action"),
@@ -25,17 +27,22 @@ function App() {
     React.createElement("output", { id: "click-count" }, String(count)),
     React.createElement("output", { id: "translated-message" }, messages.label),
     React.createElement("output", { id: "table-count" }, String(tableCount)),
-    React.createElement(Table, { ariaLabel: "Packed table" },
+    React.createElement("button", { id: "responsive-default", onClick: () => setResponsive(undefined) }, "Default viewport"),
+    React.createElement("button", { id: "responsive-true", onClick: () => setResponsive(true) }, "Enable viewport"),
+    React.createElement("button", { id: "responsive-false", onClick: () => setResponsive(false) }, "Disable viewport"),
+    React.createElement("button", { id: "label-viewport", onClick: () => setContentLabel("Contenu du tableau") }, "French viewport label"),
+    React.createElement("button", { id: "before-table" }, "Before table viewport"),
+    React.createElement("section", { id: "table-viewport" }, React.createElement(Table, { ariaLabel: "Packed table", responsive, contentLabel },
       React.createElement(TableCaption, null, "Orders"),
       React.createElement(TableHead, null,
-        React.createElement(TableRow, null, React.createElement(TableHeaderCell, { id: "header-group", colSpan: 2 }, "Workspace")),
+        React.createElement(TableRow, null, React.createElement(TableHeaderCell, { id: "header-group", colSpan: 2, style: { minWidth: "800px" } }, "Workspace")),
         React.createElement(TableRow, null,
           React.createElement(TableHeaderCell, { id: "header-team", headers: "header-group", scope: "col" }, "Team"),
           React.createElement(TableHeaderCell, { id: "header-seats", headers: "header-group", scope: "col", abbr: "Pl.", ariaSort: sort, lang: "fr", dir: "ltr", title: "Nombre de places" }, React.createElement("button", { id: "toggle-sort", "aria-label": "Trier par places", onClick: () => setSort(value => value === "ascending" ? "descending" : "ascending") }, "Places")))),
       React.createElement(TableBody, null, React.createElement(TableRow, null,
         React.createElement(TableHeaderCell, { id: "row-team-a", headers: "header-group header-team", scope: "row" }, "Team A"),
         React.createElement(TableCell, { headers: "header-group header-seats row-team-a", lang: "ar", dir: "rtl", title: "المقاعد" }, "١٢ ", React.createElement("button", { onClick: () => setTableCount(value => value + 1) }, "تعديل")))),
-      React.createElement(TableFooter, null, React.createElement(TableRow, null, React.createElement(TableCell, { colSpan: 2 }, "One team")))));
+      React.createElement(TableFooter, null, React.createElement(TableRow, null, React.createElement(TableCell, { colSpan: 2 }, "One team"))))));
 }
 createRoot(document.getElementById("app")!).render(React.createElement(FsdsMessagesProvider, { messages: { ReleaseProbe: { label: "Prêt à publier" } } }, React.createElement(App)));
 `;
@@ -47,16 +54,23 @@ createApp({ setup() {
   const disabled = ref(false);
   const tableCount = ref(0);
   const sort = ref<"ascending" | "descending">("ascending");
+  const responsive = ref<boolean | undefined>();
+  const contentLabel = ref<string | undefined>();
   return () => h("main", null, [
     h(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled: disabled.value, onClick: () => { count.value += 1; } }, { default: () => "Packed action" }),
     h(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
     h("button", { id: "toggle-disabled", onClick: () => { disabled.value = !disabled.value; } }, "Toggle disabled"),
     h("output", { id: "click-count" }, String(count.value)),
     h("output", { id: "table-count" }, String(tableCount.value)),
-    h(Table, { ariaLabel: "Packed table" }, { default: () => [
+    h("button", { id: "responsive-default", onClick: () => { responsive.value = undefined; } }, "Default viewport"),
+    h("button", { id: "responsive-true", onClick: () => { responsive.value = true; } }, "Enable viewport"),
+    h("button", { id: "responsive-false", onClick: () => { responsive.value = false; } }, "Disable viewport"),
+    h("button", { id: "label-viewport", onClick: () => { contentLabel.value = "Contenu du tableau"; } }, "French viewport label"),
+    h("button", { id: "before-table" }, "Before table viewport"),
+    h("section", { id: "table-viewport" }, [h(Table, { ariaLabel: "Packed table", responsive: responsive.value, contentLabel: contentLabel.value }, { default: () => [
       h(TableCaption, null, { default: () => "Orders" }),
       h(TableHead, null, { default: () => [
-        h(TableRow, null, { default: () => h(TableHeaderCell, { id: "header-group", colSpan: 2 }, { default: () => "Workspace" }) }),
+        h(TableRow, null, { default: () => h(TableHeaderCell, { id: "header-group", colSpan: 2, style: "min-width:800px" }, { default: () => "Workspace" }) }),
         h(TableRow, null, { default: () => [
           h(TableHeaderCell, { id: "header-team", headers: "header-group", scope: "col" }, { default: () => "Team" }),
           h(TableHeaderCell, { id: "header-seats", headers: "header-group", scope: "col", abbr: "Pl.", ariaSort: sort.value, lang: "fr", dir: "ltr", title: "Nombre de places" }, { default: () => h("button", { id: "toggle-sort", "aria-label": "Trier par places", onClick: () => { sort.value = sort.value === "ascending" ? "descending" : "ascending"; } }, "Places") }),
@@ -67,7 +81,7 @@ createApp({ setup() {
         h(TableCell, { headers: "header-group header-seats row-team-a", lang: "ar", dir: "rtl", title: "المقاعد" }, { default: () => ["١٢ ", h("button", { onClick: () => { tableCount.value += 1; } }, "تعديل")] }),
       ] }) }),
       h(TableFooter, null, { default: () => h(TableRow, null, { default: () => h(TableCell, { colSpan: 2 }, { default: () => "One team" }) }) }),
-    ] }),
+    ] })]),
   ]);
 } }).mount("#app");
 `;
@@ -77,6 +91,8 @@ const svelteApp = `<script lang="ts">
   let disabled = $state(false);
   let tableCount = $state(0);
   let sort = $state<"ascending" | "descending">("ascending");
+  let responsive = $state<boolean | undefined>();
+  let contentLabel = $state<string | undefined>();
 </script>
 <main>
   <Button variant="primary" size="large" ariaLabel="Packed action" {disabled} onClick={() => { count += 1; }}>Packed action</Button>
@@ -84,10 +100,15 @@ const svelteApp = `<script lang="ts">
   <button id="toggle-disabled" onclick={() => { disabled = !disabled; }}>Toggle disabled</button>
   <output id="click-count">{count}</output>
   <output id="table-count">{tableCount}</output>
-  <Table ariaLabel="Packed table">
+  <button id="responsive-default" onclick={() => { responsive = undefined; }}>Default viewport</button>
+  <button id="responsive-true" onclick={() => { responsive = true; }}>Enable viewport</button>
+  <button id="responsive-false" onclick={() => { responsive = false; }}>Disable viewport</button>
+  <button id="label-viewport" onclick={() => { contentLabel = "Contenu du tableau"; }}>French viewport label</button>
+  <button id="before-table">Before table viewport</button>
+  <section id="table-viewport"><Table ariaLabel="Packed table" {responsive} {contentLabel}>
     <TableCaption>Orders</TableCaption>
     <TableHead>
-      <TableRow><TableHeaderCell id="header-group" colSpan={2}>Workspace</TableHeaderCell></TableRow>
+      <TableRow><TableHeaderCell id="header-group" colSpan={2} style="min-width:800px">Workspace</TableHeaderCell></TableRow>
       <TableRow>
         <TableHeaderCell id="header-team" headers="header-group" scope="col">Team</TableHeaderCell>
         <TableHeaderCell id="header-seats" headers="header-group" scope="col" abbr="Pl." ariaSort={sort} lang="fr" dir="ltr" title="Nombre de places"><button id="toggle-sort" aria-label="Trier par places" onclick={() => { sort = sort === "ascending" ? "descending" : "ascending"; }}>Places</button></TableHeaderCell>
@@ -98,7 +119,7 @@ const svelteApp = `<script lang="ts">
       <TableCell headers="header-group header-seats row-team-a" lang="ar" dir="rtl" title="المقاعد">١٢ <button onclick={() => { tableCount += 1; }}>تعديل</button></TableCell>
     </TableRow></TableBody>
     <TableFooter><TableRow><TableCell colSpan={2}>One team</TableCell></TableRow></TableFooter>
-  </Table>
+  </Table></section>
 </main>
 `;
 const angular = `${imports("angular")}
@@ -112,10 +133,15 @@ import { ButtonComponent, IconComponent, TableComponent, TableCaptionComponent, 
     <button id="toggle-disabled" (click)="disabled.set(!disabled())">Toggle disabled</button>
     <output id="click-count">{{ count() }}</output>
     <output id="table-count">{{ tableCount() }}</output>
-    <fsds-table ariaLabel="Packed table">
+    <button id="responsive-default" (click)="responsive.set(undefined)">Default viewport</button>
+    <button id="responsive-true" (click)="responsive.set(true)">Enable viewport</button>
+    <button id="responsive-false" (click)="responsive.set(false)">Disable viewport</button>
+    <button id="label-viewport" (click)="contentLabel.set('Contenu du tableau')">French viewport label</button>
+    <button id="before-table">Before table viewport</button>
+    <section id="table-viewport"><fsds-table ariaLabel="Packed table" [responsive]="responsive()" [contentLabel]="contentLabel()">
       <caption fsdsTableCaption>Orders</caption>
       <thead fsdsTableHead>
-        <tr fsdsTableRow><th fsdsTableHeaderCell id="header-group" colspan="2">Workspace</th></tr>
+        <tr fsdsTableRow><th fsdsTableHeaderCell id="header-group" colspan="2" style="min-width:800px">Workspace</th></tr>
         <tr fsdsTableRow>
           <th fsdsTableHeaderCell id="header-team" headers="header-group" scope="col">Team</th>
           <th fsdsTableHeaderCell id="header-seats" headers="header-group" scope="col" abbr="Pl." [attr.aria-sort]="sort()" lang="fr" dir="ltr" title="Nombre de places"><button id="toggle-sort" aria-label="Trier par places" (click)="toggleSort()">Places</button></th>
@@ -126,13 +152,15 @@ import { ButtonComponent, IconComponent, TableComponent, TableCaptionComponent, 
         <td fsdsTableCell headers="header-group header-seats row-team-a" lang="ar" dir="rtl" title="المقاعد">١٢ <button (click)="editTable()">تعديل</button></td>
       </tr></tbody>
       <tfoot fsdsTableFooter><tr fsdsTableRow><td fsdsTableCell colspan="2">One team</td></tr></tfoot>
-    </fsds-table>
+    </fsds-table></section>
   </main>\` })
 class PackedConsumer {
   readonly count = signal(0);
   readonly disabled = signal(false);
   readonly tableCount = signal(0);
   readonly sort = signal<"ascending" | "descending">("ascending");
+  readonly responsive = signal<boolean | undefined>(undefined);
+  readonly contentLabel = signal<string | undefined>(undefined);
   readonly toggleSort = () => this.sort.update(value => value === "ascending" ? "descending" : "ascending");
   readonly editTable = () => this.tableCount.update(value => value + 1);
   readonly activate = () => this.count.update(value => value + 1);
@@ -177,7 +205,7 @@ toggleSort.setAttribute("aria-label", "Trier par places");
 const renderTable = () => [
   tableCaption("Orders"),
   tableHead([
-    tableRow(tableHeaderCell("Workspace", { id: "header-group", colSpan: 2 })),
+    tableRow(tableHeaderCell("Workspace", { id: "header-group", colSpan: 2, style: "min-width:800px" })),
     tableRow([tableHeaderCell("Team", { id: "header-team", headers: "header-group", scope: "col" }), tableHeaderCell(toggleSort, { id: "header-seats", headers: "header-group", scope: "col", abbr: "Pl.", ariaSort: sort, lang: "fr", dir: "ltr", title: "Nombre de places" })]),
   ]),
   tableBody(tableRow([tableHeaderCell("Team A", { id: "row-team-a", headers: "header-group header-team", scope: "row" }), tableCell(["١٢ ", edit], { headers: "header-group header-seats row-team-a", lang: "ar", dir: "rtl", title: "المقاعد" })])),
@@ -185,7 +213,19 @@ const renderTable = () => [
 ];
 table.renderContent = renderTable;
 toggleSort.onclick = () => { sort = sort === "ascending" ? "descending" : "ascending"; table.renderContent = () => renderTable(); };
-document.getElementById("app")!.append(table, tableCount);
+const viewport = document.createElement("section");
+viewport.id = "table-viewport";
+viewport.append(table);
+const controls = ([
+  ["responsive-default", "Default viewport", () => { table.responsive = undefined; }],
+  ["responsive-true", "Enable viewport", () => { table.responsive = true; }],
+  ["responsive-false", "Disable viewport", () => { table.responsive = false; }],
+  ["label-viewport", "French viewport label", () => { table.contentLabel = "Contenu du tableau"; }],
+  ["before-table", "Before table viewport", () => {}],
+] as const).map(([id, text, activate]) => {
+  const control = document.createElement("button"); control.id = id; control.textContent = text; control.onclick = activate; return control;
+});
+document.getElementById("app")!.append(...controls, viewport, tableCount);
 `;
 
 /** FSDS packages are installed tarballs; external tools/peers use the pinned store. */
@@ -216,7 +256,7 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
   const browserRoot = join(consumer, "browser");
   const write = (file, contents) => { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, contents); };
   for (const framework of WEB) write(join(browserRoot, framework, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><title>Installed ${framework} consumer</title><style>:root { --fsds-button-design-root-background-fill: rgb(18, 52, 86); } body { margin: 32px; } [data-fsds-component="table"] { --fsds-core-spacing-size-03: 11px; }</style></head>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><title>Installed ${framework} consumer</title><style>:root { --fsds-button-design-root-background-fill: rgb(18, 52, 86); } body { margin: 32px; } [data-fsds-component="table"] { --fsds-core-spacing-size-03: 11px; } #table-viewport { width: 240px; max-width: 100%; }</style></head>
 <body>${framework === "angular" ? "<packed-consumer></packed-consumer>" : '<div id="app"></div>'}<script type="module" src="${framework === "angular" ? "./compiled/main.js" : "./main.ts"}"></script></body></html>`);
   for (const [name, source] of Object.entries({ react, vue, lit })) write(join(browserRoot, name, "main.ts"), source);
   write(join(browserRoot, "svelte/App.svelte"), svelteApp);
@@ -349,6 +389,59 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         await table.getByRole("button", { name: "تعديل", exact: true }).focus();
         await page.keyboard.press("Enter");
         await expect(page.locator("#table-count")).toHaveText("1");
+        const viewport = page.getByRole("region", { name: "Table content", exact: true });
+        const tableBefore = await table.elementHandle();
+        const cellBefore = await table.locator("td[headers]").elementHandle();
+        assert.ok(tableBefore && cellBefore);
+        const viewportFacts = () => viewport.evaluate(element => ({
+          policy: element.getAttribute("data-responsive"),
+          overflow: getComputedStyle(element).overflowX,
+          direction: getComputedStyle(element).direction,
+          tabIndex: element.tabIndex,
+          width: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          scrollLeft: element.scrollLeft,
+        }));
+        observation.viewport = { policies: [], keyboard: [] };
+        for (const [control, enabled] of [["responsive-default", true], ["responsive-true", true], ["responsive-false", false], ["responsive-true", true], ["responsive-default", true]]) {
+          await page.locator("#" + control).click();
+          await expect(viewport).toHaveAttribute("data-responsive", String(enabled));
+          await viewport.evaluate(element => { element.scrollLeft = 120; });
+          const facts = await viewportFacts();
+          assert.equal(facts.overflow, enabled ? "auto" : "visible");
+          assert.equal(facts.tabIndex, enabled ? 0 : -1);
+          assert.ok(facts.width >= 200 && facts.width <= 250, "Viewport must remain bounded by the consumer");
+          assert.ok(facts.scrollWidth > facts.width + 400, "Fixture must actually overflow");
+          assert.equal(facts.scrollLeft > 0, enabled, "Policy must control actual scrolling");
+          assert.equal(await table.evaluate((element, previous) => element === previous, tableBefore), true);
+          assert.equal(await table.locator("td[headers]").evaluate((element, previous) => element === previous, cellBefore), true);
+          observation.viewport.policies.push({ control, ...facts, sameTable: true, sameCell: true });
+          if (!enabled) {
+            await page.locator("#before-table").focus();
+            await page.keyboard.press("Tab");
+            await expect(viewport).not.toBeFocused();
+          }
+        }
+        for (const direction of ["ltr", "rtl"]) {
+          await page.locator("#table-viewport").evaluate((element, value) => { element.dir = value; }, direction);
+          await viewport.evaluate(element => { element.scrollLeft = 0; });
+          await page.locator("#before-table").focus();
+          await page.keyboard.press("Tab");
+          await expect(viewport).toBeFocused();
+          for (let step = 0; step < 12; step += 1) await page.keyboard.press(direction === "ltr" ? "ArrowRight" : "ArrowLeft", { delay: 10 });
+          await expect.poll(async () => Math.abs((await viewportFacts()).scrollLeft)).toBeGreaterThan(0);
+          await expect(viewport).toBeFocused();
+          const facts = await viewportFacts();
+          assert.equal(facts.direction, direction);
+          assert.equal(Math.sign(facts.scrollLeft), direction === "ltr" ? 1 : -1);
+          observation.viewport.keyboard.push(facts);
+          await page.screenshot({ path: join(evidence, `packed-table-${framework}-${direction}.png`), fullPage: true });
+        }
+        await page.locator("#label-viewport").click();
+        await expect(page.getByRole("region", { name: "Contenu du tableau", exact: true })).toBeVisible();
+        observation.viewport.localizedName = "Contenu du tableau";
+        await tableBefore.dispose();
+        await cellBefore.dispose();
         await page.mouse.move(0, 0);
         observation.buttonStyle = await button.evaluate(element => { const style = getComputedStyle(element); return { display: style.display, background: style.backgroundColor, minHeight: style.minHeight }; });
         assert.deepEqual(observation.buttonStyle, { display: "inline-flex", background: "rgb(18, 52, 86)", minHeight: "48px" });

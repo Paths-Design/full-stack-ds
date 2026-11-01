@@ -469,6 +469,18 @@
         }
       }
     },
+    "Table.content": {
+      "comment": "Accessible name of the region containing the table, including its scrollable viewport on the web.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table content"
+          }
+        }
+      }
+    },
     "Toast.dismiss": {
       "comment": "Accessible name of the button that dismisses a notification.",
       "extractionState": "manual",

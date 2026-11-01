@@ -37,6 +37,14 @@
       ]
     }
   },
+  ".table[data-responsive=\"false\"]": {
+    "overflow-x": {
+      "literal": "visible",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
   "container": {
     "border-collapse": {
       "literal": "collapse",

@@ -1,6 +1,6 @@
 <script lang="ts">
 // @generated:start imports
-
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -10,12 +10,16 @@
 // @generated:start props
 interface Props {
   responsive?: boolean;
+  contentLabel?: string;
   ariaLabel?: string;
   class?: string;
   children?: import('svelte').Snippet;
 }
 
-let { responsive, ariaLabel, class: className, children }: Props = $props();
+let { responsive = true, contentLabel: contentLabelProp, ariaLabel, class: className, children }: Props = $props();
+const TableMessages = { content: "Table content" };
+const fsdsMessages = useFsdsMessages("Table", TableMessages);
+const contentLabel = $derived(contentLabelProp ?? fsdsMessages.current.content);
 // @generated:end
 
 // @generated:start classes
@@ -32,7 +36,7 @@ const classes = $derived(
 // @custom:end
 </script>
 
-<div class={classes} data-fsds-component="table" data-fsds-box="">
+<div class={classes} role="region" data-responsive={(responsive ? "true" : "false")} tabindex={(responsive ? "0" : "-1")} aria-label={contentLabel} data-fsds-component="table" data-fsds-box="">
   <table class={'table__container'} aria-label={ariaLabel}>
     {@render children?.()}
   </table>

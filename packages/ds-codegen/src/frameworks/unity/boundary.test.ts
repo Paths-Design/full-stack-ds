@@ -99,7 +99,19 @@ describe("Unity support boundary", () => {
     // The generic anatomy-bindings catch-all is retired: every allowlisted binding
     // family now carries its own rule, so an unknown shape stays unclassified.
     expect(shape("/anatomy/dom/children/x/bindings/href", "channel:open.onChange")).toEqual({ rule: null, disposition: "unclassified", phase: undefined });
+    expect(shape("/anatomy/dom/bindings/tabindex", "conditional:prop:responsive|literal:0|literal:-1")).toEqual({ rule: "anatomy-dom-tab-order-binding", disposition: "refused", phase: undefined });
   }, CORPUS_TIMEOUT_MS);
+
+  it("refuses a content-region label only when its ARIA consumer exists", () => {
+    const contract = load("Table");
+    const labels = () => classifyContract(contract).filter(leaf => leaf.keyed.startsWith("/props/styled/members/plain:contentLabel/"));
+    expect(labels().map(leaf => leaf.keyed.split("/").at(-1)).sort()).toEqual(["defaultMessage", "description", "name", "type"]);
+    expect(labels().every(leaf => leaf.rule === "prop-content-region-label" && leaf.disposition === "refused")).toBe(true);
+    const anatomy = contract.anatomy;
+    if (!anatomy || Array.isArray(anatomy) || !anatomy.dom?.bindings) throw new Error("Table fixture must declare DOM bindings");
+    delete anatomy.dom.bindings["aria-label"];
+    expect(labels().every(leaf => leaf.rule === "props-unadjudicated")).toBe(true);
+  });
 
   it("admits every allowlisted component and refuses nothing it carries today", () => {
     for (const name of unityAllowlist(root)) {

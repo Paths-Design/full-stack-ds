@@ -40,7 +40,7 @@ describe("Table — unit", () => {
 
 describe("Table — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const wrapper = mount(Table as Component, { props: { "ariaLabel": "Test Table" }, attrs: { "data-testid": "table" }, slots: { "default": "<tbody><tr><td>content</td></tr></tbody>" } });
+    const wrapper = mount(Table as Component, { props: { "contentLabel": "Test Table" }, attrs: { "data-testid": "table" }, slots: { "default": "<tbody><tr><td>content</td></tr></tbody>" } });
     const results = await axe(wrapper.element, componentAxeOptions);
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });

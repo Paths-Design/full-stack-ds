@@ -634,6 +634,12 @@
       "reason": "Form serialization attributes (name, value) have no UI Toolkit counterpart: there is no form element to submit."
     },
     {
+      "id": "anatomy-dom-tab-order-binding",
+      "match": ["contract:/anatomy/dom/bindings/tabindex", "contract:/anatomy/dom/**/children/*/bindings/tabindex"],
+      "disposition": "refused",
+      "reason": "DOM tab order does not configure UI Toolkit focus traversal. The passive lowering omits the binding and exposes no corresponding native property."
+    },
+    {
       "id": "anatomy-aria-binding",
       "match": ["contract:/anatomy/dom/bindings/aria*", "contract:/anatomy/dom/bindings/role", "contract:/anatomy/dom/**/children/*/bindings/aria*", "contract:/anatomy/dom/**/children/*/bindings/role"],
       "disposition": "refused",
@@ -1324,6 +1330,13 @@
       "match": ["contract:/props/*/members/plain:ariaLabel/**"],
       "disposition": "refused",
       "reason": "UI Toolkit exposes no assistive-technology tree, so an aria-label prop has no native realisation; the generated control exposes no AriaLabel property."
+    },
+    {
+      "id": "prop-content-region-label",
+      "match": ["contract:/props/*/members/plain:contentLabel/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-label", "contract:/anatomy/dom/**/children/*/bindings/aria-label"], "valueIn": ["prop:contentLabel"] }],
+      "disposition": "refused",
+      "reason": "The prop names a DOM content region through aria-label. The supported UI Toolkit witness has no corresponding accessibility-region consumer, so no ContentLabel property is emitted."
     },
     {
       "id": "prop-passive-semantic-options",
