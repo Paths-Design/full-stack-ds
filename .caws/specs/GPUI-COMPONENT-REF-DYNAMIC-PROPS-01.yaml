@@ -1,9 +1,11 @@
 id: GPUI-COMPONENT-REF-DYNAMIC-PROPS-01
 title: 'GPUI projects dynamic child prop bindings onto retained reference children'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Retained reference children now track parent state through generated setters; unprojectable expressions stay receipted omissions; no metric regressed.'
 created_at: '2026-11-01T10:41:07.379Z'
-updated_at: '2026-11-01T10:41:09.562Z'
+updated_at: '2026-11-01T10:52:02.674Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
