@@ -30,3 +30,12 @@ acceptance:
     then: 'given docs:check-claims and docs:check-links; when they run; then both are green'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "snapshot GPUI row now records the realized mechanisms, the 16 named capability witnesses, the 39 mount-only components, the closeout consistency numbers (parts 180/214, props 261/379, behavior 14/30, a11y 0/44 substrate, references 20/20) and the substrate non-claim; the consistency doc carries the witness inventory, class-closure status table and the corrected behavior count; the target doc points at the inventory. Every number re-derives from the committed audit (node scripts/gpui-web-consistency-audit.mjs --check) and the committed test inventory (16 mounted_* witnesses in tests/native_runtime.rs, 55 generated mount tests)"
+    recorded_at: "2026-11-01T12:35:20.970Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-web-consistency.md
+    commit_sha: c5d6e6997
