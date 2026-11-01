@@ -55,15 +55,38 @@ There is no automatic system-dark response or loader for the complete brand
 override graph. Generic native font aliases map to macOS fonts; this does not
 establish identical Web font metrics.
 
+## Accessibility is a substrate non-claim
+
+Accessibility facts (`a11y`, `props.*/ariaLabel`, `ariaLabelledby`,
+`ariaDescribedby`, part roles, `aria-*` bindings and attributes, state a11y) are
+recorded with the `substrate` disposition rather than `pending`. The pinned GPUI
+revision (`zed` @ `a38fc8c8de6e4010fadcfde7dd111d90dfd66845`) exposes no
+accessibility channel: `crates/gpui/src` contains no `accesskit` integration and
+no role/label/description API, so there is no engine-side surface to project an
+ARIA fact onto. That is a stated non-claim, not deferred work — the audit's
+0/44 a11y dimension measures the gap, and the ledger explains it. If a future
+pinned revision grows an accessibility API, the families move back to `pending`
+and the probe below re-runs.
+
+Mechanical witness for the claim:
+
+```bash
+grep -rli 'accessib' ~/.cargo/git/checkouts/*/a38fc8c/crates/gpui/src
+# crates/gpui/src/{window,app,geometry}.rs — comments only, no API
+grep -rn 'accesskit' <gpui-checkout>/crates/gpui/src
+# (no matches)
+```
+
 ## Support boundary and generic anatomy projection
 
 The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json)
 classifies every contract and sidecar leaf the target can see as `lowered`,
-`pending` or `refused`, by pointer FAMILY and never by component identity: identity,
-anatomy structure, token bindings, variant axes and the admitted style vocabulary
-are lowered; DOM bindings/events/attrs, iteration, content transforms, glyph
-rendering, surface behaviour, motion, accessibility, forms and cross-component
-semantics are `pending`; authoring/CSS-only metadata is `refused`. By-reference
+`pending`, `substrate` or `refused`, by pointer FAMILY and never by component
+identity: identity, anatomy structure, token bindings, variant axes and the
+admitted style vocabulary are lowered; DOM bindings/events/attrs, iteration,
+content transforms, glyph rendering, surface behaviour, motion, forms and
+cross-component semantics are `pending`; accessibility families are `substrate`
+(see below); authoring/CSS-only metadata is `refused`. By-reference
 composition is lowered for the static facts (see below) and pending for dynamic
 child bindings and child event wiring.
 The ledger is ordered and terminal, so an unadjudicated family is refused rather

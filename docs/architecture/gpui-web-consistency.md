@@ -80,8 +80,12 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
   (Dialog/Sheet/Toast/Tooltip/Popover/Command/Walkthrough), composite and
   collection state (Select/RadioGroup/OTP/Calendar/Shuttle/Pagination/Carousel),
   text input (Input/TextField/Field) and truncation (Truncate).
-- **A11y**: 0 of 44. This is the documented GPUI non-claim, not an accident of
-  this measurement.
+- **A11y**: 0 of 44, and this is a **substrate non-claim** rather than pending
+  work: the pinned GPUI revision (`a38fc8c`) exposes no accessibility channel —
+  `crates/gpui/src` has no `accesskit` integration and no role/label/description
+  API — so the boundary ledger records every accessibility family with the
+  `substrate` disposition and the target doc states the non-claim with its
+  re-probe command. The number measures the gap; the ledger explains it.
 - **References**: all 20 declared `componentRef` nodes are realized. Nested
   references (PageNavigator's previous/next icons inside the retained buttons)
   are projected through the child component's content API; a non-reference child
