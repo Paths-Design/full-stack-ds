@@ -63,3 +63,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot -> passed:true, 31 rows; only form-aria-validation was added (30 prior rows unchanged: 21 original + 7 disclosure + surface-aria-labeling); catalog-load admitted 55 failures []; zero JSON parse warnings after guarding absent default keys"
     recorded_at: "2026-11-01T09:55:49.505Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Form-control family' section states zero pending (1698 lowered / 1573 refused) and the refusals with reasons (checkbox tri-state, OTP field-group runtime, validation callbacks/read-only, data-driven options/iteration, authored bindings, keyboard/tabindex authoring, transfer model); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; docs:check-claims and docs:check-links pass"
+    recorded_at: "2026-11-01T09:55:50.861Z"
