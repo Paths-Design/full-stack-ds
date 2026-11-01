@@ -111,3 +111,11 @@ evidence:
     exit_code: 0
     artifact_path: tmp/gpui-pilot
     commit_sha: "083d81833"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "gpui-target.md states the two planner families, the support boundary and the emitted-not-realized non-claim; the implementation snapshot records full-corpus emission with bounded realization; all six component-count markers derive 55 and docs:check-claims passes 81 claims; docs:check-links resolves 260 links"
+    recorded_at: "2026-11-01T08:17:16.607Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-target.md
+    commit_sha: bbd80f94b
