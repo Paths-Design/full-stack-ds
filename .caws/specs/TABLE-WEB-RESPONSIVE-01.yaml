@@ -13,6 +13,7 @@ blast_radius:
     - 'Preserve structural Unity Table with explicit refusal of web-only keyboard and content-label metadata'
     - 'Generic Svelte numeric conditional attribute lowering'
     - 'Native runtime usage excludes omitted DOM tab-order bindings'
+    - 'Native static content-region catalog labels in SwiftUI and Compose'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -46,6 +47,7 @@ scope:
 invariants:
   - 'Native Table sections cells metadata and composed node identity remain intact through live policy updates'
   - 'Durable scrolling and focus semantics remain contract-owned without component-name emitter branches'
+  - 'Static native region label emitters preserve existing content projection and use non-merging container APIs'
 acceptance:
   - id: A1
     given: 'wide composed web Tables with omitted true and false responsive policy'
