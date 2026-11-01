@@ -147,6 +147,12 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "alt"
+    ]
+  },
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [

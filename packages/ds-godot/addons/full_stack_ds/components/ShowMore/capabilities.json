@@ -162,6 +162,21 @@
       ]
     }
   ],
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "expansion",
+        "attribute": "aria-expanded",
+        "values": {
+          "collapsed": "false",
+          "expanded": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-expanded"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "maxLines": "3",

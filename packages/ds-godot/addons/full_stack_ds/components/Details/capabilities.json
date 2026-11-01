@@ -301,6 +301,28 @@
       "offset": 2
     }
   ],
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "summary",
+        "to": "content",
+        "attribute": "aria-controls"
+      }
+    ],
+    "stateAria": [
+      {
+        "category": "disclosure",
+        "attribute": "aria-expanded",
+        "values": {
+          "closed": "false",
+          "open": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [
     "variant"
   ],

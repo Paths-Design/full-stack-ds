@@ -578,6 +578,38 @@ func _ready() -> void:
 	aria_description.queue_free()
 	await get_tree().process_frame
 
+	# Form controls: the declared validation state is projected structurally and the
+	# aria labeling props wire native relations. Validation itself is not executed
+	# by the runtime — the consumer owns it.
+	var form_label := Label.new()
+	form_label.text = "Agree to terms"
+	add_child(form_label)
+	var form_checkbox = make_control("Checkbox")
+	add_child(form_checkbox)
+	await get_tree().process_frame
+	form_checkbox.required = true
+	form_checkbox.invalid = true
+	form_checkbox.aria_labelledby = str(form_label.get_path())
+	await get_tree().process_frame
+	check(form_checkbox.trigger.get_meta("aria_required", false), "required did not project aria_required")
+	check(form_checkbox.trigger.get_meta("aria_invalid", false), "invalid did not project aria_invalid")
+	check(form_checkbox.trigger.accessibility_labeled_by_nodes.has(form_label.get_path()), "ariaLabelledby prop did not wire a labeled-by relation")
+	var form_input = make_control("Input")
+	add_child(form_input)
+	await get_tree().process_frame
+	form_input.set_contract_prop("required", true)
+	form_input.set_contract_prop("invalid", true)
+	form_input.set_contract_prop("ariaLabelledby", form_label.get_path())
+	await get_tree().process_frame
+	check(form_input.get_meta("aria_required", false), "anatomy required did not project aria_required")
+	check(form_input.get_meta("aria_invalid", false), "anatomy invalid did not project aria_invalid")
+	check(form_input.accessibility_labeled_by_nodes.has(form_label.get_path()), "anatomy ariaLabelledby did not wire a labeled-by relation")
+	rows.append({"id":"form-aria-validation","required":true,"invalid":true,"labelled":1})
+	form_checkbox.queue_free()
+	form_input.queue_free()
+	form_label.queue_free()
+	await get_tree().process_frame
+
 	# Catalog load: every admitted component scene must exist, parse and
 	# instantiate. This is a structural admission witness only — it proves the
 	# generated scene tree is loadable, not that its behavior is realized.

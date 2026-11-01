@@ -32,6 +32,26 @@ var configuration: Dictionary = {}
 ## Activation mode for selection controls: `automatic` selects the item the focus
 ## ring lands on, `manual` moves focus only and waits for an explicit activation.
 @export var activation_mode: String = "automatic"
+## Declared form-state props, projected as structural state (validation itself is
+## the consumer's responsibility).
+@export var required: bool = false:
+	set(next):
+		required = next
+		_refresh()
+@export var invalid: bool = false:
+	set(next):
+		invalid = next
+		_refresh()
+## Accessibility labeling props: a node path the label/description node the
+## consumer owns. Godot exposes no accessible-role property.
+@export var aria_labelledby: String = "":
+	set(next):
+		aria_labelledby = next
+		_wire_declared_aria("labelled")
+@export var aria_describedby: String = "":
+	set(next):
+		aria_describedby = next
+		_wire_declared_aria("described")
 var trigger: Button
 var items: Array[Dictionary] = []
 var strip: BoxContainer
@@ -65,6 +85,10 @@ func _ready() -> void:
 	close_on_escape = _default_bool("closeOnEscape", close_on_escape)
 	close_on_outside_click = _default_bool("closeOnOutsideClick", close_on_outside_click)
 	close_on_blur = _default_bool("closeOnBlur", close_on_blur)
+	required = _default_bool("required", required)
+	invalid = _default_bool("invalid", invalid)
+	aria_labelledby = _default_string("ariaLabelledby", aria_labelledby)
+	aria_describedby = _default_string("ariaDescribedby", aria_describedby)
 	var raw_mode = configuration.get("defaults", {}).get("activationMode", "")
 	if raw_mode is String and not raw_mode.is_empty():
 		var declared_mode = JSON.parse_string(raw_mode)
@@ -94,10 +118,19 @@ func _ready() -> void:
 	_apply_style_facts()
 	_apply_focus_ring()
 	_apply_accessibility()
+	_wire_declared_aria("labelled")
+	_wire_declared_aria("described")
 	_refresh()
 
 ## Read a declared default expression as a boolean, falling back when the
 ## component does not declare the prop at all.
+## Read a declared default expression as a string, empty when absent.
+func _default_string(prop: String, fallback: String) -> String:
+	var raw = configuration.get("defaults", {}).get(prop, "")
+	if not (raw is String) or raw.is_empty(): return fallback
+	var parsed = JSON.parse_string(raw)
+	return parsed if parsed is String else fallback
+
 func _default_bool(prop: String, fallback: bool) -> bool:
 	var raw = configuration.get("defaults", {}).get(prop, null)
 	if raw == null: return fallback
@@ -246,6 +279,26 @@ func _wire_relation(from_node: Control, to_node: Control, attribute: String) -> 
 			if not described.has(target): described.append(target)
 			from_node.accessibility_described_by_nodes = described
 
+
+## Wire the declared labeling props (node paths the consumer owns) onto the
+## trigger's native accessibility relations. Unresolvable paths leave the
+## relation untouched rather than inventing a target.
+func _wire_declared_aria(kind: String) -> void:
+	if not is_instance_valid(trigger): return
+	var raw: String = aria_labelledby if kind == "labelled" else aria_describedby
+	if raw.is_empty(): return
+	var target := get_node_or_null(NodePath(raw))
+	if target == null: return
+	var path := target.get_path()
+	if kind == "labelled":
+		var labelled: Array[NodePath] = trigger.accessibility_labeled_by_nodes.duplicate()
+		if not labelled.has(path): labelled.append(path)
+		trigger.accessibility_labeled_by_nodes = labelled
+	else:
+		var described: Array[NodePath] = trigger.accessibility_described_by_nodes.duplicate()
+		if not described.has(path): described.append(path)
+		trigger.accessibility_described_by_nodes = described
+
 ## Resolve a contract part to the node the control runtime hosts for it. Parts the
 ## runtime does not host resolve to null and their relation is simply not wired —
 ## the planner names that gap in the receipt, it is never a silent drop here.
@@ -297,6 +350,8 @@ func _refresh_disclosure_state() -> void:
 	trigger.set_meta("aria_expanded", aria_expanded)
 	trigger.set_meta("aria_controls", operation == "surface")
 	trigger.set_meta("aria_disabled", disabled)
+	trigger.set_meta("aria_required", required)
+	trigger.set_meta("aria_invalid", invalid)
 	if operation == "boolean": trigger.set_meta("aria_checked", value == "true")
 	for item in items:
 		item.button.set_meta("aria_selected", operation == "select" and value == item.key)

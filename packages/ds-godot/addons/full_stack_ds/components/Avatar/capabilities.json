@@ -191,6 +191,12 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ],
+    "role": "img"
+  },
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [

@@ -74,6 +74,13 @@ export interface GodotAnatomyPlan {
   excluded: string[];
   /** Focus outlines projected from `:focus-visible` rules onto part hosts. */
   focusRings?: { part: string; width: number; color: string; offset: number }[];
+  /** Accessibility facts: labeling attributes, part relations, state ARIA. */
+  accessibility?: {
+    relationships?: { from: string; to: string; attribute: string }[];
+    stateAria?: { category: string; attribute: string; values: Record<string, string | boolean> }[];
+    labeling?: string[];
+    role?: string;
+  };
   /** Named non-claims; never empty when the plan diverges from the contract. */
   omissions: string[];
 }

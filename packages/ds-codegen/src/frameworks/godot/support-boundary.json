@@ -239,8 +239,8 @@
       "match": [
         "contract:/anatomy/dom/**/properties/**"
       ],
-      "disposition": "pending",
-      "reason": "native property bindings on a part are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored DOM properties are not applied: the runtime projects declared props, not element properties."
     },
     {
       "id": "anatomy-aria-label-binding",
@@ -320,8 +320,8 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/title"
       ],
-      "disposition": "pending",
-      "reason": "hover tooltip presentation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored title bindings are not projected; the tooltip channel has no native carrier in this runtime."
     },
     {
       "id": "anatomy-dom-binding-empty",
@@ -360,8 +360,8 @@
         "contract:/anatomy/dom/**/bindings/required",
         "contract:/anatomy/dom/**/bindings/aria-invalid"
       ],
-      "disposition": "pending",
-      "reason": "form validation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored validation bindings are not evaluated; a consumer sets the projected required/invalid state instead."
     },
     {
       "id": "anatomy-association-binding",
@@ -404,8 +404,8 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/tabindex"
       ],
-      "disposition": "pending",
-      "reason": "keyboard focus order is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored tabindex bindings are not projected; focus order is decided by the scene tree and the projected focus strategy."
     },
     {
       "id": "anatomy-dom-attrs-aria",
@@ -428,8 +428,8 @@
       "match": [
         "contract:/anatomy/dom/**/attrs/data-*"
       ],
-      "disposition": "pending",
-      "reason": "data-attribute carriers drive CSS-only presentation and are not projected by the native style grammar"
+      "disposition": "refused",
+      "reason": "Authored data-* attributes are not projected; structural state comes from channels and states."
     },
     {
       "id": "anatomy-dom-attrs-dom",
@@ -453,8 +453,8 @@
       "match": [
         "contract:/anatomy/dom/**/attrs/maxlength"
       ],
-      "disposition": "pending",
-      "reason": "form validation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored maxlength is not applied; an admitted field keeps its native length policy."
     },
     {
       "id": "anatomy-glyph-svg-attrs",
@@ -480,8 +480,8 @@
         "contract:/anatomy/dom/**/events/keyup",
         "contract:/anatomy/dom/**/events/keypress"
       ],
-      "disposition": "pending",
-      "reason": "keyboard navigation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored keyboard event handlers are not bound; the runtime handles the focus/dismissal keys the contracts declare."
     },
     {
       "id": "anatomy-focus-event",
@@ -801,8 +801,8 @@
       "match": [
         "contract:/transfer/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven transfer children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The dual-list transfer model has no native runtime on this target; the declared array channel and partitioned lists are consumer-composed."
     },
     {
       "id": "text-overflow",
@@ -1279,6 +1279,19 @@
       "reason": "modal/side placement props are not honoured by the presence-only surface runtime; the scene root stays a panel and placement is runtime-owned."
     },
     {
+      "id": "prop-validation-state",
+      "match": [
+        "contract:/props/*/members/*:required",
+        "contract:/props/*/members/*:required/**",
+        "contract:/props/required",
+        "contract:/props/*/members/*:invalid",
+        "contract:/props/*/members/*:invalid/**",
+        "contract:/props/invalid"
+      ],
+      "disposition": "lowered",
+      "via": "the control and anatomy runtimes project the declared required/invalid state onto structural aria_required/aria_invalid and expose it to consumers; validation itself stays the consumer's responsibility"
+    },
+    {
       "id": "prop-form-validation",
       "match": [
         "contract:/props/*/members/*:required",
@@ -1297,8 +1310,8 @@
         "contract:/props/*/members/*:readOnly/**",
         "contract:/props/readOnly"
       ],
-      "disposition": "pending",
-      "reason": "form validation and read-only state are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The remaining validation props (validate callbacks, readOnly) are not honoured: the runtime executes no validation and exposes no read-only mode; the realised required/invalid state projection is split out above."
     },
     {
       "id": "prop-formatting",
@@ -1553,8 +1566,8 @@
         "contract:/props/*/members/*:mode/**",
         "contract:/props/mode"
       ],
-      "disposition": "pending",
-      "reason": "the declared behaviour is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Godot's CheckBox exposes no tri-state/indeterminate property in 4.7 and the target has no OTP field-group runtime, so length/mode/readOnly/indeterminate behaviour is not realised rather than faked."
     },
     {
       "id": "prop-presentation-semantics",

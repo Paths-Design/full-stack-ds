@@ -237,6 +237,13 @@
       "offset": 2
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-labelledby",
+      "aria-invalid"
+    ]
+  },
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [

@@ -3,16 +3,16 @@
   "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
   "boundary": {
     "schema": "godot-support-boundary.v1",
-    "rules": 157,
+    "rules": 158,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8896,
-      "pending": 295,
-      "refused": 8310
+      "lowered": 8906,
+      "pending": 244,
+      "refused": 8351
     },
     "deadRules": []
   },
-  "variances": 175,
+  "variances": 180,
   "components": [
     {
       "component": "Accordion",
@@ -390,10 +390,10 @@
       "boundary": {
         "counts": {
           "lowered": 289,
-          "pending": 26,
-          "refused": 293
+          "pending": 18,
+          "refused": 301
         },
-        "digest": "8d174acd912e899f3cd41176b142304e76c77405090efa8143a7a531604d81b7"
+        "digest": "dd19ca2b4cb7d30a3d072248710b6e34400284032cd69d12fbad7417c52af031"
       }
     },
     {
@@ -500,10 +500,10 @@
       "boundary": {
         "counts": {
           "lowered": 160,
-          "pending": 3,
-          "refused": 182
+          "pending": 0,
+          "refused": 185
         },
-        "digest": "39e53c35363f86594ca555ac48c4ddb9422f4a5537495899d753667a8dd62411"
+        "digest": "814bc5371dc4f20271743dacb843e55cf94b8cb82f33b87ee10fe5ad6c93b325"
       }
     },
     {
@@ -911,6 +911,10 @@
           "rule": "prop-glyph-name"
         },
         {
+          "prop": "required",
+          "rule": "prop-validation-state"
+        },
+        {
           "prop": "disabled",
           "rule": "prop-boolean-state"
         },
@@ -929,11 +933,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 158,
-          "pending": 8,
-          "refused": 125
+          "lowered": 160,
+          "pending": 0,
+          "refused": 131
         },
-        "digest": "8c197310a1c6b77339600b3f1fe475a77ee351c7837d91872354ff9bb22c8c66"
+        "digest": "de5b27daf1b618c04a7f015b80439bc021518e17371705d406238b48acfd0346"
       }
     },
     {
@@ -1059,6 +1063,14 @@
           "rule": "prop-boolean-state"
         },
         {
+          "prop": "invalid",
+          "rule": "prop-validation-state"
+        },
+        {
+          "prop": "required",
+          "rule": "prop-validation-state"
+        },
+        {
           "prop": "name",
           "rule": "prop-glyph-name"
         },
@@ -1069,11 +1081,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 199,
-          "pending": 5,
-          "refused": 128
+          "lowered": 203,
+          "pending": 0,
+          "refused": 129
         },
-        "digest": "039584e406617a29e4d5b09d1bbf9bc7e0aadc2542cbcd4cdb4874d50127fbf3"
+        "digest": "a6e6a7c4364961b2ebc3c42c68f2f7ed7debe078c8446fa997a37f157ae93746"
       }
     },
     {
@@ -1359,10 +1371,10 @@
       "boundary": {
         "counts": {
           "lowered": 143,
-          "pending": 10,
-          "refused": 141
+          "pending": 0,
+          "refused": 151
         },
-        "digest": "c7e9f2f1e8068286ae2161daff4b740c234d6696ea4d70a6a420eea75228a33f"
+        "digest": "29a3b8863035efbd94fe836b49650d54e0b6354133825c93daf9dad39f1a7e83"
       }
     },
     {
@@ -1436,10 +1448,10 @@
       "boundary": {
         "counts": {
           "lowered": 91,
-          "pending": 34,
-          "refused": 95
+          "pending": 33,
+          "refused": 96
         },
-        "digest": "2b7fde82c8c313a8c9b8a126234b2172ee3e5d7ec4bfd487b4e7dac3dfbc0ebc"
+        "digest": "47670eb9f1bf1e43cc009a943609d2453fa0fd0c7a95928929beda26d3840e41"
       }
     },
     {
@@ -1721,10 +1733,10 @@
       "boundary": {
         "counts": {
           "lowered": 88,
-          "pending": 1,
-          "refused": 115
+          "pending": 0,
+          "refused": 116
         },
-        "digest": "b62432cf004ab9921902b1ef034d754fc8a7e9f7235a8577f2b4b22ab5d215e8"
+        "digest": "d51b2cd332853cf89b0fef4f0b7282b8201645060eeb6f950293f9cb8637442e"
       }
     },
     {
@@ -1948,10 +1960,10 @@
       "boundary": {
         "counts": {
           "lowered": 177,
-          "pending": 8,
-          "refused": 207
+          "pending": 0,
+          "refused": 215
         },
-        "digest": "600deb51961fe49cc134731238f23dad3c8a77d1f2e14b874aa40948b0ccc37d"
+        "digest": "65d474d32aff96fd65eea56afef2e31d8cacd2dae579070a13c934e1b1cfe760"
       }
     },
     {
@@ -2023,10 +2035,10 @@
       "boundary": {
         "counts": {
           "lowered": 85,
-          "pending": 4,
-          "refused": 86
+          "pending": 2,
+          "refused": 88
         },
-        "digest": "1671a32dd464b2e9cabe794b0410f84817f0d4b10cdc8fe2420cfa18328db497"
+        "digest": "5a5c77471934ffd332d2a727107b488382f8e05e22aada015ba8d2cf38940b84"
       }
     },
     {
@@ -2289,8 +2301,16 @@
           "rule": "prop-channel-change"
         },
         {
+          "prop": "invalid",
+          "rule": "prop-validation-state"
+        },
+        {
           "prop": "disabled",
           "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "required",
+          "rule": "prop-validation-state"
         },
         {
           "prop": "name",
@@ -2299,11 +2319,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 271,
-          "pending": 5,
-          "refused": 180
+          "lowered": 275,
+          "pending": 0,
+          "refused": 181
         },
-        "digest": "d6300c1d8478ebc333a01c14208ea9d1f2369c93fa13061ea906be9c78cf27b4"
+        "digest": "c405a0e2528beec2f436692ce741d3672966f6a7909d1c06998b59f94159871a"
       }
     },
     {

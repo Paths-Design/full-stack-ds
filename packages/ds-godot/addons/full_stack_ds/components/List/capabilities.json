@@ -230,6 +230,12 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-labelledby"
+    ]
+  },
   "projectedProps": [
     "variant",
     "size"
