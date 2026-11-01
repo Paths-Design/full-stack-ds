@@ -533,6 +533,20 @@
     "booleanModifiers": []
   },
   "root": {
+    "persistentRegionLabel": {
+      "name": "contentLabel",
+      "safeName": "contentLabel",
+      "type": "string",
+      "typeRefs": [],
+      "required": false,
+      "description": "Accessible name of the surrounding table content region. Defaults to the localized Table content message.",
+      "defaultExpr": "\"Table content\"",
+      "defaultMessage": "content",
+      "propType": {
+        "kind": "fallback",
+        "raw": "string"
+      }
+    },
     "element": "div",
     "labeling": [
       "aria-sort",

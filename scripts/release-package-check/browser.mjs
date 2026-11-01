@@ -422,19 +422,53 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
             await expect(viewport).not.toBeFocused();
           }
         }
+        const revealedAction = table.getByRole("button", { name: "تعديل", exact: true });
+        const actionVisibility = async () => {
+          const [viewportBounds, contentBounds] = await Promise.all([viewport.boundingBox(), revealedAction.boundingBox()]);
+          assert.ok(viewportBounds && contentBounds && contentBounds.width > 0 && contentBounds.height > 0);
+          return {
+            name: "تعديل",
+            left: contentBounds.x - viewportBounds.x,
+            right: contentBounds.x + contentBounds.width - viewportBounds.x,
+            top: contentBounds.y - viewportBounds.y,
+            bottom: contentBounds.y + contentBounds.height - viewportBounds.y,
+            viewportWidth: viewportBounds.width,
+            viewportHeight: viewportBounds.height,
+            fullyVisible: contentBounds.x >= viewportBounds.x - 0.5 && contentBounds.x + contentBounds.width <= viewportBounds.x + viewportBounds.width + 0.5 && contentBounds.y >= viewportBounds.y - 0.5 && contentBounds.y + contentBounds.height <= viewportBounds.y + viewportBounds.height + 0.5,
+          };
+        };
         for (const direction of ["ltr", "rtl"]) {
           await page.locator("#table-viewport").evaluate((element, value) => { element.dir = value; }, direction);
           await viewport.evaluate(element => { element.scrollLeft = 0; });
           await page.locator("#before-table").focus();
           await page.keyboard.press("Tab");
           await expect(viewport).toBeFocused();
-          for (let step = 0; step < 12; step += 1) await page.keyboard.press(direction === "ltr" ? "ArrowRight" : "ArrowLeft", { delay: 10 });
+          const contentBefore = await actionVisibility();
+          assert.equal(contentBefore.fullyVisible, false, "The keyboard scenario must begin with clipped cell content");
+          await page.screenshot({ path: join(evidence, `packed-table-${framework}-${direction}-initial.png`), fullPage: true });
+          let arrowSteps = 0;
+          while (arrowSteps < 40 && !(await actionVisibility()).fullyVisible) {
+            await viewport.evaluate(element => {
+              element.setAttribute("data-release-scroll-state", "pending");
+              element.addEventListener("scrollend", () => element.setAttribute("data-release-scroll-state", "idle"), { once: true });
+            });
+            await page.keyboard.press(direction === "ltr" ? "ArrowRight" : "ArrowLeft", { delay: 10 });
+            await expect(viewport).toHaveAttribute("data-release-scroll-state", "idle");
+            arrowSteps += 1;
+          }
           await expect.poll(async () => Math.abs((await viewportFacts()).scrollLeft)).toBeGreaterThan(0);
+          const keyboardFacts = { ...await viewportFacts(), arrowSteps, contentBefore, contentAfter: await actionVisibility() };
+          observation.viewport.keyboard.push(keyboardFacts);
+          await page.screenshot({ path: join(evidence, `packed-table-${framework}-${direction}-after-keys.png`), fullPage: true });
+          await expect.poll(async () => {
+            keyboardFacts.contentAfter = await actionVisibility();
+            keyboardFacts.scrollLeft = (await viewportFacts()).scrollLeft;
+            return keyboardFacts.contentAfter.fullyVisible;
+          }).toBe(true);
           await expect(viewport).toBeFocused();
           const facts = await viewportFacts();
           assert.equal(facts.direction, direction);
           assert.equal(Math.sign(facts.scrollLeft), direction === "ltr" ? 1 : -1);
-          observation.viewport.keyboard.push(facts);
           await page.screenshot({ path: join(evidence, `packed-table-${framework}-${direction}.png`), fullPage: true });
         }
         await page.locator("#label-viewport").click();
