@@ -40,7 +40,7 @@ pub(crate) fn at(x: f32, y: f32, w: f32, h: f32) -> Div {
 pub(crate) fn panel(layout: &ParityLayout, rect: Rect) -> Div {
     rect_box(rect)
         .bg(colors::paint(layout.color(&layout.panels.background)))
-        .border_1()
+        .border(px(layout.style.panel_border))
         .border_color(colors::paint(layout.color(&layout.panels.border)))
 }
 

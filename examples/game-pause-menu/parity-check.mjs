@@ -141,7 +141,7 @@ const PROBES = {
     [100, 150, 'signal', 'inactive tab background (opposite side)'],
     [42, 226, 'charcoal', 'grid panel background'],
     [850, 178, 'charcoal', 'detail panel background'],
-    [1254, 200, 'charcoal', 'detail panel inside right edge'],
+    [1248, 200, 'charcoal', 'detail panel inside right edge'],
     [1258, 200, 'ruleStrong', 'outside detail panel right edge'],
     [300, 730, 'ruleStrong', 'content gap below panels'],
   ],
