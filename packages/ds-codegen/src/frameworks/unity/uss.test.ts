@@ -6,6 +6,7 @@ import { buildComponentIR } from "../../ir.js";
 import { createUnityEmitter } from "./factory.js";
 import { cssVar, loadTokenSources, projectComponent, projectStylesheet, tokenScalar, type TokenSources } from "./uss.js";
 import { walkComponent } from "./walker.js";
+import { parseTokenCss } from "./token-sources.js";
 
 const root = path.resolve(__dirname, "../../../../..");
 const committedSheet = path.join(root, "packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss");
@@ -536,6 +537,74 @@ describe("Unity USS projection: token section", () => {
       "transition-timing-function: ease;",
     ]);
     expect(rule(uss, ".fsds-theme")).toEqual(["--fsds-semantic-motion-interaction-exit-duration: 167ms;"]);
+    expect(ledger.entries).toEqual([]);
+  });
+
+  it("refuses unresolved brand aliases instead of laundering them through literal scalar support", () => {
+    const rejected = new Map([
+      ["--fsds-probe-shadow", "var(--fsds-core-shadow)"],
+      ["--fsds-probe-family", "var(--fsds-core-family)"],
+      ["--fsds-probe-easing", "var(--fsds-core-easing)"],
+      ["--fsds-probe-missing", "var(--fsds-core-missing)"],
+      ["--fsds-probe-unsupported-fallback", "var(--fsds-core-shadow, 4px)"],
+    ]);
+    const { uss, ledger } = projectStylesheet([], {
+      graph: { core: {
+        shadow: { $value: { x: 1, y: 2 } },
+        family: { $value: ["Inter", "sans-serif"] },
+        easing: { $value: "cubic-bezier(0.2, 0, 0, 1)" },
+        color: { $value: "#112233" },
+      } },
+      brands: [{ id: "probe", light: new Map([
+        ...rejected,
+        ["--fsds-probe-literal", "2px"],
+        ["--fsds-probe-color", "var(--fsds-core-color)"],
+        ["--fsds-probe-fallback", "var(--fsds-core-absent, 4px)"],
+      ]), dark: new Map() }],
+    });
+    expect(rule(uss, ".fsds-theme.fsds-brand-probe")).toEqual([
+      "--fsds-probe-color: #112233;", "--fsds-probe-fallback: 4px;", "--fsds-probe-literal: 2px;",
+    ]);
+    for (const [property, value] of rejected) {
+      expect(ledger.entries).toContainEqual({ component: "(theme)", sourceKey: "brand:probe", part: "", property, value, reason: "uss-scalar" });
+    }
+    expect(uss).not.toMatch(/var\(--fsds-core-(shadow|family|easing|missing)/);
+  });
+
+  it("preserves source alias edges and default-brand specificity through both themes", () => {
+    const cssScopes = parseTokenCss(`
+      @layer semantic { :root {
+        --fsds-semantic-seed: #111111;
+        --fsds-semantic-alias: var(--fsds-semantic-seed);
+      } }
+      @layer theme {
+        .light,[data-theme="light"] { --fsds-semantic-seed: #333333; }
+        .dark,[data-theme="dark"] { --fsds-semantic-seed: #444444; }
+      }
+      @layer brand {
+        :where(:root) { --fsds-semantic-seed: #555555; --fsds-default-only: #aaaaaa; }
+        :where(.dark,[data-theme="dark"]) { --fsds-semantic-seed: #777777; --fsds-default-only: #dddddd; }
+        [data-brand="probe"] {
+          --fsds-semantic-seed: #888888;
+          --fsds-chain: var(--fsds-relay);
+          --fsds-relay: var(--fsds-default-only);
+          --fsds-fallback: var(--fsds-default-only);
+        }
+        .dark[data-brand="probe"],.dark [data-brand="probe"],[data-theme="dark"][data-brand="probe"],[data-theme="dark"] [data-brand="probe"] { --fsds-relay: #123456; }
+      }
+    `);
+    const graph = { semantic: { seed: { $value: "#111111" }, alias: { $value: "#111111" } } };
+    const ir = irOf(knobWith({ glow: { color: { resolvesTo: "semantic.alias", fallback: "#000000" } } }));
+    const { uss, ledger } = projectStylesheet([ir], { graph, brands: cssScopes.brands, cssScopes });
+    expect(rule(uss, ".fsds-theme")).toContain("--fsds-semantic-alias: #555555;");
+    expect(rule(uss, ".fsds-theme.fsds-theme--dark")).toContain("--fsds-semantic-alias: #777777;");
+    const brandLight = rule(uss, ".fsds-theme.fsds-brand-probe");
+    expect(brandLight).toEqual([
+      "--fsds-chain: #aaaaaa;", "--fsds-fallback: #aaaaaa;", "--fsds-relay: #aaaaaa;", "--fsds-semantic-alias: #888888;", "--fsds-semantic-seed: #888888;",
+    ]);
+    const brandDark = rule(uss, ".fsds-theme.fsds-brand-probe.fsds-theme--dark");
+    expect(brandDark).toEqual(["--fsds-chain: #123456;", "--fsds-fallback: #dddddd;", "--fsds-relay: #123456;"]);
+    expect(brandDark.some(value => value.startsWith("--fsds-semantic-alias:"))).toBe(false);
     expect(ledger.entries).toEqual([]);
   });
 

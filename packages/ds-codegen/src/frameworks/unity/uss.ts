@@ -9,23 +9,21 @@
  *     `ir.classRecipe` + `ir.variants` (modifier carriers), `ir.dom`/`ir.parts`
  *     (part classes and anatomy ancestry) and `unityLowering(ir)` (the
  *     behavior's state class and where it places it);
- *   - the built token graph: `packages/ds-tokens/generated/resolved.tokens.json`
- *     for every graph value (light, and dark where the token is theme-aware),
- *     and the `@layer brand` block of `packages/ds-tokens/generated/tokens.css`,
- *     which is the web token build's realisation of `src/brands/*.tokens.json`,
- *     for brand overrides. Reading the realised layer rather than re-running
- *     the brand processor keeps one implementation of brand composition.
+ *   - the built token graph for token identities, and the core, semantic,
+ *     explicit theme and brand definitions in the generated `tokens.css`.
+ *     Reading those realised definitions preserves aliases that the resolved
+ *     JSON has flattened, without re-running the token/brand processor.
  *
  * `ir.tokenScopes` is the CSS-selector view of the same token-defining facts
  * `nativeStyleRules` carries with structured predicates; the projection reads
  * the structured twin, so nothing is emitted twice.
  *
- * Token section (S2): `.fsds-theme` defines every graph token the admitted
- * components reference, `.fsds-theme.fsds-theme--dark` the theme-aware ones,
- * `.fsds-theme.fsds-brand-<id>` (and the dark variant) each brand's
- * overrides of those tokens. Equal specificity plus source order reproduces
- * the web cascade, where `@layer brand` outranks `@layer theme`. Names use
- * `tokenSlug`, the single kebab-case authority the web token build shares.
+ * Token section (S2): `.fsds-theme` defines used graph tokens plus supported
+ * default-brand declarations; explicit brand and dark scopes restate changed
+ * values, including transitive aliases. This models one explicitly themed
+ * root, not arbitrary Web descendant inheritance or density selection.
+ * Names use `tokenSlug`, shared with the Web token build. Missing aliases can
+ * use a scalar fallback; present unsupported values and cycles are refused.
  *
  * Component section (S3–S5): one USS rule per native style rule. Token-defining
  * declarations (dotted property) become `--fsds-<slot>: var(--fsds-<graph>,
@@ -60,6 +58,7 @@ import type { ComponentIR } from "../../ir.js";
 import type { NativeStyleDeclarationIR, NativeStylePredicateIR, NativeStyleRuleIR } from "../../native-style-rules.js";
 import { tokenSlug } from "../../token-path.js";
 import { disabledProp, hasChannel, unityLowering, type UnityLowering } from "./behaviors.js";
+import { parseTokenCss, resolveTokenScalar, type ScalarResolution, type TokenCssScopes, type TokenLookup } from "./token-sources.js";
 
 export type UssReason =
   | "uss-property"
@@ -1080,6 +1079,8 @@ export interface TokenSources {
   graph: Record<string, unknown>;
   /** Brand overrides from the token build's `@layer brand`. */
   brands: BrandLayer[];
+  /** Source-preserving definitions from the same built token CSS. */
+  cssScopes?: TokenCssScopes;
 }
 
 export interface BrandLayer {
@@ -1102,7 +1103,8 @@ export function loadTokenSources(contractsRoot: string): TokenSources {
     if (!fs.existsSync(abs)) throw new Error(`UNITY_USS_TOKEN_GRAPH_MISSING: ${rel} is not built; run pnpm run tokens:build first`);
     return fs.readFileSync(abs, "utf8");
   };
-  return { graph: JSON.parse(read(TOKEN_SOURCES.graph)) as Record<string, unknown>, brands: parseBrandLayer(read(TOKEN_SOURCES.brandLayer)) };
+  const cssScopes = parseTokenCss(read(TOKEN_SOURCES.brandLayer));
+  return { graph: JSON.parse(read(TOKEN_SOURCES.graph)) as Record<string, unknown>, brands: cssScopes.brands, cssScopes };
 }
 
 /** The `{ … }` body starting at `open` (the index of `{`), brace-matched. */
@@ -1177,35 +1179,6 @@ function varIndex(graph: Record<string, unknown>): Map<string, string> {
 
 type Theme = "light" | "dark";
 
-/** A graph token's value in one theme, following `{path}` aliases. */
-function graphValue(graph: Record<string, unknown>, tokenPath: string, theme: Theme, seen = new Set<string>()): string | undefined {
-  if (seen.has(tokenPath)) return undefined;
-  seen.add(tokenPath);
-  const raw = nodeAt(graph, tokenPath)?.$value;
-  const value = raw && typeof raw === "object" && !Array.isArray(raw) && "light" in raw
-    ? (raw as Record<Theme, unknown>)[theme] ?? (raw as Record<Theme, unknown>).light
-    : raw;
-  if (typeof value === "number") return String(value);
-  if (typeof value !== "string") return undefined;
-  const alias = /^\{([^{}]+)\}$/.exec(value);
-  return alias ? graphValue(graph, alias[1]!, theme, seen) : value;
-}
-
-const isThemeAware = (graph: Record<string, unknown>, tokenPath: string): boolean => {
-  const raw = nodeAt(graph, tokenPath)?.$value;
-  return !!raw && typeof raw === "object" && !Array.isArray(raw) && "dark" in raw;
-};
-
-/** A brand value (`var(--fsds-…)` or a literal) resolved to a USS scalar in one theme. */
-function brandValue(graph: Record<string, unknown>, index: Map<string, string>, value: string, theme: Theme): string | undefined {
-  const match = VAR.exec(value.trim());
-  if (!match) return tokenScalar(value);
-  const target = index.get(match[1]!);
-  const resolved = target ? graphValue(graph, target, theme) : undefined;
-  if (resolved !== undefined) return tokenScalar(resolved);
-  return match[2] !== undefined ? brandValue(graph, index, match[2], theme) : undefined;
-}
-
 function block(selector: string, declarations: [string, string][], comment?: string): string {
   const lines = declarations.map(([property, value]) => `    ${property}: ${value};`);
   return `${comment ? `/* ${comment} */\n` : ""}${selector} {\n${lines.join("\n")}\n}`;
@@ -1214,29 +1187,33 @@ function block(selector: string, declarations: [string, string][], comment?: str
 /** One scope the token section emits: a theme, optionally under a brand. */
 interface TokenScope { theme: Theme; brand?: BrandLayer }
 
-/** A graph token's value in one scope under the emitted cascade: brand dark,
- * then brand light (a brand alias resolving in the scope's theme), then the
- * graph's theme value. */
-function scopeValue(sources: TokenSources, index: Map<string, string>, tokenPath: string, scope: TokenScope): string | undefined {
-  const name = cssVar(tokenPath);
+function scopeSource(sources: TokenSources, index: Map<string, string>, name: string, scope: TokenScope): { present: boolean; value?: unknown } {
   const { brand, theme } = scope;
-  const themed = (t: Theme): string | undefined => {
-    const raw = graphValue(sources.graph, tokenPath, t);
-    return raw === undefined ? undefined : tokenScalar(raw);
+  const maps = [theme === "dark" ? brand?.dark : undefined, brand?.light,
+    theme === "dark" ? sources.cssScopes?.defaults.dark : undefined, sources.cssScopes?.defaults.light,
+    sources.cssScopes?.base[theme]];
+  for (const map of maps) if (map?.has(name)) return { present: true, value: map.get(name)! };
+  if (sources.cssScopes) return { present: false };
+  const tokenPath = index.get(name);
+  const node = tokenPath ? nodeAt(sources.graph, tokenPath) : undefined;
+  if (!node) return { present: false };
+  const raw = node.$value;
+  const value = raw && typeof raw === "object" && !Array.isArray(raw) && "light" in raw
+    ? (raw as Record<Theme, unknown>)[theme] ?? (raw as Record<Theme, unknown>).light : raw;
+  return { present: true, value };
+}
+
+/** Read the source cascade before scalar conversion, retaining presence. */
+function tokenLookup(sources: TokenSources, index: Map<string, string>, scope: TokenScope, designSlots: ReadonlySet<string>): TokenLookup {
+  return name => {
+    if (designSlots.has(name)) return { kind: "unsupported" };
+    const source = scopeSource(sources, index, name, scope);
+    if (!source.present) return { kind: "missing" };
+    if (typeof source.value === "number") return { kind: "value", value: String(source.value) };
+    if (typeof source.value !== "string") return { kind: "unsupported" };
+    const alias = /^\{([^{}]+)\}$/.exec(source.value);
+    return { kind: "value", value: alias ? `var(${cssVar(alias[1]!)})` : source.value };
   };
-  // The token section defines a token only when its light value is a scalar;
-  // otherwise every scope leaves it undefined.
-  const light = themed("light");
-  if (light === undefined) return undefined;
-  if (brand && theme === "dark" && brand.dark.has(name)) {
-    const value = brandValue(sources.graph, index, brand.dark.get(name)!, "dark");
-    if (value !== undefined) return value;
-  }
-  if (brand?.light.has(name)) {
-    const value = brandValue(sources.graph, index, brand.light.get(name)!, theme);
-    if (value !== undefined) return value;
-  }
-  return theme === "dark" ? themed("dark") ?? light : light;
 }
 
 /** The theme-level ledger rows use this component key. */
@@ -1251,10 +1228,19 @@ export interface StylesheetProjection {
 /** S2–S6 over every admitted component, in the order given (the allowlist order). */
 export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hostsOf: (ir: ComponentIR) => readonly ContentHost[] = () => []): StylesheetProjection {
   const index = varIndex(sources.graph);
+  const designSlots = new Map(irs.flatMap(ir => ir.designBindings.map(binding => [binding.cssVar, { component: ir.name, part: binding.part ?? "", property: binding.cssProperty }] as const)));
+  const designSlotNames = new Set(designSlots.keys());
   const scopes: TokenScope[] = [{ theme: "light" }, { theme: "dark" }, ...sources.brands.flatMap(brand => (["light", "dark"] as const).map(theme => ({ theme, brand })))];
+  const resolutions = new Map<string, ScalarResolution>();
+  const resolve = (name: string, scope: TokenScope): ScalarResolution => {
+    const key = JSON.stringify([scope.brand?.id, scope.theme, name]);
+    if (!resolutions.has(key)) resolutions.set(key, resolveTokenScalar(`var(${name})`, tokenLookup(sources, index, scope, designSlotNames), tokenScalar));
+    return resolutions.get(key)!;
+  };
   const scopeValues: ScopeValues = name => {
-    const tokenPath = index.get(name);
-    return tokenPath === undefined ? undefined : scopes.map(scope => scopeValue(sources, index, tokenPath, scope));
+    const values = scopes.map(scope => resolve(name, scope));
+    return !index.has(name) && values.every(value => value.kind === "missing") ? undefined
+      : values.map(value => value.kind === "scalar" ? value.value : undefined);
   };
   const components = irs.map(ir => projectComponent(ir, unityLowering(ir), hostsOf(ir), scopeValues));
   // Theme.Attach is optional. A literal graph var() in an emitted declaration
@@ -1262,9 +1248,8 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
   // as a resolvesTo declaration carries its authored fallback.
   for (const component of components) for (const rule of component.rules) {
     rule.declarations = rule.declarations.map(([property, value]): [string, string] => [property, value.replace(GRAPH_VAR_NO_FALLBACK, (original, name: string) => {
-      const tokenPath = index.get(name);
-      const light = tokenPath && graphValue(sources.graph, tokenPath, "light");
-      const fallback = light && tokenScalar(light);
+      const light = resolve(name, { theme: "light" });
+      const fallback = light.kind === "scalar" ? light.value : undefined;
       return fallback === undefined ? original : `var(${name}, ${fallback})`;
     })]);
   }
@@ -1276,76 +1261,58 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
   const literalReads = components.flatMap(component => component.rules.flatMap(rule =>
     rule.declarations.flatMap(([, value]) => [...value.matchAll(VAR_READ)].map(match => index.get(match[1]!)).filter((token): token is string => token !== undefined))));
   const closure = [...new Set([...components.flatMap(c => [...c.graphTokens]), ...literalReads])].sort((a, b) => cssVar(a).localeCompare(cssVar(b)));
-  const light: [string, string][] = [], dark: [string, string][] = [];
-  const emitted = new Set<string>();
-  for (const tokenPath of closure) {
-    const name = cssVar(tokenPath);
-    const raw = graphValue(sources.graph, tokenPath, "light");
-    if (raw === undefined) continue; // not in the graph: the reference stays unresolved and token-resolvability reports it
-    const value = tokenScalar(raw);
-    if (value === undefined) {
-      entries.push({ component: THEME_COMPONENT, sourceKey: TOKEN_SOURCES.graph, part: "", property: name, value: raw, reason: "uss-scalar" });
-      continue;
-    }
-    emitted.add(name);
-    light.push([name, value]);
-    if (isThemeAware(sources.graph, tokenPath)) {
-      const darkValue = tokenScalar(graphValue(sources.graph, tokenPath, "dark") ?? "");
-      if (darkValue !== undefined) dark.push([name, darkValue]);
-    }
+  const baseNames = new Set([...closure.map(cssVar), ...sources.cssScopes?.defaults.light.keys() ?? [], ...sources.cssScopes?.defaults.dark.keys() ?? []]);
+  const refused = (name: string, scope: TokenScope): void => {
+    const source = scopeSource(sources, index, name, scope);
+    if (!source.present) return;
+    const value = typeof source.value === "string" ? source.value : JSON.stringify(source.value) ?? "undefined";
+    const defaultBrand = scope.theme === "dark" && sources.cssScopes?.defaults.dark.has(name) || sources.cssScopes?.defaults.light.has(name);
+    const sourceKey = scope.brand || defaultBrand ? `brand:${scope.brand?.id ?? "default"}${scope.theme === "dark" ? ":dark" : ""}`
+      : `${sources.cssScopes ? TOKEN_SOURCES.brandLayer : TOKEN_SOURCES.graph}${scope.theme === "dark" ? ":dark" : ""}`;
+    const slot = designSlots.get(name);
+    entries.push(slot
+      ? { component: slot.component, sourceKey, part: slot.part, property: slot.property, value, reason: "uss-design-slot" }
+      : { component: THEME_COMPONENT, sourceKey, part: "", property: name, value, reason: "uss-scalar" });
+  };
+  const light = new Map<string, string>(), dark = new Map<string, string>();
+  for (const name of [...baseNames].sort()) {
+    const l = resolve(name, { theme: "light" }), d = resolve(name, { theme: "dark" });
+    if (l.kind === "scalar") light.set(name, l.value);
+    else refused(name, { theme: "light" });
+    if (d.kind === "scalar") { if (d.value !== light.get(name)) dark.set(name, d.value); }
+    else refused(name, { theme: "dark" });
   }
   const sections: string[] = [
     "/* @generated:start unity-uss — generated by packages/ds-codegen (frameworks/unity/uss.ts); do not edit. Regenerate with pnpm run generate:unity. */",
-    `/* Sources: ${TOKEN_SOURCES.graph}, ${TOKEN_SOURCES.brandLayer} (@layer brand), and each admitted component's contract and sidecars. Declarations USS cannot realise are listed in Controls.unsupported.json. */`,
+    `/* Sources: ${TOKEN_SOURCES.graph}, ${TOKEN_SOURCES.brandLayer} (explicit token scopes), and each admitted component's contract and sidecars. Declarations USS cannot realise are listed in Controls.unsupported.json. */`,
     `/* Brands: ${sources.brands.map(b => b.id).join(", ")} */`,
     `/* Rem projection: 1rem = ${REM_BASELINE_PX}px; fixed CSS root baseline, independent of consumer font size. */`,
-    block(".fsds-theme", light, "Token graph, light (resolved.tokens.json)"),
+    block(".fsds-theme", [...light], "Token graph and default brand, light"),
   ];
-  if (dark.length) sections.push(block(".fsds-theme.fsds-theme--dark", dark, "Token graph, dark"));
-  const designSlots = new Map(components.flatMap(c => [...c.designSlots].map(([name, use]) => [name, { component: c.component, ...use }] as const)));
+  if (dark.size) sections.push(block(".fsds-theme.fsds-theme--dark", [...dark], "Token graph and default brand, dark"));
   for (const brand of sources.brands) {
-    const brandLight: [string, string][] = [], brandDark: [string, string][] = [];
-    for (const [theme, overrides, target] of [["light", brand.light, brandLight], ["dark", brand.dark, brandDark]] as const) {
-      for (const [name, value] of overrides) {
-        const slot = designSlots.get(name);
-        if (slot) {
-          entries.push({ component: slot.component, sourceKey: `brand:${brand.id}${theme === "dark" ? ":dark" : ""}`, part: slot.part, property: slot.property, value, reason: "uss-design-slot" });
-          continue;
-        }
-        // Emit every brand-layer variable that resolves to a USS scalar, not
-        // only graph tokens already referenced by an admitted component: the
-        // brand layer is the supported token-override channel for consumers
-        // (a lane can address these variables from its own stylesheet).
-        const resolved = brandValue(sources.graph, index, value, theme);
-        if (resolved === undefined) {
-          // Brand-only variables that carry a literal USS scalar are part of the
-          // brand's supported token-override channel even when no graph token
-          // backs them (e.g. Orion's graphic surface/status roles).
-          const literal = tokenScalar(value);
-          if (literal !== undefined) {
-            target.push([name, literal]);
-          } else {
-            entries.push({ component: THEME_COMPONENT, sourceKey: `brand:${brand.id}${theme === "dark" ? ":dark" : ""}`, part: "", property: name, value, reason: "uss-scalar" });
-          }
-          continue;
-        }
-        target.push([name, resolved]);
+    const brandLight = new Map<string, string>(), brandDark = new Map<string, string>();
+    // Resolve both explicit brand variables and base aliases affected by them.
+    const names = new Set([...baseNames, ...brand.light.keys(), ...brand.dark.keys()]);
+    for (const name of names) {
+      const l = resolve(name, { theme: "light", brand }), d = resolve(name, { theme: "dark", brand });
+      const direct = brand.light.has(name) || brand.dark.has(name);
+      if (designSlots.has(name)) {
+        if (brand.light.has(name)) refused(name, { theme: "light", brand });
+        if (brand.dark.has(name)) refused(name, { theme: "dark", brand });
+        continue;
       }
-    }
-    // The web's light brand block also applies in dark mode for names the
-    // brand does not restate there; a theme-aware alias then resolves to its
-    // dark value at cascade time, so the dark scope carries that value.
-    for (const [name, value] of brand.light) {
-      if (brand.dark.has(name) || designSlots.has(name)) continue;
-      const aliased = VAR.exec(value.trim())?.[1];
-      const target = aliased ? index.get(aliased) : undefined;
-      if (!target || !isThemeAware(sources.graph, target)) continue;
-      const resolved = brandValue(sources.graph, index, value, "dark");
-      if (resolved !== undefined) brandDark.push([name, resolved]);
+      if (l.kind === "scalar") {
+        if (brand.light.has(name) || l.value !== light.get(name)) brandLight.set(name, l.value);
+      } else if (direct || light.has(name)) refused(name, { theme: "light", brand });
+      const inherited = brandLight.get(name) ?? dark.get(name) ?? light.get(name);
+      if (d.kind === "scalar") {
+        if (brand.dark.has(name) || d.value !== inherited) brandDark.set(name, d.value);
+      } else if (direct || dark.has(name) || light.has(name)) refused(name, { theme: "dark", brand });
     }
     const byName = (a: [string, string], b: [string, string]) => a[0].localeCompare(b[0]);
-    if (brandLight.length) sections.push(block(`.fsds-theme.fsds-brand-${brand.id}`, brandLight.sort(byName), `Brand ${brand.id}`));
-    if (brandDark.length) sections.push(block(`.fsds-theme.fsds-brand-${brand.id}.fsds-theme--dark`, brandDark.sort(byName)));
+    if (brandLight.size) sections.push(block(`.fsds-theme.fsds-brand-${brand.id}`, [...brandLight].sort(byName), `Brand ${brand.id}`));
+    if (brandDark.size) sections.push(block(`.fsds-theme.fsds-brand-${brand.id}.fsds-theme--dark`, [...brandDark].sort(byName)));
   }
   for (const [i, component] of components.entries()) {
     const prefix = irs[i]!.cssPrefix;
