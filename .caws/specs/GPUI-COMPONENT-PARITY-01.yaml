@@ -70,3 +70,12 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "boundary.test.ts: every leaf family of all 55 corpus contracts classified with zero unclassified and zero catch-all reliance; a synthetic unadjudicated family is rejected as a catch-all violation"
+    recorded_at: "2026-11-01T08:17:07.798Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    commit_sha: "8e1e2e4a1"
