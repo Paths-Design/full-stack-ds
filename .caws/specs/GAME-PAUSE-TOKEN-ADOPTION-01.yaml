@@ -63,3 +63,7 @@ evidence:
     status: pass
     evidence_ref: "node scripts/game-pause-token-provenance.mjs: 19/19 colours and 20/20 type values resolve; packages/ds-tokens/src/brands/orion.tokens.json adds color.surface.moss, color.status.alert/clear and typography.graphic.size.compact/label/display; pnpm tokens:check-brand-refs + check-contrast pass"
     recorded_at: "2026-11-01T05:45:14.192Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "GPUI seam/tokens.rs embeds resolved.tokens.json+orion.tokens.json and overwrites parity palette; Godot setup.sh copies tokens to res://fixtures/ds-tokens and TokenResolver.apply_to_authority rewrites colors/type; Godot 207/207 headless, GPUI 69 default tests, parity checker 0 failures"
+    recorded_at: "2026-11-01T05:45:15.987Z"
