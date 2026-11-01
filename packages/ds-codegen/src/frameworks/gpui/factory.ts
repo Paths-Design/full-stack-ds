@@ -5,6 +5,9 @@ import type { ComponentIR, DomNodeIR } from '../../ir.js';
 import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import type { NativeStyleDeclarationIR, NativeStyleRuleIR } from '../../native-style-rules.js';
+import { gpuiAnatomyPlan, gpuiAnatomyStylePlan } from './anatomy.js';
+import type { GpuiPlan, GpuiStylePlan } from './plan-types.js';
+import { supported, validScalar } from './style-vocabulary.js';
 /** Encode characters directly so literal backslash sequences stay literal. */
 function q(value: string): string {
  const escapes: Record<string,string> = {'\\':'\\\\','"':'\\"','\n':'\\n','\r':'\\r','\t':'\\t'};
@@ -13,7 +16,7 @@ function q(value: string): string {
 const RESERVED = new Set(['self','super','crate','type','mod','fn','match','default','new','request_change','theme','variants','label','focus_handle','request_key','content','set_content','clear_content','has_content','render_content','slot','slots','slot_key','set_slot','clear_slot','has_slot','render_slot']);
 function snake(name: string): string {
  const value = name.replace(/([a-z0-9])([A-Z])/g,'$1_$2').toLowerCase();
- if (!/^[a-z][a-z0-9_]*$/.test(value) || RESERVED.has(value)) throw new Error(`GPUI_UNSUPPORTED_IDENTIFIER: ${name}`);
+ if (!/^[a-z][a-z0-9_]*$/.test(value) || RESERVED.has(value) || RUST_KEYWORDS.has(value)) throw new Error(`GPUI_UNSUPPORTED_IDENTIFIER: ${name}`);
  return value;
 }
 function booleanDefault(ir: ComponentIR, name: string | undefined): string {
@@ -30,7 +33,7 @@ function nodesOf(ir: ComponentIR): DomNodeIR[] {
 /** Source facts: normalized control, anatomy and variant capability.
  * Applies by: Boolean channels or static native/slot anatomy, never identity.
  * Removable when: additional native capabilities are independently admitted. */
-export function gpuiPlan(ir: ComponentIR) {
+export function gpuiPlan(ir: ComponentIR): GpuiPlan {
  const nodes = nodesOf(ir), control = ir.formControl;
  if (ir.dom?.tag==='children'||ir.dom?.tag==='slot') throw new Error(`GPUI_UNSUPPORTED_ROOT_INSERTION: ${ir.name}`);
  if (!ir.dom || ir.surface || ir.interaction || ir.compositeControl || ir.pagedSet || ir.motion.sequence || nodes.some(node => node.componentRef || node.iteration || node.iconGlyph || node.cssVarBindings.length || node.content && 'transform' in node.content)) throw new Error(`GPUI_UNSUPPORTED_SHAPE: ${ir.name}`);
@@ -75,40 +78,9 @@ export function gpuiPlan(ir: ComponentIR) {
  const methods = [valueMethod,defaultMethod,disabledMethod,...axes.map(axis => axis.method),...Array.from(boolProps).map(snake),...Array.from(textProps).map(snake)].filter(Boolean);
  if (new Set(methods).size !== methods.length) throw new Error(`GPUI_IDENTIFIER_COLLISION: ${ir.name}`);
  if (!/^[A-Z][A-Za-z0-9]*$/.test(ir.name)) throw new Error(`GPUI_UNSUPPORTED_IDENTIFIER: ${ir.name}`);
- return { channel,part:control?.part.name,valueMethod,defaultMethod,disabledMethod,mixedProp,axes,boolProps:Array.from(boolProps),textProps:Array.from(textProps),childContent,slots,slotVariants,defaultValue:booleanDefault(ir,channel?.defaultValueProp),disabledDefault:booleanDefault(ir,disabledProp),keys:control?.activationKeys ?? [],excludedProps:ir.styledProps.filter(prop => !realized.has(prop.name)).map(prop => prop.name) };
+ return { channel,part:control?.part.name,valueMethod,defaultMethod,disabledMethod,mixedProp,axes,boolProps:Array.from(boolProps),textProps:Array.from(textProps),childContent,slots,slotVariants,defaultValue:booleanDefault(ir,channel?.defaultValueProp),disabledDefault:booleanDefault(ir,disabledProp),keys:control?.activationKeys ?? [],excludedProps:ir.styledProps.filter(prop => !realized.has(prop.name)).map(prop => prop.name),omissions:[] };
 }
-const supported = new Set(['background-color','color','border-color','border-width','border-style','border-top-width','border-right-width','border-bottom-width','border-left-width','border-top-color','border-right-color','border-bottom-color','border-left-color','border-top-style','border-right-style','border-bottom-style','border-left-style','border-top','border-radius','width','height','min-width','min-height','max-width','max-height','padding','padding-block','padding-inline','padding-top','padding-right','padding-bottom','padding-left','padding-block-start','padding-block-end','padding-inline-start','padding-inline-end','margin','margin-top','margin-right','margin-bottom','margin-left','gap','row-gap','column-gap','font-size','font-weight','font-family','line-height','opacity','display','position','top','right','bottom','left','align-items','align-self','justify-content','flex-direction','flex-grow','flex-shrink','overflow','text-align','white-space','text-overflow','translate','transform','outline-width','outline-color','outline-style','outline-offset','box-sizing']);
-const dimension = /^-?(?:0(?:\.0+)?|(?:\d+(?:\.\d+)?|\.\d+)(?:px|rem|em|%))$/;
-const absoluteDimension = (value: string): boolean => dimension.test(value) && !value.endsWith('%') && Number.isFinite(parseFloat(value));
-function validScalar(decl: NativeStyleDeclarationIR, pseudo: boolean): boolean {
- const p = decl.property, value = decl.value.trim();
- if (p.endsWith('color') || p === 'background-color') {
-  if (/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value) || ['transparent','white','black'].includes(value)) return true;
-  const rgb = /^(rgb|rgba)\(([^)]+)\)$/.exec(value);
-  if (!rgb) return false;
-  const values = rgb[2]!.split(',').map(part=>part.trim());
-  return values.length === (rgb[1] === 'rgba' ? 4 : 3) && values.every((part,index)=>/^\d+(?:\.\d+)?$/.test(part) && Number.isFinite(Number(part)) && Number(part) <= (index === 3 ? 1 : 255));
- }
- if (['width','height','min-width','min-height','max-width','max-height','top','right','bottom','left'].includes(p)) return value === 'auto' || p === 'width' && value === 'fit-content' || dimension.test(value);
- if (p === 'border-width') { const values=value.split(/\s+/); return values.length >= 1 && values.length <= 4 && values.every(part=>absoluteDimension(part) && !part.startsWith('-')); }
- if (/^(padding|margin|gap|row-gap|column-gap|translate)(-|$)/.test(p)) { const values=value.split(/\s+/); const limit=p==='translate'||['padding-inline','padding-block'].includes(p)?2:['padding','margin'].includes(p)?4:1;return values.length<=limit&&values.every(part => dimension.test(part) || p.startsWith('margin') && part === 'auto'); }
- if (/^border-(top|right|bottom|left)-width$/.test(p)) return absoluteDimension(value) && !value.startsWith('-');
- if (['outline-width','outline-offset','font-size'].includes(p)) return absoluteDimension(value) && (p === 'outline-offset' || !value.startsWith('-'));
- if (p === 'border-radius') return value === '50%' || absoluteDimension(value) && !value.startsWith('-');
- if (p === 'transform') {
-  const functions=Array.from(value.matchAll(/([A-Za-z]+)\(([^)]+)\)/g));
-  if (!functions.length || functions.map(match=>match[0]).join('').replace(/\s/g,'') !== value.replace(/\s/g,'')) return false;
-  return functions.every(match=>match[1]==='rotate' ? pseudo && /^-?\d+(?:\.\d+)?deg$/.test(match[2]!) : ['translate','translateX','translateY'].includes(match[1]!) && match[2]!.split(',').length === (match[1]==='translate'?2:1) && match[2]!.split(',').every(part=>dimension.test(part.trim()) && !/\dem$/.test(part.trim())));
- }
- if (p === 'font-weight') return ['normal','bold'].includes(value) || /^\d+(?:\.\d+)?$/.test(value) && Number(value) >= 1 && Number(value) <= 1000;
- if (['flex-grow','flex-shrink','opacity'].includes(p)) return /^\d+(?:\.\d+)?$/.test(value) && (p !== 'opacity' || Number(value) <= 1);
- if (p === 'line-height') return (/^\d+(?:\.\d+)?$/.test(value) || dimension.test(value)) && !value.startsWith('-');
- const enums: Record<string,string[]> = {display:['flex','inline-flex','block','inline-block','none'],position:['relative','absolute'], 'align-items':['start','end','flex-start','flex-end','center','baseline','stretch'],'align-self':['start','end','flex-start','flex-end','center','stretch'], 'justify-content':['start','end','flex-start','flex-end','center','space-between','space-around'], 'flex-direction':['row','column','row-reverse','column-reverse'],overflow:['hidden','visible','scroll'],'text-align':['left','right','start','end','center'],'white-space':['normal','nowrap'],'text-overflow':['ellipsis'],'border-style':['solid','none'],'outline-style':['solid','none'],'box-sizing':['border-box']};
- if (p.endsWith('-style')) return ['solid','none'].includes(value);
- if (p === 'border-top') return value === 'none';
- return !enums[p] || enums[p]!.includes(value);
-}
-export function gpuiStylePlan(ir: ComponentIR) {
+export function gpuiStylePlan(ir: ComponentIR): GpuiStylePlan {
  if (!ir.nativeStyleRules) throw new Error(`GPUI_MISSING_STYLE_FACTS: ${ir.name}`);
  const omissions: Array<{ sourceKey:string; property?:string; reason:string }> = ir.nativeStyleRules.unsupported.slice();
  const admittedPredicates = new Set(['variant','checked','disabled','indeterminate','hover','active','focus']);
@@ -240,7 +212,7 @@ impl ${ir.name}{
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
-  let state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel?'self.hovered':'false'},active:${plan.channel?'self.active':'false'},focused:self.focused};
+  let state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':plan.disabledMethod?'self.'+plan.disabledMethod:'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel?'self.hovered':'false'},active:${plan.channel?'self.active':'false'},focused:self.focused};
   resolve_part_style(part,Self::STYLE_RULES,&state,&self.theme)
  }
  ${axisMethods}\n${fieldMethods}\n${controls}\n${contentMethods}\n${slotMethods}
@@ -253,7 +225,7 @@ impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
- let style_state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel?'self.hovered':'false'},active:${plan.channel?'self.active':'false'},focused:self.focused};
+ let style_state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':plan.disabledMethod?'self.'+plan.disabledMethod:'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel?'self.hovered':'false'},active:${plan.channel?'self.active':'false'},focused:self.focused};
  let root=${tree(ir,plan,styles,ir.dom!)}.id(${q(ir.cssPrefix)});
  let root=apply_interaction_style(root,${q(ir.dom!.part ?? 'root')},Self::STYLE_RULES,&style_state,&theme);
  ${plan.channel?`let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}));`:''}
@@ -261,10 +233,73 @@ impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel
 }}
 `;
 }
+const RUST_KEYWORDS = new Set(['as','break','const','continue','crate','dyn','else','enum','extern','false','fn','for','if','impl','in','let','loop','match','mod','move','mut','pub','ref','return','self','static','struct','super','trait','true','type','unsafe','use','where','while','async','await']);
+/** Module identifier for the generated barrel. The prop RESERVED set is about
+ * member names (`label`, `content`) which are legal module names; only Rust
+ * keywords and malformed names are refused here. */
+function moduleSnake(name: string): string {
+ const value = name.replace(/([a-z0-9])([A-Z])/g,'$1_$2').toLowerCase();
+ if (!/^[a-z][a-z0-9_]*$/.test(value) || RUST_KEYWORDS.has(value)) throw new Error(`GPUI_UNSUPPORTED_MODULE_IDENTIFIER: ${name}`);
+ return value;
+}
+
+/** Refusals the generic anatomy projection may take over. Strictness the
+ * bounded planners keep is untouched: a style-value defect on an admitted shape
+ * still fails generation, it does not silently become an omission. */
+const SHAPE_REFUSALS = [
+ 'GPUI_UNSUPPORTED_SHAPE','GPUI_UNSUPPORTED_ROOT_INSERTION','GPUI_UNSUPPORTED_PROP','GPUI_UNSUPPORTED_DEFAULT',
+ 'GPUI_UNSUPPORTED_CHANNEL','GPUI_UNSUPPORTED_ACTIVATION_HOST','GPUI_UNSUPPORTED_CONTENT_GUARD','GPUI_UNSUPPORTED_CONTENT',
+ 'GPUI_UNSUPPORTED_SLOT_IDENTIFIER','GPUI_SLOT_IDENTIFIER_COLLISION','GPUI_UNSUPPORTED_PROP_GUARD',
+ 'GPUI_UNSUPPORTED_IDENTIFIER','GPUI_IDENTIFIER_COLLISION','GPUI_DUPLICATE_CONTENT_PLACEMENT',
+ 'GPUI_UNSUPPORTED_DISABLED_BINDING','GPUI_UNSUPPORTED_INDETERMINATE_BINDING','GPUI_UNSUPPORTED_SLOT_GUARD',
+];
+function isShapeRefusal(error: unknown): boolean {
+ const message = error instanceof Error ? error.message : String(error);
+ return SHAPE_REFUSALS.some(code => message.startsWith(`${code}:`));
+}
+/** Bounded projection: the control/static shapes the strict planners admit. */
+function boundedFiles(ir: ComponentIR, plan: GpuiPlan, styles: GpuiStylePlan) {
+ return [
+  {relativePath:`${ir.name}/${ir.name}.rs`,contents:source(ir,plan,styles).replace(/[\t ]+$/gm,'')},
+  {relativePath:`${ir.name}/capabilities.json`,contents:JSON.stringify({operation:plan.channel?'boolean-control':'static-anatomy',channel:plan.channel,controlPart:plan.part,activationKeys:plan.keys,defaultContent:plan.childContent,namedSlots:plan.slots,excludedProps:plan.excludedProps,narrowedTextProps:plan.textProps,styleOmissions:styles.omissions,styleSource:'shared authored Web vocabulary projected into GPUI; source platform restrictions retained',realized:['part-tree','scoped-token-cascade','variant-builders','mounted-variant-setters','design-slot-overrides',...(plan.childContent?['retained-native-children','explicit-content-label-fallback']:[]),...(plan.slots.length?['typed-named-slots','slot-presence-guards']:[]),...(plan.channel?['controlled-uncontrolled-request-policy','native-host-key-activation','persistent-focus','disabled-suppression']:[])],omissions:['accessibility','form-submission','field-association','motion','compound-composition','duplicate-view-placement','complete-cross-platform-parity'],proof:'requires-real-gpui-engine-tests-and-render-witness; outside-admission-rail'},null,2)+'\n'},
+ ];
+}
+/** Generic anatomy projection: every corpus shape, bounded and omission-bearing. */
+function anatomyFiles(ir: ComponentIR) {
+ const { ir: projected, plan } = gpuiAnatomyPlan(ir);
+ const styles = gpuiAnatomyStylePlan(ir);
+ const omitted = plan.omissions;
+ const capabilities = {
+  operation:'generic-anatomy',
+  channel:null,
+  controlPart:null,
+  activationKeys:[],
+  defaultContent:plan.childContent,
+  namedSlots:plan.slots,
+  excludedProps:plan.excludedProps,
+  narrowedTextProps:plan.textProps,
+  realizedVariants:plan.axes.map(axis=>axis.propName),
+  realizedBooleanProps:plan.boolProps,
+  styleOmissions:styles.omissions,
+  styleSource:'shared authored Web vocabulary projected into GPUI; source platform restrictions retained',
+  realized:['part-tree','scoped-token-cascade','variant-builders','mounted-variant-setters','design-slot-overrides',...(plan.childContent?['retained-native-children','explicit-content-label-fallback']:[]),...(plan.slots.length?['typed-named-slots','slot-presence-guards']:[]),...(plan.boolProps.length||plan.textProps.length?['static-value-fields']:[])],
+  omittedFacts:omitted,
+  omittedFactKinds:[...new Set(omitted.map(omission=>omission.kind))].sort(),
+  omissions:['control-semantics','accessibility','form-submission','field-association','motion','compound-composition','overlay-behaviour','iteration','content-transform','glyph-rendering','duplicate-view-placement','complete-cross-platform-parity'],
+  proof:'requires-real-gpui-engine-tests-and-render-witness; outside-admission-rail',
+ };
+ return [
+  {relativePath:`${ir.name}/${ir.name}.rs`,contents:source(projected,plan,styles).replace(/[\t ]+$/gm,'')},
+  {relativePath:`${ir.name}/capabilities.json`,contents:JSON.stringify(capabilities,null,2)+'\n'},
+ ];
+}
 export function createGpuiEmitter(): FrameworkEmitter {
  return { id:'gpui', discoverComponentIds:root=>fs.existsSync(root)?fs.readdirSync(root).filter(name=>fs.existsSync(path.join(root,name,`${name}.rs`))).sort():[],
-  emitComponent(ir) { const plan=gpuiPlan(ir),styles=gpuiStylePlan(ir); return [
-   {relativePath:`${ir.name}/${ir.name}.rs`,contents:source(ir,plan,styles).replace(/[\t ]+$/gm,'')},
-   {relativePath:`${ir.name}/capabilities.json`,contents:JSON.stringify({operation:plan.channel?'boolean-control':'static-anatomy',channel:plan.channel,controlPart:plan.part,activationKeys:plan.keys,defaultContent:plan.childContent,namedSlots:plan.slots,excludedProps:plan.excludedProps,narrowedTextProps:plan.textProps,styleOmissions:styles.omissions,styleSource:'shared authored Web vocabulary projected into GPUI; source platform restrictions retained',realized:['part-tree','scoped-token-cascade','variant-builders','mounted-variant-setters','design-slot-overrides',...(plan.childContent?['retained-native-children','explicit-content-label-fallback']:[]),...(plan.slots.length?['typed-named-slots','slot-presence-guards']:[]),...(plan.channel?['controlled-uncontrolled-request-policy','native-host-key-activation','persistent-focus','disabled-suppression']:[])],omissions:['accessibility','form-submission','field-association','motion','compound-composition','duplicate-view-placement','complete-cross-platform-parity'],proof:'requires-real-gpui-engine-tests-and-render-witness; outside-admission-rail'},null,2)+'\n'},
-  ]; }, emitTests:()=>[], emitBarrel:names=>names.slice().sort().map(name=>`#[path = "${name}/${name}.rs"]\nmod ${snake(name)};\npub use ${snake(name)}::*;`).join('\n')+'\n' };
+  emitComponent(ir) {
+   let plan: GpuiPlan;
+   try { plan = gpuiPlan(ir); }
+   catch (error) { if (!isShapeRefusal(error)) throw error; return anatomyFiles(ir); }
+   const styles = gpuiStylePlan(ir);
+   return boundedFiles(ir, plan, styles);
+  }, emitTests:()=>[], emitBarrel:names=>names.slice().sort().map(name=>`#[path = "${name}/${name}.rs"]\nmod ${moduleSnake(name)};\npub use ${moduleSnake(name)}::*;`).join('\n')+'\n' };
 }

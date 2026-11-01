@@ -17,9 +17,14 @@ governs:
 
 GPUI is a registered Rust target with a bounded macOS realization. The allowlist
 in [`fsds.targets.json`](../../fsds.targets.json) admits
-<!-- target-component-count:gpui -->7 components: Switch, ToggleSwitch, Checkbox,
-Text, Badge, Divider and Stat. Full-corpus generation selects that allowlist; explicit
-requests for unsupported shapes fail with `GPUI_UNSUPPORTED_*` diagnostics.
+<!-- target-component-count:gpui -->55 components — the whole contract corpus, so
+GPUI coverage matches the Unity admission set. Two planner families serve it: the
+bounded control/static planners admit a narrow set of shapes with strict
+diagnostics, and the generic anatomy projection emits every other shape with a
+capability receipt naming each fact it does not realize. A fact the emitter cannot
+carry is adjudicated in the committed
+[support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json);
+an unadjudicated fact fails the boundary audit. Emission is not realization:
 GPUI has no admission descriptor and remains outside the TypeScript admission rail.
 
 ## Contract and style authority
@@ -49,6 +54,39 @@ Unset overrides use authored fallback values, currently the light appearance.
 There is no automatic system-dark response or loader for the complete brand
 override graph. Generic native font aliases map to macOS fonts; this does not
 establish identical Web font metrics.
+
+## Support boundary and generic anatomy projection
+
+The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json)
+classifies every contract and sidecar leaf the target can see as `lowered`,
+`pending` or `refused`, by pointer FAMILY and never by component identity: identity,
+anatomy structure, token bindings, variant axes and the admitted style vocabulary
+are lowered; DOM bindings/events/attrs, iteration, component references, content
+transforms, glyph rendering, surface behaviour, motion, accessibility, forms and
+cross-component semantics are `pending`; authoring/CSS-only metadata is `refused`.
+The ledger is ordered and terminal, so an unadjudicated family is refused rather
+than silently supported. The [boundary audit](../../packages/ds-codegen/src/frameworks/gpui/boundary.test.ts)
+fails an admitted component that relies on that catch-all, which is what forces an
+explicit disposition when the allowlist or a contract grows.
+
+The [generic anatomy projection](../../packages/ds-codegen/src/frameworks/gpui/anatomy.ts)
+serves every component the bounded planners decline. It lowers the part tree,
+retained content, typed named slots, variant builders, boolean/text value fields
+and the admitted style declarations; everything else is written into that
+component's `capabilities.json` as a named omission carrying the boundary rule and
+its reason. Two rules keep the projection honest:
+
+- A fact the ledger says the target **lowers** cannot be silently dropped. The
+  bounded planners keep their strict value-level diagnostics, so a malformed
+  admitted scalar still fails generation instead of becoming an omission.
+- The receipt, not the ledger, is the per-component truth. A `pending` family that
+  a particular component does not carry is simply absent from its omission list.
+
+What the projection does **not** claim: a mounted, interactive, accessible or
+pixel-equivalent realization of the pending families. The seven bounded
+control/static components carry mounted engine witnesses; the other 48 are emitted,
+style-resolved and compile with no mounted interaction witness. Emitted bytes
+prove projection, not behaviour.
 
 ## Input and owner updates
 

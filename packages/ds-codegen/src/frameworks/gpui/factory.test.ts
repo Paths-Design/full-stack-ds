@@ -74,8 +74,17 @@ describe("GPUI native style and control lowering", () => {
     expect(source).not.toContain("pub fn checked(");
   });
 
-  it.each(["Tabs", "Popover", "Button", "Card", "Progress"])("refuses unsupported %s shapes", name => {
-    expect(() => emitter.emitComponent(buildComponentIR(fixture(name)), options)).toThrow("GPUI_UNSUPPORTED_SHAPE");
+  it.each(["Tabs", "Popover", "Button", "Card", "Progress"])("projects %s through the generic anatomy path with named omissions", name => {
+    const ir = buildComponentIR(fixture(name));
+    // The bounded planner still refuses the shape; the corpus component is
+    // admitted by the anatomy projection instead of failing generation.
+    expect(() => gpuiPlan(ir)).toThrow("GPUI_UNSUPPORTED_SHAPE");
+    const files = emitter.emitComponent(ir, options);
+    const receipt = JSON.parse(files[1]!.contents) as { operation: string; omittedFacts: unknown[]; omittedFactKinds: string[] };
+    expect(files[0]!.contents).toContain(`impl Render for ${name}`);
+    expect(receipt.operation).toBe("generic-anatomy");
+    expect(receipt.omittedFacts.length).toBeGreaterThan(0);
+    expect(receipt.omittedFactKinds.length).toBeGreaterThan(0);
   });
 
   it("refuses event callbacks, extra props, nonboolean defaults and identifier collisions", () => {
