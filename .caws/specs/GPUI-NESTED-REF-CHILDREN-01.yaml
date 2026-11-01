@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "nested componentRef children are planned recursively and emitted as NativeContent views into the retained parent child's content (PageNavigator shows ref_previous.update(...set_content(NativeContent::group([NativeContent::view(ref_previous_icon.clone())])))); non-reference nested children stay ref-children omissions; only PageNavigator regenerates"
+    recorded_at: "2026-11-01T11:24:04.565Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/PageNavigator/PageNavigator.rs
+    commit_sha: edf164d29
