@@ -59,3 +59,11 @@ evidence:
     command: node scripts/gpui-web-consistency-audit.mjs --check
     artifact_path: scripts/gpui-web-consistency-audit.mjs
     commit_sha: f12a60839
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "the consistency doc gains the references row, the source-only measurement note and the nested-ref-children explanation; the target doc names ref-children among the composition omission families; docs:check-links resolves 277 relative links and every marked claim in this slice's docs passes (the only stale stamp on main remains docs/architecture/unity-target.md, owned by other active specs)"
+    recorded_at: "2026-11-01T10:56:12.812Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-web-consistency.md
+    commit_sha: "1ed45690f"
