@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Badge, Button, Checkbox, Divider, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Divider, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -385,4 +385,21 @@ fn mounted_button_action_callback_pointer_and_keyboard(cx: &mut TestAppContext) 
     assert_eq!(calls.get(), 2, "Space activates the action");
     tap_key(cx, "enter");
     assert_eq!(calls.get(), 3, "Enter activates the action");
+}
+
+#[gpui::test]
+fn mounted_alert_reference_action_forwards_to_parent_callback(cx: &mut TestAppContext) {
+    let calls = Rc::new(Cell::new(0usize));
+    let recorded = calls.clone();
+    let (_view, cx) = cx.add_window_view(|_, _| {
+        Alert::default()
+            .label("Heads up")
+            .dismissible(true)
+            .on_dismiss(move |_window, _cx| recorded.set(recorded.get() + 1))
+    });
+    let dismiss = cx.debug_bounds("alert-dismiss").expect("generated Alert dismiss reference must render");
+    cx.simulate_click(dismiss.center(), Modifiers::default());
+    assert_eq!(calls.get(), 1, "clicking the retained child forwards to the parent callback once");
+    cx.simulate_click(dismiss.center(), Modifiers::default());
+    assert_eq!(calls.get(), 2, "each activation forwards once");
 }
