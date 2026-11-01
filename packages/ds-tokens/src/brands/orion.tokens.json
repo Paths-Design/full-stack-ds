@@ -760,6 +760,22 @@
           "fsds.light": "#034FD6",
           "fsds.dark": "#8CBFFF"
         }
+      },
+      "alert": {
+        "$type": "color",
+        "$value": "#C8402C",
+        "$extensions": {
+          "fsds.light": "#C8402C",
+          "fsds.dark": "#C8402C"
+        }
+      },
+      "clear": {
+        "$type": "color",
+        "$value": "#5F8F5A",
+        "$extensions": {
+          "fsds.light": "#5F8F5A",
+          "fsds.dark": "#5F8F5A"
+        }
       }
     },
     "feedback": {
@@ -943,6 +959,16 @@
             "fsds.light": "#03449B",
             "fsds.dark": "#8CBFFF"
           }
+        }
+      }
+    },
+    "surface": {
+      "moss": {
+        "$type": "color",
+        "$value": "#7D8F82",
+        "$extensions": {
+          "fsds.light": "#7D8F82",
+          "fsds.dark": "#7D8F82"
         }
       }
     }
@@ -1383,6 +1409,61 @@
           "$value": {
             "value": 2,
             "unit": "px"
+          }
+        }
+      }
+    },
+    "graphic": {
+      "size": {
+        "compact": {
+          "$type": "dimension",
+          "$value": {
+            "value": 11,
+            "unit": "px"
+          },
+          "$extensions": {
+            "fsds.light": {
+              "value": 11,
+              "unit": "px"
+            },
+            "fsds.dark": {
+              "value": 11,
+              "unit": "px"
+            }
+          }
+        },
+        "label": {
+          "$type": "dimension",
+          "$value": {
+            "value": 13,
+            "unit": "px"
+          },
+          "$extensions": {
+            "fsds.light": {
+              "value": 13,
+              "unit": "px"
+            },
+            "fsds.dark": {
+              "value": 13,
+              "unit": "px"
+            }
+          }
+        },
+        "display": {
+          "$type": "dimension",
+          "$value": {
+            "value": 28,
+            "unit": "px"
+          },
+          "$extensions": {
+            "fsds.light": {
+              "value": 28,
+              "unit": "px"
+            },
+            "fsds.dark": {
+              "value": 28,
+              "unit": "px"
+            }
           }
         }
       }
