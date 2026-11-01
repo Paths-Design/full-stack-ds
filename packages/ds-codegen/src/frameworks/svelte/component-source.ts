@@ -2824,7 +2824,7 @@ function renderSvelteBinding(
       return lowered === null ? null : `${attr}={${lowered}}`;
     }
     case "conditional": {
-      const lowered = renderSvelteBindingValue(expr, ctx, NUMERIC_SVELTE_ATTRS.has(attr.toLowerCase()));
+      const lowered = renderSvelteBindingValue(expr, ctx, hostTag !== undefined && hostTag !== "" && NUMERIC_SVELTE_ATTRS.has(attr.toLowerCase()));
       return lowered === null ? null : `${attr}={${lowered}}`;
     }
   }

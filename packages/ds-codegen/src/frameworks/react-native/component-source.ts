@@ -2307,6 +2307,8 @@ function treeHasBindingName(node: DomNodeIR | undefined, name: string): boolean 
 
 function isSupportedBindingForComponent(name: string, component: string): boolean {
   if (name.startsWith("data-")) return false;
+  // DOM tab order is omitted by the native renderer and consumes no prop.
+  if (name === "tabindex" || name === "tabIndex") return false;
   if (name === "aria-describedby") return false;
   if (name === "name" || name === "required" || name === "aria-invalid") return false;
   if (name === "htmlFor" || name === "form") return false;
@@ -2489,8 +2491,8 @@ function eventHandlerExpr(
   }
   if (binding.kind === "channelUpdate") {
     // FEAT-CHANNEL-UPDATE-OPERATIONS-01: compose the next value and pass it
-    // through the channel's canonical setter. React Native is not in the
-    // admission rail; for a native text input the payload arrives as the
+    // through the channel's canonical setter. For a native text input,
+    // the payload arrives as the
     // `onChangeText` string arg, so setCharAt takes `(text)` and reads it
     // directly (no DOM event). toggleMembership needs no event.
     const channel = ir.behavior.normalizedChannels.find((c) => c.name === binding.channel);

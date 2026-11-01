@@ -28,7 +28,6 @@ export interface TableProps {
 const TableMessages = { content: "Table content" };
 
 export function Table({
-  responsive = true,
   contentLabel: contentLabelProp,
   ariaLabel,
   children,
