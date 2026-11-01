@@ -76,6 +76,20 @@ namespace GamePauseMenu.Tests
         }
 
         [Test]
+        public void InitiallyHiddenMapMarkerMatchesItsSwitchBeforeAnyInteraction()
+        {
+            using var host = new TestHost();
+            var rover = host.App.Map.VisibilitySwitch("rover-07");
+            Assert.That(host.App.State.IsIconVisible("rover-07"), Is.False);
+            Assert.That(rover.Checked, Is.False);
+            Assert.That(host.App.Map.IsMarkerPlotted("rover-07"), Is.False);
+
+            host.Submit(rover.Trigger);
+            Assert.That(host.App.State.IsIconVisible("rover-07"), Is.True);
+            Assert.That(host.App.Map.IsMarkerPlotted("rover-07"), Is.True);
+        }
+
+        [Test]
         public void I3_MarkerActivationOpensAnchoredPopoverWithDetail()
         {
             using var host = new TestHost();
@@ -313,6 +327,11 @@ namespace GamePauseMenu.Tests
             Assert.That(host.App.Settings.RemapButton("interact").text, Is.EqualTo("K"));
             Assert.That(host.App.Settings.RemapStatus.text, Does.Contain("INTERACT"));
             Assert.That(host.App.Settings.RemapStatus.text, Does.Contain("K"));
+
+            host.Submit(host.App.Settings.RemapButton("interact"));
+            Assert.That(host.App.Settings.RemapActionLabel.text, Does.Contain("CURRENT BINDING K"));
+            host.Key(host.App.Root, KeyCode.Escape);
+            Assert.That(host.App.State.RemapBinding("interact"), Is.EqualTo("K"));
         }
 
         [Test]

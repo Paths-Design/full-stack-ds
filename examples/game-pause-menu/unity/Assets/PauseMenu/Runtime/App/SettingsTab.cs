@@ -106,7 +106,7 @@ namespace GamePauseMenu
             if (action == null) throw new ArgumentException("Unknown remap action id '" + actionId + "'.");
             app.State.RemapModalOpen = true;
             app.State.RemapActionId = actionId;
-            RemapActionLabel.text = action.Label + "  ·  CURRENT BINDING " + action.Binding;
+            RemapActionLabel.text = action.Label + "  ·  CURRENT BINDING " + app.State.RemapBinding(actionId);
             RemapPrompt.text = layout.Settings.RemapModal.Prompt;
             RemapModal.style.display = DisplayStyle.Flex;
             RemapModal.BringToFront();
