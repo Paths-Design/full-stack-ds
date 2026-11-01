@@ -1,9 +1,10 @@
 id: TABLE-WEB-RESPONSIVE-01
 title: 'Honor Table scrolling policy and keyboard viewport access'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: table-web-responsive
 created_at: '2026-11-01T03:24:18.913Z'
-updated_at: '2026-11-01T03:24:18.913Z'
+updated_at: '2026-11-01T03:24:57.640Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
