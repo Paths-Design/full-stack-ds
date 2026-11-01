@@ -61,9 +61,11 @@ The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/s
 classifies every contract and sidecar leaf the target can see as `lowered`,
 `pending` or `refused`, by pointer FAMILY and never by component identity: identity,
 anatomy structure, token bindings, variant axes and the admitted style vocabulary
-are lowered; DOM bindings/events/attrs, iteration, component references, content
-transforms, glyph rendering, surface behaviour, motion, accessibility, forms and
-cross-component semantics are `pending`; authoring/CSS-only metadata is `refused`.
+are lowered; DOM bindings/events/attrs, iteration, content transforms, glyph
+rendering, surface behaviour, motion, accessibility, forms and cross-component
+semantics are `pending`; authoring/CSS-only metadata is `refused`. By-reference
+composition is lowered for the static facts (see below) and pending for dynamic
+child bindings and child event wiring.
 The ledger is ordered and terminal, so an unadjudicated family is refused rather
 than silently supported. The [boundary audit](../../packages/ds-codegen/src/frameworks/gpui/boundary.test.ts)
 fails an admitted component that relies on that catch-all, which is what forces an
@@ -81,6 +83,22 @@ its reason. Two rules keep the projection honest:
   admitted scalar still fails generation instead of becoming an omission.
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
+
+### By-reference composition
+
+Anatomy nodes that render another contract (`componentRef`) are realized as
+**retained child components** rather than dropped: the generated parent holds one
+`Option<Entity<Child>>` per reference (created lazily on first render, so child
+state survives parent redraws), projects the reference's static literal props onto
+the child's generated builders, and renders the child entity in the parent tree.
+Dynamic child prop bindings and child event wiring are constructed-once facts this
+projection does not update, so they are named as `ref-binding`/`ref-event`
+omissions in the component receipt; a child prop with no projected builder (a
+reserved name such as `type`, or a non-literal value) is named as `ref-attr`.
+```
+parent parts: root, previous, previousIcon, input, commit, next, nextIcon, choices
+refs:        ref_previous: Option<Entity<Button>>, ref_previousIcon: Option<Entity<Icon>>, …
+```
 
 What the projection does **not** claim: an interactive, accessible or
 pixel-equivalent realization of the pending families.
@@ -279,7 +297,7 @@ claims. The earlier `GPUI-TARGET-PILOT-01` records the initial Boolean pilot.
 | Text | Letter spacing, text transformation, justify alignment and the `truncate` prop are omitted. A transform/justify variant builder can select an authored axis while its unsupported styling remains a recorded no-op. |
 | Badge | `icon` is narrowed to `SharedString` content; arbitrary native icon children and `showStatusIcon` are not realized. |
 | Divider | `thickness`, `title` and `decorative` props are omitted. Supported token/design-slot overrides still control admitted border geometry. |
-| All admitted components | Accessibility semantics, screen-reader behavior, form submission, field association, motion, compound composition and arbitrary native children are not established. |
+| All admitted components | Accessibility semantics, screen-reader behavior, form submission, field association, motion and compound subcomponent dispatch are not established. By-reference composition renders retained child components with static props only; dynamic child bindings and child event wiring are receipted omissions, and arbitrary native children are not established. |
 | Target breadth | The allowlist does not establish full-corpus semantics, cross-platform behavior, upstream-main compatibility or visual parity. |
 
 Further promotion requires admitting normalized capabilities and independent
