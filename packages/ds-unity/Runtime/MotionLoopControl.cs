@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using UnityEngine.UIElements;
 
 namespace FullStackDS
@@ -20,6 +21,7 @@ namespace FullStackDS
         private readonly float[] sizePixels;
         private string size = string.Empty;
         private float elapsedMs;
+        private long lastTimestamp;
         private bool reducedMotion;
 
         private MotionLoopControl(VisualElement host, VisualElement target, int durationMs, float multiplier, float[] easing, float reducedValue, string[] sizeNames, float[] sizePixels)
@@ -33,7 +35,9 @@ namespace FullStackDS
             this.sizeNames = sizeNames ?? throw new ArgumentNullException(nameof(sizeNames));
             this.sizePixels = sizePixels ?? throw new ArgumentNullException(nameof(sizePixels));
             if (sizeNames.Length == 0 || sizeNames.Length != sizePixels.Length) throw new ArgumentException("Loop visual size carriers must align.");
-            host.RegisterCallback<AttachToPanelEvent>(_ => RefreshSize());
+            if (multiplier <= 0f || float.IsNaN(multiplier) || float.IsInfinity(multiplier)) throw new ArgumentOutOfRangeException(nameof(multiplier));
+            lastTimestamp = Stopwatch.GetTimestamp();
+            host.RegisterCallback<AttachToPanelEvent>(_ => { lastTimestamp = Stopwatch.GetTimestamp(); RefreshSize(); });
             RefreshSize();
             target.schedule.Execute(Tick).Every(16);
             Apply(0f);
@@ -70,9 +74,12 @@ namespace FullStackDS
 
         private void Tick()
         {
+            var now = Stopwatch.GetTimestamp();
+            var deltaMs = (now - lastTimestamp) * 1000f / Stopwatch.Frequency;
+            lastTimestamp = now;
             if (reducedMotion || durationMs <= 0) return;
-            elapsedMs += 16f * Math.Max(0f, multiplier);
-            var duration = durationMs;
+            elapsedMs += deltaMs;
+            var duration = durationMs * multiplier;
             var progress = ((elapsedMs % duration) + duration) % duration / duration;
             Apply(360f * Ease(progress));
         }

@@ -97,9 +97,11 @@ func _bezier(progress: float) -> float:
 func _process(delta: float) -> void:
 	if reduced_motion or not is_instance_valid(rendered): return
 	var duration := float(configuration.get("durationMs", 0.0))
-	if duration <= 0.0: return
-	elapsed_ms = fposmod(elapsed_ms + delta * 1000.0 * float(configuration.get("multiplier", 1.0)), duration)
-	angle_degrees = 360.0 * _bezier(elapsed_ms / duration)
+	var multiplier := float(configuration.get("multiplier", 1.0))
+	if duration <= 0.0 or multiplier <= 0.0: return
+	var period := duration * multiplier
+	elapsed_ms = fposmod(elapsed_ms + delta * 1000.0, period)
+	angle_degrees = 360.0 * _bezier(elapsed_ms / period)
 	rendered.queue_redraw()
 
 func _paint() -> void:

@@ -1484,6 +1484,21 @@ namespace FullStackDS.Tests
             spinner.ReducedMotion = true;
             Assert.That(Math.Abs(spinner.Visual.style.rotate.value.angle.value), Is.LessThan(0.001f));
         }
+        [Test] public void MotionLoopUsesElapsedTimeAndLengthensThePeriodWithMultiplier()
+        {
+            var host = Mount(new VisualElement());
+            var target = new VisualElement(); host.Add(target);
+            var control = MotionLoopControl.Attach(host, target, 800, 2f, new[] { 0f, 0f, 1f, 1f }, 0f,
+                new[] { "sm" }, new[] { 16f });
+            var timestamp = typeof(MotionLoopControl).GetField("lastTimestamp", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var tick = typeof(MotionLoopControl).GetMethod("Tick", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.That(timestamp, Is.Not.Null);
+            Assert.That(tick, Is.Not.Null);
+            timestamp.SetValue(control, System.Diagnostics.Stopwatch.GetTimestamp() - System.Diagnostics.Stopwatch.Frequency / 5);
+            tick.Invoke(control, null);
+            Assert.That(target.style.rotate.value.angle.value, Is.EqualTo(45f).Within(5f),
+                "200 ms of elapsed time must cover one eighth of the authored 800 ms x 2 period even after a delayed callback");
+        }
         [Test] public void MarkdownPaintsTheDeclaredSourceTextOnly()
         {
             var markdown = Mount(new FullStackDS.Markdown());

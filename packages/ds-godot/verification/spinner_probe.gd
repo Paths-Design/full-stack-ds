@@ -27,6 +27,11 @@ func _ready() -> void:
 	check(spinner.rendered.custom_minimum_size == Vector2(24, 24), "Ring child did not receive source-bound geometry")
 	spinner._process(0.2)
 	check(absf(spinner.angle_degrees - 90.0) < 0.2, "Quarter-period loop did not rotate to the declared angle")
+	spinner.configuration["multiplier"] = 2.0
+	spinner.elapsed_ms = 0.0
+	spinner._process(0.2)
+	check(absf(spinner.angle_degrees - 45.0) < 0.2, "Duration multiplier did not lengthen the loop period")
+	spinner.configuration["multiplier"] = 1.0
 	spinner.reduced_motion = true
 	spinner._process(0.2)
 	check(spinner.angle_degrees == 0.0, "Reduced motion did not hold the authored static angle")

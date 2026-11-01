@@ -49,6 +49,9 @@ describe("native loop visual plan", () => {
     const anatomy = fixture();
     anatomy.dom!.children[0]!.attrs["aria-hidden"] = "false";
     expect(() => nativeLoopVisualPlan(anatomy)).toThrow("one owned decorative visual child");
+    const conditional = fixture();
+    conditional.motion.loops[0]!.when = { variant: "size", equals: "lg" };
+    expect(() => nativeLoopVisualPlan(conditional)).toThrow("variant-gated loops require a native conditional carrier");
   });
 
   it("emits the normalized ring plan into a renamed Godot scene", () => {

@@ -46,6 +46,7 @@ export function nativeLoopVisualPlan(ir: ComponentIR): NativeLoopVisualPlan | un
   if (ir.motion.loops.length !== 1 || ir.motion.sequence || ir.interaction || ir.formControl || ir.surface || ir.compoundParts.length || ir.behavior.normalizedChannels.length)
     fail("loop host must be a passive single-loop visual");
   const loop = ir.motion.loops[0]!;
+  if (loop.when) fail("variant-gated loops require a native conditional carrier");
   const frames = loop.effect.keyframes;
   if (loop.driver !== "repeat" || loop.effect.kind !== "rotation" || frames.length !== 2 ||
       frames[0]?.offset !== 0 || frames[0].value !== 0 || frames[1]?.offset !== 1 || frames[1].value !== 360)
