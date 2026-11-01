@@ -64,3 +64,11 @@ evidence:
     exit_code: 0
     artifact_path: scripts/gpui-web-consistency-audit.mjs
     commit_sha: "8215ab6ad"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "--self-test mutates a measured count in memory and asserts the regression, stale-entry and removed-entry detections fire, exiting 0 only when all three do; it touches no repository file"
+    recorded_at: "2026-11-01T10:24:20.198Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --self-test
+    exit_code: 0
+    artifact_path: scripts/gpui-web-consistency-audit.mjs
+    commit_sha: "8215ab6ad"
