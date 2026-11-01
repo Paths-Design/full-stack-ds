@@ -56,3 +56,7 @@ evidence:
     status: pass
     evidence_ref: "node tmp/family-pending.mjs Accordion,Tabs,Popover,Details -> pending 0 for all four (Accordion 206 lowered/231 refused, Details 212/159, Popover 136/137, Tabs 201/276); pnpm run audit:godot-boundary -> exit 0, 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; ledger 156 rules, lowered 8876 / pending 534 / refused 8091 corpus-wide, 0 unclassified"
     recorded_at: "2026-11-01T09:35:21.064Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:godot rows: disclosure-roving-focus (arrow advance + wrap, automatic activation follows focus), disclosure-aria-expanded (per-item structural aria-expanded), disclosure-dismissal (outside click, closeOnOutsideClick gate honoured, escape), disclosure-style-projection (font 16 / colour #141414 / line spacing 29 reach trigger, item button and item-body text), disclosure-accessibility (accessible name, aria-controls + aria-labelledby wired, focus ring width 2 colour #0566fe, projected state mapping), disclosure-activation-mode (automatic selects, manual moves focus only), disclosure-focus-ring (anatomy summary host focusable, ring painted on focus and cleared on exit)"
+    recorded_at: "2026-11-01T09:35:22.257Z"
