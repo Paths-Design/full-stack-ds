@@ -116,25 +116,25 @@ export function parseTokenCss(css: string): TokenCssScopes {
       if (layer.selector !== "@layer core,semantic,components,theme,brand,density") fail(layer.selector);
       continue;
     }
-    const name = /^@layer (core|semantic|theme|brand|density)$/.exec(layer.selector)?.[1];
-    if (!name || seenLayers.includes(name)) fail(layer.selector);
-    seenLayers.push(name);
-    if (name === "density") continue; // This API selects no data-density scope.
+    const layerName = /^@layer (core|semantic|theme|brand|density)$/.exec(layer.selector)?.[1];
+    if (!layerName || seenLayers.includes(layerName)) fail(layer.selector);
+    seenLayers.push(layerName);
+    if (layerName === "density") continue; // This API selects no data-density scope.
     const visit = (body: string, media = false): void => {
       for (const rule of rules(body)) {
         const currentPosition = position++;
         if (rule.body === undefined) fail(rule.selector);
         if (rule.selector.startsWith("@")) {
-          if (media || rule.selector !== "@media (prefers-color-scheme: dark)" || !["theme", "brand"].includes(name)) fail(rule.selector);
+          if (media || rule.selector !== "@media (prefers-color-scheme: dark)" || !["theme", "brand"].includes(layerName)) fail(rule.selector);
           visit(rule.body!, true); continue;
         }
         const values = declarations(rule.body!);
-        if (name === "core" || name === "semantic") {
+        if (layerName === "core" || layerName === "semantic") {
           if (rule.selector !== ":root" || media) fail(rule.selector);
-          for (const [key, value] of values) (name === "core" ? core : semantic).set(key, value);
+          for (const [key, value] of values) (layerName === "core" ? core : semantic).set(key, value);
           continue;
         }
-        if (name === "theme") {
+        if (layerName === "theme") {
           const mode: TokenTheme | undefined = rule.selector === themeSelector("light") ? "light"
             : rule.selector === themeSelector("dark") || (media && rule.selector === ":root") ? "dark" : undefined;
           if (!mode) fail(rule.selector);
@@ -205,7 +205,7 @@ export function resolveTokenScalar(value: string, lookup: TokenLookup, scalar: (
     }
     catch { return { kind: "unsupported" }; }
     const name = raw.slice(4, end).trim();
-    if (!/^--[A-Za-z0-9_-]+$/.test(name) || raw.at(-1) !== ")") return { kind: "unsupported" };
+    if (!/^--[A-Za-z0-9_-]+$/.test(name) || raw[raw.length - 1] !== ")") return { kind: "unsupported" };
     const target = lookup(name);
     if (target.kind === "unsupported" || seen.has(name)) return { kind: "unsupported" };
     const resolved = target.kind === "missing" ? target : resolveTokenScalar(target.value, lookup, scalar, new Set([...seen, name]));
