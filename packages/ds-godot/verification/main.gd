@@ -402,7 +402,7 @@ func _ready() -> void:
 	Input.parse_input_event(next_key)
 	await get_tree().process_frame
 	check(get_viewport().gui_get_focus_owner() == disclosure_tabs.items[0].button, "Roving focus did not wrap")
-	check(disclosure_tabs.value == "b", "Focus movement changed the selected tab")
+	check(disclosure_tabs.value == "a", "Automatic activation did not follow the wrapped focus ring")
 	rows.append({"id":"disclosure-roving-focus","advanced":"b","wrapped":"a"})
 	disclosure_tabs.queue_free()
 	await get_tree().process_frame
@@ -510,6 +510,49 @@ func _ready() -> void:
 	rows.append({"id":"disclosure-accessibility","name":"Sections","focusRingWidth":2,"relations":2})
 	accessible_accordion.queue_free()
 	accessible_tabs.queue_free()
+	await get_tree().process_frame
+
+	# Disclosure completion: activation mode and the anatomy-hosted focus ring.
+	var mode_tabs = make_control("Tabs")
+	add_child(mode_tabs)
+	for key in ["a", "b", "c"]:
+		var mode_body := Label.new()
+		mode_body.text = "Mode " + key
+		mode_tabs.add_item(key, key, mode_body)
+	await get_tree().process_frame
+	mode_tabs.items[0].button.grab_focus()
+	var advance := InputEventKey.new()
+	advance.keycode = KEY_RIGHT
+	advance.physical_keycode = KEY_RIGHT
+	advance.pressed = true
+	Input.parse_input_event(advance)
+	await get_tree().process_frame
+	check(mode_tabs.value == "b", "Automatic activation did not follow the focus ring")
+	mode_tabs.activation_mode = "manual"
+	mode_tabs.items[0].button.grab_focus()
+	Input.parse_input_event(advance)
+	await get_tree().process_frame
+	check(get_viewport().gui_get_focus_owner() == mode_tabs.items[1].button, "Manual activation did not move focus")
+	check(mode_tabs.value == "b", "Manual activation changed the selection without an explicit activation")
+	rows.append({"id":"disclosure-activation-mode","automatic":"b","manualFocusOnly":true})
+	mode_tabs.queue_free()
+	await get_tree().process_frame
+
+	var ringed_details = make_control("Details")
+	add_child(ringed_details)
+	await get_tree().process_frame
+	var summary_host = ringed_details.get_part("summary")
+	check(summary_host != null, "Details summary host is missing")
+	if summary_host != null:
+		check(summary_host.focus_mode == Control.FOCUS_ALL, "Projected focus part is not focusable")
+		summary_host.grab_focus()
+		await get_tree().process_frame
+		check(ringed_details.has_focus_ring(), "Anatomy focus ring did not activate on the focused part")
+		summary_host.release_focus()
+		await get_tree().process_frame
+		check(not ringed_details.has_focus_ring(), "Anatomy focus ring did not clear on focus exit")
+	rows.append({"id":"disclosure-focus-ring","focusable":true,"ringOnFocus":true,"cleared":true})
+	ringed_details.queue_free()
 	await get_tree().process_frame
 
 	# Catalog load: every admitted component scene must exist, parse and

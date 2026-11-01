@@ -192,7 +192,7 @@
     "root.line-height: no Godot anatomy style mapping",
     "root.display: platform web only",
     "root.padding: host root has no padded panel to inset its children",
-    "focus: state selector not lowered",
+    "focus: focus selector carries no outline declarations",
     "list.list-style: platform web only",
     "list.padding: platform web only",
     "list.margin: platform web only",

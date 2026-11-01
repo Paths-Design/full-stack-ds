@@ -104,8 +104,8 @@
       "match": [
         "contract:/anatomy/details/*/multiple"
       ],
-      "disposition": "pending",
-      "reason": "multi-selection behaviour is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The control runtime tracks one open item per control; multi-open disclosure is not realised, so the descriptor is not claimed."
     },
     {
       "id": "anatomy-details-subcomponent",
@@ -231,8 +231,8 @@
         "contract:/anatomy/dom/**/children/*/if",
         "contract:/anatomy/dom/**/ref:*/if"
       ],
-      "disposition": "pending",
-      "reason": "conditional part presence is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Conditional anatomy guards are not mounted: a guarded region is emitted structurally only when unguarded, and the condition itself has no native carrier here."
     },
     {
       "id": "anatomy-dom-properties",
@@ -412,16 +412,16 @@
       "match": [
         "contract:/anatomy/dom/**/attrs/aria-*"
       ],
-      "disposition": "pending",
-      "reason": "ARIA attribute semantics are not exposed by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored aria attributes are DOM authoring; structural ARIA state is projected from states/bindings, not from these literal attributes."
     },
     {
       "id": "anatomy-dom-attrs-role",
       "match": [
         "contract:/anatomy/dom/**/attrs/role"
       ],
-      "disposition": "pending",
-      "reason": "accessibility roles are a semantic mapping the shared runtime does not expose yet"
+      "disposition": "refused",
+      "reason": "Authored role attributes are DOM authoring; Godot exposes no accessible-role property, so they are neither projected nor approximated."
     },
     {
       "id": "anatomy-dom-attrs-data",
@@ -509,8 +509,8 @@
         "contract:/surface/anchor/**",
         "contract:/surface/timing/**"
       ],
-      "disposition": "pending",
-      "reason": "content-layer positioning and timing are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Anchor/positioning/timing policy is runtime-owned: collision flip-shift, placement props and entry/exit timing are not implemented, so the declared layer policy is not claimed."
     },
     {
       "id": "surface-modality",
@@ -518,8 +518,8 @@
         "contract:/surface/modality",
         "contract:/surface/modalityProp"
       ],
-      "disposition": "pending",
-      "reason": "modality and focus containment are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Blocking modality (backdrop, focus containment, modality gate) is not realised by the presence-only surface runtime."
     },
     {
       "id": "surface-content",
@@ -842,8 +842,8 @@
       "match": [
         "contract:/stateMachine/**"
       ],
-      "disposition": "pending",
-      "reason": "the authored state machine is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The declarative transition table documents the state changes the runtime already implements from channel and interaction facts; it is authoring guidance, not an emission fact."
     },
     {
       "id": "data-model",
@@ -1218,6 +1218,26 @@
       "via": "closeOnEscape / closeOnOutsideClick / closeOnBlur are read as dismissal gates by the runtime"
     },
     {
+      "id": "prop-activation-mode",
+      "match": [
+        "contract:/props/*/members/*:activationMode",
+        "contract:/props/*/members/*:activationMode/**",
+        "contract:/props/activationMode"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime selects the focused item under automatic activation and only moves focus under manual activation"
+    },
+    {
+      "id": "prop-return-focus",
+      "match": [
+        "contract:/props/*/members/*:returnFocus",
+        "contract:/props/*/members/*:returnFocus/**",
+        "contract:/props/returnFocus"
+      ],
+      "disposition": "lowered",
+      "via": "dismissing a surface returns focus to its trigger"
+    },
+    {
       "id": "prop-focus-management",
       "match": [
         "contract:/props/*/members/*:initialFocus",
@@ -1239,8 +1259,8 @@
         "contract:/props/*/members/*:politeness/**",
         "contract:/props/politeness"
       ],
-      "disposition": "pending",
-      "reason": "focus/keyboard/announcement management is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "initial-focus props are refused for the same reason as focus/initialFocus: mount-time focus is the embedding scene's decision; the realised activation-mode and return-focus props are split out above."
     },
     {
       "id": "prop-modality-layer",
@@ -1255,8 +1275,8 @@
         "contract:/props/*/members/*:placement/**",
         "contract:/props/placement"
       ],
-      "disposition": "pending",
-      "reason": "modality, placement and content-layer positioning are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "modal/side placement props are not honoured by the presence-only surface runtime; the scene root stays a panel and placement is runtime-owned."
     },
     {
       "id": "prop-form-validation",
@@ -1626,8 +1646,8 @@
         "styles:/**/outline-*/**",
         "styles:/**/outline-*"
       ],
-      "disposition": "pending",
-      "reason": "focus-ring presentation is not realised while focus management is pending"
+      "disposition": "lowered",
+      "via": "focus-predicate outline rules project into a focus ring: the control shape builds the native focus StyleBox, the anatomy shape paints a projected ring on a focusable part host"
     },
     {
       "id": "styles-elevation",
@@ -1655,8 +1675,8 @@
         "styles:/**/opacity/**",
         "styles:/**/visibility/**"
       ],
-      "disposition": "pending",
-      "reason": "opacity and visibility are applied only when declared unconditionally; the corpus declares them under state selectors the control shape does not host yet."
+      "disposition": "refused",
+      "reason": "Opacity and visibility are declared under state selectors in the corpus; the runtime applies only unconditional declarations, so state-scoped effects are not claimed."
     },
     {
       "id": "styles-content-layer",
@@ -1682,8 +1702,8 @@
         "styles:/**/user-select/**",
         "styles:/**/resize/**"
       ],
-      "disposition": "pending",
-      "reason": "pointer/selection affordances are not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "Cursor, user-select and resize declarations are authored per state; the control runtime has no state selector to switch them, so they are not projected (the uniform cursor subset is applied when declared unconditionally)."
     },
     {
       "id": "styles-typography-line",
@@ -1700,8 +1720,8 @@
         "styles:/**/text-align/**",
         "styles:/**/text-align"
       ],
-      "disposition": "pending",
-      "reason": "the runtime can set native horizontal alignment, but the corpus declares text-align only under state/variant selectors the control shape does not host yet."
+      "disposition": "refused",
+      "reason": "text-align is declared only under state/variant selectors the control shape does not host; the runtime can set alignment but no unconditional declaration exists to project."
     },
     {
       "id": "styles-typography",

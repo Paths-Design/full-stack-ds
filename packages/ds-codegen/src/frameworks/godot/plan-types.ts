@@ -72,6 +72,8 @@ export interface GodotAnatomyPlan {
   projectedProps: string[];
   /** Prop axis receipt: props this shape does not realize. */
   excluded: string[];
+  /** Focus outlines projected from `:focus-visible` rules onto part hosts. */
+  focusRings?: { part: string; width: number; color: string; offset: number }[];
   /** Named non-claims; never empty when the plan diverges from the contract. */
   omissions: string[];
 }

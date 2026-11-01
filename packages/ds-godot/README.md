@@ -37,6 +37,8 @@ Unconditional style rules that address a hosted part are projected into the conf
 
 Godot's accessibility tree is not populated by this project, so that aria state is a structural projection rather than assistive-technology delivery. Initial-focus targeting, scroll locking, CSS motion/typography/focus-ring projection and blocking modality (backdrop, focus containment) are not realized yet and stay `pending` in `support-boundary.json`.
 
+The disclosure family (Accordion, Tabs, Popover, Details) has no pending boundary leaves: every contract fact is either lowered with a headless witness or refused with a written reason. That includes manual/automatic activation (`activationMode`), the anatomy-hosted focus ring on Details' summary, and the projected accessibility name/relations.
+
 ## Generate and verify
 
 From the repository root:

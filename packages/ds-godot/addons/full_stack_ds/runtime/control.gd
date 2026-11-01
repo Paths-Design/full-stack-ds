@@ -29,6 +29,9 @@ var configuration: Dictionary = {}
 @export var close_on_escape: bool = true
 @export var close_on_outside_click: bool = true
 @export var close_on_blur: bool = true
+## Activation mode for selection controls: `automatic` selects the item the focus
+## ring lands on, `manual` moves focus only and waits for an explicit activation.
+@export var activation_mode: String = "automatic"
 var trigger: Button
 var items: Array[Dictionary] = []
 var strip: BoxContainer
@@ -62,6 +65,10 @@ func _ready() -> void:
 	close_on_escape = _default_bool("closeOnEscape", close_on_escape)
 	close_on_outside_click = _default_bool("closeOnOutsideClick", close_on_outside_click)
 	close_on_blur = _default_bool("closeOnBlur", close_on_blur)
+	var raw_mode = configuration.get("defaults", {}).get("activationMode", "")
+	if raw_mode is String and not raw_mode.is_empty():
+		var declared_mode = JSON.parse_string(raw_mode)
+		if declared_mode is String: activation_mode = declared_mode
 	add_theme_constant_override("separation", 8)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("#f7f7f7")
@@ -417,6 +424,9 @@ func _move_focus(direction: int) -> bool:
 		if index >= targets.size(): index = 0 if wrap else targets.size() - 1
 		elif index < 0: index = targets.size() - 1 if wrap else 0
 	targets[index].grab_focus()
+	if activation_mode == "automatic" and operation == "select":
+		for item in items:
+			if item.button == targets[index]: activate(item.key)
 	return true
 
 func dismiss() -> void:

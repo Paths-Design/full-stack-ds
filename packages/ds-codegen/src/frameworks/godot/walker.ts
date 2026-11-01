@@ -327,6 +327,7 @@ function buildAnatomyPlan(ir: ComponentIR, dom: DomNodeIR): GodotAnatomyPlan {
     parts: ir.parts.filter(part => part.name !== "root" && walk.hosted.has(part.name)).map(part => part.name),
     ...(walk.contentPart ? { contentPart: walk.contentPart } : {}),
     styles: styles.rules,
+    ...(styles.focusRings ? { focusRings: styles.focusRings } : {}),
     projectedProps,
     excluded,
     omissions,
@@ -637,11 +638,34 @@ function rootType(dom: DomNodeIR): { type: string; kind: HostKind } {
 
 interface StyleProjection {
   rules: GodotStyleRule[];
+  focusRings?: AnatomyFocusRing[];
   omissions: string[];
+}
+
+/** A focus outline projected onto one part host. */
+export interface AnatomyFocusRing {
+  part: string;
+  width: number;
+  color: string;
+  offset: number;
+}
+
+function focusRingFor(rule: { declarations: { property: string; value: string }[] }): { width: number; color: string; offset: number } | undefined {
+  let width = 0;
+  let color = "";
+  let offset = 0;
+  for (const declaration of rule.declarations) {
+    const px = /^(-?\d+(?:\.\d+)?)px$/.exec(declaration.value.trim());
+    if (declaration.property === "outline-width" && px) width = Math.round(Number(px[1]));
+    else if (declaration.property === "outline-color" && /^#[0-9a-f]{3,8}$/i.test(declaration.value.trim())) color = declaration.value.trim();
+    else if (declaration.property === "outline-offset" && px) offset = Math.round(Number(px[1]));
+  }
+  return width > 0 ? { width, color: color || "#ffffff", offset } : undefined;
 }
 
 function projectStyles(ir: ComponentIR, walk: AnatomyWalk): StyleProjection {
   const rules: GodotStyleRule[] = [];
+  const focusRings: AnatomyFocusRing[] = [];
   const omissions: string[] = [];
   const kinds = new Map<string, HostKind>();
   for (const draft of walk.drafts) if (!kinds.has(draft.part)) kinds.set(draft.part, draft.kind);
@@ -662,6 +686,14 @@ function projectStyles(ir: ComponentIR, walk: AnatomyWalk): StyleProjection {
     }
     const statePredicates = rule.predicates.filter(predicate => predicate.kind !== "variant");
     const unknownAxis = rule.predicates.some(predicate => predicate.kind === "variant" && !axes.has(predicate.axis));
+    // A rule whose only state predicate is focus is the focus ring for that part:
+    // project it as a focus outline instead of dropping it as conditional styling.
+    if (statePredicates.length === 1 && statePredicates[0]!.kind === "focus" && !unknownAxis && !rule.pseudo) {
+      const ring = focusRingFor(rule);
+      if (ring) focusRings.push({ part: rule.part, ...ring });
+      else omissions.push(`${rule.sourceKey}: focus selector carries no outline declarations`);
+      continue;
+    }
     if (statePredicates.length > 0 || unknownAxis) {
       omissions.push(`${rule.sourceKey}: state selector not lowered`);
       continue;
@@ -698,7 +730,7 @@ function projectStyles(ir: ComponentIR, walk: AnatomyWalk): StyleProjection {
     }
   }
   for (const rule of ir.nativeStyleRules?.unsupported ?? []) omissions.push(`${rule.sourceKey}: ${rule.reason}`);
-  return { rules, omissions };
+  return { rules, ...(focusRings.length ? { focusRings } : {}), omissions };
 }
 
 /** Whether a claimed host kind can express one declaration natively. */
