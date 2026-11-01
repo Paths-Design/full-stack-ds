@@ -68,3 +68,8 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run audit:godot-boundary -> exit 0: 'godot support boundary: {\"lowered\":8142,\"pending\":3416,\"refused\":5943,\"unclassified\":0} rules 140 dead 0 shape-variance 155' + 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; ledger pinned by boundary.test.ts 13/13 and capabilities.test.ts 9/9"
+    recorded_at: "2026-11-01T07:58:54.180Z"
