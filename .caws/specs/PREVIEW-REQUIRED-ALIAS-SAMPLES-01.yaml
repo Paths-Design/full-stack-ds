@@ -1,0 +1,50 @@
+id: PREVIEW-REQUIRED-ALIAS-SAMPLES-01
+title: 'Derive valid required alias samples for component previews'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-01T21:15:04.284Z'
+updated_at: '2026-11-01T21:15:04.284Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Build-side required-prop sample projection and five-framework Postcard preview initialization'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/preview-prop-samples.ts'
+    - 'packages/ds-codegen/src/preview-prop-samples.test.ts'
+    - 'vite-plugin-fsds-data.ts'
+    - 'src/types/data.ts'
+    - 'src/runtime/demos.ts'
+    - 'src/runtime/demos.test.ts'
+  out: []
+invariants:
+  - 'Keep public required props and component semantics unchanged; no component-name sampling branches or compiler runtime in browser'
+  - 'No publication, disabled gates, added allowances, or claim of complete Postcard media/avatar qualification'
+acceptance:
+  - id: A1
+    given: 'required scalar object and named alias inputs'
+    when: 'the build-side projection resolves supported types'
+    then: 'constructible JSON samples preserve required field identities and unsupported or cyclic required objects are refused without evaluation'
+  - id: A2
+    given: 'the real Postcard contract and bundle'
+    when: 'each of five web previews initializes and receives valid config updates'
+    then: 'a named article author handle timestamp and all three labeled counts render without runtime errors and updates replace values'
+  - id: A3
+    given: 'defaults variants optional fields and browser consumers'
+    when: 'the sample projection is consumed'
+    then: 'defaults and explicit overrides retain precedence optional props are not fabricated and only JSON values enter the client without TypeScript runtime imports'
+  - id: A4
+    given: 'the bounded preview candidate'
+    when: 'relevant checks independent review and governed landing finish'
+    then: 'evidence is retained and broader component release obligations remain explicit'
+observability:
+  - 'Retain raw before/after tests and five-framework browser content error and screenshot evidence in canonical ignored release evidence'
+rollback:
+  - 'Revert the isolated preview projection and bundle integration without modifying component contracts or generated packages'
+non_functional: {}
+contracts:
+  - name: 'preview-inputs'
+    type: behavior
+    path: 'src/runtime/demos.ts'
