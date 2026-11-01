@@ -1,0 +1,49 @@
+id: GPUI-COMPONENT-REF-PARITY-01
+title: 'GPUI realizes by-reference composition as retained nested generated components'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T10:26:05.363Z'
+updated_at: '2026-11-01T10:26:05.363Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI componentRef lowering: retained child entities, static prop projection, receipts and rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Bounded control/static components are unchanged; composition only adds child entities to components that carry componentRef nodes'
+  - 'Every ref fact that is not projected (dynamic bindings, events, unprojectable attrs) is named in the component receipt'
+  - 'Child entities are retained across parent redraws; a child is created once, not per frame'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the components carrying componentRef nodes; when generate --target=gpui runs; then each ref node renders a retained generated child component instance instead of being dropped'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given static componentInstance attrs; when the child is constructed; then the literal target props are projected onto the child''s generated builders and dynamic bindings/events are receipted as omissions'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the generated crate; when cargo test runs on the pinned lane; then the mount witnesses that traverse ref nodes pass and no child is reinstantiated per redraw (state retention witness)'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI anatomy-part coverage rises to the rebaselined value and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-composition-lowering'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
