@@ -5,7 +5,7 @@ status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 2c94f5de7
+verified_at_commit: d3e66f3e8547d70c1b9ebdb71989f0b33c76525c
 governs:
   - package.json
   - .github/workflows/ci.yml
