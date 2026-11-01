@@ -46,3 +46,11 @@ contracts:
   - name: 'native-text-children'
     type: behavior
     path: 'packages/ds-react-native/src/components/Stat/Stat.tsx'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At clean candidate 224646866, 311 native host tests pass including Stat number/zero/bigint/Unicode and updates plus Stack/Button scalar scopes; original numeric boundary fails retained in native-host-before.log and peer-regressions-before.log; final checks/224646866-VpCSHe/frameworks.log and peer-native-final.log under .caws/state/release-evidence/RN-PROJECTED-TEXT-CHILDREN-01/. Host shim plus inspected actual Fabric text-host requirement, not native OS execution."
+    recorded_at: "2026-11-01T23:09:03.640Z"
+    command: "pnpm run test:react-native"
+    exit_code: 0
+    commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
