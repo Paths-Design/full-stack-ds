@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: Codegen Semantic Authority
 owner: "@darianrosebrook"
-updated: 2026-08-17
+updated: 2026-11-01
 governs:
   - packages/ds-codegen/src/ir.ts
   - packages/ds-codegen/src/semantics.ts

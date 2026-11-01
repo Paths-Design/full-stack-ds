@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: GPUI native target
 owner: "@darianrosebrook"
-updated: 2026-10-03
+updated: 2026-11-01
 governs:
   - packages/ds-codegen/src/frameworks/gpui/**
   - packages/ds-gpui/**
