@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Divider, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Divider, PageNavigator, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -402,4 +402,11 @@ fn mounted_alert_reference_action_forwards_to_parent_callback(cx: &mut TestAppCo
     assert_eq!(calls.get(), 1, "clicking the retained child forwards to the parent callback once");
     cx.simulate_click(dismiss.center(), Modifiers::default());
     assert_eq!(calls.get(), 2, "each activation forwards once");
+}
+
+#[gpui::test]
+fn mounted_page_navigator_nested_reference_children_render(cx: &mut TestAppContext) {
+    let (_view, cx) = cx.add_window_view(|_, _| PageNavigator::default());
+    cx.debug_bounds("page-navigator-previous").expect("retained previous button must render");
+    cx.debug_bounds("icon-root").expect("nested icon reference must render inside the retained button");
 }

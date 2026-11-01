@@ -117,8 +117,11 @@ callback: the child's callback setter receives a closure that invokes the parent
 handler (`Alert.dismiss` → parent `onDismiss`, Chip's action/dismiss triggers), so
 a retained child action reaches the owning component. Events whose expression is
 not a parent callback (paged/selection actions) stay `ref-event` omissions. Consumer children nested inside a
-reference are named as `ref-children`: they would need the referenced
-component's content API, so they are receipted rather than dropped.
+nested **references** are projected as that child's content
+(`NativeContent::view` per nested entity, set through the child's content API),
+so PageNavigator's previous/next buttons carry their icon references; a
+non-reference child nested inside a reference is named as `ref-children` and
+receipted rather than dropped.
 ```
 parent parts: root, previous, previousIcon, input, commit, next, nextIcon, choices
 refs:        ref_previous: Option<Entity<Button>>, ref_previousIcon: Option<Entity<Icon>>, …

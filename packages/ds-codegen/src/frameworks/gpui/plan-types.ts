@@ -42,6 +42,8 @@ export interface GpuiRefPlan {
   dynamic: Array<{ prop: string; setter: string; expr: string }>;
   /** Reference events forwarded to a realized parent callback. */
   events: Array<{ targetHandlerProp: string; setter: string; parentField: string }>;
+  /** Nested references passed into this child's content API. */
+  children: GpuiRefPlan[];
   /** Facts of the reference that the projection does not realize. */
   omissions: GpuiOmission[];
 }

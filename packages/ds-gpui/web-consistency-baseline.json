@@ -1207,7 +1207,7 @@
           "props": 8,
           "behavior": 0,
           "a11y": 0,
-          "refs": 5
+          "refs": 7
         }
       }
     },
@@ -2186,7 +2186,7 @@
         "props": 249,
         "behavior": 7,
         "a11y": 0,
-        "refs": 18,
+        "refs": 20,
         "present": 55
       }
     }

@@ -6,7 +6,7 @@ import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import type { NativeStyleDeclarationIR, NativeStyleRuleIR } from '../../native-style-rules.js';
 import { gpuiAnatomyPlan, gpuiAnatomyStylePlan } from './anatomy.js';
-import type { GpuiPlan, GpuiStylePlan } from './plan-types.js';
+import type { GpuiPlan, GpuiRefPlan, GpuiStylePlan } from './plan-types.js';
 import { supported, validScalar } from './style-vocabulary.js';
 /** Encode characters directly so literal backslash sequences stay literal. */
 function q(value: string): string {
@@ -210,8 +210,8 @@ ${nativeContent?'use crate::content::NativeContent;':''}
 ${plan.channel?'use crate::control::{BooleanState,ChangeRequest};':''}
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style${styles.rules.some(rule=>rule.pseudo)?',render_pseudo':''}};
 ${slotEnum}
-pub struct ${ir.name}{${plan.channel?'pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.callbacks.map(callback=>`pub ${callback.field}:Option<crate::callback::ActionHandler>,`).join('')}${!plan.channel&&plan.activations.length?'pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.childContent?'content:Option<NativeContent>,':''}${plan.slots.length?`slots:BTreeMap<${slotType},NativeContent>,`:''}${plan.refs.map(ref=>`${ref.field}:Option<gpui::Entity<crate::components::${ref.refType}>>,`).join('')}pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,${fields.join('')}}
-impl Default for ${ir.name}{fn default()->Self {let mut variants=BTreeMap::new();${axisDefaults}${plan.channel?`let mut state=BooleanState::new(${plan.defaultValue});state.disabled=${plan.disabledDefault};`:''}Self{${plan.channel?'state,hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.callbacks.map(callback=>`${callback.field}:None,`).join('')}${!plan.channel&&plan.activations.length?'hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.childContent?'content:None,':''}${plan.slots.length?'slots:BTreeMap::new(),':''}${plan.refs.map(ref=>`${ref.field}:None,`).join('')}label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,${initial.join('')}}}}
+pub struct ${ir.name}{${plan.channel?'pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.callbacks.map(callback=>`pub ${callback.field}:Option<crate::callback::ActionHandler>,`).join('')}${!plan.channel&&plan.activations.length?'pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.childContent?'content:Option<NativeContent>,':''}${plan.slots.length?`slots:BTreeMap<${slotType},NativeContent>,`:''}${flattenRefs(plan.refs).map(ref=>`${ref.field}:Option<gpui::Entity<crate::components::${ref.refType}>>,`).join('')}pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,${fields.join('')}}
+impl Default for ${ir.name}{fn default()->Self {let mut variants=BTreeMap::new();${axisDefaults}${plan.channel?`let mut state=BooleanState::new(${plan.defaultValue});state.disabled=${plan.disabledDefault};`:''}Self{${plan.channel?'state,hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.callbacks.map(callback=>`${callback.field}:None,`).join('')}${!plan.channel&&plan.activations.length?'hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.childContent?'content:None,':''}${plan.slots.length?'slots:BTreeMap::new(),':''}${flattenRefs(plan.refs).map(ref=>`${ref.field}:None,`).join('')}label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,${initial.join('')}}}}
 impl ${ir.name}{
  pub const STYLE_RULES:&'static [StyleRule]=&[${rustRules(styles.rules)}];
  pub fn label(mut self,value:impl Into<SharedString>)->Self{self.label=value.into();self}
@@ -237,8 +237,7 @@ impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  ${plan.activations.some(activation=>activation.keyboard)?`if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}`:''}
  let style_state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':plan.disabledMethod?'self.'+plan.disabledMethod:'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel||plan.activations.length?'self.hovered':'false'},active:${plan.channel||plan.activations.length?'self.active':'false'},focused:self.focused};
- ${plan.refs.length?plan.refs.map(ref=>{const locals=ref.dynamic.map(d=>`let ${ref.field}__${d.setter}=${d.expr};`).join('\n ');const update=ref.dynamic.length?`${ref.field}.update(cx,|child,cx|{${ref.dynamic.map(d=>`child.${d.setter}(${ref.field}__${d.setter},cx);`).join('')}});`:'';const wiring=ref.events.map(event=>`let ${ref.field}__${event.setter}=self.${event.parentField}.clone();\n ${ref.field}.update(cx,|child,ctx|child.${event.setter}(move |window,cx|{if let Some(handler)=${ref.field}__${event.setter}.clone(){handler(window,cx);}},ctx));`).join('\n ');
-    return [`let ${ref.field}=self.${ref.field}.get_or_insert_with(||cx.new(|_|crate::components::${ref.refType}::default()${ref.attrs.map(attr=>`.${snake(attr.prop)}(${attr.literal})`).join('')})).clone();`,locals,update,wiring].filter(Boolean).join('\n ');}).join('\n ')+'\n ':''}let root=${tree(ir,plan,styles,ir.dom!,{index:0})}.id(${q(ir.cssPrefix)});
+ ${plan.refs.length?plan.refs.map(retained=>refEmission(retained)).join('\n ')+'\n ':''}let root=${tree(ir,plan,styles,ir.dom!,{index:0})}.id(${q(ir.cssPrefix)});
  let root=apply_interaction_style(root,${q(ir.dom!.part ?? 'root')},Self::STYLE_RULES,&style_state,&theme);
  ${plan.activations.filter(activation=>activation.keyboard).map(activation=>`let root=root${pointerActivation(activation.handler)}.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(true).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,true){cx.stop_propagation();crate::callback::invoke(&this.${activation.handler},window,cx);}}));`).join('\n ')}
  ${plan.channel?`let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}));`:''}
@@ -332,6 +331,24 @@ function planFor(ir: ComponentIR): GpuiPlan {
  * styling correctness or pixels; the hand-written interaction witnesses cover
  * the bounded controls.
  */
+/** All retained references in creation order (a parent before its children). */
+function flattenRefs(refs: GpuiRefPlan[]): GpuiRefPlan[] {
+ return refs.flatMap(ref => [ref, ...flattenRefs(ref.children)]);
+}
+
+/** Creation + updates + wiring for one retained reference, children first. */
+function refEmission(ref: GpuiRefPlan): string {
+ const create = `let ${ref.field}=self.${ref.field}.get_or_insert_with(||cx.new(|_|crate::components::${ref.refType}::default()${ref.attrs.map(attr=>`.${snake(attr.prop)}(${attr.literal})`).join('')})).clone();`;
+ const children = ref.children.map(refEmission).join('\n ');
+ const content = ref.children.length
+  ? `${ref.field}.update(cx,|child,ctx|child.set_content(crate::content::NativeContent::group([${ref.children.map(child=>`crate::content::NativeContent::view(${child.field}.clone())`).join(',')}]),ctx));`
+  : '';
+ const locals = ref.dynamic.map(entry=>`let ${ref.field}__${entry.setter}=${entry.expr};`).join('\n ');
+ const update = ref.dynamic.length ? `${ref.field}.update(cx,|child,cx|{${ref.dynamic.map(entry=>`child.${entry.setter}(${ref.field}__${entry.setter},cx);`).join('')}});` : '';
+ const wiring = ref.events.map(event=>`let ${ref.field}__${event.setter}=self.${event.parentField}.clone();\n ${ref.field}.update(cx,|child,ctx|child.${event.setter}(move |window,cx|{if let Some(handler)=${ref.field}__${event.setter}.clone(){handler(window,cx);}},ctx));`).join('\n ');
+ return [create, children, content, locals, update, wiring].filter(Boolean).join('\n ');
+}
+
 function mountWitness(ir: ComponentIR, plan: GpuiPlan): string {
  const rootPart = ir.dom?.part ?? 'root';
  const selector = `${ir.cssPrefix}-${rootPart}`;
