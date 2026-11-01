@@ -1,9 +1,11 @@
 id: GAME-PAUSE-TYPOGRAPHY-01
 title: 'Orion pause menu typography parity (Inter pin across GPUI, Unity, Godot)'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Inter typography parity across GPUI/Unity/Godot: bundled static faces, two weights, zero tracking, 117 typography bbox probes green, lane tests and captures regenerated, docs updated'
 created_at: '2026-11-01T02:19:56.668Z'
-updated_at: '2026-11-01T03:03:21.401Z'
+updated_at: '2026-11-01T03:04:32.034Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
