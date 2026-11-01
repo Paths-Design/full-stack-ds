@@ -293,6 +293,41 @@ function anatomyFiles(ir: ComponentIR) {
   {relativePath:`${ir.name}/capabilities.json`,contents:JSON.stringify(capabilities,null,2)+'\n'},
  ];
 }
+/** The planner family that admits this component, used by the mount witness. */
+function planFor(ir: ComponentIR): GpuiPlan {
+ try { return gpuiPlan(ir); }
+ catch (error) { if (!isShapeRefusal(error)) throw error; return gpuiAnatomyPlan(ir).plan; }
+}
+
+/**
+ * Generated mount witness.
+ *
+ * Every admitted component gets one so `cargo test` proves the generated view
+ * actually constructs and renders — compilation alone does not. The witness is
+ * deliberately bounded: it mounts the default view with every realized boolean
+ * set true (so presence guards can pass), renders it in GPUI's test window and,
+ * unless the contract's own root guard makes the default view legitimately
+ * empty, asserts the root part reached layout. It does not claim interaction,
+ * styling correctness or pixels; the hand-written interaction witnesses cover
+ * the bounded controls.
+ */
+function mountWitness(ir: ComponentIR, plan: GpuiPlan): string {
+ const rootPart = ir.dom?.part ?? 'root';
+ const selector = `${ir.cssPrefix}-${rootPart}`;
+ const setters = plan.boolProps.map(name => `.${snake(name)}(true)`).join('');
+ const rootGuard = ir.dom?.ifProp === 'children' || (ir.dom?.ifSlot && plan.slots.length > 0);
+ const assertion = rootGuard
+  ? `    // The contract guards the root on consumer-supplied content; this witness\n    // proves the default view renders without panicking.\n    cx.run_until_parked();`
+  : `    cx.run_until_parked();\n    assert!(cx.debug_bounds(${q(selector)}).is_some(), "generated ${ir.name} root part must reach layout");`;
+ return `// Generated mount witness for ${ir.name}. Do not hand-edit.
+#[gpui::test]
+fn mounts(cx: &mut gpui::TestAppContext) {
+    let (_view, cx) = cx.add_window_view(|_, _| super::${ir.name}::default()${setters});
+${assertion}
+}
+`;
+}
+
 export function createGpuiEmitter(): FrameworkEmitter {
  return { id:'gpui', discoverComponentIds:root=>fs.existsSync(root)?fs.readdirSync(root).filter(name=>fs.existsSync(path.join(root,name,`${name}.rs`))).sort():[],
   emitComponent(ir) {
@@ -301,5 +336,7 @@ export function createGpuiEmitter(): FrameworkEmitter {
    catch (error) { if (!isShapeRefusal(error)) throw error; return anatomyFiles(ir); }
    const styles = gpuiStylePlan(ir);
    return boundedFiles(ir, plan, styles);
-  }, emitTests:()=>[], emitBarrel:names=>names.slice().sort().map(name=>`#[path = "${name}/${name}.rs"]\nmod ${moduleSnake(name)};\npub use ${moduleSnake(name)}::*;`).join('\n')+'\n' };
+  }, emitTests(ir) { return [{relativePath:`${ir.name}/${ir.name}.test.rs`,contents:mountWitness(ir, planFor(ir))}]; },
+  emitBarrel:names=>names.slice().sort().map(name=>`#[path = "${name}/${name}.rs"]\nmod ${moduleSnake(name)};\npub use ${moduleSnake(name)}::*;`).join('\n')+'\n'
+   + names.slice().sort().map(name=>`#[cfg(test)]\n#[path = "${name}/${name}.test.rs"]\nmod ${moduleSnake(name)}_mount;`).join('\n')+'\n' };
 }

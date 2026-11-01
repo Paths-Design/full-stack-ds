@@ -163,3 +163,168 @@ pub use truncate::*;
 #[path = "Walkthrough/Walkthrough.rs"]
 mod walkthrough;
 pub use walkthrough::*;
+#[cfg(test)]
+#[path = "Accordion/Accordion.test.rs"]
+mod accordion_mount;
+#[cfg(test)]
+#[path = "Alert/Alert.test.rs"]
+mod alert_mount;
+#[cfg(test)]
+#[path = "AlertNotice/AlertNotice.test.rs"]
+mod alert_notice_mount;
+#[cfg(test)]
+#[path = "Avatar/Avatar.test.rs"]
+mod avatar_mount;
+#[cfg(test)]
+#[path = "Badge/Badge.test.rs"]
+mod badge_mount;
+#[cfg(test)]
+#[path = "Blockquote/Blockquote.test.rs"]
+mod blockquote_mount;
+#[cfg(test)]
+#[path = "Breadcrumbs/Breadcrumbs.test.rs"]
+mod breadcrumbs_mount;
+#[cfg(test)]
+#[path = "Button/Button.test.rs"]
+mod button_mount;
+#[cfg(test)]
+#[path = "Calendar/Calendar.test.rs"]
+mod calendar_mount;
+#[cfg(test)]
+#[path = "Card/Card.test.rs"]
+mod card_mount;
+#[cfg(test)]
+#[path = "Carousel/Carousel.test.rs"]
+mod carousel_mount;
+#[cfg(test)]
+#[path = "Checkbox/Checkbox.test.rs"]
+mod checkbox_mount;
+#[cfg(test)]
+#[path = "Chip/Chip.test.rs"]
+mod chip_mount;
+#[cfg(test)]
+#[path = "CodeBlock/CodeBlock.test.rs"]
+mod code_block_mount;
+#[cfg(test)]
+#[path = "CodeSnippet/CodeSnippet.test.rs"]
+mod code_snippet_mount;
+#[cfg(test)]
+#[path = "Command/Command.test.rs"]
+mod command_mount;
+#[cfg(test)]
+#[path = "Details/Details.test.rs"]
+mod details_mount;
+#[cfg(test)]
+#[path = "Dialog/Dialog.test.rs"]
+mod dialog_mount;
+#[cfg(test)]
+#[path = "Divider/Divider.test.rs"]
+mod divider_mount;
+#[cfg(test)]
+#[path = "Field/Field.test.rs"]
+mod field_mount;
+#[cfg(test)]
+#[path = "Icon/Icon.test.rs"]
+mod icon_mount;
+#[cfg(test)]
+#[path = "Image/Image.test.rs"]
+mod image_mount;
+#[cfg(test)]
+#[path = "Input/Input.test.rs"]
+mod input_mount;
+#[cfg(test)]
+#[path = "Label/Label.test.rs"]
+mod label_mount;
+#[cfg(test)]
+#[path = "Links/Links.test.rs"]
+mod links_mount;
+#[cfg(test)]
+#[path = "List/List.test.rs"]
+mod list_mount;
+#[cfg(test)]
+#[path = "Markdown/Markdown.test.rs"]
+mod markdown_mount;
+#[cfg(test)]
+#[path = "NavList/NavList.test.rs"]
+mod nav_list_mount;
+#[cfg(test)]
+#[path = "NavTree/NavTree.test.rs"]
+mod nav_tree_mount;
+#[cfg(test)]
+#[path = "OTP/OTP.test.rs"]
+mod otp_mount;
+#[cfg(test)]
+#[path = "PageNavigator/PageNavigator.test.rs"]
+mod page_navigator_mount;
+#[cfg(test)]
+#[path = "Pagination/Pagination.test.rs"]
+mod pagination_mount;
+#[cfg(test)]
+#[path = "Popover/Popover.test.rs"]
+mod popover_mount;
+#[cfg(test)]
+#[path = "Postcard/Postcard.test.rs"]
+mod postcard_mount;
+#[cfg(test)]
+#[path = "ProfileFlag/ProfileFlag.test.rs"]
+mod profile_flag_mount;
+#[cfg(test)]
+#[path = "Progress/Progress.test.rs"]
+mod progress_mount;
+#[cfg(test)]
+#[path = "RadioGroup/RadioGroup.test.rs"]
+mod radio_group_mount;
+#[cfg(test)]
+#[path = "Select/Select.test.rs"]
+mod select_mount;
+#[cfg(test)]
+#[path = "Sheet/Sheet.test.rs"]
+mod sheet_mount;
+#[cfg(test)]
+#[path = "ShowMore/ShowMore.test.rs"]
+mod show_more_mount;
+#[cfg(test)]
+#[path = "Shuttle/Shuttle.test.rs"]
+mod shuttle_mount;
+#[cfg(test)]
+#[path = "Skeleton/Skeleton.test.rs"]
+mod skeleton_mount;
+#[cfg(test)]
+#[path = "Spinner/Spinner.test.rs"]
+mod spinner_mount;
+#[cfg(test)]
+#[path = "Stat/Stat.test.rs"]
+mod stat_mount;
+#[cfg(test)]
+#[path = "Status/Status.test.rs"]
+mod status_mount;
+#[cfg(test)]
+#[path = "Switch/Switch.test.rs"]
+mod switch_mount;
+#[cfg(test)]
+#[path = "Table/Table.test.rs"]
+mod table_mount;
+#[cfg(test)]
+#[path = "Tabs/Tabs.test.rs"]
+mod tabs_mount;
+#[cfg(test)]
+#[path = "Text/Text.test.rs"]
+mod text_mount;
+#[cfg(test)]
+#[path = "TextField/TextField.test.rs"]
+mod text_field_mount;
+#[cfg(test)]
+#[path = "Toast/Toast.test.rs"]
+mod toast_mount;
+#[cfg(test)]
+#[path = "ToggleSwitch/ToggleSwitch.test.rs"]
+mod toggle_switch_mount;
+#[cfg(test)]
+#[path = "Tooltip/Tooltip.test.rs"]
+mod tooltip_mount;
+#[cfg(test)]
+#[path = "Truncate/Truncate.test.rs"]
+mod truncate_mount;
+#[cfg(test)]
+#[path = "Walkthrough/Walkthrough.test.rs"]
+mod walkthrough_mount;
