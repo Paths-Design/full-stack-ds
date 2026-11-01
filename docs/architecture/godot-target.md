@@ -40,6 +40,8 @@ At source `62f37334`, comparison run `5af9bd21-83b8-4e79-ad7c-6fa825ccc9a2` pass
 
 ## Corpus-wide admission and the support boundary (GODOT-UNITY-COMPONENT-PARITY-01)
 
+Table's Web scrolling policy, viewport tab order and content-region label are excluded from the Godot anatomy projection. Its capability receipt names the unprojected bindings and `contentLabel` prop; the native content container remains available for consumer composition. This does not establish native scrolling or accessibility-region behavior.
+
 The registry allowlist now matches the Unity target's component set: all 55 corpus contracts emit GDScript, PackedScene and Theme resources. Widening admission from ten components to the corpus was a capability slice, not a registry edit — the emitter gained two planning shapes and a boundary discipline.
 
 **Planning shapes.** The bounded shapes stay first in dispatch and are unchanged for the components that already used them (sequence, bounded glyph, composite, projected action, narrow static text/rule, narrow anchored surface, boolean/select/toggle-item control). Three additions sit behind them:

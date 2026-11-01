@@ -177,6 +177,16 @@ describe("Godot support boundary", () => {
     }
   });
 
+  it("explicitly refuses Web viewport label and tab-order families", () => {
+    const boundary = loadBoundary();
+    expect(classifyProp(boundary, "contentLabel")).toMatchObject({ rule: "prop-content-region-label", disposition: "refused", catchAll: false });
+    expect(classifyProp(boundary, "futureViewportBehavior").catchAll).toBe(true);
+    for (const keyed of ["/anatomy/dom/bindings/tabindex", "/anatomy/dom/children/viewport/bindings/tabindex"]) {
+      expect(classifyLeaf({ source: "contract", pointer: keyed, keyed, value: "conditional" }, boundary))
+        .toMatchObject({ rule: "anatomy-focus-binding", disposition: "refused", catchAll: false });
+    }
+  });
+
   it("classifies every leaf of the live corpus and its sidecars with no dead rules", () => {
     const boundary = loadBoundary();
     const counts = { lowered: 0, pending: 0, refused: 0, unclassified: 0 };
