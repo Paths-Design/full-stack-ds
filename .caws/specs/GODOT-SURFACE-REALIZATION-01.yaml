@@ -59,3 +59,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot row surface-aria-labeling: the declared ariaLabelledby and ariaDescribedby props wire accessibility_labeled_by_nodes / accessibility_described_by_nodes from a NodePath, and Dialog still reports its declared blocking modality fact; the presence runtime applies declared prop defaults and plan-fact getters (anchor_mode/modality/open_triggers)"
     recorded_at: "2026-11-01T09:43:39.278Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 30 rows; the 21 pre-existing rows and the 7 disclosure rows are unchanged (only surface-aria-labeling was added); catalog-load admitted 55 failures []"
+    recorded_at: "2026-11-01T09:43:41.487Z"
