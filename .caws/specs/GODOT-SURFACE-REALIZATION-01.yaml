@@ -63,3 +63,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot -> passed:true, 30 rows; the 21 pre-existing rows and the 7 disclosure rows are unchanged (only surface-aria-labeling was added); catalog-load admitted 55 failures []"
     recorded_at: "2026-11-01T09:43:41.487Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Overlay-surface family' section states the closed ledger and the refusals with reasons (blocking modality/backdrop, message defaults, data-model and data-driven children, consumer callbacks, iterated anatomy, ARIA state mirrors, remaining a11y); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; pnpm run docs:check-claims and docs:check-links pass"
+    recorded_at: "2026-11-01T09:43:43.320Z"
