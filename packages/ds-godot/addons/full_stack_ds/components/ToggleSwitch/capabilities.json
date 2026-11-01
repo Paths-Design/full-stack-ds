@@ -22,7 +22,6 @@
     "hover: state/variant-conditioned styling has no native selector in the control shape",
     "[aria-checked=\"true\"]: state/variant-conditioned styling has no native selector in the control shape",
     "disabled: state/variant-conditioned styling has no native selector in the control shape",
-    "focus: state/variant-conditioned styling has no native selector in the control shape",
     "defaultChecked: declined by the boolean shape; no native realization on this target",
     "size: declined by the boolean shape; no native realization on this target"
   ],
@@ -33,6 +32,29 @@
       "wrap": false
     },
     "dismissal": []
+  },
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-checked",
+        "values": {
+          "unchecked": "false",
+          "checked": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-checked",
+      "aria-describedby"
+    ],
+    "role": "switch"
+  },
+  "focusRing": {
+    "width": "2px",
+    "color": "#0566fe",
+    "offset": "2px"
   },
   "styles": [
     {

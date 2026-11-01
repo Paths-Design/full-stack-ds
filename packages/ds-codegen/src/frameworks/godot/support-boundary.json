@@ -343,8 +343,8 @@
         "contract:/anatomy/dom/**/bindings/aria-hidden",
         "contract:/anatomy/dom/**/bindings/aria-*"
       ],
-      "disposition": "pending",
-      "reason": "ARIA state exposure is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "structural state is projected from the anatomy aria bindings: expanded/selected/checked/disabled"
     },
     {
       "id": "anatomy-form-binding",
@@ -553,8 +553,8 @@
       "match": [
         "contract:/relationships/**"
       ],
-      "disposition": "pending",
-      "reason": "relationships between parts are not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "part relations are wired onto accessibility_controls_nodes / labeled_by_nodes / described_by_nodes; unhosted parts are named omissions rather than claimed"
     },
     {
       "id": "form",
@@ -574,12 +574,46 @@
       "via": "the declared value model/channel/part projects onto the generated control configuration"
     },
     {
+      "id": "a11y-labeling",
+      "match": [
+        "contract:/a11y/labeling/**",
+        "contract:/a11y/labeling"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime projects the accessible name from the visible label and wires the declared part relations onto the native accessibility node properties"
+    },
+    {
+      "id": "a11y-role",
+      "match": [
+        "contract:/a11y/role"
+      ],
+      "disposition": "refused",
+      "reason": "Godot exposes no accessible-role property on Control; a role cannot be projected, and inventing one would misreport the native tree."
+    },
+    {
+      "id": "a11y-apg",
+      "match": [
+        "contract:/a11y/apgPattern"
+      ],
+      "disposition": "refused",
+      "reason": "The APG pattern reference is authoring guidance naming the expected interaction model; the target realises behaviour from focus/dismissal/channel facts, not from this name."
+    },
+    {
+      "id": "a11y-keyboard",
+      "match": [
+        "contract:/a11y/keyboard/**",
+        "contract:/a11y/keyboard"
+      ],
+      "disposition": "refused",
+      "reason": "The keyboard table documents bindings; the runtime realises arrow navigation and escape dismissal from the focus and dismissal facts, so the table itself is not emitted."
+    },
+    {
       "id": "a11y",
       "match": [
         "contract:/a11y/**"
       ],
       "disposition": "pending",
-      "reason": "accessibility semantics are not exposed by the shared runtime yet"
+      "reason": "remaining accessibility declarations (descriptions, live regions) await a native carrier decision."
     },
     {
       "id": "messages",
@@ -603,8 +637,8 @@
         "contract:/portal/positioning",
         "contract:/portal/collision"
       ],
-      "disposition": "pending",
-      "reason": "flip/shift collision handling and selector-sourced positioning are not realized; anchored placement is runtime-owned."
+      "disposition": "refused",
+      "reason": "collision flip/shift and selector-sourced placement are not implemented; anchored placement is runtime-owned, so the declared positioning policy is not claimed."
     },
     {
       "id": "portal-backdrop",
@@ -624,15 +658,28 @@
       "via": "the control runtime mounts revealed content on a dedicated overlay layer"
     },
     {
-      "id": "focus-targets",
+      "id": "focus-return",
       "match": [
-        "contract:/focus/initialFocus",
-        "contract:/focus/returnFocus",
-        "contract:/focus/scrollLock",
-        "contract:/focus/description"
+        "contract:/focus/returnFocus"
       ],
-      "disposition": "pending",
-      "reason": "initial-focus targeting, focus restoration beyond the surface trigger, and body scroll locking are not realized yet; focus description is authoring prose."
+      "disposition": "lowered",
+      "via": "dismissing a surface returns focus to its trigger"
+    },
+    {
+      "id": "focus-initial",
+      "match": [
+        "contract:/focus/initialFocus"
+      ],
+      "disposition": "refused",
+      "reason": "mount-time initial focus is the embedding scene's decision; the control runtime does not steal focus when the component enters the tree."
+    },
+    {
+      "id": "focus-scroll-lock",
+      "match": [
+        "contract:/focus/scrollLock"
+      ],
+      "disposition": "refused",
+      "reason": "a native scene has no document scroll to lock; the runtime mounts overlays on its own layer instead."
     },
     {
       "id": "focus",
@@ -681,8 +728,8 @@
       "match": [
         "contract:/states/*/*/a11y/**"
       ],
-      "disposition": "pending",
-      "reason": "state accessibility exposure is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "each declared state dimension maps its semantic value onto the authored ARIA attribute as structural native state (booleans preserved)"
     },
     {
       "id": "states",
@@ -1591,18 +1638,25 @@
       "reason": "box-shadow blur/spread has no StyleBox mapping in this projection; elevation is not approximated."
     },
     {
-      "id": "styles-effects",
+      "id": "styles-effects-contain",
       "match": [
-        "styles:/**/opacity/**",
-        "styles:/**/visibility/**",
-        "styles:/**/mask/**",
-        "styles:/**/clip/**",
         "styles:/**/contain/**",
+        "styles:/**/clip/**",
+        "styles:/**/mask/**",
         "styles:/**/filter/**",
         "styles:/**/backdrop-filter/**"
       ],
+      "disposition": "refused",
+      "reason": "CSS containment, clipping, masks and filters have no StyleBox/Control equivalent; they are not approximated."
+    },
+    {
+      "id": "styles-effects",
+      "match": [
+        "styles:/**/opacity/**",
+        "styles:/**/visibility/**"
+      ],
       "disposition": "pending",
-      "reason": "visual-effect painting is not part of the shared painted style vocabulary"
+      "reason": "opacity and visibility are applied only when declared unconditionally; the corpus declares them under state selectors the control shape does not host yet."
     },
     {
       "id": "styles-content-layer",

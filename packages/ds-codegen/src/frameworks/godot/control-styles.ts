@@ -46,6 +46,8 @@ const HOSTED_PARTS = new Set(["root", "trigger", "content", "contentInner", "ite
 
 export interface ControlStyleProjection {
   styles: GodotStyleRule[];
+  /** Outline declarations from a focus-predicate rule, applied as the focus ring. */
+  focusRing?: { width?: string; color?: string; offset?: string };
   /** Named gaps: declarations the control shape does not lower. */
   omissions: string[];
 }
@@ -60,10 +62,22 @@ export function godotControlStyles(ir: ComponentIR): ControlStyleProjection {
   if (!native) return { styles: [], omissions: [] };
   const styles: GodotStyleRule[] = [];
   const omissions: string[] = native.unsupported.map(rule => `${rule.sourceKey}: ${rule.reason}`);
+  let focusRing: ControlStyleProjection["focusRing"];
   for (const rule of native.rules) {
     if (rule.sourceKey === "tokens" || rule.sourceKey === "structure") continue;
     if (!HOSTED_PARTS.has(rule.part)) {
       omissions.push(`${rule.sourceKey}: part ${rule.part} is not hosted by the control runtime`);
+      continue;
+    }
+    // A focus-predicate rule is the focus ring, not a conditional state: the
+    // native focus StyleBox is exactly the carrier for it.
+    if (rule.predicates.length && rule.predicates.every(predicate => predicate.kind === "focus")) {
+      for (const declaration of rule.declarations) {
+        if (declaration.property === "outline-width") focusRing = { ...focusRing, width: px(declaration.value) };
+        else if (declaration.property === "outline-color" && looksLikeColor(declaration.value)) focusRing = { ...focusRing, color: declaration.value };
+        else if (declaration.property === "outline-offset") focusRing = { ...focusRing, offset: px(declaration.value) ?? declaration.value };
+        else if (!declaration.property.startsWith("outline")) omissions.push(`${rule.sourceKey}.${declaration.property}: no Godot focus-ring mapping`);
+      }
       continue;
     }
     if (rule.predicates.length) {
@@ -87,5 +101,5 @@ export function godotControlStyles(ir: ComponentIR): ControlStyleProjection {
     }
     if (declarations.length) styles.push({ source: rule.sourceKey, part: rule.part, predicates: [], declarations });
   }
-  return { styles, omissions };
+  return { styles, ...(focusRing ? { focusRing } : {}), omissions };
 }

@@ -3,12 +3,12 @@
   "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
   "boundary": {
     "schema": "godot-support-boundary.v1",
-    "rules": 147,
+    "rules": 154,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8432,
-      "pending": 1673,
-      "refused": 7396
+      "lowered": 8721,
+      "pending": 1047,
+      "refused": 7733
     },
     "deadRules": []
   },
@@ -32,7 +32,7 @@
           "defaultValue"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 41
+        "nonClaimCount": 40
       },
       "variance": [
         {
@@ -42,11 +42,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 187,
-          "pending": 47,
-          "refused": 203
+          "lowered": 198,
+          "pending": 19,
+          "refused": 220
         },
-        "digest": "617003ea8042ac0a84c22dc68fcb7ced06370253ad3a576d2b85cf09090fd3a2"
+        "digest": "0de66d32f675518bb7e9ec18bf11002fb5620d0cf1a03839e5d1311b916f24b2"
       }
     },
     {
@@ -91,11 +91,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 178,
-          "pending": 14,
-          "refused": 126
+          "lowered": 179,
+          "pending": 11,
+          "refused": 128
         },
-        "digest": "4b8804c0902cba2333cc2e013ad5f6a0a2009e07d3684741319f6d27ce005be3"
+        "digest": "c173d93ce7f373cdd2dbb90f3546361d13b323a76046017c68c99b7fabc3c197"
       }
     },
     {
@@ -140,11 +140,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 216,
-          "pending": 12,
-          "refused": 152
+          "lowered": 217,
+          "pending": 9,
+          "refused": 154
         },
-        "digest": "4223ff2c94055dbc85631f2636bed79d5d4a865298cba4737361093d9c92399b"
+        "digest": "15a110ab555055eeaab9357dd1c5539fe2821c9089a33c55a9e37a28a1ae404f"
       }
     },
     {
@@ -181,11 +181,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 85,
-          "pending": 12,
-          "refused": 107
+          "lowered": 86,
+          "pending": 9,
+          "refused": 109
         },
-        "digest": "eecf1ef2ec338378e664fd919885f3fdfb703ed933f89ca72fa7bf7d65333c5e"
+        "digest": "2ccb3aa59ce8af08e903c4e698eb1d2fafd54232cf111740ce5d3a8a6b074439"
       }
     },
     {
@@ -210,11 +210,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 192,
-          "pending": 6,
-          "refused": 85
+          "lowered": 193,
+          "pending": 4,
+          "refused": 86
         },
-        "digest": "6c0b8959f110208c9a597617f4c0f165b77caf35d4f5284c577d5a8345d0a861"
+        "digest": "806da01251ffd857600e8bf8ba3ef9a0ee0c1563de07c4aeb56dd829d7722cbc"
       }
     },
     {
@@ -239,11 +239,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 144,
-          "pending": 2,
-          "refused": 71
+          "lowered": 145,
+          "pending": 0,
+          "refused": 72
         },
-        "digest": "496f45396cb2956f2d49078c1e0d10cb3cfa04b2c63405094a7591380ef90623"
+        "digest": "e8d03a764dbec60c0c8c1c2355bfb28ef6fe536d938895a93a8640bada86c21b"
       }
     },
     {
@@ -278,11 +278,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 80,
-          "pending": 9,
-          "refused": 73
+          "lowered": 81,
+          "pending": 6,
+          "refused": 75
         },
-        "digest": "1f6df9f2cf033955c1791fa51664e3eb6d86648bcea86404ed8f5cdbbe9af6c4"
+        "digest": "704ea1e94927c968ea0441cc18b1fe3246cff02838cdb1b62115182208aafb8b"
       }
     },
     {
@@ -309,11 +309,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 267,
-          "pending": 18,
-          "refused": 135
+          "lowered": 272,
+          "pending": 10,
+          "refused": 138
         },
-        "digest": "b065ae71ae940e2a2be2cf6cd4628177c7a83375389597c0202faf68dc274fa3"
+        "digest": "cb11afd43e55e59de341b24861cf5c96a67204284e367ef658f4420965a794a1"
       }
     },
     {
@@ -389,11 +389,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 267,
-          "pending": 103,
-          "refused": 238
+          "lowered": 280,
+          "pending": 69,
+          "refused": 259
         },
-        "digest": "2dd7bc7af76a4f548c855f7617c353ce3d8342a7870638b70a1c779097042b2d"
+        "digest": "5053a47a0dcd1785e3289356f7dc1341fe782426476ef1d16d7852d5a7423695"
       }
     },
     {
@@ -416,11 +416,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 147,
-          "pending": 11,
-          "refused": 206
+          "lowered": 149,
+          "pending": 7,
+          "refused": 208
         },
-        "digest": "f6a61640abad0bafb7916d4d3a762c9ec555ef95fe987341f96eff610206a60e"
+        "digest": "2171f7f9594e176624520fe8a0d76fb318a0ac3520228d0cca20b12b950a832d"
       }
     },
     {
@@ -443,11 +443,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 175,
-          "pending": 45,
-          "refused": 191
+          "lowered": 177,
+          "pending": 37,
+          "refused": 197
         },
-        "digest": "07e218d40f564dd0a32d15e4bcb8f1b6785961743808d12e40d5e695aa2086b8"
+        "digest": "0011462e331fcdcefad09c86af32c7b97c56951741ec036cba3c6d671ced5ec2"
       }
     },
     {
@@ -499,11 +499,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 142,
-          "pending": 26,
-          "refused": 177
+          "lowered": 150,
+          "pending": 15,
+          "refused": 180
         },
-        "digest": "9d5a385c81f464a942ae6a40e535395b86e3fdaa63e45eab5ad773455c0506af"
+        "digest": "3289111ee1293c79925353cc9a36f3ed82b0c79a58a1617b837d1da9fee284fc"
       }
     },
     {
@@ -571,11 +571,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 238,
-          "pending": 23,
-          "refused": 135
+          "lowered": 240,
+          "pending": 19,
+          "refused": 137
         },
-        "digest": "5a23df67695030c32cf3ee63cebfbda2a3caa052995da532b4c4ceeffcdf2b4d"
+        "digest": "44373dc459b6f4ec1d0165d434df3df6fe42d7504117f07a598b53453f687087"
       }
     },
     {
@@ -609,11 +609,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 175,
-          "pending": 26,
-          "refused": 115
+          "lowered": 176,
+          "pending": 24,
+          "refused": 116
         },
-        "digest": "ed8bd7f2d54feb237f06530df93c8c643e74e63e543361c50e6e1ca6b8fe6ba1"
+        "digest": "7db8dcee9606ed92aa3102be76fb735cca710119fed01022129a35675adff832"
       }
     },
     {
@@ -643,11 +643,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 88,
-          "pending": 2,
-          "refused": 68
+          "lowered": 89,
+          "pending": 0,
+          "refused": 69
         },
-        "digest": "1bf6ed07ec8d2586e897bb546c591acb7e7b5814583110984f3c205ed7818e9d"
+        "digest": "4cc94bbdd7fc78ed4860a2b93d2de94367f86f0d7bffcfa6146bb0519291bdc7"
       }
     },
     {
@@ -714,11 +714,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 254,
-          "pending": 81,
-          "refused": 361
+          "lowered": 269,
+          "pending": 47,
+          "refused": 380
         },
-        "digest": "62133ee3a3229cf4e8cedf177ae4d9a41f6601f1a6be3b1c8b89441784f31fa3"
+        "digest": "c4ac7ddafbd540080cf2adb6d64fb65842c44a58e33a4d745242ade54cd9a812"
       }
     },
     {
@@ -773,11 +773,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 196,
-          "pending": 26,
-          "refused": 149
+          "lowered": 204,
+          "pending": 10,
+          "refused": 157
         },
-        "digest": "4c371136a6abb6a533312f9960cbfaf13843f06b9570062fe90b7dd3596f2b22"
+        "digest": "55ad7f9b934cfa44a26bbc0c7c90adff7a37a83359e2073cde69e709e5ff1281"
       }
     },
     {
@@ -837,11 +837,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 261,
-          "pending": 78,
-          "refused": 280
+          "lowered": 275,
+          "pending": 50,
+          "refused": 294
         },
-        "digest": "a2725141d94279d3911658b778330fb87b566d9cbe1127ed86c3b7fa27a24f9d"
+        "digest": "c8fa27b8dcf363d41fea9f98757be9619b45d5a486fc6c5a074ab5f22cc5f129"
       }
     },
     {
@@ -866,11 +866,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 41,
-          "pending": 3,
-          "refused": 64
+          "lowered": 42,
+          "pending": 0,
+          "refused": 66
         },
-        "digest": "ba80a6050fe1a18c80d9a7a61d3f3112eb94f9700b77f6d7fc11a587e079a066"
+        "digest": "ec85062b55c7a66c50f11d53bb451b0355ecbf4ceeebbad8709032ec01291d0a"
       }
     },
     {
@@ -925,11 +925,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 141,
-          "pending": 33,
-          "refused": 117
+          "lowered": 158,
+          "pending": 13,
+          "refused": 120
         },
-        "digest": "2c4a31923af837a4e430c419e95d3083e1421c6823ff5cb7427c38f50f9d7598"
+        "digest": "edc630fa5037a30e8721c2c6f0779ce5c851e6a2fa10b493822b0b7a36d533bb"
       }
     },
     {
@@ -952,11 +952,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 53,
-          "pending": 6,
-          "refused": 60
+          "lowered": 56,
+          "pending": 1,
+          "refused": 62
         },
-        "digest": "2dffac059dad3691d4d2f301dfebc2ebf5d1a41024bdc6436ae5f16c1beedf1d"
+        "digest": "3e5bc5ce171b85ef91ffc17376efc08c8b1c1632e952b8d3bdfc36a5aaca195b"
       }
     },
     {
@@ -997,11 +997,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 105,
-          "pending": 48,
-          "refused": 109
+          "lowered": 107,
+          "pending": 44,
+          "refused": 111
         },
-        "digest": "f96a358e37330078f60b8ef363239666ec695050c923d9b75b0aeec8096f8b7a"
+        "digest": "5203786511065368969e26e32d2a3322f713e4b24eed5cb71df8f4bc7254a69b"
       }
     },
     {
@@ -1065,11 +1065,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 182,
-          "pending": 26,
-          "refused": 124
+          "lowered": 187,
+          "pending": 20,
+          "refused": 125
         },
-        "digest": "2c105a5d92fdd58a70c294c83ba7fa0bc2d3007938e98810dcce592d2b88debd"
+        "digest": "fcae246330d790e8eb2e4ad95c1784f9341526c4d8d56dc38fc7955639f67b73"
       }
     },
     {
@@ -1095,11 +1095,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 24,
-          "pending": 8,
-          "refused": 21
+          "lowered": 25,
+          "pending": 6,
+          "refused": 22
         },
-        "digest": "30d9118dabd7e9c8855deee33cd5af3ddcfa45ee3ffc2e224fb2012c8d8e68c0"
+        "digest": "a3e9fd8d752b0641478551eff9df499e8386fec438006114a6f581894eec1171"
       }
     },
     {
@@ -1132,11 +1132,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 116,
-          "pending": 23,
-          "refused": 71
+          "lowered": 117,
+          "pending": 21,
+          "refused": 72
         },
-        "digest": "e053c95cbfbed0a5612b341ff2fc796c4ade2cbb38d1ccc3138deb9872dc4fef"
+        "digest": "d875b1d8f879feef2ecdc6a8f1336a0e5bc50f90dc78b744ee98b38d5b144472"
       }
     },
     {
@@ -1172,11 +1172,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 129,
-          "pending": 3,
-          "refused": 84
+          "lowered": 131,
+          "pending": 0,
+          "refused": 85
         },
-        "digest": "447afbaea411f2f72aa1351ab2c6609ecfe84a3d3576731d0feaa15f62dc3b49"
+        "digest": "abf50dc04218b5a09498963d6cae65c5cf9f239b81161e92aac00f81476cb543"
       }
     },
     {
@@ -1245,11 +1245,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 89,
-          "pending": 10,
-          "refused": 80
+          "lowered": 90,
+          "pending": 8,
+          "refused": 81
         },
-        "digest": "bf335c937c910c474ecaf4f50bb765eea838ad14554d49ca87a596a82390b1cc"
+        "digest": "631e65170afe0e1d08d9c588b96bbeaa4015c730b34e3c48e79118a35caa638c"
       }
     },
     {
@@ -1290,11 +1290,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 171,
-          "pending": 28,
-          "refused": 212
+          "lowered": 173,
+          "pending": 24,
+          "refused": 214
         },
-        "digest": "5b9827c290498c3a590e6ca7ce690a1353beeb1d387ae95d1fc35b6faf3b704f"
+        "digest": "f196cc119789b6ba7ceba51b0a528303a9aa3fa9fea80ae4f18be59dc539dbe4"
       }
     },
     {
@@ -1354,11 +1354,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 127,
-          "pending": 56,
-          "refused": 111
+          "lowered": 133,
+          "pending": 35,
+          "refused": 126
         },
-        "digest": "edf2a5a79765116a68fcc98315988512541f960e847a9932bb4fedec4d50ff9c"
+        "digest": "a9a8172bc3a905205153eb2f7263bffc5931b68a0ab73c0ffb3dc4389d1a77ff"
       }
     },
     {
@@ -1431,11 +1431,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 90,
-          "pending": 56,
-          "refused": 74
+          "lowered": 91,
+          "pending": 48,
+          "refused": 81
         },
-        "digest": "9b18d972f5bf4e4a89a9655b8300034aee1c0154437cf66bc4c5635b3a890dc0"
+        "digest": "0736f1b17742872e9a3cae7018d819cbf19783d5078682973738d997810fdffc"
       }
     },
     {
@@ -1488,11 +1488,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 100,
-          "pending": 32,
-          "refused": 144
+          "lowered": 102,
+          "pending": 26,
+          "refused": 148
         },
-        "digest": "6482e17865e9952f288a4df20add4f7afbcb89e962c284f1b321a01646e5634b"
+        "digest": "84c076d7c2a100040cfbac58bf6d74f616e3f327d011a00453acb3596fc6ab26"
       }
     },
     {
@@ -1538,11 +1538,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 123,
-          "pending": 35,
-          "refused": 115
+          "lowered": 136,
+          "pending": 9,
+          "refused": 128
         },
-        "digest": "6d7485fa54c6423a68ccf178554e7d0ce44485d04f647a2d0d10edae5e663956"
+        "digest": "454bfca45eaf4f21eeec1877fb067ba84c851b3bfda9b09aaba6ecfa3cabc747"
       }
     },
     {
@@ -1576,11 +1576,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 195,
-          "pending": 20,
-          "refused": 155
+          "lowered": 196,
+          "pending": 16,
+          "refused": 158
         },
-        "digest": "57efcff0fcc3eeb3718b8d00bf0249f4ef79f95550324f53a41b81ecdd67e0ab"
+        "digest": "9001e1d6d91e72b0aa8a3c3513d4241741913c7cadbe7a5528fde63ee560ba51"
       }
     },
     {
@@ -1605,11 +1605,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 51,
-          "pending": 5,
-          "refused": 29
+          "lowered": 52,
+          "pending": 3,
+          "refused": 30
         },
-        "digest": "cd8cb6db2772c1bede7f7de84da0a6fa3f837e47be1ff1c3e5ef752bda145f82"
+        "digest": "439ed73100f38f14092806aac52b92ab8c74d7f9a269935338a76778db8b4c4c"
       }
     },
     {
@@ -1656,11 +1656,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 105,
-          "pending": 22,
-          "refused": 79
+          "lowered": 112,
+          "pending": 13,
+          "refused": 81
         },
-        "digest": "f4c8ab54536d0551dc0ab53dda04f443d8102d90a0242094e116fa0c31878c26"
+        "digest": "c649e84b02f3b8b97f08fee0bf66f3a20a39b2651e5a4649225dd3e948ea9815"
       }
     },
     {
@@ -1716,11 +1716,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 78,
-          "pending": 37,
-          "refused": 89
+          "lowered": 80,
+          "pending": 30,
+          "refused": 94
         },
-        "digest": "01c5db75812be2d4cb2e35fd3fc236ff14f01cd38f9e6b32cbefde523b9eced2"
+        "digest": "d86ece36c14401e0fa0621edc3469817709d9a64b25f9acf6a43e6e94025806c"
       }
     },
     {
@@ -1795,11 +1795,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 298,
-          "pending": 122,
-          "refused": 293
+          "lowered": 317,
+          "pending": 63,
+          "refused": 333
         },
-        "digest": "7b30b799803392c55d55420bd36eee0fee617f05608cf58169d1f2c39ce9144c"
+        "digest": "21c08eaa5a4ac832454f1db297d5e5ecd5fb765417d62180c4366fd0f3f2ab42"
       }
     },
     {
@@ -1838,11 +1838,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 237,
-          "pending": 78,
-          "refused": 300
+          "lowered": 251,
+          "pending": 50,
+          "refused": 314
         },
-        "digest": "7981a734b18d3ce095fb56073c24aaa8672cbd25f96fa839c1abf7f2604d3b5f"
+        "digest": "6f523486eccbaa82fa5a80a674b64a2d70829fc6a2c6293b5b33cbf6af37d01e"
       }
     },
     {
@@ -1893,11 +1893,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 101,
-          "pending": 21,
-          "refused": 82
+          "lowered": 106,
+          "pending": 9,
+          "refused": 89
         },
-        "digest": "6c66ed7d926880012d97d91c972f44730dd7938ed28d29a4fe10b5375a68e74f"
+        "digest": "2f36b36dba7d3a397e00cb03c9f06cf25378769e9d788d24d9fd17927d8689f7"
       }
     },
     {
@@ -1943,11 +1943,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 164,
-          "pending": 66,
-          "refused": 162
+          "lowered": 171,
+          "pending": 45,
+          "refused": 176
         },
-        "digest": "c212c745854c3029f3d5c772be85c5a7611152bdd7fb27821854915043282259"
+        "digest": "051681bd47a693239044a1f66018df21cf2bd941115a850478b66655c7ad589b"
       }
     },
     {
@@ -1981,11 +1981,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 144,
-          "pending": 20,
-          "refused": 156
+          "lowered": 148,
+          "pending": 14,
+          "refused": 158
         },
-        "digest": "b0959a00136e346708e4fa771f43138294af2d95f654129b61849043df3302f9"
+        "digest": "744782695cb54897b58c9aa56bc1e05c9c58641fd1302fc97df3670062a405fe"
       }
     },
     {
@@ -2018,11 +2018,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 83,
-          "pending": 11,
-          "refused": 81
+          "lowered": 85,
+          "pending": 7,
+          "refused": 83
         },
-        "digest": "aa461ca2d5520a034312caa380bc2cfdcab83676bd696ad99360b828cf6a550b"
+        "digest": "2453506980187e7526373aa60ed27f068109af95da2c46df59c135c5dd6290b0"
       }
     },
     {
@@ -2045,11 +2045,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 78,
-          "pending": 1,
+          "lowered": 79,
+          "pending": 0,
           "refused": 46
         },
-        "digest": "d7f269d8ad0e8b620527aafb2e92824009b9eb424cc0c300479f003c377f2fcd"
+        "digest": "7fb017e380ee0e5a8ab1ecf5cd1249a1c0b55b7482ca254b03071d349678a4e3"
       }
     },
     {
@@ -2072,11 +2072,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 129,
-          "pending": 9,
-          "refused": 69
+          "lowered": 130,
+          "pending": 7,
+          "refused": 70
         },
-        "digest": "14d949a8ad7eb4db0c71c1222b1f90633c02d26aa2a78368b783d1f15daec79f"
+        "digest": "b6bcc69aa993153c3ae08ad37a9bcc9deaa0675a9863937266ebd4729a7b3449"
       }
     },
     {
@@ -2121,11 +2121,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 257,
-          "pending": 21,
-          "refused": 221
+          "lowered": 264,
+          "pending": 11,
+          "refused": 224
         },
-        "digest": "998c59d9f018074392fe822d05fc8ffb7e38f07ecb89caa4a6d3d0f83b70e660"
+        "digest": "66be83faf453eb0256cf668df32322823b816bdc9d05c5200169f593bb517cdb"
       }
     },
     {
@@ -2156,11 +2156,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 157,
-          "pending": 26,
-          "refused": 96
+          "lowered": 169,
+          "pending": 7,
+          "refused": 103
         },
-        "digest": "df535ff9d40ed7687586b22fc837f6407b538fe674cc62359c544bc73598cecf"
+        "digest": "e716bfbf82683db834145e5515eb87e771811e4400b4c4a69ed8d3ab79fdbfc9"
       }
     },
     {
@@ -2204,11 +2204,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 186,
-          "pending": 83,
-          "refused": 208
+          "lowered": 198,
+          "pending": 34,
+          "refused": 245
         },
-        "digest": "a8e898a2dfb95012be0299b687b4208d725a47cb3f3f27212bed50398de48f93"
+        "digest": "171aadbe6c7eeaff7974e66b5361743705a7f322c06204a0fa590356d2fa7311"
       }
     },
     {
@@ -2233,11 +2233,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 278,
-          "pending": 7,
-          "refused": 144
+          "lowered": 279,
+          "pending": 5,
+          "refused": 145
         },
-        "digest": "ed39de7173287d9a55260cef4d3a0494c06eccdcc7c87e278278dffdc765df3d"
+        "digest": "aab5e6a7962349fd382050cef4cdf625b8dda0ce5185e3e0084a129f597d72ac"
       }
     },
     {
@@ -2291,11 +2291,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 243,
-          "pending": 39,
-          "refused": 174
+          "lowered": 259,
+          "pending": 21,
+          "refused": 176
         },
-        "digest": "850c33d08837155451dcfd727a9ca1cc3cdf796899151cff2a63e5694a12be95"
+        "digest": "431f65e5472cfe498a0bba4e59243fa20b38d80bd388da6e2f89d8234712548d"
       }
     },
     {
@@ -2336,11 +2336,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 225,
-          "pending": 33,
-          "refused": 211
+          "lowered": 232,
+          "pending": 20,
+          "refused": 217
         },
-        "digest": "0c52ee1f813a3b0b8f71f893e91ba49ae0e73930a875636aa319b508c377f518"
+        "digest": "b7d30e629325e84325e48bf4002b353a6647942bbb1f8708ba78c8a7fa31bd1d"
       }
     },
     {
@@ -2363,7 +2363,7 @@
           "ariaDescribedby"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 18
+        "nonClaimCount": 17
       },
       "variance": [
         {
@@ -2381,11 +2381,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 141,
-          "pending": 23,
-          "refused": 80
+          "lowered": 149,
+          "pending": 12,
+          "refused": 83
         },
-        "digest": "22b2f4d5c73ae8d7a34d4479b21066541fc4902370f2a84d8f41c94f614e087a"
+        "digest": "69b271cd9758f1a0eb67decf74c288230970ff85452cba85f5246d63199a24f3"
       }
     },
     {
@@ -2431,11 +2431,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 108,
-          "pending": 19,
-          "refused": 96
+          "lowered": 113,
+          "pending": 8,
+          "refused": 102
         },
-        "digest": "28f927e7fc89d15964aa6904ac7247b7714a1acc41e417129105ed8082f11aea"
+        "digest": "a25eae16aaed08601c530002afd07802bcc7b503250f8c0b06ac2b7da0986ceb"
       }
     },
     {
@@ -2487,11 +2487,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 71,
-          "pending": 19,
-          "refused": 75
+          "lowered": 76,
+          "pending": 11,
+          "refused": 78
         },
-        "digest": "443495412e7ffbd81eb7696122a3f1c039b854b6da396111a7a8680588469c06"
+        "digest": "919dca7ef12eaeb16b7ac7cfbebd4747112171b1dbe61c526151ad3361a0852e"
       }
     },
     {
@@ -2568,11 +2568,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 263,
-          "pending": 71,
-          "refused": 266
+          "lowered": 270,
+          "pending": 48,
+          "refused": 282
         },
-        "digest": "1cec6931805a7620df1765a01f11c3e0379b482458a4b5639c2c7dc4a4dab822"
+        "digest": "843b83ce8353e14d0562b5450f99a2e64bd623c75daf0098bdb6815265e4e183"
       }
     }
   ]

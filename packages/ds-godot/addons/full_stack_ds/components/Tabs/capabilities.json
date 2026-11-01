@@ -51,6 +51,34 @@
       "enabled": false
     }
   },
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "tab",
+        "to": "panel",
+        "attribute": "aria-controls"
+      },
+      {
+        "from": "panel",
+        "to": "tab",
+        "attribute": "aria-labelledby"
+      }
+    ],
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-selected",
+        "values": {
+          "unselected": "false",
+          "selected": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-labelledby"
+    ]
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

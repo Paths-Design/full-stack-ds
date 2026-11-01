@@ -478,6 +478,40 @@ func _ready() -> void:
 	styled_accordion.queue_free()
 	await get_tree().process_frame
 
+	# Accessibility projection: the accessible name, the authored part relations
+	# and the declared state-to-ARIA mapping on native controls. Structural
+	# projection only — Godot's accessibility tree delivery is not verified here.
+	var accessible_accordion = make_control("Accordion")
+	add_child(accessible_accordion)
+	accessible_accordion.label = "Sections"
+	var accessible_body := Label.new()
+	accessible_body.text = "Accessible body"
+	accessible_accordion.add_item("one", "One", accessible_body)
+	await get_tree().process_frame
+	check(accessible_accordion.trigger.accessibility_name == "Sections", "Accessible name did not project onto the trigger")
+	check(accessible_accordion.trigger.accessibility_controls_nodes.size() == 1, "aria-controls relation did not wire to the item content")
+	check(accessible_accordion.items[0].body.accessibility_labeled_by_nodes.size() == 1, "aria-labelledby relation did not wire from the content")
+	var accessible_focus: StyleBox = accessible_accordion.trigger.get_theme_stylebox("focus")
+	check(accessible_focus is StyleBoxFlat, "Focus ring did not project a focus StyleBox")
+	if accessible_focus is StyleBoxFlat:
+		check(accessible_focus.border_width_left == 2, "Focus ring width did not reach the native StyleBox")
+		check(accessible_focus.border_color.is_equal_approx(Color("#0566fe")), "Focus ring colour did not reach the native StyleBox")
+	var accessible_tabs = make_control("Tabs")
+	add_child(accessible_tabs)
+	for key in ["a", "b"]:
+		var tab_body := Label.new()
+		tab_body.text = "Tab " + key
+		accessible_tabs.add_item(key, key, tab_body)
+	await get_tree().process_frame
+	accessible_tabs.activate("b")
+	await get_tree().process_frame
+	check(accessible_tabs.items[1].button.get_meta("aria_selected", false), "Projected state mapping lost aria-selected")
+	check(accessible_tabs.items[0].button.get_meta("aria_disabled", true) == false, "Projected availability state lost aria-disabled")
+	rows.append({"id":"disclosure-accessibility","name":"Sections","focusRingWidth":2,"relations":2})
+	accessible_accordion.queue_free()
+	accessible_tabs.queue_free()
+	await get_tree().process_frame
+
 	# Catalog load: every admitted component scene must exist, parse and
 	# instantiate. This is a structural admission witness only — it proves the
 	# generated scene tree is loadable, not that its behavior is realized.

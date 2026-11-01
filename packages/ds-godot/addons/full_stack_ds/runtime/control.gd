@@ -42,6 +42,13 @@ var disclosure: Dictionary = {}
 ## opacity, cursor, hit testing). Applied to the trigger, the item buttons and the
 ## text nodes consumer content mounts under an item body.
 var style_facts: Dictionary = {}
+## Accessibility facts projected from the contract: labeling attributes, the
+## authored role, the state-to-ARIA projection and the part relationships.
+var accessibility: Dictionary = {}
+## Whether `accessibility_name` is still derived from the visible label; a consumer
+## assignment clears it so the runtime stops overwriting their value.
+var _a11y_name_from_label := false
+var _last_label := ""
 ## Whether focus has entered the revealed surface since it opened; blur dismissal
 ## only fires after that, so opening a surface from an unrelated focus owner does
 ## not close it on the first frame.
@@ -51,6 +58,7 @@ func _ready() -> void:
 	operation = configuration.get("operation", "boolean")
 	collapsible = JSON.parse_string(configuration.get("defaults", {}).get("collapsible", "false"))
 	disclosure = configuration.get("disclosure", {})
+	accessibility = configuration.get("accessibility", {})
 	close_on_escape = _default_bool("closeOnEscape", close_on_escape)
 	close_on_outside_click = _default_bool("closeOnOutsideClick", close_on_outside_click)
 	close_on_blur = _default_bool("closeOnBlur", close_on_blur)
@@ -78,6 +86,7 @@ func _ready() -> void:
 	style_facts = _collect_style_facts()
 	_apply_style_facts()
 	_apply_focus_ring()
+	_apply_accessibility()
 	_refresh()
 
 ## Read a declared default expression as a boolean, falling back when the
@@ -154,22 +163,23 @@ func _apply_text_style(node: Node, table: Dictionary) -> void:
 			"justify": node.horizontal_alignment = HORIZONTAL_ALIGNMENT_FILL
 	for child in node.get_children(): _apply_text_style(child, table)
 
-## Focus ring: the contract's outline declarations become the native focus
-## StyleBox. Width/color/offset only — outline-style is not differentiated.
+## Focus ring: the contract's `:focus-visible` outline declarations become the
+## native focus StyleBox. Width/colour/offset only — outline-style is not
+## differentiated, and a focus ring is a focus state, not a conditional style.
 func _apply_focus_ring() -> void:
 	if not is_instance_valid(trigger): return
-	var table: Dictionary = style_facts.get("trigger", style_facts.get("root", {}))
-	var width := _px(table.get("outline-width", ""))
+	var ring_facts: Dictionary = configuration.get("focusRing", {})
+	var width := _px(ring_facts.get("width", ""))
 	if width <= 0: return
 	var ring := StyleBoxFlat.new()
 	ring.draw_center = false
-	var color: String = table.get("outline-color", "#ffffff")
+	var color: String = ring_facts.get("color", "#ffffff")
 	ring.border_color = Color(color) if color.begins_with("#") else Color("#ffffff")
 	ring.border_width_left = int(width)
 	ring.border_width_top = int(width)
 	ring.border_width_right = int(width)
 	ring.border_width_bottom = int(width)
-	var offset := _px(table.get("outline-offset", ""))
+	var offset := _px(ring_facts.get("offset", ""))
 	if offset > 0:
 		ring.expand_margin_left = offset
 		ring.expand_margin_top = offset
@@ -177,9 +187,81 @@ func _apply_focus_ring() -> void:
 		ring.expand_margin_bottom = offset
 	trigger.add_theme_stylebox_override("focus", ring)
 
+## Accessibility projection: the accessible name carries the visible label, and
+## the contract's part relationships become native node relations. Godot exposes
+## no accessible-role property, so the authored role stays a boundary refusal.
+func _apply_accessibility() -> void:
+	if not is_instance_valid(trigger): return
+	if trigger.accessibility_name.is_empty():
+		trigger.accessibility_name = label
+		_a11y_name_from_label = true
+	_last_label = label
+	for relation in accessibility.get("relationships", []):
+		# Item-scoped relations (tab↔panel, trigger↔region) are wired per item so
+		# every item carries its own relation rather than only the first.
+		var pairs := _relation_nodes(String(relation.get("from", "")), String(relation.get("to", "")))
+		for pair in pairs:
+			_wire_relation(pair[0], pair[1], String(relation.get("attribute", "")))
+
+func _relation_nodes(from_part: String, to_part: String) -> Array:
+	if not items.is_empty() and _is_item_part(from_part) and _is_item_part(to_part):
+		var pairs: Array = []
+		for item in items: pairs.append([_item_node(item, from_part), _item_node(item, to_part)])
+		return pairs
+	var from_node := _node_for_part(from_part)
+	var to_node := _node_for_part(to_part)
+	return [[from_node, to_node]] if from_node != null and to_node != null else []
+
+func _is_item_part(part: String) -> bool:
+	return part in ["tab", "panel", "trigger", "content", "summary", "region"]
+
+## The node inside one item that a contract part refers to: the trigger-like part
+## is the item button, the content-like part is the revealed body.
+func _item_node(item: Dictionary, part: String) -> Control:
+	if part in ["tab", "panel", "content", "region", "body"]: return item.body
+	return item.button
+
+func _wire_relation(from_node: Control, to_node: Control, attribute: String) -> void:
+	if from_node == null or to_node == null: return
+	# The native accessibility relations are NodePath arrays, not node references.
+	var target := to_node.get_path()
+	match attribute:
+		"aria-controls":
+			var controls: Array[NodePath] = from_node.accessibility_controls_nodes.duplicate()
+			if not controls.has(target): controls.append(target)
+			from_node.accessibility_controls_nodes = controls
+		"aria-labelledby":
+			var labelled: Array[NodePath] = from_node.accessibility_labeled_by_nodes.duplicate()
+			if not labelled.has(target): labelled.append(target)
+			from_node.accessibility_labeled_by_nodes = labelled
+		"aria-describedby":
+			var described: Array[NodePath] = from_node.accessibility_described_by_nodes.duplicate()
+			if not described.has(target): described.append(target)
+			from_node.accessibility_described_by_nodes = described
+
+## Resolve a contract part to the node the control runtime hosts for it. Parts the
+## runtime does not host resolve to null and their relation is simply not wired —
+## the planner names that gap in the receipt, it is never a silent drop here.
+func _node_for_part(part: String) -> Control:
+	match part:
+		"trigger", "summary", "tab", "button":
+			if not items.is_empty() and operation in ["select", "toggle-item"]:
+				return items[0].button
+			return trigger
+		"content", "panel", "region", "body":
+			if is_instance_valid(surface): return surface
+			if not items.is_empty(): return items[0].body
+			return content
+		"root":
+			return self
+	return null
+
 func _refresh() -> void:
 	if not is_instance_valid(trigger): return
 	trigger.text = label
+	if _a11y_name_from_label and trigger.accessibility_name == _last_label:
+		trigger.accessibility_name = label
+	_last_label = label
 	if operation == "boolean": trigger.set_pressed_no_signal(value == "true")
 	trigger.disabled = disabled
 	for item in items:
@@ -207,9 +289,34 @@ func _refresh_disclosure_state() -> void:
 	if not is_instance_valid(trigger): return
 	trigger.set_meta("aria_expanded", aria_expanded)
 	trigger.set_meta("aria_controls", operation == "surface")
+	trigger.set_meta("aria_disabled", disabled)
+	if operation == "boolean": trigger.set_meta("aria_checked", value == "true")
 	for item in items:
 		item.button.set_meta("aria_selected", operation == "select" and value == item.key)
 		item.button.set_meta("aria_expanded", operation == "toggle-item" and value == item.key)
+		item.button.set_meta("aria_disabled", disabled or item.disabled)
+	# Authored state-to-ARIA projection: each declared state dimension maps its
+	# semantic value onto the accessible attribute the contract names.
+	for entry in accessibility.get("stateAria", []):
+		var category: String = entry.get("category", "")
+		var attribute: String = String(entry.get("attribute", "")).replace("-", "_")
+		var values: Dictionary = entry.get("values", {})
+		if category == "disclosure":
+			trigger.set_meta(attribute, _aria_value(values.get("open" if aria_expanded else "closed", aria_expanded), aria_expanded))
+		elif category == "selection":
+			for item in items:
+				item.button.set_meta(attribute, _aria_value(values.get("selected" if value == item.key else "unselected", value == item.key), value == item.key))
+		elif category == "availability":
+			trigger.set_meta(attribute, _aria_value(values.get("disabled" if disabled else "enabled", disabled), disabled))
+
+## Authored ARIA state values are strings ("true"/"false"); the structural meta
+## keeps the native boolean so consumers and witnesses read one type.
+func _aria_value(raw, fallback):
+	if raw is bool: return raw
+	if raw is String:
+		if raw == "true": return true
+		if raw == "false": return false
+	return fallback
 
 func activate(key: String = "") -> void:
 	if disabled: return
@@ -254,6 +361,8 @@ func add_item(key: String, text: String, body: Control, locked := false) -> void
 	items.append({"key":key,"label":text,"body":panel,"button":button,"disabled":locked})
 	_apply_style_to(button)
 	_apply_text_style(panel, style_facts.get("contentInner", style_facts.get("content", {})))
+	# Item-scoped accessibility relations can only be wired once the item exists.
+	_apply_accessibility()
 	if operation == "select" and value.is_empty() and not locked: value = key
 	_refresh()
 

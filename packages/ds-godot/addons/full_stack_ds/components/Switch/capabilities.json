@@ -41,6 +41,23 @@
     },
     "dismissal": []
   },
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-checked",
+        "values": {
+          "unchecked": "false",
+          "checked": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-labelledby",
+      "aria-checked"
+    ]
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

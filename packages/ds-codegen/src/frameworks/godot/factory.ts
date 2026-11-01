@@ -182,6 +182,36 @@ function disclosureFacts(ir: ComponentIR) {
   };
 }
 
+/**
+ * Accessibility facts the native control can carry: the labeling attributes the
+ * contract requires, the authored accessible role, the state-to-ARIA projection
+ * declared per state dimension, and the part-to-part relationships expressed as
+ * ARIA attributes. Godot exposes accessible name/description/live plus
+ * controls/labeled-by/described-by node relations — no role property — so the
+ * planner projects what exists and the boundary classifies the rest.
+ */
+function accessibilityFacts(ir: ComponentIR) {
+  // Only relations whose both ends the control runtime hosts can be wired; the
+  // rest are named as omissions instead of being claimed.
+  const hostedRelations = new Set(["root", "trigger", "summary", "tab", "button", "content", "panel", "region", "body"]);
+  const relationships = (ir.behavior.relationships ?? [])
+    .filter(relation => typeof relation === "object" && relation && typeof relation.from === "string" && typeof relation.to === "string" && typeof relation.attribute === "string")
+    .filter(relation => hostedRelations.has(relation.from) && hostedRelations.has(relation.to))
+    .map(relation => ({ from: relation.from, to: relation.to, attribute: relation.attribute }));
+  const stateAria = Object.entries(ir.states.dimensions ?? {})
+    .filter(([, dimension]) => dimension?.a11y?.attribute)
+    .map(([category, dimension]) => ({ category, attribute: dimension.a11y!.attribute, values: dimension.a11y!.values ?? {} }));
+  const labeling = ir.root.labeling ?? [];
+  const role = ir.root.rootRole;
+  if (!relationships.length && !stateAria.length && !labeling.length && !role) return {};
+  return {
+    ...(relationships.length ? { relationships } : {}),
+    ...(stateAria.length ? { stateAria } : {}),
+    ...(labeling.length ? { labeling } : {}),
+    ...(role ? { role } : {}),
+  };
+}
+
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
   const glyph = godotGlyphPlan(ir);
@@ -233,6 +263,7 @@ export function godotPlan(ir: ComponentIR) {
   const excludedProps = ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p => p.name);
   for (const name of boundary.excluded) if (!excludedProps.includes(name)) excludedProps.push(name);
   const disclosure = disclosureFacts(ir);
+  const accessibility = accessibilityFacts(ir);
   const styleProjection = godotControlStyles(ir);
   const omissions = [...boundary.omissions, ...styleProjection.omissions];
   return {
@@ -241,6 +272,8 @@ export function godotPlan(ir: ComponentIR) {
     ...(omissions.length ? { omissions } : {}),
     ...(refs.length ? { itemButtonRefs: refs } : {}),
     ...(Object.keys(disclosure).length ? { disclosure } : {}),
+    ...(Object.keys(accessibility).length ? { accessibility } : {}),
+    ...(styleProjection.focusRing ? { focusRing: styleProjection.focusRing } : {}),
     ...(styleProjection.styles.length ? { styles: styleProjection.styles } : {}),
   };
 }
@@ -337,6 +370,8 @@ export function createGodotEmitter(): FrameworkEmitter {
         operation: plan.operation,
         ...(controlRefs.length ? { itemButtonRefs: controlRefs } : {}),
         ...(disclosure && Object.keys(disclosure).length ? { disclosure } : {}),
+        ...("accessibility" in plan && plan.accessibility ? { accessibility: plan.accessibility } : {}),
+        ...("focusRing" in plan && plan.focusRing ? { focusRing: plan.focusRing } : {}),
         ...(controlStyles && controlStyles.length ? { styles: controlStyles } : {}),
       };
       const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : controlConfig), defaults, theme_color: themeColor(ir) };
