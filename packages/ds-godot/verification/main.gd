@@ -610,6 +610,27 @@ func _ready() -> void:
 	form_label.queue_free()
 	await get_tree().process_frame
 
+	# Media projection: a Texture or res:// source reaches the native media host and
+	# alt becomes the accessibility description. Remote fetching is not claimed.
+	var media_image = make_control("Image")
+	add_child(media_image)
+	await get_tree().process_frame
+	var media_texture := ImageTexture.create_from_image(Image.create(4, 4, false, Image.FORMAT_RGBA8))
+	media_image.set_contract_prop("src", media_texture)
+	media_image.set_contract_prop("alt", "Sample product photo")
+	await get_tree().process_frame
+	var media_host: TextureRect = media_image if media_image is TextureRect else null
+	if media_host == null:
+		for child in media_image.get_children():
+			if child is TextureRect: media_host = child
+	check(media_host != null, "Media host is not a TextureRect")
+	if media_host != null:
+		check(media_host.texture == media_texture, "Media src did not reach the native texture")
+	check(media_image.accessibility_description == "Sample product photo", "Media alt did not reach the accessibility description")
+	rows.append({"id":"passive-media-projection","texture":true,"alt":"Sample product photo"})
+	media_image.queue_free()
+	await get_tree().process_frame
+
 	# Catalog load: every admitted component scene must exist, parse and
 	# instantiate. This is a structural admission witness only — it proves the
 	# generated scene tree is loadable, not that its behavior is realized.
