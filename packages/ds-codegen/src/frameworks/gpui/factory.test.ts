@@ -145,10 +145,15 @@ describe("GPUI native style and control lowering", () => {
       expect(source).toContain(`self.${ref.field}.get_or_insert_with(||cx.new(|_|crate::components::Button::default()`);
       expect(source).toContain(`.child(${ref.field}.clone())`);
     }
-    // Static literal attrs are projected; dynamic bindings and event wiring are receipted.
+    // Static literal attrs are projected; dynamic bindings are receipted while
+    // reference events are realized — the referenced child's handler forwards to
+    // the parent callback (GPUI reference event wiring), so no ref-event omission
+    // is expected any more.
     expect(receipt.refs[0]!.projectedAttrs).toContain('variant');
     expect(receipt.refs[0]!.omissions.some(omission => omission.kind === 'ref-binding')).toBe(true);
-    expect(receipt.refs.some(ref => ref.omissions.some(omission => omission.kind === 'ref-event'))).toBe(true);
+    expect(receipt.refs.every(ref => !ref.omissions.some(omission => omission.kind === 'ref-event'))).toBe(true);
+    expect(source).toContain('let ref_action__set_on_click=self.on_click.clone();');
+    expect(source).toContain('ref_action.update(cx,|child,ctx|child.set_on_click(');
     // Realized parent props update the child through its setters each render.
     expect(receipt.refs[0]!.dynamicProps).toContain('disabled');
     expect(source).toContain('.update(cx,|child,cx|{child.set_disabled(');
