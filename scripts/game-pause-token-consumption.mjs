@@ -129,7 +129,7 @@ const colorTokens = authority.colorTokens ?? {};
 const type = Object.keys(authority.type ?? {});
 const typeTokens = authority.typeTokens ?? {};
 if (colors.length !== 19) failures.push(`authority: expected 19 colours, found ${colors.length}`);
-if (type.length !== 20) failures.push(`authority: expected 20 type values, found ${type.length}`);
+if (type.length !== 21) failures.push(`authority: expected 21 type values, found ${type.length}`);
 for (const name of colors) if (!colorTokens[name]?.token) failures.push(`authority colour ${name} has no token provenance`);
 for (const key of type) if (!typeTokens[key]?.token) failures.push(`authority type ${key} has no token provenance`);
 

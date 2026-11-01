@@ -36,21 +36,26 @@ namespace GamePauseMenu
             Root.style.borderBottomWidth = (float)layout.PanelBorder;
             Root.style.borderBottomColor = layout.Color(header.RuleBottom);
 
+            var ghost = Ui.MakeText(layout, header.GhostText, "ghost", header.GhostColor, true);
+            Ui.At(ghost, header.Ghost);
+            ghost.style.opacity = (float)header.GhostOpacity;
+            Root.Add(ghost);
+
             var wordmark = Ui.MakeBox("wordmark");
             Ui.Point(wordmark, header.Wordmark.X, header.Wordmark.Y);
             wordmark.style.height = (float)header.Wordmark.H;
             wordmark.style.flexDirection = FlexDirection.Row;
             wordmark.style.alignItems = Align.Center;
-            BrandWord = Ui.MakeText(layout, header.TextMain, "wordmark", "boneBright", true);
+            BrandWord = Ui.MakeText(layout, header.TextMain, "wordmark", header.WordmarkColor, true);
             BrandWord.style.height = (float)header.Wordmark.H;
-            BrandNumber = Ui.MakeText(layout, header.TextAccent, "wordmark", "signal", true);
+            BrandNumber = Ui.MakeText(layout, header.TextAccent, "wordmark", header.WordmarkAccentColor, true);
             BrandNumber.style.height = (float)header.Wordmark.H;
             BrandNumber.style.marginLeft = 8;
             wordmark.Add(BrandWord);
             wordmark.Add(BrandNumber);
             Root.Add(wordmark);
 
-            Mission = Ui.MakeText(layout, header.MissionText, "mission", "muted", true,
+            Mission = Ui.MakeText(layout, header.MissionText, "mission", header.MissionColor, true,
                 letterSpacing: layout.Size("letterSpacingMicro"));
             Ui.Point(Mission, header.Mission.X, header.Mission.Y);
             Root.Add(Mission);
@@ -58,12 +63,12 @@ namespace GamePauseMenu
             foreach (var stat in header.Stats)
             {
                 var view = new StatView { Id = stat.Id };
-                view.Label = Ui.MakeText(layout, stat.Label, "statLabel", "muted", true,
+                view.Label = Ui.MakeText(layout, stat.Label, "statLabel", header.StatLabelColor, true,
                     letterSpacing: layout.Size("letterSpacingMicro"));
                 Ui.Point(view.Label, stat.X, stat.LabelY);
-                view.Value = Ui.MakeText(layout, stat.Value, "statValue", "boneBright", true);
+                view.Value = Ui.MakeText(layout, stat.Value, "statValue", header.StatValueColor, true);
                 Ui.Point(view.Value, stat.X, stat.ValueY);
-                view.Sub = Ui.MakeText(layout, stat.Sub, "statSub", "muted", false);
+                view.Sub = Ui.MakeText(layout, stat.Sub, "statSub", header.StatSubColor, false);
                 Ui.Point(view.Sub, stat.X, stat.SubY);
                 Root.Add(view.Label);
                 Root.Add(view.Value);
@@ -92,18 +97,18 @@ namespace GamePauseMenu
             Root = Ui.MakeBox("pause-footer");
             Root.name = "footer";
             Ui.At(Root, footer.Rect);
-            Root.style.backgroundColor = layout.Color("ruleStrong");
+            Root.style.backgroundColor = layout.Color(footer.Background);
             Root.style.borderTopWidth = (float)layout.PanelBorder;
             Root.style.borderTopColor = layout.Color(footer.RuleTop);
 
-            Hints = Ui.MakeText(layout, footer.HintsText, "footer", "textSecondary", false);
+            Hints = Ui.MakeText(layout, footer.HintsText, "footer", footer.HintsColor, false);
             // Typography parity: UI Toolkit collapses runs of spaces by default;
             // the pinned hint string uses triple-space separators.
             Hints.style.whiteSpace = WhiteSpace.Pre;
             Ui.Point(Hints, footer.Hints.X, footer.Hints.Y - footer.Rect.Y);
             Root.Add(Hints);
 
-            NavLabel = Ui.MakeText(layout, footer.NavLabelText, "statLabel", "textSecondary", true,
+            NavLabel = Ui.MakeText(layout, footer.NavLabelText, "statLabel", footer.NavLabelColor, true,
                 letterSpacing: layout.Size("letterSpacingMicro"));
             Ui.Point(NavLabel, footer.NavLabel.X, footer.NavLabel.Y - footer.Rect.Y);
             Root.Add(NavLabel);

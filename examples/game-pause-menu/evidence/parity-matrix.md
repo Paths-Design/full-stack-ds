@@ -16,7 +16,7 @@ evidence lives, and what is explicitly outside the claim.
 | Authority probes | 195 colour/geometry probes and 117 typography bbox/ink measurements across the four base states | `parity-check.mjs` report |
 | Regression baseline | 24 committed image goldens (8 states × 3 lanes), lossless WebP + manifest binding the authority and token sources; fresh captures must stay within golden RMSE 0.02 | [`evidence/goldens/`](goldens/) and `pnpm parity:goldens:check` |
 | Token path | GPUI and Godot resolve the palette/type scale from the token graph; Unity's Card surface resolves through the generated component token variables in the Orion brand scope | [`scripts/game-pause-token-consumption.mjs`](../../../scripts/game-pause-token-consumption.mjs), GPUI/Godot tests, Unity `TokenConsumptionTests` |
-| Token provenance | all 19 authority colours and 20 type values resolve from `resolved.tokens.json` or the Orion brand | [`scripts/game-pause-token-provenance.mjs`](../../../scripts/game-pause-token-provenance.mjs) |
+| Token provenance | all 19 authority colours and 21 type values resolve from `resolved.tokens.json` or the Orion brand | [`scripts/game-pause-token-provenance.mjs`](../../../scripts/game-pause-token-provenance.mjs) |
 | Source-design oracle | reference palette anchors and composition bands, with an audit report | [`fixtures/orion-style-oracle.json`](../fixtures/orion-style-oracle.json), [`oracle-report.json`](oracle-report.json) |
 
 ## Explicit non-coverage
@@ -31,7 +31,7 @@ evidence lives, and what is explicitly outside the claim.
 | Other engine versions | Not claimed | Only the pinned versions listed above |
 | Accessibility | Not evaluated | No screen-reader, keyboard-focus-order, contrast-at-runtime or reduced-motion audit across lanes |
 | Usability | Not evaluated | No user study, task timing or comprehension measure; the example is an engine-transfer comparison, not a usability experiment |
-| Source-design composition fidelity | Not met, recorded | The restyle-pass oracle audit records 36 composition-band violations across 24 lane/state observations (9 clean: map/map-popover/progress); see [`visual-review.md`](visual-review.md) |
+| Source-design composition fidelity | Not met, recorded | The pass-2 oracle audit records 30 composition-band violations across 24 lane/state observations (6 clean: settings/settings-subtitle in all lanes); see [`visual-review.md`](visual-review.md) |
 | Unity token-channel completion | Ledgered migration started | 318 → 315 direct inline assignments; generated Card surface channel only; badge/button/design-slot consumers remain unsupported |
 | Brand design-slot overrides | Not projected | Remains ledgered as `uss-design-slot` in the Unity projection |
 | Elevation/motion consumers | Not projected | The Unity sheet carries the variables but has no generated shadow/transition consumer |

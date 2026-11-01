@@ -79,12 +79,15 @@ accepting a bounded claim. The first restyle pass is authority-driven:
   already painted, which the brighter chrome exposed as a real parity gap.
 
 The source-design oracle audit dropped from 90 composition violations / 0 clean
-observations to **36 violations / 9 clean** (map, map-popover and progress now
-meet the reference bands). Abilities and settings still exceed the ink band and
-fall below the mint band, and the reference's oversized grey display type and
-industrial framing are still absent; those remain explicit non-claims until the
-next restyle pass. See [`evidence/visual-review.md`](evidence/visual-review.md)
-and [`evidence/oracle-report.json`](evidence/oracle-report.json).
+observations to **30 violations / 6 clean**. Pass 2 adds a 160 px grey ghost
+`N5` display layer and turns the header and footer into mint fields (the orange
+tab band now sits between them); settings meets the oracle bands, abilities is
+~1.7 points over the ink ceiling, and map/progress now hold more mint than the
+reference collage band. The full-screen remap modal is scrim-dominated and is a
+documented exception rather than a composition sample. Industrial framing and a
+full per-tab mint/grey panel conversion are still non-claims. See
+[`evidence/visual-review.md`](evidence/visual-review.md) and
+[`evidence/oracle-report.json`](evidence/oracle-report.json).
 
 ## Global rules
 
@@ -437,9 +440,9 @@ Every authority colour and type size stores its token provenance:
   surface roles (`moss`, `alert`, `clear`) are new Orion brand tokens
   (`semantic.color.surface.moss`, `semantic.color.status.alert`,
   `semantic.color.status.clear`).
-- `typeTokens` maps all 20 `type` entries to token values: 11 sizes map to the
-  core typography ramp or semantic sizes, the three app-specific sizes
-  (11 px / 13 px / 28 px) are new Orion brand `typography.graphic.size.*`
+- `typeTokens` maps all 21 `type` entries to token values: 11 sizes map to the
+  core typography ramp or semantic sizes, the app-specific sizes
+  (11 px / 13 px / 28 px / 160 px ghost) are new Orion brand `typography.graphic.size.*`
   tokens, and both tracking entries map to the zero letter-spacing token.
 - The gate `node scripts/game-pause-token-provenance.mjs` (pnpm
   `tokens:check:game-pause-authority`) fails on any authority colour/size with

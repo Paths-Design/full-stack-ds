@@ -176,7 +176,7 @@ func test_corpus() -> void:
 	check(app.parity.viewport == Vector2(1280, 800), "parity viewport is 1280x800")
 	check(app.parity.switch_data["width"] == 64 and app.parity.switch_data["height"] == 32, "parity switch geometry 64x32")
 	check(app.parity.raw.get("colorTokens", {}).size() == 19, "authority carries 19 colour provenances")
-	check(app.parity.raw.get("typeTokens", {}).size() == 20, "authority carries 20 type provenances")
+	check(app.parity.raw.get("typeTokens", {}).size() == 21, "authority carries 21 type provenances")
 	var token_resolver := TokenResolver.load_from_project()
 	check(token_resolver.ok(), "token graph and Orion brand load from ds-tokens", str(token_resolver.errors))
 	check(token_resolver.resolve_color("semantic.color.background.accent", "dark") == "#EF6A3C", "Orion dark accent resolves from the token graph")
