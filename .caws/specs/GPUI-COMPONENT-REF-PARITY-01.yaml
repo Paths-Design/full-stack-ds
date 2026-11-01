@@ -2,7 +2,6 @@ id: GPUI-COMPONENT-REF-PARITY-01
 title: 'GPUI realizes by-reference composition as retained nested generated components'
 mode: feature
 lifecycle_state: active
-worktree: gpui-component-ref-parity
 created_at: '2026-11-01T10:26:05.363Z'
 updated_at: '2026-11-01T10:26:09.392Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
