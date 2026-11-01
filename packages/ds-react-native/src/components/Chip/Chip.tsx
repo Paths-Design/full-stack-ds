@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createChipStyles } from "./Chip.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -93,7 +94,7 @@ export function Chip({
         <View
           style={styles.text}
         >
-          {typeof children === "string" ? <RNText>{children}</RNText> : children}
+          {renderTextChildren(children)}
         </View>
       </Button>
       {dismissible ? (

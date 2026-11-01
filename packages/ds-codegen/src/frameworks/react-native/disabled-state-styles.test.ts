@@ -38,7 +38,7 @@ describe("React Native disabled text state projection", () => {
   it("consumes Button disabled text on its rendered label while preserving its view state", () => {
     const { componentFile, stylesFile, tokensFile } = generateReactNativeComponentSource(corpusIR("Button"));
     expect(componentFile).toContain("disabled ? styles.root_state_disabled : undefined");
-    expect(componentFile).toMatch(/<RNText style=\{\[[^\]]*\(disabled\) \? styles\.rootText_state_disabled : undefined\]\}/);
+    expect(componentFile).toMatch(/renderTextChildren\(children, \{ style: \[[^\]]*\(disabled\) \? styles\.rootText_state_disabled : undefined\] \}\)/);
     expect(stylesFile).toContain('rootText_state_disabled: definedStyle({ color: (tokens.root?.["button.color.foreground.disabled"]');
     expect(tokensFile).toContain('name: "button.color.foreground.disabled"');
   });

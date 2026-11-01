@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
-import { Linking, Pressable, Text as RNText } from "react-native";
+import { Linking, Pressable } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createLinksStyles } from "./Links.styles";
 // @generated:end
@@ -54,7 +55,7 @@ export function Links({
       accessibilityRole="link"
       accessibilityState={{ disabled: String(disabled) === "true" }}
     >
-      {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize, (String(disabled) === "true") ? styles.rootText_state_disabled : undefined]}>{children}</RNText> : children}
+      {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForSize, (String(disabled) === "true") ? styles.rootText_state_disabled : undefined] })}
     </Pressable>
   );
 }

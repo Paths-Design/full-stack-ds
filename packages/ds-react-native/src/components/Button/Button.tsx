@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
-import { Pressable, Text as RNText, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createButtonStyles } from "./Button.styles";
 import { Spinner } from "../Spinner/Spinner";
@@ -78,7 +79,7 @@ export function Button({
       <View
         style={styles.loadingText}
       >
-        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize, textVariantStyleForVariant, (disabled) ? styles.rootText_state_disabled : undefined]}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForSize, textVariantStyleForVariant, (disabled) ? styles.rootText_state_disabled : undefined] })}
       </View>
     </Pressable>
   );

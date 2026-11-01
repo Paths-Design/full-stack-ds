@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { Pressable, Text as RNText, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createTabsStyles } from "./Tabs.styles";
 import { createCompoundContext } from "../../primitives/hooks";
@@ -103,7 +104,7 @@ export function Tabs({
         accessibilityLabel={accessibilityLabel}
         accessibilityLabelledBy={accessibilityLabelledBy}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {renderTextChildren(children)}
       </View>
     </TabsContextProvider>
   );
@@ -159,7 +160,7 @@ export function TabsTab({ value, disabled, children, testID }: TabsTabProps) {
         ctx.setActiveTab(value);
       }}
     >
-      {typeof children === "string" ? <RNText>{children}</RNText> : children}
+      {renderTextChildren(children)}
     </Pressable>
   );
 }
@@ -184,7 +185,7 @@ export function TabsPanel({ value, children, testID }: TabsPanelProps) {
       style={[styles.panel, isActive ? undefined : { display: "none" }]}
       accessible={isActive}
     >
-      {typeof children === "string" ? <RNText>{children}</RNText> : children}
+      {renderTextChildren(children)}
     </View>
   );
 }

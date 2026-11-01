@@ -1,4 +1,5 @@
 import { View, type StyleProp, type ViewStyle } from "react-native";
+import { renderTextChildren } from "./text-children";
 import type { ReactNode } from "react";
 
 type StackVariant = "vertical" | "horizontal";
@@ -28,7 +29,7 @@ export function Stack({
 
   return (
     <View testID={testID} style={[layoutStyle, style]}>
-      {children}
+      {renderTextChildren(children)}
     </View>
   );
 }

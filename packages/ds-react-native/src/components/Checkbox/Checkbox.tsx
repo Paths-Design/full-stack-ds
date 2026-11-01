@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createCheckboxStyles } from "./Checkbox.styles";
 // @generated:end
@@ -66,7 +67,7 @@ export function Checkbox({
       <View style={[styles.indicator, checked || indeterminate ? styles.indicator_checked : undefined]}>
         <RNText style={styles.indicatorMark}>{indeterminate ? "-" : checked ? "x" : ""}</RNText>
       </View>
-      {typeof children === "string" ? <RNText style={styles.label}>{children}</RNText> : children}
+      {renderTextChildren(children, { style: styles.label })}
     </Pressable>
   );
 }

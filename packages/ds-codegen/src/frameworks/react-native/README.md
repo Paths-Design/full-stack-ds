@@ -14,7 +14,7 @@ pnpm run governed:rail:react-native
 
 ## Current slice
 
-- Emits all 47 current component contracts into `packages/ds-react-native/`.
+- Emits all <!-- component-count -->55 component contracts into `packages/ds-react-native/`.
 - Typechecks against real React Native package types; the old local
   `declare module "react-native"` shim is not part of the rail.
 - Emits Vitest suites for every component. Residual components keep type
@@ -43,6 +43,12 @@ pnpm run governed:rail:react-native
   `Switch` primitive.
 - Walks `ComponentIR.dom` for the rest of the corpus, lowering common HTML-ish
   hosts to `View`, `Pressable`, `TextInput`, `RNText`, and `RNImage`.
+- Projects synchronous scalar children into native `Text` hosts. Scalar-only
+  arrays and fragments form one text block, retaining one style and line limit.
+  Mixed content preserves supplied elements and keyed consumer state; the
+  normalizer traverses structural fragments, not arbitrary consumer elements.
+  Native text roots retain their own text context. This does not qualify
+  asynchronous children or global clipping of arbitrary mixed native views.
 - Keeps channel state inside the generated component body for now; no separate
   RN behavior hooks are emitted yet.
 - `examples/settings/react-native` is a public-export consumer typecheck lane.

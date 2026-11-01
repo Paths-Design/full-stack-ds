@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createDetailsStyles } from "./Details.styles";
 import { Icon } from "../Icon/Icon";
@@ -85,7 +86,7 @@ export function Details({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: styles.rootText })}
       </View>
       ) : null}
     </View>

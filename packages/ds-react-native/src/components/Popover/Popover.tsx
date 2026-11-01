@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { Dimensions, Modal, Pressable, Text as RNText, View } from "react-native";
+import { Dimensions, Modal, Pressable, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createPopoverStyles } from "./Popover.styles";
 // @generated:end
@@ -91,7 +92,7 @@ export function Popover({
         accessibilityLabelledBy={accessibilityLabelledBy}
         accessibilityState={{ expanded: Boolean(open) }}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {renderTextChildren(children)}
       </Pressable>
       <Modal
         visible={Boolean(open)}
@@ -105,7 +106,7 @@ export function Popover({
           accessible={false}
         >
           <View style={[styles.content, contentPosition]}>
-            {typeof content === "string" ? <RNText>{content}</RNText> : content}
+            {renderTextChildren(content)}
           </View>
         </Pressable>
       </Modal>

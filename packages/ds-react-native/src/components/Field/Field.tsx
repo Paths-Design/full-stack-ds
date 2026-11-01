@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createFieldStyles } from "./Field.styles";
 // @generated:end
@@ -63,13 +64,13 @@ export function Field({
           style={styles.label}
           accessibilityRole="text"
         >
-          {slots?.label}
+          {renderTextChildren(slots?.label)}
         </RNText>
       </View>
       <View
         style={styles.control}
       >
-        {slots?.control}
+        {renderTextChildren(slots?.control)}
       </View>
       <View
         style={styles.meta}
@@ -78,20 +79,20 @@ export function Field({
           style={styles.help}
           accessibilityRole="text"
         >
-          {slots?.help}
+          {renderTextChildren(slots?.help)}
         </RNText>
         <RNText
           style={styles.error}
           accessibilityRole="text"
         >
-          {slots?.error}
+          {renderTextChildren(slots?.error)}
         </RNText>
         {validating ? (
         <RNText
           style={styles.validatingIndicator}
           accessibilityRole="text"
         >
-          {slots?.validatingIndicator}
+          {renderTextChildren(slots?.validatingIndicator)}
         </RNText>
         ) : null}
       </View>
