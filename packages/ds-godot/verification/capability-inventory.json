@@ -12,7 +12,7 @@
     },
     "deadRules": []
   },
-  "variances": 183,
+  "variances": 182,
   "components": [
     {
       "component": "Accordion",
@@ -2020,7 +2020,7 @@
       "component": "Spinner",
       "admitted": true,
       "emitted": true,
-      "operation": "anatomy",
+      "operation": "loop-visual",
       "diagnostic": null,
       "contractSha256": "5c706790bd51a8f464f5cf579567e6b46353d5473025793fe0196aa8db42a272",
       "sidecarSha256": {
@@ -2028,22 +2028,15 @@
         "styles": "651c682f4566332d6563a843b298f969dbc811b468febcfafa2ad58a52996529"
       },
       "receipt": {
-        "operation": "anatomy",
+        "operation": "loop-visual",
         "excluded": [
-          "ariaHidden",
-          "label",
           "inline",
           "showAfterMs"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 18
+        "nonClaimCount": 2
       },
-      "variance": [
-        {
-          "prop": "label",
-          "rule": "prop-content-string"
-        }
-      ],
+      "variance": [],
       "boundary": {
         "counts": {
           "lowered": 85,

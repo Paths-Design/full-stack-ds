@@ -21,6 +21,7 @@ for(const name of ['main.gd','roundtrip.gd']) fs.copyFileSync(path.join(verifica
 fs.mkdirSync(path.join(project,'verification'),{recursive:true});
 for(const name of fs.readdirSync(verification).filter(name=>name.endsWith('.gd'))) fs.copyFileSync(path.join(verification,name),path.join(project,'verification',name));
 fs.copyFileSync(path.join(verification,'glyph_main.tscn'),path.join(project,'verification/glyph_main.tscn'));
+fs.copyFileSync(path.join(verification,'spinner_main.tscn'),path.join(project,'verification/spinner_main.tscn'));
 fs.copyFileSync(path.join(root,'packages/ds-godot/fixtures/traces.json'),path.join(project,'traces.json'));
 // A separate changed-token fixture checks emitted resource values in Godot.
 const {buildComponentIR}=await import('../packages/ds-codegen/dist/ir.js');
@@ -92,6 +93,14 @@ function glyphReceipt(log, exported) {
   throw new Error('Failed or mismatched glyph probe: '+JSON.stringify(receipt));
  return receipt;
 }
+function spinnerReceipt(log, exported) {
+ const line=log.split(/\r?\n/).find(line=>line.startsWith('FSDS_SPINNER_RESULT '));
+ if(!line)throw new Error('Missing executed spinner probe');
+ const receipt=JSON.parse(line.slice('FSDS_SPINNER_RESULT '.length));
+ if(receipt.runId!==runId||receipt.passed!==true||receipt.exported!==exported||receipt.failures.length||receipt.size!==24||receipt.thickness!==4||receipt.accentPixels<4||receipt.trackPixels<11)
+  throw new Error('Failed or mismatched spinner probe: '+JSON.stringify(receipt));
+ return receipt;
+}
 console.log('Evidence:',out);
 run(['--headless','--editor','--import'],'import');
 for(const mode of ['write','read']) {
@@ -100,6 +109,7 @@ for(const mode of ['write','read']) {
 }
 run([], 'runtime');
 glyphReceipt(run(['res://verification/glyph_main.tscn'],'glyph-runtime'), false);
+spinnerReceipt(run(['res://verification/spinner_main.tscn'],'spinner-runtime'), false);
 const receipt=JSON.parse(fs.readFileSync(path.join(out,'godot.json'),'utf8'));
 if(receipt.runId!==runId || !receipt.passed) throw new Error('Invalid runtime receipt');
 fs.copyFileSync(path.join(out,'godot.json'),path.join(out,'godot-runtime.json'));
@@ -151,4 +161,21 @@ fs.writeFileSync(path.join(out,'glyph-exported.log'),glyphPlayerLog);
 if(glyphPlayer.error||glyphPlayer.status!==0||/SCRIPT ERROR|Parse Error|Assertion failed/.test(glyphPlayerLog))
  throw new Error('Exported glyph Player failed: '+glyphPlayerLog.slice(-4000));
 glyphReceipt(glyphPlayerLog,true);
+fs.writeFileSync(path.join(project,'project.godot'),fs.readFileSync(path.join(project,'project.godot'),'utf8').replace(
+ 'run/main_scene="res://verification/glyph_main.tscn"','run/main_scene="res://verification/spinner_main.tscn"'));
+run(['--headless','--editor','--import'],'spinner-import');
+const spinnerZip=path.join(out,'SpinnerPilot.zip');
+run(['--headless','--export-debug','macOS',spinnerZip],'spinner-export');
+const spinnerUnzip=spawnSync('unzip',['-q',spinnerZip,'-d',path.join(out,'spinner-exported')],{encoding:'utf8'});
+if(spinnerUnzip.status!==0)throw new Error('Cannot extract spinner exported app');
+const spinnerApp=fs.readdirSync(path.join(out,'spinner-exported')).find(n=>n.endsWith('.app'));
+if(!spinnerApp)throw new Error('Missing spinner exported application');
+const spinnerBinDir=path.join(out,'spinner-exported',spinnerApp,'Contents/MacOS');
+const spinnerExecutable=path.join(spinnerBinDir,fs.readdirSync(spinnerBinDir)[0]);
+const spinnerPlayer=spawnSync(spinnerExecutable,[],{env,encoding:'utf8',timeout:180000});
+const spinnerPlayerLog=(spinnerPlayer.stdout??'')+(spinnerPlayer.stderr??'');
+fs.writeFileSync(path.join(out,'spinner-exported.log'),spinnerPlayerLog);
+if(spinnerPlayer.error||spinnerPlayer.status!==0||/SCRIPT ERROR|Parse Error|Assertion failed/.test(spinnerPlayerLog))
+ throw new Error('Exported spinner Player failed: '+spinnerPlayerLog.slice(-4000));
+spinnerReceipt(spinnerPlayerLog,true);
 console.log('Exported Player passed.');

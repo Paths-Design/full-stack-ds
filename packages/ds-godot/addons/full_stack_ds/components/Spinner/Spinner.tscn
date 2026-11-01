@@ -6,5 +6,3 @@
 [node name="Spinner" type="VBoxContainer"]
 script = ExtResource("1")
 theme = ExtResource("2")
-
-[node name="visual" type="PanelContainer" parent="."]
