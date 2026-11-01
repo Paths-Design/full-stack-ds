@@ -1103,6 +1103,20 @@ mod mounted_layout_tests {
             first_slider.min,
         );
 
+        view.update(cx, |menu, cx| {
+            menu.state.set_audio("master", 100.0);
+            cx.notify();
+        });
+        cx.run_until_parked();
+        let mute_cell = cx
+            .debug_bounds("slider-cell:audio:master:0")
+            .expect("zero-valued audio click target is mounted");
+        cx.simulate_click(mute_cell.center(), Modifiers::default());
+        assert_eq!(
+            view.read_with(cx, |menu, _| menu.state.audio_sliders()[0].value),
+            0.0,
+        );
+
         let selectors = [
             [
                 "language-option:AudioLanguage:0", "language-option:AudioLanguage:1",
