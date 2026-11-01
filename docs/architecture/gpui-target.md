@@ -84,6 +84,18 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
+### Disclosure controls
+
+A contract that exposes an `interaction` boolean channel toggled by a click on a
+trigger part (Details' `open`/`defaultOpen`/`onOpenChange` on `summary`) reuses the
+bounded channel machinery through a synthetic control host whose part is the
+trigger. The generated component carries controlled/uncontrolled open state,
+`ChangeRequest` emission, checked-style predicates and a click-and-keyboard
+activated trigger part (focus handle, tab stop, Space/Enter); content guarded on
+the open channel renders only while open. The receipt's `controlPart` names the
+trigger. Contracts whose interaction is not a boolean disclosure channel keep the
+generic anatomy projection.
+
 ### Action controls
 
 A part whose click event is bound to a callback prop is an **action**, not a
