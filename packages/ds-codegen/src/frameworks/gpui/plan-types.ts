@@ -30,6 +30,18 @@ export interface GpuiOmission {
   disposition?: string;
 }
 
+/** One by-reference child component the projection renders and retains. */
+export interface GpuiRefPlan {
+  /** Generated struct field that retains the child entity. */
+  field: string;
+  /** Referenced generated component type name. */
+  refType: string;
+  /** Static literal props projected onto the child's generated builders. */
+  attrs: Array<{ prop: string; literal: string }>;
+  /** Facts of the reference that the projection does not realize. */
+  omissions: GpuiOmission[];
+}
+
 export interface GpuiPlan {
   channel: GpuiChannel | undefined;
   part: string | undefined;
@@ -47,6 +59,8 @@ export interface GpuiPlan {
   disabledDefault: string;
   keys: readonly string[];
   excludedProps: string[];
+  /** Retained by-reference children, in anatomy pre-order. */
+  refs: GpuiRefPlan[];
   omissions: GpuiOmission[];
 }
 
