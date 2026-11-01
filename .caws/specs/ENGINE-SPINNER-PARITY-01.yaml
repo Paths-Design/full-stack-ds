@@ -1,10 +1,11 @@
 id: ENGINE-SPINNER-PARITY-01
 title: 'Spinner motion and style realization for Unity and Godot'
 mode: feature
-lifecycle_state: active
-worktree: engine-spinner-parity
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Spinner source-driven Unity and Godot loop realization landed with Editor, runtime and export evidence'
 created_at: '2026-10-30T17:35:33.515Z'
-updated_at: '2026-11-01T10:08:28.209Z'
+updated_at: '2026-11-01T11:27:08.810Z'
 created_by_session: '01a18dd7-e8c5-75b1-a31c-92fd96d4e82f'
 blast_radius:
   modules:
