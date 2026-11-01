@@ -61,3 +61,10 @@ evidence:
     command: "pnpm run test:react-native"
     exit_code: 0
     commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "46 native generator regressions plus 311 native host tests and required all-target rail pass at 224646866. Generic, compound, anchored trigger/content, renamed named slots, resolved Field text hosts, Truncate one-block caps/styles, Checkbox and CodeBlock explicit zero/bigint plus source fallback retain presentation and behavior. Exact final rail/root/framework logs in checks/224646866-VpCSHe/; focused peer-codegen-after.log and peer-native-final.log in .caws/state/release-evidence/RN-PROJECTED-TEXT-CHILDREN-01/."
+    recorded_at: "2026-11-01T23:09:05.534Z"
+    command: "pnpm run governed:rail && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
