@@ -36,7 +36,7 @@ public struct FsdsTable<Content: View>: View {
         TableTokens.scopes
     }
     private let contentLabelProp: String?
-    private var contentLabel: String { contentLabelProp ?? fsdsMessages.string("Table.content", default: "Table content") }
+    private var `contentLabel`: String { contentLabelProp ?? fsdsMessages.string("Table.content", default: "Table content") }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
     private var nativeTextStyle: FsdsResolvedNativeTextStyle {
@@ -49,10 +49,10 @@ public struct FsdsTable<Content: View>: View {
     }
 
     public init(
-        contentLabel: String? = nil,
+        `contentLabel`: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self.contentLabelProp = contentLabel
+        self.contentLabelProp = `contentLabel`
         self.content = content()
     }
 
@@ -88,7 +88,7 @@ public struct FsdsTable<Content: View>: View {
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .foregroundStyle(nativeTextStyle.color ?? Color.primary)
             .accessibilityElement(children: .contain)
-            .accessibilityLabel(SwiftUI.Text(verbatim: contentLabel))
+            .accessibilityLabel(SwiftUI.Text(verbatim: `contentLabel`))
     }
 }
 // @generated:end

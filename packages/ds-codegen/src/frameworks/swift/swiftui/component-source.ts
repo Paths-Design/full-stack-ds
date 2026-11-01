@@ -3267,7 +3267,7 @@ function emitDisclosureComponent(ir: ComponentIR): string {
 function emitStaticContentComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const regionLabel = staticContentRegionLabel(ir);
-  const regionLabelName = regionLabel ? escapeSwiftKeyword(regionLabel.safeName) : undefined;
+  const regionLabelName = regionLabel ? `\`${regionLabel.safeName}\`` : undefined;
   const regionLabelDecl = regionLabel ? swiftStringProp(ir, regionLabel.safeName, INDENT, regionLabelName) : undefined;
   const chrome = resolveChrome(ir);
   const axes = collectVariantAxes(ir);
@@ -4075,7 +4075,7 @@ function emitComposerComponent(
 /** Swift keywords that may appear as union values (e.g. CardDensity `default`, ListVariant `as`). */
 const SWIFT_KEYWORDS: ReadonlySet<string> = new Set([
   "default", "in", "out", "case", "for", "if", "else", "return", "init",
-  "as", "is", "guard", "while", "defer", "where", "extension", "class",
+  "as", "is", "guard", "while", "defer", "where", "extension",
   "internal", "public", "private", "open", "static", "self", "Type", "Protocol",
 ]);
 

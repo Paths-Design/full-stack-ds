@@ -4,14 +4,14 @@ import { parseBindingExpression, type ComponentIR } from "../ir.js";
 import { generateSwiftUIComponentSource } from "./swift/swiftui/component-source.js";
 import { generateJetpackComposeComponentSource } from "./jetpack-compose/component-source.js";
 
-function region(message = true, fallback = false): ComponentIR {
+function region(message = true, fallback = false, name = "class"): ComponentIR {
   const ir = structuredClone(corpusIR("Table"));
   ir.name = "ContentPanel";
   ir.messages = ir.messages.map(item => ({ ...item, catalogKey: `ContentPanel.${item.key}` }));
   const label = ir.styledProps.find(prop => prop.name === "contentLabel")!;
-  label.name = "class";
-  label.safeName = "class";
-  ir.dom!.bindings["aria-label"] = parseBindingExpression("prop:class");
+  label.name = name;
+  label.safeName = name;
+  ir.dom!.bindings["aria-label"] = parseBindingExpression(`prop:${name}`);
   if (!message) {
     delete label.defaultMessage;
     delete label.defaultExpr;
@@ -34,7 +34,7 @@ describe("native named content regions", () => {
     expect(swift).toContain('contentLabelProp ?? fsdsMessages.string("Table.content", default: "Table content")');
     expect(swift).toContain('@Environment(\\.fsdsMessages) private var fsdsMessages');
     expect(swift).toContain(".accessibilityElement(children: .contain)");
-    expect(swift).toContain(".accessibilityLabel(SwiftUI.Text(verbatim: contentLabel))");
+    expect(swift).toContain(".accessibilityLabel(SwiftUI.Text(verbatim: `contentLabel`))");
     expect(swift).not.toContain("children: .combine");
     expect(compose).toContain('contentLabel: String = LocalFsdsMessages.current.string("Table.content", "Table content"),');
     expect(compose).toContain("import com.fullstackds.messages.LocalFsdsMessages");
@@ -70,11 +70,25 @@ describe("native named content regions", () => {
     expect(compose).toContain("if (`class` != null) Modifier.semantics(mergeDescendants = false) { contentDescription = `class` } else Modifier");
   });
 
-  it.each(["hidden", "dynamic-role", "non-region"])("does not expose %s content as a named region", kind => {
+  it.each(["let", "var", "struct", "func", "enum", "protocol"])("quotes declaration keyword %s in message, nullable, and fallback forms", name => {
+    const message = generateSwiftUIComponentSource(region(true, true, name));
+    const nullable = generateSwiftUIComponentSource(region(false, false, name));
+    expect(message).toContain(`private var \`${name}\`: String { ${name}Prop ?? fsdsMessages.string("ContentPanel.content", default: "Table content") }`);
+    expect(message).toContain(`\`${name}\`: String? = nil,`);
+    expect(message).toContain(`self.${name}Prop = \`${name}\``);
+    expect(message).toContain(`self.init(\`${name}\`: \`${name}\`) { SwiftUI.Text(verbatim: text) }`);
+    expect(nullable).toContain(`private let \`${name}\`: String?`);
+    expect(nullable).toContain(`if let fsdsRegionLabel = \`${name}\` {`);
+  });
+
+  it.each(["hidden", "dynamic-role", "non-region", "conditional-content", "hidden-attribute", "hidden-binding"])("does not expose %s content as a named region", kind => {
     const ir = region();
     if (kind === "hidden") ir.dom!.bindings["aria-hidden"] = parseBindingExpression("prop:responsive");
     if (kind === "dynamic-role") ir.dom!.bindings.role = parseBindingExpression("prop:contentLabel");
     if (kind === "non-region") ir.dom!.attrs.role = "presentation";
+    if (kind === "conditional-content") ir.dom!.ifProp = "responsive";
+    if (kind === "hidden-attribute") ir.dom!.attrs.hidden = "";
+    if (kind === "hidden-binding") ir.dom!.bindings.hidden = parseBindingExpression("prop:responsive");
     expect(generateSwiftUIComponentSource(ir)).not.toContain(".accessibilityElement(children: .contain)");
     expect(generateJetpackComposeComponentSource(ir)).not.toContain("contentDescription");
   });
