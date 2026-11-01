@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: links-disabled-activation
 created_at: '2026-11-01T16:17:38.248Z'
-updated_at: '2026-11-01T16:34:19.266Z'
+updated_at: '2026-11-01T16:43:49.082Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -68,6 +68,19 @@ scope:
     - 'packages/ds-godot/verification/capability-inventory.json'
     - 'packages/ds-gpui/src/components/Links'
     - scripts/public-types-consumer/fixtures.mjs
+    - packages/ds-figma-plugin/src/generated/components/Links
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Links
+    - packages/ds-unity/Runtime/Components/Links.cs
+    - docs/architecture/unity-target.md
+    - packages/ds-codegen/src/frameworks/unity/support-boundary.json
+    - packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/unity/factory.test.ts
+    - packages/ds-codegen/src/frameworks/godot/support-boundary.json
+    - packages/ds-codegen/src/frameworks/godot/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    - packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    - packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/gpui/factory.test.ts
   out: []
 invariants:
   - 'Enabled web links preserve native navigation, target/rel and modified activation; no component-name special cases or audit allowances'
