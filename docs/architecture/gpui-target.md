@@ -99,7 +99,9 @@ the parent's state (`Alert.dismiss` receives `set_aria_label(self.dismiss_label)
 parent-state lowering in this projection — `paged`, `channel`, `valueMap` and
 `message` — remain named `ref-binding` omissions, as do child event wiring
 (`ref-event`) and props with no projected builder (a reserved name such as `type`,
-or a non-literal value — `ref-attr`).
+or a non-literal value — `ref-attr`). Consumer children nested inside a
+reference are named as `ref-children`: they would need the referenced
+component's content API, so they are receipted rather than dropped.
 ```
 parent parts: root, previous, previousIcon, input, commit, next, nextIcon, choices
 refs:        ref_previous: Option<Entity<Button>>, ref_previousIcon: Option<Entity<Icon>>, …
