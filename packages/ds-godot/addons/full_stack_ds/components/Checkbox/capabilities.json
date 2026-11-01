@@ -10,7 +10,7 @@
     "ariaLabelledby"
   ],
   "omissions": [
-    "indeterminate: the declared behaviour is not realised by the shared runtime yet (boundary prop-runtime-behaviour)",
+    "indeterminate: Godot's CheckBox exposes no tri-state/indeterminate property in 4.7 and the target has no OTP field-group runtime, so length/mode/readOnly/indeterminate behaviour is not realised rather than faked. (boundary prop-runtime-behaviour)",
     "ariaLabel: lowered (boundary prop-aria-label)",
     "ariaLabelledby: The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above. (boundary prop-aria)",
     "root.display: platform web only",

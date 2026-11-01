@@ -283,6 +283,12 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ],
+    "role": "status"
+  },
   "projectedProps": [
     "size",
     "thickness"

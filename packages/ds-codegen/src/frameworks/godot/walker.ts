@@ -43,6 +43,7 @@ import {
   isStaticContent,
 } from "../native-emission-class.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
+import { godotAccessibilityFacts } from "./accessibility-facts.js";
 
 /**
  * Property vocabulary the generic structure can carry natively. Kept in step
@@ -287,6 +288,7 @@ interface AnatomyWalk {
 function buildAnatomyPlan(ir: ComponentIR, dom: DomNodeIR): GodotAnatomyPlan {
   const walk = walkAnatomy(ir, dom);
   const styles = projectStyles(ir, walk);
+  const accessibility = godotAccessibilityFacts(ir, new Set(["root", ...walk.drafts.map(draft => draft.part)]));
   const projected = new Set<string>();
   for (const rule of styles.rules) {
     for (const predicate of rule.predicates) {
@@ -328,6 +330,7 @@ function buildAnatomyPlan(ir: ComponentIR, dom: DomNodeIR): GodotAnatomyPlan {
     ...(walk.contentPart ? { contentPart: walk.contentPart } : {}),
     styles: styles.rules,
     ...(styles.focusRings ? { focusRings: styles.focusRings } : {}),
+    ...(Object.keys(accessibility).length ? { accessibility } : {}),
     projectedProps,
     excluded,
     omissions,

@@ -158,6 +158,13 @@
       "offset": 2
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-describedby",
+      "aria-readonly"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "length": "6",

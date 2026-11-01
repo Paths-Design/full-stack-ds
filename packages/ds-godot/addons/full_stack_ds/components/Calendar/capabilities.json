@@ -276,6 +276,22 @@
       "offset": 2
     }
   ],
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-selected",
+        "values": {
+          "unselected": "false",
+          "selected": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-labelledby"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "mode": "\"single\"",

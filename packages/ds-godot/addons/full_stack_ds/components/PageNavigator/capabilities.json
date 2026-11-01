@@ -93,6 +93,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "pages": "[]",

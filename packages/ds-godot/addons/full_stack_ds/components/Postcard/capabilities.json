@@ -340,6 +340,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-labelledby"
+    ]
+  },
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [

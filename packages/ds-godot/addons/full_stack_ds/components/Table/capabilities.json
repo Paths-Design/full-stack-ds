@@ -181,6 +181,23 @@
       ]
     }
   ],
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-selected",
+        "values": {
+          "unselected": "false",
+          "selected": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-sort",
+      "aria-label",
+      "aria-labelledby"
+    ]
+  },
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [

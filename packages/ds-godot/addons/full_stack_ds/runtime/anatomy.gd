@@ -34,6 +34,7 @@ func _ready() -> void:
 	_theme_base = theme
 	refresh()
 	_apply_focus_rings()
+	_apply_accessibility()
 
 ## Mount nothing; the scene tree is generated. Re-resolve the projected styles.
 func refresh() -> void:
@@ -49,6 +50,11 @@ func refresh() -> void:
 func set_contract_prop(prop: String, value: Variant) -> void:
 	props[prop] = value
 	axis_values[prop] = value
+	match prop:
+		"ariaLabelledby": _wire_accessibility_relation(value, "labelled")
+		"ariaDescribedby": _wire_accessibility_relation(value, "described")
+		"required": _set_structural_state("aria_required", bool(value))
+		"invalid": _set_structural_state("aria_invalid", bool(value))
 	prop_changed.emit(prop, value)
 	refresh()
 
@@ -170,6 +176,49 @@ func _draw() -> void:
 ## Make each projected focus part focusable and remember its outline. The ring is
 ## painted in this runtime's own coordinates, so a host of any Control subclass
 ## can show focus without being a Button.
+
+## Accessibility projection: labeling attributes, part relations and the declared
+## state-to-ARIA mapping. Godot exposes no accessible-role property, so the
+## authored role stays a boundary refusal; these are structural projections.
+func _apply_accessibility() -> void:
+	var facts: Dictionary = configuration.get("accessibility", {})
+	for relation in facts.get("relationships", []):
+		var from_host := get_part(str(relation.get("from", "")))
+		var to_host := get_part(str(relation.get("to", "")))
+		if from_host == null or to_host == null: continue
+		match str(relation.get("attribute", "")):
+			"aria-controls": _append_node_path(from_host, to_host, "controls")
+			"aria-labelledby": _append_node_path(from_host, to_host, "labelled")
+			"aria-describedby": _append_node_path(from_host, to_host, "described")
+
+## Validation is not executed here: the `required`/`invalid` facts are projected
+## into structural state so a consumer or assistive layer can read them.
+func _set_structural_state(attribute: String, value: bool) -> void:
+	set_meta(attribute, value)
+
+func _wire_accessibility_relation(value: Variant, kind: String) -> void:
+	var target: Node = null
+	if value is Node: target = value
+	elif value is NodePath: target = get_node_or_null(value)
+	elif value is String and not value.is_empty(): target = get_node_or_null(NodePath(value))
+	if target == null: return
+	_append_node_path(self, target, kind)
+
+func _append_node_path(from_host: Control, to_host: Control, kind: String) -> void:
+	var path := to_host.get_path()
+	if kind == "controls":
+		var controls: Array[NodePath] = from_host.accessibility_controls_nodes.duplicate()
+		if not controls.has(path): controls.append(path)
+		from_host.accessibility_controls_nodes = controls
+	elif kind == "labelled":
+		var labelled: Array[NodePath] = from_host.accessibility_labeled_by_nodes.duplicate()
+		if not labelled.has(path): labelled.append(path)
+		from_host.accessibility_labeled_by_nodes = labelled
+	else:
+		var described: Array[NodePath] = from_host.accessibility_described_by_nodes.duplicate()
+		if not described.has(path): described.append(path)
+		from_host.accessibility_described_by_nodes = described
+
 func _apply_focus_rings() -> void:
 	for ring in configuration.get("focusRings", []):
 		var host := get_part(str(ring.get("part", "")))

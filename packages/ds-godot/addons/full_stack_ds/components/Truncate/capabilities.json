@@ -122,6 +122,18 @@
       ]
     }
   ],
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "expansion",
+        "attribute": "aria-expanded",
+        "values": {
+          "collapsed": "false",
+          "expanded": "true"
+        }
+      }
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "expandText": "\"Show more\"",

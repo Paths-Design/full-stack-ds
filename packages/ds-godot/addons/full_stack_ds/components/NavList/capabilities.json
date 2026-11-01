@@ -160,6 +160,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "orientation": "\"vertical\""

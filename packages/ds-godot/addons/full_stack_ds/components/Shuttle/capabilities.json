@@ -229,6 +229,22 @@
       "offset": -2
     }
   ],
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "mark",
+        "attribute": "aria-selected",
+        "values": {
+          "unmarked": "false",
+          "marked": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-labelledby"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "options": "[\"alpha\",\"beta\",\"gamma\",\"delta\",\"epsilon\"]",

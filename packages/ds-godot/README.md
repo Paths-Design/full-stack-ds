@@ -41,6 +41,8 @@ The disclosure family (Accordion, Tabs, Popover, Details) has no pending boundar
 
 The overlay-surface family (Dialog, Sheet, Toast, Command, Tooltip, Walkthrough) is closed too: `runtime/surface.gd` realises presence, inert declared-prop projection and the `ariaLabelledby`/`ariaDescribedby` props wired onto Godot's native accessibility relations. Blocking modality/backdrop, message defaults, data-model and data-driven children, consumer callbacks and iterated anatomy are refused with written reasons in `support-boundary.json`.
 
+The form-control family (Select, Checkbox, ToggleSwitch, Input, TextField, Field, OTP, RadioGroup, Shuttle) is closed: the declared `required`/`invalid` state is projected as structural `aria_required`/`aria_invalid` (validation itself is the consumer's job), and `ariaLabelledby`/`ariaDescribedby` props wire Godot's native labeled-by/described-by relations. The checkbox tri-state, the OTP field-group runtime, data-driven options, authored bindings and the transfer model are refused with written reasons.
+
 ## Generate and verify
 
 From the repository root:

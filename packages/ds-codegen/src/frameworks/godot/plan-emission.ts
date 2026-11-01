@@ -60,6 +60,7 @@ export function anatomyFiles(ir: ComponentIR, plan: GodotAnatomyPlan, color: str
     ...(plan.contentPart ? { contentPart: plan.contentPart } : {}),
     styles: plan.styles,
     ...(plan.focusRings ? { focusRings: plan.focusRings } : {}),
+    ...(plan.accessibility ? { accessibility: plan.accessibility } : {}),
     projectedProps: plan.projectedProps,
     defaults,
     ...(plan.excluded.length ? { excludedProps: plan.excluded } : {}),

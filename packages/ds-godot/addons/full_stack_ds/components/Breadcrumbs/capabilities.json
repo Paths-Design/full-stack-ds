@@ -171,6 +171,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "ariaLabel": "\"Breadcrumb\""

@@ -124,7 +124,9 @@ describe("Godot support boundary", () => {
     expect(classifyProp(boundary, "onChange")).toMatchObject({ disposition: "lowered" });
     expect(classifyProp(boundary, "defaultValue")).toMatchObject({ disposition: "lowered" });
     // Pending: semantics the shared runtime does not realise yet.
-    expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "pending" });
+    // Validation state is projected structurally (required/invalid); validation
+    // execution and read-only mode remain refused.
+    expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "lowered" });
     expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "pending" });
     // Data-driven children props are refused: the runtime does not iterate or
     // persist consumer data.
