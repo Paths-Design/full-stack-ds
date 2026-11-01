@@ -87,3 +87,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/src/components
     commit_sha: "083d81833"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "the 45 components that previously refused now emit; generation exits 0 with no GPUI_UNSUPPORTED_ failure, and each previously refusing fact is a named omission (Select: compositeControl/iteration/keyboard; Calendar: dateGrid/iteration; Button: componentRef; Markdown: contentTransform; Icon: iconGlyph; Tabs: interaction)"
+    recorded_at: "2026-11-01T08:17:09.611Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Select/capabilities.json
+    commit_sha: "083d81833"
