@@ -244,7 +244,8 @@
         "Button",
         "Badge",
         "Card",
-        "Icon"
+        "Icon",
+        "Carousel"
       ]
     },
     {
