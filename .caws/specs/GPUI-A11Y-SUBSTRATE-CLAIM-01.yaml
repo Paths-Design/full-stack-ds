@@ -46,3 +46,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/frameworks/gpui/support-boundary.json
     commit_sha: "3ddcdc2fe"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "the target doc's accessibility section states the substrate non-claim, names the pinned revision and the missing capability, and gives the re-probe (grep for accesskit/accessib over the pinned checkout) plus the condition that returns the families to pending; the consistency doc's a11y bullet states the same non-claim and points at the ledger"
+    recorded_at: "2026-11-01T12:04:29.481Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-target.md
+    commit_sha: a10216e51
