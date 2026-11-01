@@ -84,6 +84,18 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
+### Surface presence
+
+A surface contract whose boolean presence channel gates anatomy parts
+(`Dialog`, `Sheet`, `Toast`, `Command`) realizes the channel as controlled or
+uncontrolled open state: `open(Option<bool>)`, `default_open(bool)`,
+`set_open(..)` and `is_open()`, with the guarded backdrop and panel rendered only
+while open. The receipt names what presence does **not** carry: modality
+trapping, dismissal (backdrop click, Escape, outside-press), timing/auto-dismiss
+and layer ordering. Surfaces without a guarded boolean channel — anchored
+Tooltip/Popover and the selector-anchored Walkthrough — keep the generic anatomy
+projection and their interaction/surface facts stay pending.
+
 ### Disclosure controls
 
 A contract that exposes an `interaction` boolean channel toggled by a click on a
