@@ -95,3 +95,9 @@ contracts:
   - name: 'postcard-engagement'
     type: behavior
     path: 'packages/ds-contracts/components/Postcard/Postcard.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Primary inspected ignored evidence: .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01/packed-full-timestamp.log and runs/fsds-release-packages-iM9TgC/browser-postcard-*.json. All five installed web frameworks: three labeled counts incl zero; updates; partial catalog fallback; translated word order. Seven stages each. Native host assertions in final frameworks.log. Candidate 6299e9876 consumer diff empty from retained witness. CLI verify checks commit reachability only, not execution or ignored log contents. No automatic number/date/plural formatting claim."
+    recorded_at: "2026-11-01T21:06:31.346Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
