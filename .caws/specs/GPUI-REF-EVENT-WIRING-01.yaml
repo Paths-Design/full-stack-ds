@@ -1,0 +1,46 @@
+id: GPUI-REF-EVENT-WIRING-01
+title: 'Wire by-reference events to parent callbacks'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T11:10:01.492Z'
+updated_at: '2026-11-01T11:10:01.492Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI reference event wiring: child handler forwarding, receipt, witness, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only reference events whose expression is a realized parent callback are wired; other expressions stay named omissions'
+  - 'Static-only references regenerate byte-identically apart from the added event wiring where a projected event exists'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a componentRef instance event whose expression is a realized parent callback; when generate --target=gpui runs; then the retained child''s callback setter receives a closure that invokes the parent handler'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a mounted Alert with onDismiss; when its dismiss trigger is clicked; then the parent callback fires once'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-ref-event-wiring'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
