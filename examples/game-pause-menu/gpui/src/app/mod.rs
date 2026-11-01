@@ -1103,19 +1103,41 @@ mod mounted_layout_tests {
             first_slider.min,
         );
 
-        view.update(cx, |menu, cx| {
-            menu.state.open_dropdown(DropdownKind::AudioLanguage);
-            cx.notify();
-        });
-        cx.run_until_parked();
-        let option = cx
-            .debug_bounds("language-option:AudioLanguage:1")
-            .expect("second language option is mounted above the shell");
-        cx.simulate_click(option.center(), Modifiers::default());
-        assert_eq!(
-            view.read_with(cx, |menu, _| menu.state.audio_language().to_string()),
-            "Español",
-        );
+        let selectors = [
+            [
+                "language-option:AudioLanguage:0", "language-option:AudioLanguage:1",
+                "language-option:AudioLanguage:2", "language-option:AudioLanguage:3",
+                "language-option:AudioLanguage:4", "language-option:AudioLanguage:5",
+            ],
+            [
+                "language-option:SubtitleLanguage:0", "language-option:SubtitleLanguage:1",
+                "language-option:SubtitleLanguage:2", "language-option:SubtitleLanguage:3",
+                "language-option:SubtitleLanguage:4", "language-option:SubtitleLanguage:5",
+            ],
+        ];
+        for (kind_index, kind) in [DropdownKind::AudioLanguage, DropdownKind::SubtitleLanguage]
+            .into_iter()
+            .enumerate()
+        {
+            let options = view.read_with(cx, |menu, _| menu.state.language_options(kind).to_vec());
+            assert_eq!(options.len(), selectors[kind_index].len());
+            for (index, expected) in options.iter().enumerate() {
+                view.update(cx, |menu, cx| {
+                    menu.state.open_dropdown(kind);
+                    cx.notify();
+                });
+                cx.run_until_parked();
+                let option = cx
+                    .debug_bounds(selectors[kind_index][index])
+                    .expect("language option is mounted above the shell");
+                cx.simulate_click(option.center(), Modifiers::default());
+                let selected = view.read_with(cx, |menu, _| match kind {
+                    DropdownKind::AudioLanguage => menu.state.audio_language().to_string(),
+                    DropdownKind::SubtitleLanguage => menu.state.subtitle_language().to_string(),
+                });
+                assert_eq!(selected, *expected, "{kind:?} option {index} receives click");
+            }
+        }
     }
 
     struct SwitchHarness {
