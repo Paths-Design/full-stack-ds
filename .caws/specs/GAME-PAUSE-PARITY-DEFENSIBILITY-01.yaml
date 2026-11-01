@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: game-pause-parity-defensibility
 created_at: '2026-11-01T06:52:37.699Z'
-updated_at: '2026-11-01T06:52:48.828Z'
+updated_at: '2026-11-01T07:34:29.575Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
@@ -20,6 +20,8 @@ scope:
     - 'examples/README.md'
     - 'docs/architecture/unity-target.md'
   out: []
+  support:
+    - docs/specifications/governed-ci.md
 invariants:
   - 'Existing 195-probe/117-bbox parity and lane test baselines remain green'
 acceptance:
