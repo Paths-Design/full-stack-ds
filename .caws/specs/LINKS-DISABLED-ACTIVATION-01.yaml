@@ -136,3 +136,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected real generated RN Links mounted tests in final checks/2d742ff53-iHsWjo/frameworks.log under .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01: disabled and prior-cancelled events suppress callbacks/Linking, consumer cancellation stops navigation, callback precedes one URL open, absent callback navigates once, disabled accessibility/text tokens restore on update. Final fresh package run PEe0Nq passes public portable-event types and production iOS/Android Metro. Linking is mocked at the host boundary; OS dispatch and assistive technology are not qualified."
+    recorded_at: "2026-11-01T18:58:23.066Z"
+    command: "pnpm run test:react-native"
+    exit_code: 0
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
