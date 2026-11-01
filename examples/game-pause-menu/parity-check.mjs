@@ -59,6 +59,10 @@ const typographyFuzz = Number(arg('type-fuzz', '30'));
 const inkTolerance = Number(arg('ink-tolerance', '0.25'));
 const goldens = arg('goldens', '');
 const goldenRmse = Number(arg('golden-rmse', '0.02'));
+// Hovered captures are sampled mid-animation in Godot/Unity; the hover state
+// gets a slightly wider per-state allowance while weight/state anchors keep the
+// global threshold.
+const goldenTolerances = { 'abilities-hover': 0.06 };
 const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
@@ -343,9 +347,10 @@ for (const state of STATES) {
         continue;
       }
       const value = rmse(files[LANES.indexOf(lane)], golden);
-      results.push({ state, lane, kind: 'golden', golden, rmse: value });
-      if (value > goldenRmse) {
-        failures.push(`${state}/${lane}: RMSE ${value.toFixed(4)} against committed golden > max ${goldenRmse} (${golden})`);
+      const limit = goldenTolerances[state] ?? goldenRmse;
+      results.push({ state, lane, kind: 'golden', golden, rmse: value, limit });
+      if (value > limit) {
+        failures.push(`${state}/${lane}: RMSE ${value.toFixed(4)} against committed golden > max ${limit} (${golden})`);
       }
     }
   }
