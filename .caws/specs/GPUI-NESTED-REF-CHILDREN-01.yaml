@@ -1,0 +1,46 @@
+id: GPUI-NESTED-REF-CHILDREN-01
+title: 'Project nested reference children through the child content API'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T11:17:09.625Z'
+updated_at: '2026-11-01T11:17:09.625Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI nested reference children: recursive ref planning, NativeContent projection, witness, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only references whose referenced component has a content API receive nested children; otherwise the ref-children omission remains'
+  - 'Components without nested references regenerate byte-identically'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a componentRef node with nested componentRef children; when generate --target=gpui runs; then each nested reference is a retained entity passed into the parent child''s content'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when PageNavigator mounts; then its nested icon references render inside the retained buttons'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI references coverage rises to 20/20 and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-nested-ref-children'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
