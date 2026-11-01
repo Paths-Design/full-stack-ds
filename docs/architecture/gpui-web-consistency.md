@@ -28,6 +28,7 @@ from contract/IR facts and the generated artifacts. Nothing here is hand-counted
 | props | `styledProps` names | web: the generated props block; GPUI: generated builder methods plus receipt-claimed props |
 | behavior | components carrying normalized event wires, channels, composite/interaction/surface facts | web: a handler syntax or a behavior hook; GPUI: a realized boolean control channel |
 | a11y | components authoring `role`/`aria` facts in the contract or anatomy | role/aria attributes in the generated artifact |
+| references | `componentRef` anatomy nodes | web: the referenced component rendered as a tag; GPUI: a retained `Entity<Child>` field |
 
 Cross-check: the web columns agree with the committed derived audits —
 behavior-realization reports every derived obligation realized across the five
@@ -40,12 +41,16 @@ contract-side with 7 declared-part realization mismatches. The audit is a
 Aggregates over the 55-component corpus (214 declared parts, 379 declared props,
 30 components with behavior facts, 44 with authored a11y facts):
 
-| target | parts | props | behavior | a11y |
-|---|---|---|---|---|
-| React | 213/214 | 379/379 | 30/30 | 41/44 |
-| Vue | 213/214 | 379/379 | 30/30 | 41/44 |
-| Svelte | 213/214 | 379/379 | 30/30 | 40/44 |
-| GPUI | 180/214 | 229/379 | 3/30 | 0/44 |
+| target | parts | props | behavior | a11y | references |
+|---|---|---|---|---|---|
+| React | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
+| Vue | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
+| Svelte | 213/214 | 379/379 | 30/30 | 40/44 | 20/20 |
+| GPUI | 180/214 | 226/379 | 3/30 | 0/44 | 18/20 |
+
+All five dimensions are measured from the committed generated source; the audit
+does not read the regenerated, gitignored `capabilities.json` receipts, so a
+fresh checkout and a post-generation tree produce the same numbers.
 
 The three web frameworks are internally consistent (they are one IR through
 three emitters). GPUI is consistent on **component identity** (55/55), partial on
@@ -72,6 +77,11 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
   truncation (Truncate).
 - **A11y**: 0 of 44. This is the documented GPUI non-claim, not an accident of
   this measurement.
+- **References**: 18 of 20 declared `componentRef` nodes are realized as retained
+  children. The two gaps are PageNavigator's `previousIcon`/`nextIcon`, which are
+  *nested inside* the previous/next Button references and would need the child
+  component's content API; the projection names them as `ref-children` omissions
+  rather than dropping them silently.
 - **Styles**: the GPUI receipts name 481 omitted style declarations across the
   corpus, each adjudicated by the support-boundary ledger.
 
@@ -93,6 +103,6 @@ regression, stale-entry and removed-entry detections fire.
 - Web measurements parse generated source; a target that emits an equivalent
   fact through a different spelling would be undercounted. The web columns are
   corroborated by the committed audits above.
-- GPUI receipts (`capabilities.json`) are regenerated, gitignored artifacts;
-  the committed generated `.rs` files carry the part/prop evidence, so a
-  missing receipt degrades the props column only.
+- The audit reads only committed generated source, so receipts never affect the
+  numbers; a capability that is claimed in a receipt but absent from the source
+  would be undercounted, which is the conservative direction.

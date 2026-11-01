@@ -180,8 +180,18 @@ function omit(state: AnatomyState, omission: GpuiOmission): void {
 function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   if (node.componentRef) {
     // By-reference composition: the node renders a retained child component.
-    // Its own children are owned by the referenced component's anatomy.
+    // Consumer children nested in the reference would need the child's content
+    // API; they are named here instead of being dropped silently.
     const copy: DomNodeIR = structuredClone(node);
+    if (copy.children.length) {
+      omit(state, {
+        kind: 'ref-children',
+        source: `${node.componentRef}${node.part ? `.${node.part}` : ''}`,
+        reason: 'children nested inside a by-reference node need the referenced component content API; they are not projected',
+        boundary: 'anatomy-component-ref-dynamic',
+        disposition: 'pending',
+      });
+    }
     copy.children = [];
     copy.bindings = {};
     copy.events = {};
