@@ -45,3 +45,7 @@ evidence:
     status: pass
     evidence_ref: "examples/game-pause-menu/fonts/README.md (Inter 4.1 Regular/Bold + OFL) + examples/game-pause-menu/parity.md Typography parity + fixtures/parity-layout.json typography block; landed in 66e05f0f7"
     recorded_at: "2026-11-01T03:04:16.478Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "GPUI cargo +1.94.1 test --locked: 67 pass incl 15 parity tests; Unity verify-unity.sh: 36/36 EditMode; Godot headless: 201/201; eight captures per lane regenerated"
+    recorded_at: "2026-11-01T03:04:17.690Z"
