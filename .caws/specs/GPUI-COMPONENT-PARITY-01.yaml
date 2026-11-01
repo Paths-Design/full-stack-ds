@@ -105,11 +105,11 @@ evidence:
     commit_sha: "8e1e2e4a1"
   - criterion_id: A5
     status: pass
-    evidence_ref: "pnpm run test:gpui on macOS with Rust 1.94.1 / Zed a38fc8c: cargo check and cargo test --all-targets pass, required named engine tests present; GPUI_NATIVE_PASS emitted with receipt tmp/gpui-pilot/2026-11-01T08-03-35-947Z/report.json"
-    recorded_at: "2026-11-01T08:17:15.465Z"
+    evidence_ref: "pnpm run test:gpui on macOS/Rust 1.94.1/Zed a38fc8c: cargo check and cargo test --all-targets pass over the widened crate, required named engine tests present, GPUI_NATIVE_PASS emitted. The pilot receipt is written to gitignored tmp/gpui-pilot/<timestamp>/report.json (this run: 2026-11-01T08-03-35-947Z); the committed runner is cited."
+    recorded_at: "2026-11-01T08:17:45.259Z"
     command: "pnpm run test:gpui"
     exit_code: 0
-    artifact_path: tmp/gpui-pilot
+    artifact_path: scripts/gpui-pilot.mjs
     commit_sha: "083d81833"
   - criterion_id: A6
     status: pass
