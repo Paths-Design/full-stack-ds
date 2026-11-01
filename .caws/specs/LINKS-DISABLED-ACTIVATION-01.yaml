@@ -1,9 +1,10 @@
 id: LINKS-DISABLED-ACTIVATION-01
 title: 'Make disabled links non-operable and keyboard discoverable across published targets'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: links-disabled-activation
 created_at: '2026-11-01T16:17:38.248Z'
-updated_at: '2026-11-01T16:17:38.248Z'
+updated_at: '2026-11-01T16:18:08.352Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
