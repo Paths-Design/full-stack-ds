@@ -76,11 +76,10 @@ evidence:
     commit_sha: "5962cd303"
   - criterion_id: A2
     status: pass
-    evidence_ref: "All eight actual tarballs installed in isolated consumer. Public Lit root helper/renderContent imports compile; negative span/scope/content cases fail for expected diagnostics across Bundler and NodeNext ESM/CJS. Payloads are byte-identical from c2247e2e through integrated 5962cd303; artifacts in release-evidence/CODEGEN-LIT-TABLE-CAPABILITY-01/runs/fsds-release-packages-HRlkY6."
-    recorded_at: "2026-10-30T20:13:09.554Z"
+    evidence_ref: "Primary strict consumer proof manually inspected: .caws/state/lit-table-attributes-packed.log and release-evidence/CODEGEN-LIT-TABLE-CAPABILITY-01/runs/fsds-release-packages-HRlkY6. Actual isolated tarballs accept public helpers/renderContent and reject invalid spans/scope/content across Bundler and NodeNext ESM/CJS. Eight package trees identical through integrated 5962cd303. Structured commit verification establishes source identity, not test execution; ignored logs retained separately."
+    recorded_at: "2026-11-01T03:10:28.771Z"
     command: "pnpm run test:package:release"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-table-attributes-packed.log"
     commit_sha: c2247e2e
   - criterion_id: A3
     status: pass
