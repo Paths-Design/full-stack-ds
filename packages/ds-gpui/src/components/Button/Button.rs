@@ -74,6 +74,9 @@ impl Render for Button{fn render(&mut self,window:&mut Window,cx:&mut Context<Se
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  let style_state=StyleState{variants:&variants,checked:false,disabled:self.disabled,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let ref_spinner=self.ref_spinner.get_or_insert_with(||cx.new(|_|crate::components::Spinner::default().size("sm"))).clone();
+ let ref_spinner__set_inline=self.loading;
+ let ref_spinner__set_aria_hidden=self.loading;
+ ref_spinner.update(cx,|child,cx|{child.set_inline(ref_spinner__set_inline,cx);child.set_aria_hidden(ref_spinner__set_aria_hidden,cx);});
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"button-root".to_string()).when(self.loading,|node|node.child(apply_part_style(div(),"spinner",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"button-spinner".to_string()).child(ref_spinner.clone()))).child(apply_part_style(div(),"loadingText",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"button-loadingText".to_string()).children(self.render_content(window,cx))).id("button");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
 

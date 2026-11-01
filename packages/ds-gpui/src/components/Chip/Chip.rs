@@ -62,7 +62,15 @@ impl Render for Chip{fn render(&mut self,window:&mut Window,cx:&mut Context<Self
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  let style_state=StyleState{variants:&variants,checked:false,disabled:self.disabled,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let ref_action=self.ref_action.get_or_insert_with(||cx.new(|_|crate::components::Button::default().variant("ghost"))).clone();
+ let ref_action__set_disabled=self.disabled;
+ let ref_action__set_aria_label=self.aria_label.clone();
+ let ref_action__set_aria_expanded=self.aria_expanded;
+ let ref_action__set_aria_pressed=self.aria_pressed;
+ ref_action.update(cx,|child,cx|{child.set_disabled(ref_action__set_disabled,cx);child.set_aria_label(ref_action__set_aria_label,cx);child.set_aria_expanded(ref_action__set_aria_expanded,cx);child.set_aria_pressed(ref_action__set_aria_pressed,cx);});
  let ref_dismiss=self.ref_dismiss.get_or_insert_with(||cx.new(|_|crate::components::Button::default().variant("ghost"))).clone();
+ let ref_dismiss__set_disabled=self.disabled;
+ let ref_dismiss__set_aria_label=self.dismiss_label.clone();
+ ref_dismiss.update(cx,|child,cx|{child.set_disabled(ref_dismiss__set_disabled,cx);child.set_aria_label(ref_dismiss__set_aria_label,cx);});
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"chip-root".to_string()).child(apply_part_style(div(),"action",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"chip-action".to_string()).child(ref_action.clone())).when(self.dismissible,|node|node.child(apply_part_style(div(),"dismiss",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"chip-dismiss".to_string()).child(ref_dismiss.clone()))).id("chip");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
 

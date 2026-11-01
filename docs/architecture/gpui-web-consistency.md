@@ -56,9 +56,11 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
 - **Parts**: equal to web in 35 components, fewer in 20, never more. The
   by-reference composition slice closed the child-component gap (PageNavigator
   3/10→8/10, Chip 1/5→3/5, Button 1/3→2/3, Details 3/6→4/6, Accordion 5/7→6/7,
-  Alert/Avatar/Status/Carousel +1 each). Remaining gaps are collection and
-  overlay shapes: PageNavigator 8/10, Chip 3/5, Pagination 2/5, Select 6/9,
-  Calendar 5/7, Plus the single web-side miss of one Toast part.
+  Alert/Avatar/Status/Carousel +1 each), and reference bindings whose expression
+  is a realized parent prop now drive the retained child through its generated
+  setters each render. Remaining gaps are collection and overlay shapes:
+  PageNavigator 8/10, Chip 3/5, Pagination 2/5, Select 6/9, Calendar 5/7, plus the
+  single web-side miss of one Toast part.
 - **Props**: 10 components project the full web prop surface, 5 at 80–99%,
   28 at 50–79%, 10 at 1–49%, 2 at 0%. The web targets project every declared prop.
 - **Behavior**: 3 of 30 behavior-bearing components (Switch, ToggleSwitch,
