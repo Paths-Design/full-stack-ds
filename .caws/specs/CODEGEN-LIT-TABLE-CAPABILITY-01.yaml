@@ -83,11 +83,10 @@ evidence:
     commit_sha: c2247e2e
   - criterion_id: A3
     status: pass
-    evidence_ref: "Inspected integrated types/rail/root/frameworks logs: six required admission targets pass, root 5376 tests across 370 files pass, five framework suites pass including Lit 621 with executed Table composition cases replacing held cases. Native insertion-context tests preserve td/th/caption flow slots. Generated committed-tree, lint, docs and policy pass; see lit-table-integrated-* and final-a11y-audit-after logs. These are bounded realization checks, not whole-package a11y adequacy."
-    recorded_at: "2026-10-30T20:13:10.112Z"
+    evidence_ref: "Primary checks manually inspected in .caws/state/lit-table-integrated-{types,rail,root,frameworks,lint,docs-full,policy}.log: six-target required rail, 5376 root tests, framework suites including Lit 621 with Table composition and ordinary flow-slot assertions; committed-tree check passed. Static ratchet pass in lit-table-final-a11y-audit-after.log. Structured commit citation verifies identity only; runtime logs intentionally ignored. No whole-package a11y claim."
+    recorded_at: "2026-11-01T03:10:31.014Z"
     command: "pnpm run typecheck:all && pnpm run governed:rail && node node_modules/vitest/vitest.mjs run --maxWorkers=2 && pnpm run test:frameworks"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-table-integrated-rail.log"
     commit_sha: "5962cd303"
   - criterion_id: A4
     status: pass
