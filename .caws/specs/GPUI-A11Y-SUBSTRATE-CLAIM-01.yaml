@@ -1,0 +1,39 @@
+id: GPUI-A11Y-SUBSTRATE-CLAIM-01
+title: 'Record accessibility as a substrate-bound non-claim'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T11:58:14.175Z'
+updated_at: '2026-11-01T11:58:14.175Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI accessibility substrate disposition: ledger + docs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+  out: []
+invariants:
+  - 'The substrate disposition is reserved for facts whose channel is absent from the pinned GPUI revision, and it carries the missing capability as reason'
+  - 'Reclassifying a11y families must not change any generated component byte'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pinned GPUI revision exposes no accessibility API; when the boundary ledger is validated; then every accessibility fact family carries the substrate disposition with its missing-capability reason'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency doc; when it describes the a11y dimension; then it states the non-claim and cites the pinned revision instead of implying pending work'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given generate --target=gpui; when it runs after the slice; then every generated component is byte-identical'
+non_functional: {}
+contracts:
+  - name: 'gpui-accessibility-substrate'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/gpui/support-boundary.json'
