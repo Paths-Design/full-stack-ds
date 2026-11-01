@@ -46,3 +46,10 @@ non_functional: {}
 contracts:
   - name: 'brand-reference-resolution'
     type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At candidate 508b68c1, the 61 executed tests cover exact/core/semantic ambiguity in both semantic and component walkers, reject missing paths through the validator, and preserve composite leaf boundaries. Parent-reference-before.log demonstrates four expected implicit-reference failures before the repair."
+    recorded_at: "2026-11-01T13:09:54.332Z"
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/parent-reference-composition.log"
+    commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"
