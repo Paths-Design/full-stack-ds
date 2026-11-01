@@ -79,3 +79,11 @@ evidence:
     exit_code: 0
     artifact_path: scripts/gpui-pilot.mjs
     commit_sha: d59cd27dd
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "gpui-target.md states the two-tier witness boundary (every admitted component mounts and renders; seven carry interaction witnesses; mount evidence is not behaviour) and the implementation snapshot records the mount witness in evidence, artifacts and non-claims; docs:check-claims passes 81 marked claims with 16 fresh stamped docs"
+    recorded_at: "2026-11-01T08:33:39.505Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-target.md
+    commit_sha: "0643374f9"
