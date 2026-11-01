@@ -15,7 +15,8 @@
  * Usage:
  *   node examples/game-pause-menu/parity-check.mjs \
  *     --root /abs/path/to/tmp/game-pause-menu \
- *     --out  /abs/path/to/tmp/game-pause-menu/parity
+ *     --out  /abs/path/to/tmp/game-pause-menu/parity \
+ *     [--goldens examples/game-pause-menu/evidence/goldens]
  *
  * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe matches
  * and every pairwise RMSE is below --max-rmse (default 0.14); 1 otherwise. Font
@@ -28,7 +29,20 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const LANES = ['gpui', 'unity', 'godot'];
-const STATES = ['map', 'progress', 'abilities', 'settings'];
+// All eight committed capture states are compared for pairwise RMSE and
+// regression goldens. The four base states additionally carry the pinned
+// authority probes (colour/geometry and typography).
+const STATES = [
+  'map', 'map-popover', 'progress', 'abilities',
+  'abilities-hover', 'settings', 'settings-remap-modal', 'settings-subtitle',
+];
+const PROBED_STATES = new Set(['map', 'progress', 'abilities', 'settings']);
+
+// The bounded claim this report supports. Do not widen this without widening
+// the evidence matrix in examples/game-pause-menu/evidence/visual-review.md.
+const CLAIM =
+  'Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; '
+  + 'not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const layout = JSON.parse(readFileSync(join(here, 'fixtures/parity-layout.json'), 'utf8'));
@@ -43,6 +57,8 @@ const maxRmse = Number(arg('max-rmse', '0.14'));
 const tolerance = Number(arg('tolerance', '18'));
 const typographyFuzz = Number(arg('type-fuzz', '30'));
 const inkTolerance = Number(arg('ink-tolerance', '0.25'));
+const goldens = arg('goldens', '');
+const goldenRmse = Number(arg('golden-rmse', '0.01'));
 const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
@@ -228,19 +244,21 @@ for (const state of STATES) {
     failures.push(`${state}: missing capture for one of ${LANES.join(', ')} (${files.filter((f) => !existsSync(f)).join(', ')})`);
     continue;
   }
-  for (let i = 0; i < LANES.length; i++) {
-    const lane = LANES[i];
-    const probes = PROBES[state];
-    const pixels = samplePixels(files[i], probes);
-    probes.forEach(([x, y, expectedName, description], index) => {
-      const expected = hexToRgb(color(expectedName));
-      const actual = pixels[index];
-      const delta = distance(actual, expected);
-      results.push({ state, lane, x, y, expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta, description });
-      if (delta > tolerance) {
-        failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
-      }
-    });
+  const probes = PROBED_STATES.has(state) ? PROBES[state] : null;
+  if (probes) {
+    for (let i = 0; i < LANES.length; i++) {
+      const lane = LANES[i];
+      const pixels = samplePixels(files[i], probes);
+      probes.forEach(([x, y, expectedName, description], index) => {
+        const expected = hexToRgb(color(expectedName));
+        const actual = pixels[index];
+        const delta = distance(actual, expected);
+        results.push({ state, lane, x, y, expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta, description });
+        if (delta > tolerance) {
+          failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
+        }
+      });
+    }
   }
 
   // Typography parity: measure the pixel bbox of every pinned text string in
@@ -312,12 +330,34 @@ for (const state of STATES) {
     }
     run(['compare', '-compose', 'difference', join(root, a, `${state}.png`), join(root, b, `${state}.png`), join(out, `${state}-diff-${a}-${b}.png`)]);
   }
+
+  // Committed image goldens: one per lane and state under
+  // examples/game-pause-menu/evidence/goldens/<lane>/<state>.webp. These are
+  // lossless WebP encodings of the reviewed captures, so a later capture is
+  // compared image-for-image rather than only through point samples.
+  if (goldens) {
+    for (const lane of LANES) {
+      const golden = join(goldens, lane, `${state}.webp`);
+      if (!existsSync(golden)) {
+        failures.push(`${state}/${lane}: missing committed golden ${golden}`);
+        continue;
+      }
+      const value = rmse(files[LANES.indexOf(lane)], golden);
+      results.push({ state, lane, kind: 'golden', golden, rmse: value });
+      if (value > goldenRmse) {
+        failures.push(`${state}/${lane}: RMSE ${value.toFixed(4)} against committed golden > max ${goldenRmse} (${golden})`);
+      }
+    }
+  }
 }
 
-writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ root, out, maxRmse, tolerance, results, failures }, null, 2));
+writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ claim: CLAIM, root, out, states: STATES, goldens: goldens || null, maxRmse, goldenRmse, tolerance, results, failures }, null, 2));
 const probeCount = results.filter((r) => 'description' in r).length;
 const typeCount = results.filter((r) => r.kind === 'typography').length;
-console.log(`parity: ${probeCount} colour probe(s), ${typeCount} typography bbox measurement(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
+const rmseCount = results.filter((r) => 'rmse' in r && r.kind !== 'golden').length;
+const goldenCount = results.filter((r) => r.kind === 'golden').length;
+console.log(`bounded parity: ${probeCount} colour probe(s), ${typeCount} typography bbox measurement(s), ${rmseCount} RMSE pair(s), ${goldenCount} golden comparison(s), ${failures.length} failure(s)`);
+console.log(`claim: ${CLAIM}`);
 console.log(`report: ${join(out, 'parity-report.json')}`);
 console.log(`montages: ${out}`);
 if (failures.length) {
