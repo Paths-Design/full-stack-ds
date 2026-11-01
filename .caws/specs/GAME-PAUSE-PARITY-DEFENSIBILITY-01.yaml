@@ -79,6 +79,8 @@ evidence:
     evidence_ref: "Committed 24 lossless WebP goldens + manifest, source-design oracle + oracle-report.json, and human sign-off accepted bounded claim in examples/game-pause-menu/evidence/visual-review.md (2026-11-01); final merge 8cd2ea887"
     recorded_at: "2026-11-01T22:39:53.730Z"
   - criterion_id: A2
-    status: unchecked
-    evidence_ref: "Merged main 5ae968ac6: GPUI 70/70, Godot 209/209, Unity 37/37, 24 captures + checker 0 failures + 24/24 goldens exact; root vitest 5427/5433 with 6 load-induced timeouts and 2 worker RPC errors; isolated re-run of all five affected files 164/164 tests pass. Full idle-machine rerun pending (machine load ~280 from another project)."
-    recorded_at: "2026-11-01T07:58:11.629Z"
+    status: pass
+    evidence_ref: "Post-restyle idle-machine main run (load 9.11): pnpm test 389 files/5718 tests pass exit 0; GPUI 70/70, Godot 209/209, Unity EditMode 37/37; 8 captures/lane; parity-check 195 colour/117 typography/24 RMSE/24 goldens 0 failures; evidence/main-rerun.md; receipts tmp/parity-main-restyle"
+    recorded_at: "2026-11-01T22:39:54.606Z"
+    command: pnpm test
+    exit_code: 0
