@@ -1,0 +1,42 @@
+id: GPUI-CONSISTENCY-REF-RATCHET-01
+title: 'Ratchet reference projection: declared componentRef nodes vs realized retained children'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T10:52:57.919Z'
+updated_at: '2026-11-01T10:52:57.919Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'cross-target consistency: reference-projection dimension and rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+    - 'docs/architecture/gpui-web-consistency.md'
+  out: []
+invariants:
+  - 'The dimension is derived from IR ref nodes and generated artifacts; no hand counts'
+  - 'Existing dimensions keep their baselines; only the new dimension is added'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus and generated targets; when the audit runs; then it reports declared componentRef nodes vs realized retained children per target and includes the dimension in the matrix and baseline'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a component that loses a realized reference; when --check runs; then the ratchet fails naming it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the docs; when read after the slice; then the ref-projection dimension and its limit (rendered child presence, not child behaviour) are stated'
+non_functional: {}
+contracts:
+  - name: 'gpui-consistency-ref-dimension'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
