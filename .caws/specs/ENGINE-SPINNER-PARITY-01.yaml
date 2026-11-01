@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: engine-spinner-parity
 created_at: '2026-10-30T17:35:33.515Z'
-updated_at: '2026-10-30T17:36:08.624Z'
+updated_at: '2026-11-01T08:05:27.332Z'
 created_by_session: '01a18dd7-e8c5-75b1-a31c-92fd96d4e82f'
 blast_radius:
   modules:
@@ -28,6 +28,7 @@ scope:
     - 'scripts/godot-pilot.mjs'
     - 'docs/architecture/unity-target.md'
     - 'docs/architecture/godot-target.md'
+    - docs/current-implementation-snapshot.md
   out: []
 invariants:
   - 'Normalized loop, target part, variant and native style facts determine emitted behavior without component-name dispatch.'
