@@ -63,3 +63,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot -> passed:true, 32 rows; only passive-media-projection was added; all 31 prior rows unchanged; catalog-load admitted 55 failures []"
     recorded_at: "2026-11-01T10:28:27.769Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Passive/style long tail and the closed corpus boundary' section states the closure (8915 lowered / 8586 refused / 0 pending / 163 rules), the media realization and every refusal class; packages/ds-godot/README.md gains a 'Boundary state' section; docs/current-implementation-snapshot.md updated; docs:check-links passes. docs:check-claims fails identically on unmodified canonical main and this branch for docs/architecture/unity-target.md (stamp stale since 95d422c31, another lane's commit) — a pre-existing failure, not caused or restamped by this slice"
+    recorded_at: "2026-11-01T10:28:28.907Z"
