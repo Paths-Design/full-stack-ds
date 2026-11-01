@@ -8,7 +8,7 @@
     "counts": {
       "lowered": 8925,
       "pending": 13,
-      "refused": 8631
+      "refused": 8633
     },
     "deadRules": []
   },
@@ -1587,7 +1587,7 @@
       "contractSha256": "ce79bbaad7cc5e74df8565a08ac2fab8a58f3380cbc123ac616a61f91cc9fef3",
       "sidecarSha256": {
         "tokens": "b7e1571e337e707e58449697852926f981c7978e7a21da2aa12c5a82a9e0c4cb",
-        "styles": "f0bb95299899c00fe4d7c1ef565ae25033cbbc48e98ae12fe29ea0d29f273802"
+        "styles": "2415675a5f0663af287e3e2ba1439c89b00b5364a962a9853f4e769a00217c44"
       },
       "receipt": {
         "operation": "anatomy",
@@ -1599,7 +1599,7 @@
           "embed"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 64
+        "nonClaimCount": 65
       },
       "variance": [
         {
@@ -1611,9 +1611,9 @@
         "counts": {
           "lowered": 208,
           "pending": 0,
-          "refused": 206
+          "refused": 208
         },
-        "digest": "273575a435b106260dee7ee425a114b780870040a3ef778de81360ba239ea2ac"
+        "digest": "b24aaa2f3f987ef48dd93e709eb2d17c5199d66bb42329998c479c888427a831"
       }
     },
     {

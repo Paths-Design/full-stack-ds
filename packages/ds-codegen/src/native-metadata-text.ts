@@ -80,8 +80,16 @@ export function nativeMetadataTextPlan(ir: ComponentIR): NativeMetadataTextPlan 
     "layered", "colorSlot", "pxSlot", "background", "foreground", "radius", "blockPadding", "inlinePadding", "gap",
     "layeredSlot", "containerColor", "contentColor", "cornerRadius", "borderColor", "borderWidth",
     "paddingInlineStart", "paddingInlineEnd", "paddingBlockStart", "paddingBlockEnd", "minHeight",
-    "shape", "chromeModifier", ...Object.keys(ir.variants ?? {}),
+    "shape", "chromeModifier", "headingModifier", "fsdsFontSize", "fsdsFontWeight", "fsdsTextStyle", "fsdsRegionLabel",
+    ...Object.keys(ir.variants ?? {}),
   ]) occupied.set(name, "native-shell");
+  // Persistent regions already own a label parameter/member and may own a
+  // catalog fallback backing member. Metadata cannot declare either again.
+  const regionLabel = ir.root.persistentRegionLabel;
+  if (regionLabel) {
+    occupied.set(regionLabel.safeName, "native-region-label");
+    occupied.set(`${regionLabel.safeName}Prop`, "native-region-label");
+  }
   const fail = (reason: string): never => { throw new Error(`[NATIVE_METADATA_INVALID] ${ir.name}: ${reason}`); };
   const validate = (source: BindingExpression): void => {
     if (source.kind === "literal") return;

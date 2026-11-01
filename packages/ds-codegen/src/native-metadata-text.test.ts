@@ -90,12 +90,31 @@ describe("native scalar metadata projection", () => {
     expect(nativeMetadataTextPlan(corpusIR(name))).toBeUndefined();
   });
 
-  it.each(["body", "fsdsScopes", "shape", "chromeModifier", "type", "background", "gap", "layered"])("rejects an input shadowing the generated native %s binding", name => {
+  it.each(["body", "fsdsScopes", "shape", "chromeModifier", "type", "background", "gap", "layered", "headingModifier", "fsdsFontSize", "fsdsFontWeight", "fsdsTextStyle", "fsdsRegionLabel"])("rejects an input shadowing the generated native %s binding", name => {
     const ir = bulletin();
     ir.styledProps.push({ ...ir.styledProps.find(prop => prop.name === "timestamp")!, name, safeName: name });
     const author = ir.dom!.children[0]!.children[0]!.children[0]!;
     author.content = { kind: "prop", prop: name };
     expect(() => nativeMetadataTextPlan(ir)).toThrow(/ambiguous native input/);
+  });
+
+  it.each(["label", "labelProp"])("refuses metadata ownership of a persistent region's %s binding", name => {
+    const contract = JSON.parse(JSON.stringify(loadCorpusContract("Postcard")).replaceAll("postcard.design.", "bulletin.design."));
+    contract.name = "Bulletin";
+    contract.a11y.role = "region";
+    contract.anatomy.dom.attrs = { role: "region" };
+    contract.anatomy.dom.bindings["aria-label"] = "prop:label";
+    delete contract.messages.postLabel;
+    contract.props.styled.members.push({ name: "label", type: "string", required: true });
+    if (name === "labelProp") {
+      contract.props.styled.members.push({ name, type: "string", required: true });
+      contract.anatomy.dom.children[0].children[0].children[0].content = `prop:${name}`;
+    }
+    const ir = buildComponentIR(contract);
+    expect(ir.root.persistentRegionLabel?.safeName).toBe("label");
+    for (const generate of [nativeMetadataTextPlan, generateSwiftUIComponentSource, generateJetpackComposeComponentSource]) {
+      expect(() => generate(ir)).toThrow(new RegExp(`ambiguous native input ${name}`));
+    }
   });
 
   it.each(["missing", "object", "collision", "malformed", "conditional", "slot-conditional", "duplicate-param", "missing-param", "second-body"])("rejects %s metadata rather than substituting a nearby source", defect => {

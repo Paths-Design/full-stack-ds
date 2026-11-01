@@ -145,7 +145,7 @@ export function nativeMessageParams(
 ): Record<string, string> {
   const supplied: Record<string, string> = {};
   for (const param of ref.params) {
-    if (Object.hasOwn(supplied, param.name)) throw new Error(`[MESSAGE_INVALID] ${ir.name}: duplicate native parameter '${param.name}'`);
+    if (Object.prototype.hasOwnProperty.call(supplied, param.name)) throw new Error(`[MESSAGE_INVALID] ${ir.name}: duplicate native parameter '${param.name}'`);
     supplied[param.name] = resolve(param.value);
   }
   requireNativeParams(ir, ref.message, supplied);
