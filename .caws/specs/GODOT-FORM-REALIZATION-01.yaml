@@ -1,0 +1,52 @@
+id: GODOT-FORM-REALIZATION-01
+title: 'Godot form-control family realization: Select, Checkbox, ToggleSwitch, Input, TextField, Field, OTP, RadioGroup, Shuttle pending-ledger closure'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T09:44:07.932Z'
+updated_at: '2026-11-01T09:44:07.932Z'
+created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
+blast_radius:
+  modules:
+    - 'Godot form-control realization: aria props, tri-state boolean, validation projection and data-driven refusal'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A pending fact moves to lowered only with a headless witness, and to refused only with a written reason'
+  - 'No admitted component may rely on a catch-all boundary rule; the audit stays at zero violations'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the nine form-control components; when the support boundary is re-audited; then every pending leaf is realized and flipped to lowered with a witness or refused with a written reason, and audit:godot-boundary exits 0 with zero pending leaves for all nine'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the adjudicated realizable subset; when the shared runtimes run headless; then aria labelling props, the checkbox indeterminate tri-state and the required/invalid validation projection are exercised by pilot rows'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pilot lane; when pnpm run test:godot runs; then new rows exercise the realized form behaviour and all pre-existing rows stay unchanged and green'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs and capability receipts; when read; then the bounded claim and non-claims for the form family (executed validation, data-driven options, transfer semantics) are stated'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus-wide gates; when run after the slice; then generate --target=godot is byte-stable, generate:check passes, the boundary audit exits 0, the ds-codegen godot suites and pnpm run test:godot pass'
+non_functional: {}
+contracts:
+  - name: 'form-control-runtime'
+    type: behavior
+    path: 'packages/ds-godot/addons/full_stack_ds/runtime/control.gd'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
