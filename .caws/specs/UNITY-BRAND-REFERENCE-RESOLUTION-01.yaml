@@ -1,0 +1,47 @@
+id: UNITY-BRAND-REFERENCE-RESOLUTION-01
+title: 'Resolve Unity brand scalars from source-preserving token scopes'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-01T14:20:56.597Z'
+updated_at: '2026-11-01T14:20:56.597Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Unity token source parsing and scoped scalar projection'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity/uss.ts'
+    - 'packages/ds-codegen/src/frameworks/unity/uss.test.ts'
+    - 'packages/ds-codegen/src/frameworks/unity/token-sources.ts'
+    - 'packages/ds-codegen/src/frameworks/unity/token-sources.test.ts'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS/Controls.unsupported.json'
+    - 'docs/architecture/unity-target.md'
+  out: []
+invariants:
+  - 'Published Web token bytes and source token identities remain unchanged'
+  - 'Supported values preserve explicit native theme-root layer and brand precedence while unsupported aliases emit exact refusal evidence'
+acceptance:
+  - id: A1
+    given: 'generated core semantic theme and brand scopes including base and brand-only alias chains'
+    when: 'an explicit native theme-root scope is projected'
+    then: 'supported scalar values match source CSS precedence with correct light and dark restatement and existing graph-only unbranded base behavior is preserved'
+  - id: A2
+    given: 'missing malformed cyclic or unsupported alias targets and fallback values'
+    when: 'brand declarations resolve'
+    then: 'only genuinely missing targets use supported fallbacks and other failures retain exact source property value and theme refusal without dangling emitted reads'
+  - id: A3
+    given: 'the actual token corpus and regenerated Unity assets'
+    when: 'focused tests source CSS browser comparisons admission and required test gates run'
+    then: 'supported output is stable generated artifacts match and the Unity token reference audit has zero unresolved names without allowances'
+observability:
+  - 'Retain source scope fixtures browser scalar observations and raw gate logs under canonical ignored CAWS release evidence'
+rollback:
+  - 'Revert the isolated Unity token projection commits and regenerate the Unity target'
+non_functional: {}
+contracts:
+  - name: 'unity-token-scope'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/unity/uss.ts'
