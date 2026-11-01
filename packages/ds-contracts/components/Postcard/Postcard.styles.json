@@ -293,6 +293,10 @@
     }
   },
   "timestamp": {
+    "max-width": {
+      "literal": "100%",
+      "platforms": ["web"]
+    },
     "font-size": {
       "resolvesTo": "postcard.typography.footer.fontSize",
       "fallback": "14px",

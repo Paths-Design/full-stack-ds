@@ -36,7 +36,7 @@ function PostcardConsumer() {
     React.createElement("button", { id: "postcard-rtl", onClick: () => setDirection("rtl") }, "Inherit RTL"),
     React.createElement("button", { id: "postcard-stress", onClick: () => { setAuthor(expandedPostcardAuthor); setCatalog(expandedPostcardCatalog); setLanguage("de"); } }, "Long post content"),
     React.createElement("div", { id: "postcard-viewport", dir: direction, lang: language, style: { width: "320px" } },
-      React.createElement(FsdsMessagesProvider, { messages: catalog }, React.createElement(Postcard, { postId: "packed-post", author, timestamp: "2026-11-01", stats },
+      React.createElement(FsdsMessagesProvider, { messages: catalog }, React.createElement(Postcard, { postId: "packed-post", author, timestamp: "2026-11-01T19:45:47.123456+00:00", stats },
         React.createElement("p", { id: "postcard-body" }, "مرحبا 日本語 — Packed post body stays available.")))));
 }
 function App() {
@@ -111,7 +111,7 @@ const PostcardConsumer = { setup() {
     h("button", { id: "postcard-rtl", onClick: () => { direction.value = "rtl"; } }, "Inherit RTL"),
     h("button", { id: "postcard-stress", onClick: () => { author.value = expandedPostcardAuthor; catalog.value = expandedPostcardCatalog; language.value = "de"; } }, "Long post content"),
     h("div", { id: "postcard-viewport", dir: direction.value, lang: language.value, style: "width:320px" }, [
-      h(Postcard, { postId: "packed-post", author: author.value, timestamp: "2026-11-01", stats: stats.value }, { default: () => h("p", { id: "postcard-body" }, "مرحبا 日本語 — Packed post body stays available.") }),
+      h(Postcard, { postId: "packed-post", author: author.value, timestamp: "2026-11-01T19:45:47.123456+00:00", stats: stats.value }, { default: () => h("p", { id: "postcard-body" }, "مرحبا 日本語 — Packed post body stays available.") }),
     ]),
   ]);
 } };
@@ -204,7 +204,7 @@ const svelteApp = `<script lang="ts">
     <button id="postcard-rtl" onclick={() => { postcardDirection = "rtl"; }}>Inherit RTL</button>
     <button id="postcard-stress" onclick={() => { postcardCurrentAuthor = expandedPostcardAuthor; postcardCatalog = expandedPostcardCatalog; postcardLanguage = "de"; }}>Long post content</button>
     <div id="postcard-viewport" dir={postcardDirection} lang={postcardLanguage} style="width:320px">
-      <Postcard postId="packed-post" author={postcardCurrentAuthor} timestamp="2026-11-01" stats={postcardStats}><p id="postcard-body">مرحبا 日本語 — Packed post body stays available.</p></Postcard>
+      <Postcard postId="packed-post" author={postcardCurrentAuthor} timestamp="2026-11-01T19:45:47.123456+00:00" stats={postcardStats}><p id="postcard-body">مرحبا 日本語 — Packed post body stays available.</p></Postcard>
     </div>
   </section>
   <Button variant="primary" size="large" ariaLabel="Packed action" {disabled} onClick={() => { count += 1; }}>Packed action</Button>
@@ -261,7 +261,7 @@ const postcardCatalog = signal<FsdsMessageCatalog>({});
       <button id="postcard-rtl" (click)="postcardDirection.set('rtl')">Inherit RTL</button>
       <button id="postcard-stress" (click)="stressPostcard()">Long post content</button>
       <div id="postcard-viewport" [dir]="postcardDirection()" [lang]="postcardLanguage()" style="width:320px">
-        <fsds-postcard postId="packed-post" [author]="postcardAuthor()" timestamp="2026-11-01" [stats]="postcardStats()"><p id="postcard-body">مرحبا 日本語 — Packed post body stays available.</p></fsds-postcard>
+        <fsds-postcard postId="packed-post" [author]="postcardAuthor()" timestamp="2026-11-01T19:45:47.123456+00:00" [stats]="postcardStats()"><p id="postcard-body">مرحبا 日本語 — Packed post body stays available.</p></fsds-postcard>
       </div>
     </section>
     <fsds-button variant="primary" size="large" ariaLabel="Packed action" [disabled]="disabled()" [onClick]="activate">Packed action</fsds-button>
@@ -359,7 +359,7 @@ const postcardViewport = document.createElement("div");
 Object.assign(postcardViewport, { id: "postcard-viewport", dir: "ltr", lang: "en" });
 postcardViewport.style.width = "320px";
 const postcard = new PostcardElement();
-Object.assign(postcard, { postId: "packed-post", author: postcardAuthor, timestamp: "2026-11-01", stats: initialPostcardStats });
+Object.assign(postcard, { postId: "packed-post", author: postcardAuthor, timestamp: "2026-11-01T19:45:47.123456+00:00", stats: initialPostcardStats });
 const postcardBody = document.createElement("p");
 postcardBody.id = "postcard-body";
 postcardBody.textContent = "مرحبا 日本語 — Packed post body stays available.";
@@ -483,6 +483,7 @@ async function verifyPostcard({ page, framework, evidence, expect, observation }
         article: await article.evaluate(element => ({ tag: element.tagName, label: element.getAttribute("aria-label"), direction: getComputedStyle(element).direction, fontFamily: getComputedStyle(element).fontFamily, fontSize: getComputedStyle(element).fontSize, text: element.textContent, outerHTML: element.outerHTML })),
         stats: await stats.allTextContents(),
         body: await body.textContent(),
+        timestamp: await article.locator("time").evaluate(element => ({ datetime: element.getAttribute("datetime"), text: element.textContent.trim() })),
         viewport: await viewport.evaluate(element => { const bounds = element.getBoundingClientRect(); return { left: bounds.left, right: bounds.right, width: bounds.width, clientWidth: element.clientWidth, scrollWidth: element.scrollWidth, language: element.lang }; }),
         textGeometry: await viewport.locator(".postcard__displayName, .postcard__handle, .postcard__timestamp, .postcard__stat, #postcard-body").evaluateAll(elements => elements.map(element => {
           const bounds = element.getBoundingClientRect();
@@ -520,6 +521,7 @@ async function verifyPostcard({ page, framework, evidence, expect, observation }
       assert.equal(facts.viewport.language, language, framework + ": consumer wrapper supplies the intended language");
       assert.ok(facts.article.fontFamily.includes("Arial"), framework + ": narrow witness must exercise the consumer UI font");
       assert.equal(facts.article.fontSize, "16px", framework + ": narrow witness must exercise the consumer base size");
+      assert.deepEqual(facts.timestamp, { datetime: "2026-11-01T19:45:47.123456+00:00", text: "2026-11-01T19:45:47.123456+00:00" }, framework + ": full ISO timestamp must retain both visible and machine-readable values");
       const axArticle = ax.nodes.find(node => node.role?.value === "article" && node.name?.value === expectedName && !node.ignored);
       assert.ok(axArticle, framework + ": named article must reach Chromium accessibility tree");
       for (const text of [...expectedStats, bodyText, expectedAuthor]) {

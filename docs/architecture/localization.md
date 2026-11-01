@@ -126,6 +126,15 @@ Native string literals escape quotes, backslashes, Kotlin template dollars
 and every control character, so a multiline message default stays one
 literal.
 
+Static SwiftUI and Compose metadata projection retains ordered scalar text
+around the consumer body and resolves message parameters from their exact
+prop/path sources. The native API exposes defaulted String inputs such as
+`authorName` and `statsLikes`; body-only calls remain valid. These inputs carry
+display text, including consumer-formatted numbers. They do not provide an
+object/media API or automatic numeric, plural, or date formatting. Catalog
+lookups render the metadata and root accessible name; generated scope names,
+ambiguous paths, and conditional metadata are rejected.
+
 Figma descriptors carry `messages` and each prop's `defaultMessage` as
 metadata. The Godot pilot has no catalog: its configuration carries the
 contract default of each message it shows, including the sequence labels

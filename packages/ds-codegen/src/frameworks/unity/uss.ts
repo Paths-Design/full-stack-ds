@@ -322,7 +322,7 @@ const PX_ONLY = length();
 const TYPOGRAPHY_LENGTH = length({ rem: true });
 const PX_AUTO = length({ keywords: ["auto"] });
 const PX_PERCENT_AUTO = length({ percent: true, keywords: ["auto"] });
-const PX_NONE = length({ keywords: ["none"] });
+const PX_PERCENT_NONE = length({ percent: true, keywords: ["none"] });
 const PX_PERCENT = length({ percent: true });
 
 const FLEX_ALIGN = ["auto", "flex-start", "flex-end", "center", "stretch"] as const;
@@ -459,8 +459,11 @@ export const HANDLERS: Readonly<Record<string, Handler>> = (() => {
   for (const [logical, physical] of Object.entries(LOGICAL_SIDES)) table[`inset-${logical}`] = realise(physical, physical === "top" || physical === "left" ? PX_PERCENT_AUTO : PX_AUTO);
   for (const size of ["width", "height"] as const) {
     table[size] = same(PX_PERCENT_AUTO)(size);
-    table[`min-${size}`] = same(PX_AUTO)(`min-${size}`);
-    table[`max-${size}`] = same(PX_NONE)(`max-${size}`);
+    // Source fact: USS min/max dimensions accept <length>, whose units are px
+    // and % (Unity USS supported-properties/data-types). Applies by property;
+    // percentage constraints remain parent-relative rather than fixed pixels.
+    table[`min-${size}`] = same(PX_PERCENT_AUTO)(`min-${size}`);
+    table[`max-${size}`] = same(PX_PERCENT_NONE)(`max-${size}`);
   }
   // Flexbox. UI Toolkit lays every element out as a flex container whose
   // initial flex-direction is column, while CSS flex's initial axis is row

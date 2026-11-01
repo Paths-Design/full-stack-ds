@@ -397,6 +397,7 @@
     "userInfo.min-width: platform web only",
     "userInfo.max-width: platform web only",
     "userInfo.gap: platform web only",
+    "timestamp.max-width: platform web only",
     "timestamp.flex-shrink: platform web only",
     "footer.display: platform web only",
     "footer.align-items: platform web only",

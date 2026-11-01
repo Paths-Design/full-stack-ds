@@ -810,6 +810,7 @@
       {
         "selector": ".postcard__timestamp",
         "declarations": {
+          "max-width": "100%",
           "font-size": "var(--fsds-postcard-typography-footer-font-size, 14px)",
           "flex-shrink": "0",
           "--fsds-postcard-color-foreground-primary": "var(--fsds-semantic-color-foreground-secondary, #474647)"

@@ -11,9 +11,12 @@
  * non-composable lambdas (`Modifier.semantics { … }`) that cannot read a
  * CompositionLocal.
  */
-import type { ComponentIR, ResolvedPropIR } from "../../ir.js";
+import type { BindingExpression, ComponentIR, ResolvedPropIR } from "../../ir.js";
+import { metadataInput, type NativeMetadataTextPlan } from "../../native-metadata-text.js";
+import { findMessage } from "../../messages.js";
+import { kotlinParamName } from "./kotlin/naming.js";
 import type { MessageIR } from "../../messages.js";
-import { propMessage, requireNativeParams } from "../native-messages.js";
+import { nativeMessageParams, propMessage, requireNativeParams } from "../native-messages.js";
 
 /** Receiver for default-argument lookups (composable context). */
 export const KOTLIN_MESSAGES_LOCAL = "LocalFsdsMessages.current";
@@ -60,6 +63,17 @@ export function kotlinMessage(
     args.push(`mapOf(${message.params.map((name) => `${kotlinStringLiteral(name)} to ${params[name]}`).join(", ")})`);
   }
   return `${receiver}.string(${args.join(", ")})`;
+}
+
+/** Lower one validated metadata source into an actual Kotlin String expression. */
+export function kotlinMetadataText(ir: ComponentIR, plan: NativeMetadataTextPlan, source: BindingExpression): string {
+  if (source.kind === "literal") return kotlinStringLiteral(source.value);
+  if (source.kind === "prop") return kotlinParamName(metadataInput(plan, source).name);
+  if (source.kind === "message") {
+    const ref = { message: findMessage(ir, source.key), params: source.params };
+    return kotlinMessage(ir, ref.message, nativeMessageParams(ir, ref, value => kotlinMetadataText(ir, plan, value)));
+  }
+  throw new Error(`Unsupported native metadata text: ${source.kind}`);
 }
 
 /**

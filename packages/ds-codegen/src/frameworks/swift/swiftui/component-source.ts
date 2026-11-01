@@ -70,7 +70,8 @@ import {
 } from "../../native-emission-class.js";
 import { swiftLiteral } from "./icon-glyph.js";
 import { emitSwiftNativeTextRules, nativeTextPart } from "./native-text-rules.js";
-import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment } from "./messages.js";
+import { swiftMessage, swiftMetadataText, swiftStringProp, withSwiftMessagesEnvironment } from "./messages.js";
+import { nativeMetadataTextPlan } from "../../../native-metadata-text.js";
 import {
   channelToggledText,
   contentMessages,
@@ -3264,6 +3265,7 @@ function emitDisclosureComponent(ir: ComponentIR): string {
 // leaf, no essential component instances.
 
 function emitStaticContentComponent(ir: ComponentIR): string {
+  const metadata = nativeMetadataTextPlan(ir);
   const exportName = swiftExportName(ir.name);
   const regionLabel = ir.root.persistentRegionLabel;
   const regionLabelName = regionLabel ? `\`${regionLabel.safeName}\`` : undefined;
@@ -3314,6 +3316,9 @@ function emitStaticContentComponent(ir: ComponentIR): string {
     lines.push(`${INDENT}private let ${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}${axis.defaultMember === null ? "?" : ""}`);
   }
   if (regionLabelDecl) lines.push(regionLabelDecl.stored, ...regionLabelDecl.accessor);
+  for (const input of metadata?.inputs ?? []) {
+    lines.push(`${INDENT}private let \`${input.name}\`: String`);
+  }
   lines.push(`${INDENT}private let content: Content`);
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
@@ -3327,6 +3332,9 @@ function emitStaticContentComponent(ir: ComponentIR): string {
       : `${axis.prop}: ${axis.typeName}? = nil,`,
   );
   if (regionLabelDecl) params.push(regionLabelDecl.param);
+  for (const input of metadata?.inputs ?? []) {
+    params.push(`\`${input.name}\`: String = "",`);
+  }
   params.push(
     countChildrenLeaves(ir) === 0
       ? "@ViewBuilder content: () -> Content = { EmptyView() }"
@@ -3337,6 +3345,9 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}) {`);
   for (const axis of axes) lines.push(`${INDENT}${INDENT}self.${escapeSwiftKeyword(axis.prop)} = ${escapeSwiftKeyword(axis.prop)}`);
   if (regionLabelDecl) lines.push(regionLabelDecl.assign);
+  for (const input of metadata?.inputs ?? []) {
+    lines.push(`${INDENT}${INDENT}self.\`${input.name}\` = \`${input.name}\``);
+  }
   lines.push(`${INDENT}${INDENT}self.content = content()`);
   lines.push(`${INDENT}}`);
   if (ir.tokenScopes.length > 0) {
@@ -3366,7 +3377,17 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   }
   lines.push("");
   lines.push(`${INDENT}public var body: some View {`);
-  const contentLines = [`${INDENT}${INDENT}content`];
+  const contentLines = metadata
+    ? [
+        `${INDENT}${INDENT}VStack(alignment: .leading, spacing: 0) {`,
+        ...metadata.leaves.map(leaf => `${INDENT}${INDENT}${INDENT}${leaf.kind === "content" ? "content" : `SwiftUI.Text(verbatim: ${swiftMetadataText(ir, metadata, leaf.source)})`}`),
+        `${INDENT}${INDENT}}`,
+      ]
+    : [`${INDENT}${INDENT}content`];
+  if (metadata?.label) {
+    contentLines.push(`${INDENT}${INDENT}${INDENT}.accessibilityElement(children: .contain)`);
+    contentLines.push(`${INDENT}${INDENT}${INDENT}.accessibilityLabel(SwiftUI.Text(verbatim: ${swiftMetadataText(ir, metadata, metadata.label)}))`);
+  }
   if (textRules?.hasProperties) {
     contentLines.push(`${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
     contentLines.push(`${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);

@@ -176,6 +176,7 @@ export class PostcardElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -409,6 +410,7 @@ export class PostcardHeaderElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -602,6 +604,7 @@ export class PostcardContentElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -795,6 +798,7 @@ export class PostcardFooterElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
