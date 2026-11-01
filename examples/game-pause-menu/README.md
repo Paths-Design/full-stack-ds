@@ -43,9 +43,10 @@ all three lanes to it:
   final run reports **0 failures** for map, progress, abilities and settings;
   labelled montages and difference images land under
   `tmp/parity-evidence/report/`.
-- Cross-engine residual after the pass: **font family/rasterisation**, glyph
-  anti-aliasing, and letter-spacing where the engine has no channel. Geometry,
-  colours, copy, component states and control shapes are identical.
+- Cross-engine residual after the pass: **glyph anti-aliasing/hinting and
+  sub-pixel baseline rounding on the one shared Inter face**. Family, weights,
+  sizes, tracking, line heights and copy wraps are pinned; geometry, colours,
+  copy, component states and control shapes are identical.
 
 ### Why the switches looked like pinched ovals — and the fix
 
@@ -87,6 +88,38 @@ icon-visibility rows (`IN, PL, HO, BL, AL, CD, CR, US`), and 40 × 40 tiles
 holding the first two letters of each ability name on ability cards
 (`TH, OV, IO, …`). Generated `Icon` remains the realization elsewhere; on these
 two parity surfaces the shared code tile is the art.
+
+### Typography parity — one face, two weights, zero tracking
+
+The first parity montage still showed three type languages: GPUI rendered the
+native system face, Unity its UI Toolkit default, and Godot a `SystemFont`
+fallback, with different weights and tracking. The typography pass pins all
+three to the Orion brand face **Inter 4.1** (static Regular 400 / Bold 700,
+vendored under [`fonts/`](fonts/README.md) with the SIL OFL licence) and loads
+the exact same bytes in each engine: GPUI via `TextSystem::add_fonts`, Unity
+via imported `Font` assets in `Resources/Fonts`, Godot via `FontFile` resources
+copied into `res://fonts` by `setup.sh`.
+
+- **Two weights only.** The 600/800 requests from the first pass are retired:
+  labels, values, titles, tabs, chips and buttons are 700; body, row
+  secondaries, metadata and hints are 400. All three engines map the same way
+  (GPUI weight variant + token override, Godot file selection, Unity
+  `FontDefinition` per weight with `FontStyle.Normal` so no faux bold is drawn).
+- **Zero tracking.** The pinned GPUI renderer exposes no letter-spacing
+  channel, so `type.letterSpacingMicro/Tab` are pinned to 0 and every engine
+  stops applying tracking. That is stricter than accepting a per-engine
+  divergence.
+- **Line heights and vertical alignment** are pinned (labels 1.0 / body 1.2);
+  wrapped body copy is top-aligned at its pinned y, chip labels are centred,
+  and the footer hint string uses `white-space: pre` on Unity so UI Toolkit
+  does not collapse its triple-space separators.
+- **Verification:** the shared checker measures **39 pinned text strings × 3
+  engines = 117 bbox measurements** per run (wordmark, stat labels/values, tab
+  labels, panel titles/metas, row labels/secondaries, field note, footer hints,
+  nav target, drawer title/tagline/body, chips, dossier, card/detail copy,
+  settings labels and values) and fails on >±4 px x/y or >±6/±5 px w/h deltas.
+  The final run reports **0 failures**, with Unity's dynamic-font rasterisation
+  the widest residual (≤4 px on 10 px labels).
 
 ## The app
 
@@ -342,8 +375,9 @@ Cross-engine verification: run `node examples/game-pause-menu/parity-check.mjs
 --root tmp/parity-evidence` after pointing a `tmp/parity-evidence/{gpui,unity,godot}`
 aggregate root at the three capture directories. The committed run report,
 per-state montages and pairwise difference images are under
-`tmp/parity-evidence/report/` (`parity-report.json` records the 195 probes and
-12 RMSE pairs; the final run has 0 failures).
+`tmp/parity-evidence/report/` (`parity-report.json` records the 195 colour/geometry
+probes, 117 typography bbox measurements and 12 RMSE pairs; the final run has
+0 failures).
 
 ## How to run
 

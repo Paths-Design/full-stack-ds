@@ -147,20 +147,30 @@ panel meta lines, mission line `MARS EXPEDITION // COMMANDER D3SO`, wordmark 40 
 ink 12% grid / 12 px four-corner map ticks, left-aligned tab labels at the 32 px inset, and the
 portable icon-art code tiles.
 
+### Typography (Inter pin)
+
+The lane imports the bundled Inter 4.1 static faces as Unity `Font` assets
+(`Assets/PauseMenu/Resources/Fonts/Inter-Regular.ttf` / `Inter-Bold.ttf`, OFL) and projects every
+lane text element plus generated-component text onto them through `Ui.UseFont` /
+`Ui.ApplyParityFonts`, resetting `FontStyle.Normal` so no synthetic bold is drawn. Two weights are
+pinned (400 regular / 700 bold); tracking is zero. Chip labels are centred 10 px/700, body copy is
+top-aligned at its pinned y (`UpperLeft`) and footer hints use `white-space: pre` because UI Toolkit
+collapses space runs by default.
+
 ### Permitted differences
 
-- Font family fallback and glyph rasterisation; anti-aliasing at rect edges (Unity's UI Toolkit
-  default face, uppercase labels and letter-spacing pinned from the authority).
+- Glyph anti-aliasing/hinting and sub-pixel baselines; Unity's dynamic-font rasterisation is the
+  widest residual (up to ~4 px bbox delta on 10 px labels, inside the checker tolerance).
 - Tab labels are left-aligned with the pinned 32 px inset (`tabBar.labelAlign` / `tabBar.labelInset`).
-- Status-chip labels render 9 px (normal weight) at the chip's left edge. The committed probe
-  samples the chip fill at `(1118, 250)`, which only stays solid when the tag is a small edge label;
-  the pinned prose says 10 px/800 and the JSON type map declares no 9 px chip size.
 - Footer nav value uses the `body` type size (13 px) because the type map declares no footer-value
   size; it is right-aligned to x=1256 as pinned.
 - Remap rows use the pinned `remapFirstRowY` (496) directly; the earlier authority revision's
   panel-relative value is superseded.
 - Native slider/dropdown internals keep Unity theme behaviour; only their visual chrome is pinned.
-- Rarity chips use 9 px/800 (pinned prose) although the type map has no 9 px key.
+- Icon surfaces render the pinned portable code tiles instead of the admitted `Icon` catalog glyphs.
+  This is an app-authority decision (`iconArt`): the row codes come from the explicit table (so
+  `Baseline` renders BL, not the naive first two letters) and ability codes are the first two
+  alphanumeric characters of the ability name.
 - Icon surfaces render the pinned portable code tiles instead of the admitted `Icon` catalog glyphs.
   This is an app-authority decision (`iconArt`): the row codes come from the explicit table (so
   `Baseline` renders BL, not the naive first two letters) and ability codes are the first two

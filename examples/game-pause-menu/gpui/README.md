@@ -199,18 +199,23 @@ No layout number, colour or type size is re-typed in `src/app/`: geometry/colour
 come from the parsed JSON; the handful of parity-document-pinned type/chrome
 values live in `src/app/style.rs` with their source named.
 
+### Typography (Inter pin)
+
+The lane embeds the bundled Inter 4.1 static faces (`examples/game-pause-menu/fonts/inter`,
+OFL) through `TextSystem::add_fonts` and pins the root family to `Inter`; this removes the
+earlier `.SystemUIFont` fallback. Two weights are requested (400 regular / 700 bold) with the
+authority's sizes and zero tracking; the retired 600/800 requests collapse to regular/bold. Text
+weights are applied through the generated `Text` weight variants plus token overrides, and the
+root `font_family` propagates into generated components.
+
 ### Permitted differences (recorded)
 
-- **Font family / rasterisation.** The lane uses the native UI face (no bundled
-  condensed grotesque); glyph rasterisation, anti-aliasing and sub-pixel
-  baselines differ from the other engines. `parity.md` allows this.
-- **Letter-spacing.** The GPUI target's generated style vocabulary has no
-  `letter-spacing` consumer property, so the JSON `letterSpacingMicro/Tab`
-  values cannot be expressed; uppercase labels are used instead. Recorded as a
-  permitted difference.
-- **Line-height.** Absolute single-line text boxes are pinned to line-height 1
-  (body copy 1.2) so JSON y positions land on the intended baselines; this is a
-  font-metric choice, not a layout repositioning.
+- **Glyph rasterisation.** Same Inter faces, weights, sizes and zero tracking as
+  the other lanes; only glyph anti-aliasing/hinting and sub-pixel baseline
+  rounding differ. `parity.md` records the bbox tolerances used to verify this.
+- **Line-height.** Absolute single-line text boxes use line-height 1 (body 1.2)
+  as a font-metric choice; body-copy line breaks are expected to match because
+  the faces and widths match.
 - **Chips.** FSDS `Badge` provides chip typography but the target's Badge has no
   width/height/justify channel, so the exact chip rectangle is a hand-authored
   surface and the Badge label is centred inside it (ledger above).
