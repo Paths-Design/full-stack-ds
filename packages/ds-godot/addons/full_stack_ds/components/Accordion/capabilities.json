@@ -4,6 +4,48 @@
     "type",
     "defaultValue"
   ],
+  "omissions": [
+    ".accordion__trigger[aria-expanded=\"true\"] .accordion__chevron: selector outside normalized native grammar",
+    "@starting-style: selector outside normalized native grammar",
+    "root.display: platform web only",
+    "root.flex-direction: platform web only",
+    "root.border-radius: no Godot control style mapping",
+    "root.gap: no Godot control style mapping",
+    "item.background-color: platform web only",
+    "item.border-color: no Godot control style mapping",
+    "item.border-style: platform web only",
+    "item.border-width: platform web only",
+    "item.border-radius: no Godot control style mapping",
+    "item.overflow: platform web only",
+    "header: part header is not hosted by the control runtime",
+    "trigger.display: platform web only",
+    "trigger.align-items: platform web only",
+    "trigger.justify-content: platform web only",
+    "trigger.width: platform web only",
+    "trigger.padding: no Godot control style mapping",
+    "trigger.background: platform web only",
+    "trigger.border: platform web only",
+    "trigger.cursor: platform web only",
+    "trigger.font-weight: no Godot control style mapping",
+    "trigger.text-align: platform web only",
+    ".accordion__trigger:hover: state/variant-conditioned styling has no native selector in the control shape",
+    "chevron: part chevron is not hosted by the control runtime",
+    "content.display: platform web only",
+    "content.overflow: platform web only",
+    "content.grid-template-rows: platform web only",
+    "content.opacity: platform web only",
+    "content.transition: platform web only",
+    ".accordion__content:not([hidden]): state/variant-conditioned styling has no native selector in the control shape",
+    "contentInner.min-height: platform web only",
+    "contentInner.overflow: platform web only",
+    "contentInner.padding-inline: no Godot control style mapping",
+    "contentInner.padding-block-end: platform web only",
+    "contentInner.transition: platform web only",
+    ".accordion__content:not([hidden]) .accordion__contentInner: state/variant-conditioned styling has no native selector in the control shape",
+    ".accordion--disabled: state/variant-conditioned styling has no native selector in the control shape",
+    "type: declined by the toggle-item shape; no native realization on this target",
+    "defaultValue: declined by the toggle-item shape; no native realization on this target"
+  ],
   "itemButtonRefs": [
     {
       "ref": "Icon",
@@ -14,15 +56,98 @@
       }
     }
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "manual",
+      "orientation": "vertical",
+      "wrap": true,
+      "initialFocus": "trigger"
+    },
+    "dismissal": [],
+    "portal": {
+      "enabled": false
+    }
+  },
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "trigger",
+        "to": "content",
+        "attribute": "aria-controls"
+      },
+      {
+        "from": "content",
+        "to": "trigger",
+        "attribute": "aria-labelledby"
+      }
+    ],
+    "stateAria": [
+      {
+        "category": "disclosure",
+        "attribute": "aria-expanded",
+        "values": {
+          "closed": "false",
+          "open": "true"
+        }
+      }
+    ]
+  },
+  "focusRing": {
+    "width": "2px",
+    "color": "#0566fe",
+    "offset": "-2px"
+  },
+  "styles": [
+    {
+      "source": "trigger",
+      "part": "trigger",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "font-size",
+          "value": "16px",
+          "designSlot": "accordion.design.trigger.typography.size"
+        },
+        {
+          "property": "color",
+          "value": "#141414",
+          "designSlot": "accordion.design.trigger.foreground.color"
+        },
+        {
+          "property": "line-height",
+          "value": "24px",
+          "designSlot": "accordion.design.trigger.typography.line-height"
+        }
+      ]
+    },
+    {
+      "source": "contentInner",
+      "part": "contentInner",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#474647",
+          "designSlot": "accordion.design.content-inner.foreground.color"
+        },
+        {
+          "property": "font-size",
+          "value": "14px",
+          "designSlot": "accordion.design.content-inner.typography.size"
+        },
+        {
+          "property": "line-height",
+          "value": "29px",
+          "designSlot": "accordion.design.content-inner.typography.line-height"
+        }
+      ]
+    }
+  ],
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [
     "type",
     "defaultValue"
-  ],
-  "omissions": [
-    "type: declined by the toggle-item shape; no native realization on this target",
-    "defaultValue: declined by the toggle-item shape; no native realization on this target"
   ],
   "proof": "requires-runtime-witness"
 }

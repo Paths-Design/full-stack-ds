@@ -24,10 +24,16 @@ var axis_values: Dictionary = {}
 
 var _root_stylebox: StyleBoxFlat
 var _theme_base: Theme
+## Focus outlines projected from the contract's `:focus-visible` rules, keyed by
+## the part host they belong to. The host becomes focusable; the ring is painted
+## by this runtime so a non-Button host can still show focus.
+var _focus_rings: Dictionary = {}
+var _focus_ring_active: Control = null
 
 func _ready() -> void:
 	_theme_base = theme
 	refresh()
+	_apply_focus_rings()
 
 ## Mount nothing; the scene tree is generated. Re-resolve the projected styles.
 func refresh() -> void:
@@ -158,6 +164,56 @@ func _apply_root(style: Dictionary) -> void:
 func _draw() -> void:
 	if _root_stylebox != null:
 		draw_style_box(_root_stylebox, Rect2(Vector2.ZERO, size))
+	if _focus_ring_active != null and _focus_rings.has(_focus_ring_active):
+		draw_style_box(_focus_ring_box(_focus_rings[_focus_ring_active]), _focus_ring_rect(_focus_ring_active))
+
+## Make each projected focus part focusable and remember its outline. The ring is
+## painted in this runtime's own coordinates, so a host of any Control subclass
+## can show focus without being a Button.
+func _apply_focus_rings() -> void:
+	for ring in configuration.get("focusRings", []):
+		var host := get_part(str(ring.get("part", "")))
+		if host == null or host == self: continue
+		host.focus_mode = Control.FOCUS_ALL
+		_focus_rings[host] = ring
+		if not host.focus_entered.is_connected(_on_focus_ring_entered):
+			host.focus_entered.connect(_on_focus_ring_entered.bind(host))
+		if not host.focus_exited.is_connected(_on_focus_ring_exited):
+			host.focus_exited.connect(_on_focus_ring_exited.bind(host))
+
+func _on_focus_ring_entered(host: Control) -> void:
+	_focus_ring_active = host
+	queue_redraw()
+
+## Whether a projected focus ring is currently shown (witness hook).
+func has_focus_ring() -> bool:
+	return _focus_ring_active != null
+
+func _on_focus_ring_exited(host: Control) -> void:
+	if _focus_ring_active == host: _focus_ring_active = null
+	queue_redraw()
+
+func _focus_ring_rect(host: Control) -> Rect2:
+	var origin := get_global_transform().affine_inverse() * host.global_position
+	return Rect2(origin, host.size)
+
+func _focus_ring_box(ring: Dictionary) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.draw_center = false
+	var color := str(ring.get("color", "#ffffff"))
+	box.border_color = Color(color) if color.begins_with("#") else Color("#ffffff")
+	var width := int(ring.get("width", 2))
+	box.border_width_left = width
+	box.border_width_top = width
+	box.border_width_right = width
+	box.border_width_bottom = width
+	var offset := int(ring.get("offset", 0))
+	if offset > 0:
+		box.expand_margin_left = offset
+		box.expand_margin_top = offset
+		box.expand_margin_right = offset
+		box.expand_margin_bottom = offset
+	return box
 
 func _apply_host(host: Control, style: Dictionary) -> void:
 	var box := _box(host)

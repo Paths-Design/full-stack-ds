@@ -8,6 +8,7 @@ import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
 import { godotActionPlan } from "./action-plan.js";
 import { classifyProp, loadBoundary } from "./boundary.js";
+import { godotControlStyles } from "./control-styles.js";
 import { anatomyFiles, surfaceFiles } from "./plan-emission.js";
 import { godotSurfacePlan } from "./surface-plan.js";
 import { godotAnatomyPlan } from "./walker.js";
@@ -140,6 +141,77 @@ function propBoundary(ir: ComponentIR): { excluded: string[]; omissions: string[
   return { excluded: excludedProps, omissions };
 }
 
+/**
+ * Disclosure facts the shared control runtime can act on: focus strategy,
+ * normalized dismissal triggers (with their gating props and defaults), portal
+ * layering, surface modality and the structural ARIA state the DOM binds.
+ *
+ * Source fact: `behavior.focus` / `behavior.dismissal` / `behavior.portal` /
+ * `surface` plus the `aria-expanded` / `aria-controls` bindings the anatomy
+ * carries. Applies by: control and surface shapes. Nothing here inspects a
+ * component name — every field is read from normalized IR.
+ */
+function disclosureFacts(ir: ComponentIR) {
+  const focus = ir.behavior.focus;
+  const portal = ir.behavior.portal;
+  const bindings: Record<string, string> = {};
+  const walk = (node: { bindings?: Record<string, { kind: string; prop?: string }>; children?: unknown[] }): void => {
+    for (const [attr, binding] of Object.entries(node.bindings ?? {})) {
+      if (!["aria-expanded", "aria-controls", "aria-selected", "aria-haspopup"].includes(attr)) continue;
+      if (binding.kind === "prop" && binding.prop) bindings[attr] = binding.prop;
+    }
+    for (const child of (node.children ?? []) as typeof node[]) walk(child);
+  };
+  if (ir.dom) walk(ir.dom as never);
+  return {
+    ...(focus ? { focus: {
+      strategy: focus.strategy ?? "auto",
+      orientation: focus.orientation ?? "both",
+      wrap: focus.wrap === true,
+      ...(focus.initialFocus ? { initialFocus: focus.initialFocus } : {}),
+      ...(focus.returnFocus ? { returnFocus: focus.returnFocus } : {}),
+    } } : {}),
+    dismissal: ir.behavior.normalizedDismissalTriggers.map(trigger => ({
+      event: trigger.event,
+      ...(trigger.enabledByProp ? { enabledByProp: trigger.enabledByProp } : {}),
+      defaultEnabled: trigger.defaultEnabled,
+    })),
+    ...(portal ? { portal: { enabled: portal.enabled === true, ...(portal.layering ? { layering: portal.layering } : {}) } } : {}),
+    ...(ir.surface ? { modality: ir.surface.modality, surfaceKind: ir.surface.kind } : {}),
+    ...(Object.keys(bindings).length ? { ariaBindings: bindings } : {}),
+  };
+}
+
+/**
+ * Accessibility facts the native control can carry: the labeling attributes the
+ * contract requires, the authored accessible role, the state-to-ARIA projection
+ * declared per state dimension, and the part-to-part relationships expressed as
+ * ARIA attributes. Godot exposes accessible name/description/live plus
+ * controls/labeled-by/described-by node relations — no role property — so the
+ * planner projects what exists and the boundary classifies the rest.
+ */
+function accessibilityFacts(ir: ComponentIR) {
+  // Only relations whose both ends the control runtime hosts can be wired; the
+  // rest are named as omissions instead of being claimed.
+  const hostedRelations = new Set(["root", "trigger", "summary", "tab", "button", "content", "panel", "region", "body"]);
+  const relationships = (ir.behavior.relationships ?? [])
+    .filter(relation => typeof relation === "object" && relation && typeof relation.from === "string" && typeof relation.to === "string" && typeof relation.attribute === "string")
+    .filter(relation => hostedRelations.has(relation.from) && hostedRelations.has(relation.to))
+    .map(relation => ({ from: relation.from, to: relation.to, attribute: relation.attribute }));
+  const stateAria = Object.entries(ir.states.dimensions ?? {})
+    .filter(([, dimension]) => dimension?.a11y?.attribute)
+    .map(([category, dimension]) => ({ category, attribute: dimension.a11y!.attribute, values: dimension.a11y!.values ?? {} }));
+  const labeling = ir.root.labeling ?? [];
+  const role = ir.root.rootRole;
+  if (!relationships.length && !stateAria.length && !labeling.length && !role) return {};
+  return {
+    ...(relationships.length ? { relationships } : {}),
+    ...(stateAria.length ? { stateAria } : {}),
+    ...(labeling.length ? { labeling } : {}),
+    ...(role ? { role } : {}),
+  };
+}
+
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
   const glyph = godotGlyphPlan(ir);
@@ -190,7 +262,20 @@ export function godotPlan(ir: ComponentIR) {
   if (refs.length && !["select", "toggle-item"].includes(operation)) throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} has no item button host`);
   const excludedProps = ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p => p.name);
   for (const name of boundary.excluded) if (!excludedProps.includes(name)) excludedProps.push(name);
-  return { operation, excluded: excludedProps, ...(boundary.omissions.length ? { omissions: boundary.omissions } : {}), ...(refs.length ? { itemButtonRefs: refs } : {}) };
+  const disclosure = disclosureFacts(ir);
+  const accessibility = accessibilityFacts(ir);
+  const styleProjection = godotControlStyles(ir);
+  const omissions = [...boundary.omissions, ...styleProjection.omissions];
+  return {
+    operation,
+    excluded: excludedProps,
+    ...(omissions.length ? { omissions } : {}),
+    ...(refs.length ? { itemButtonRefs: refs } : {}),
+    ...(Object.keys(disclosure).length ? { disclosure } : {}),
+    ...(Object.keys(accessibility).length ? { accessibility } : {}),
+    ...(styleProjection.focusRing ? { focusRing: styleProjection.focusRing } : {}),
+    ...(styleProjection.styles.length ? { styles: styleProjection.styles } : {}),
+  };
 }
 /** Source fact: normalized sequence, channel and label bindings.
  * Applies by: numeric sequence capability. Removable when: its IR is retired.
@@ -275,7 +360,21 @@ export function createGodotEmitter(): FrameworkEmitter {
       const isComposite = plan.operation === "composite";
       const isGlyph = plan.operation === "glyph";
       const compositePlan = isComposite ? plan as NonNullable<ReturnType<typeof godotCompositePlan>> : undefined;
-      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : { operation: plan.operation, ...(controlRefs.length ? { itemButtonRefs: controlRefs } : {}) }), defaults, theme_color: themeColor(ir) };
+      // The bounded control shape carries the facts its runtime acts on: the
+      // operation, the item-trigger references and the disclosure facts (focus
+      // strategy, dismissal triggers + gates, portal layering, surface modality
+      // and the structural ARIA bindings). The receipt keeps the full plan.
+      const disclosure = "disclosure" in plan ? (plan as { disclosure?: Record<string, unknown> }).disclosure : undefined;
+      const controlStyles = "styles" in plan ? (plan as { styles?: unknown[] }).styles : undefined;
+      const controlConfig = {
+        operation: plan.operation,
+        ...(controlRefs.length ? { itemButtonRefs: controlRefs } : {}),
+        ...(disclosure && Object.keys(disclosure).length ? { disclosure } : {}),
+        ...("accessibility" in plan && plan.accessibility ? { accessibility: plan.accessibility } : {}),
+        ...("focusRing" in plan && plan.focusRing ? { focusRing: plan.focusRing } : {}),
+        ...(controlStyles && controlStyles.length ? { styles: controlStyles } : {}),
+      };
+      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : controlConfig), defaults, theme_color: themeColor(ir) };
       const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : isComposite ? "composite" : isGlyph ? "glyph" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction || isComposite || isGlyph ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");

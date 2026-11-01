@@ -287,6 +287,14 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "field",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [
@@ -349,9 +357,8 @@
     "error.font-size: host stack renders no text",
     "error.line-height: no Godot anatomy style mapping",
     "error.color: host stack renders no text",
-    ".text-field__field:focus-visible: state selector not lowered",
     ".text-field--invalid .text-field__field.border-color: host control paints no panel",
-    ".text-field--invalid .text-field__field:focus-visible: state selector not lowered",
+    ".text-field--invalid .text-field__field:focus-visible: focus selector carries no outline declarations",
     ".text-field__field:disabled: state selector not lowered",
     ".text-field__field::placeholder: selector outside normalized native grammar",
     ".text-field__field:hover:not(:disabled): selector outside normalized native grammar",

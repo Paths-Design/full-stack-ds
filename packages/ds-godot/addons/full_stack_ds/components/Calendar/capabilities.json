@@ -268,6 +268,14 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "day",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
   "projectedProps": [],
   "defaults": {
     "mode": "\"single\"",
@@ -363,7 +371,6 @@
     "day.color: platform web only",
     "day.font-size: host panel renders no text",
     ".calendar__day:hover: state selector not lowered",
-    ".calendar__day:focus-visible: state selector not lowered",
     ".calendar__grid > *: selector outside normalized native grammar",
     ".calendar__grid > * > *: selector outside normalized native grammar",
     ".calendar__day[aria-selected=\"true\"]: selector outside normalized native grammar",

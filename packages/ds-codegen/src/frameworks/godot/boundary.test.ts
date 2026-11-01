@@ -127,7 +127,10 @@ describe("Godot support boundary", () => {
     expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "pending" });
     expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "pending" });
     expect(classifyProp(boundary, "options")).toMatchObject({ disposition: "pending" });
-    expect(classifyProp(boundary, "initialFocus")).toMatchObject({ disposition: "pending" });
+    // Activation mode is realised by the control runtime; initial focus is
+    // refused because mount-time focus is the embedding scene's decision.
+    expect(classifyProp(boundary, "activationMode")).toMatchObject({ disposition: "lowered" });
+    expect(classifyProp(boundary, "initialFocus")).toMatchObject({ disposition: "refused" });
     // Refused: DOM/authoring facts with no native meaning.
     expect(classifyProp(boundary, "as")).toMatchObject({ disposition: "refused" });
     expect(classifyProp(boundary, "type")).toMatchObject({ disposition: "refused" });

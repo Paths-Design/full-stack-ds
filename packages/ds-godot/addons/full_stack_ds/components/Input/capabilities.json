@@ -229,6 +229,14 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "root",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
   "projectedProps": [],
   "defaults": {},
   "excludedProps": [
@@ -270,9 +278,8 @@
     "root.transition-duration: no Godot anatomy style mapping",
     "root.transition-timing-function: no Godot anatomy style mapping",
     "hover: state selector not lowered",
-    "focus: state selector not lowered",
     "--invalid.border-color: host control paints no panel",
-    ".input--invalid:focus-visible: state selector not lowered",
+    ".input--invalid:focus-visible: focus selector carries no outline declarations",
     "disabled: state selector not lowered",
     "::placeholder: selector outside normalized native grammar",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",

@@ -221,6 +221,14 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "item",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": -2
+    }
+  ],
   "projectedProps": [],
   "defaults": {
     "options": "[\"alpha\",\"beta\",\"gamma\",\"delta\",\"epsilon\"]",
@@ -276,7 +284,6 @@
     "item.border-block-end-width: platform web only",
     "item.border-block-end-color: no Godot anatomy style mapping",
     "item.cursor: platform web only",
-    ".shuttle__item:focus-visible: state selector not lowered",
     "controls.display: platform web only",
     "controls.flex-direction: platform web only",
     "controls.justify-content: platform web only",

@@ -27,6 +27,18 @@ pnpm run write:godot-boundary   # regenerate packages/ds-godot/verification/capa
 
 A planner/ledger disagreement (a shape declining a fact the target lowers elsewhere) is recorded as a shape variance, not swallowed and not fatal. An unadjudicated contract family, a receipt that drops an excluded prop, or a drifted inventory exits non-zero.
 
+## Disclosure family behaviour
+
+Accordion, Tabs, Popover and Details reach their behaviour through `runtime/control.gd`, which acts on disclosure facts the emitter projects from the contracts (focus strategy, dismissal triggers with their gating props, portal layering, structural aria bindings). `roving`/`manual` focus rotates across triggers by keyboard direction and honours orientation/wrap; escape, outside click and focus leave dismiss surfaces when the contract's `closeOn*` props allow it; the trigger reports `aria_expanded`/`aria_controls` and items report `aria_selected`/`aria_expanded` as structural state.
+
+The contract's labeling attributes, part relationships and per-state ARIA projection are projected too: the accessible name follows the visible label until a consumer overrides it, `accessibility_controls_nodes`/`labeled_by_nodes`/`described_by_nodes` are wired per item where the relation is item-scoped, and structural state attributes come from the authored state mapping. Godot exposes no accessible-role property, so the authored role, the APG pattern reference and the keyboard table are refused with reasons rather than approximated.
+
+Unconditional style rules that address a hosted part are projected into the configuration and applied natively: font size and colour on the trigger and item buttons, integer line spacing and alignment on text under an item body, opacity, cursor shape and hit testing, and an outline-derived focus StyleBox. Rules addressing parts the runtime does not host, and state/variant-conditioned rules, are named in the capability receipt. CSS families with no native equivalent are `refused` in `support-boundary.json` with reasons (motion transitions/keyframes, position/inset, box-shadow, pseudo-elements, and text-layout declarations Godot cannot express) rather than silently ignored.
+
+Godot's accessibility tree is not populated by this project, so that aria state is a structural projection rather than assistive-technology delivery. Initial-focus targeting, scroll locking, CSS motion/typography/focus-ring projection and blocking modality (backdrop, focus containment) are not realized yet and stay `pending` in `support-boundary.json`.
+
+The disclosure family (Accordion, Tabs, Popover, Details) has no pending boundary leaves: every contract fact is either lowered with a headless witness or refused with a written reason. That includes manual/automatic activation (`activationMode`), the anatomy-hosted focus ring on Details' summary, and the projected accessibility name/relations.
+
 ## Generate and verify
 
 From the repository root:
