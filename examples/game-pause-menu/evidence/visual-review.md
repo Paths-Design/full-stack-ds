@@ -6,9 +6,8 @@ This record separates three questions that are often conflated:
 
 1. **Cross-lane parity** — do GPUI, Unity and Godot agree with each other on
    the captured states? Evidence: [`../parity.md`](../parity.md),
-   [`parity-report.json`](/tmp/parity-defensibility-report/parity-report.json)
-   from the reviewed run, and the committed goldens in
-   [`goldens/`](goldens/).
+   [`parity-report.json`](parity-report.json) from the reviewed run, and the
+   committed goldens in [`goldens/`](goldens/).
 2. **Source-design fidelity** — does the result look like the supplied Orion N5
    reference? Evidence: [`../fixtures/orion-style-oracle.json`](../fixtures/orion-style-oracle.json)
    and [`oracle-report.json`](oracle-report.json).
@@ -23,8 +22,8 @@ This record separates three questions that are often conflated:
 - Reference orbital panel, sha256 `f0ec5f36…`: mint ribbed field, dark housing,
   full-width orange data band, oversized grey `79`, hex/orbit diagram,
   registration marks, barcode strips.
-- The eight-state capture set and four state montages regenerated from the
-  reviewed run. To reproduce the montages:
+- The eight-state capture set and the eight review montages committed under
+  [`montages/`](montages/). To reproduce them:
 
   ```sh
   node examples/game-pause-menu/parity-check.mjs \
@@ -34,7 +33,9 @@ This record separates three questions that are often conflated:
   ```
 
   The checker now covers all eight states for RMSE and goldens, and the four
-  base states for the authority probes.
+  base states for the authority probes. The committed montages are review
+  artifacts derived from the reviewed capture set, not regression baselines;
+  the goldens are the baselines.
 
 ## Agent findings
 

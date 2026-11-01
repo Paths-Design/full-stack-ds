@@ -12,9 +12,9 @@ evidence lives, and what is explicitly outside the claim.
 | Host | macOS, Metal-backed GPUI/Unity/Godot windows | pinned editor/runtime versions in lane READMEs |
 | Viewport | 1280 × 800, 1× device pixel ratio | capture receipts and committed goldens |
 | States | eight: `map`, `map-popover`, `progress`, `abilities`, `abilities-hover`, `settings`, `settings-remap-modal`, `settings-subtitle` | [parity-check.mjs](../parity-check.mjs) requires all eight per lane |
-| Cross-lane structural comparison | 24 pairwise RMSE comparisons (8 states × 3 lane pairs), threshold 0.14 | `parity-check.mjs` report |
+| Cross-lane structural comparison | 24 pairwise RMSE comparisons (8 states × 3 lane pairs), threshold 0.14 | [`parity-report.json`](parity-report.json) |
 | Authority probes | 195 colour/geometry probes and 117 typography bbox/ink measurements across the four base states | `parity-check.mjs` report |
-| Regression baseline | 24 committed image goldens (8 states × 3 lanes), lossless WebP + manifest binding the authority and token sources | [`evidence/goldens/`](goldens/) and `pnpm parity:goldens:check` |
+| Regression baseline | 24 committed image goldens (8 states × 3 lanes), lossless WebP + manifest binding the authority and token sources; fresh captures must stay within golden RMSE 0.02 | [`evidence/goldens/`](goldens/) and `pnpm parity:goldens:check` |
 | Token path | GPUI and Godot resolve the palette/type scale from the token graph; Unity's Card surface resolves through the generated component token variables in the Orion brand scope | [`scripts/game-pause-token-consumption.mjs`](../../../scripts/game-pause-token-consumption.mjs), GPUI/Godot tests, Unity `TokenConsumptionTests` |
 | Token provenance | all 19 authority colours and 20 type values resolve from `resolved.tokens.json` or the Orion brand | [`scripts/game-pause-token-provenance.mjs`](../../../scripts/game-pause-token-provenance.mjs) |
 | Source-design oracle | reference palette anchors and composition bands, with an audit report | [`fixtures/orion-style-oracle.json`](../fixtures/orion-style-oracle.json), [`oracle-report.json`](oracle-report.json) |

@@ -1,0 +1,3898 @@
+{
+  "claim": "Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.",
+  "root": "/tmp/parity-defensibility-fresh",
+  "out": "/tmp/parity-defensibility-fresh/report",
+  "states": [
+    "map",
+    "map-popover",
+    "progress",
+    "abilities",
+    "abilities-hover",
+    "settings",
+    "settings-remap-modal",
+    "settings-subtitle"
+  ],
+  "goldens": "examples/game-pause-menu/evidence/goldens",
+  "maxRmse": 0.14,
+  "goldenRmse": 0.01,
+  "tolerance": 18,
+  "results": [
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 3,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 317,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 323,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 900,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 48,
+      "y": 240,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field top-left fill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 872,
+      "y": 704,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field bottom-right fill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 30,
+      "y": 222,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field top-left"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 890,
+      "y": 722,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field bottom-right"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1000,
+      "y": 700,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "icon panel background"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1178,
+      "y": 234,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch corner outside pill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1188,
+      "y": 234,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch stadium arc filled"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1180,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch track left fill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "ON switch thumb centre (24px circle)"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1242,
+      "y": 248,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1178,
+      "y": 474,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch corner outside pill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1188,
+      "y": 474,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch stadium arc filled"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1230,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch track right fill"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "OFF switch thumb centre"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1242,
+      "y": 488,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 3,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 317,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 323,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 900,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 48,
+      "y": 240,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field top-left fill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 872,
+      "y": 704,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field bottom-right fill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 30,
+      "y": 222,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field top-left"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 890,
+      "y": 722,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field bottom-right"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1000,
+      "y": 700,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "icon panel background"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1178,
+      "y": 234,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch corner outside pill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1188,
+      "y": 234,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch stadium arc filled"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1180,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch track left fill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "ON switch thumb centre (24px circle)"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1242,
+      "y": 248,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1178,
+      "y": 474,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch corner outside pill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1188,
+      "y": 474,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch stadium arc filled"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1230,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch track right fill"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "OFF switch thumb centre"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1242,
+      "y": 488,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 3,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 317,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 323,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 900,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 48,
+      "y": 240,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field top-left fill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 872,
+      "y": 704,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field bottom-right fill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 30,
+      "y": 222,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field top-left"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 890,
+      "y": 722,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field bottom-right"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1000,
+      "y": 700,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "icon panel background"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1178,
+      "y": 234,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch corner outside pill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1188,
+      "y": 234,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch stadium arc filled"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1180,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch track left fill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "ON switch thumb centre (24px circle)"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1242,
+      "y": 248,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1178,
+      "y": 474,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch corner outside pill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1188,
+      "y": 474,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch stadium arc filled"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1230,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch track right fill"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "OFF switch thumb centre"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1242,
+      "y": 488,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "wordmark",
+      "text": "ORION",
+      "bbox": {
+        "x": 34,
+        "y": 28,
+        "w": 125,
+        "h": 29,
+        "ink": 0.497931
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "mission",
+      "text": "MARS EXPEDITION // COMMANDER D3SO",
+      "bbox": {
+        "x": 33,
+        "y": 73,
+        "w": 220,
+        "h": 10,
+        "ink": 0.363636
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "stat-label",
+      "text": "RANKING",
+      "bbox": {
+        "x": 608,
+        "y": 27,
+        "w": 47,
+        "h": 8,
+        "ink": 0.648936
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "stat-value",
+      "text": "PATHFINDER III",
+      "bbox": {
+        "x": 609,
+        "y": 45,
+        "w": 207,
+        "h": 15,
+        "ink": 0.331079
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "stat-sub",
+      "text": "LV 12 · GLOBAL #95 · TOP 5%",
+      "bbox": {
+        "x": 609,
+        "y": 70,
+        "w": 217,
+        "h": 8,
+        "ink": 0.282834
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "tab-active",
+      "text": "MAP",
+      "bbox": {
+        "x": 33,
+        "y": 126,
+        "w": 29,
+        "h": 10,
+        "ink": 0.551724
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "tab-inactive",
+      "text": "PROGRESS",
+      "bbox": {
+        "x": 353,
+        "y": 126,
+        "w": 69,
+        "h": 10,
+        "ink": 0.502899
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "panel-title",
+      "text": "ARES BASIN // SECTOR 07",
+      "bbox": {
+        "x": 41,
+        "y": 192,
+        "w": 139,
+        "h": 8,
+        "ink": 0.383993
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "panel-meta",
+      "text": "SCALE 1:40K",
+      "bbox": {
+        "x": 819,
+        "y": 192,
+        "w": 61,
+        "h": 8,
+        "ink": 0.430328
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "row-label",
+      "text": "RELAY TOWER 01",
+      "bbox": {
+        "x": 953,
+        "y": 235,
+        "w": 100,
+        "h": 9,
+        "ink": 0.39
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "row-sub",
+      "text": "ONLINE · 4.8 KM",
+      "bbox": {
+        "x": 952,
+        "y": 235,
+        "w": 102,
+        "h": 19,
+        "ink": 0.214138
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "field-note",
+      "text": "MARKERS 7/8 VISIBLE · CLICK A MARKER FOR DETAIL · ORANGE = NAV TARGET",
+      "bbox": {
+        "x": 49,
+        "y": 687,
+        "w": 381,
+        "h": 9,
+        "ink": 0.231554
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "footer-hints",
+      "text": "ESC BACK · TAB FOCUS · CLICK SELECT · 1–4 TABS",
+      "bbox": {
+        "x": 25,
+        "y": 772,
+        "w": 306,
+        "h": 8,
+        "ink": 0.289216
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "nav-label",
+      "text": "NAV TARGET",
+      "bbox": {
+        "x": 1097,
+        "y": 759,
+        "w": 63,
+        "h": 7,
+        "ink": 0.52381
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "nav-value",
+      "text": "SUPPLY CACHE 02",
+      "bbox": {
+        "x": 1100,
+        "y": 762,
+        "w": 155,
+        "h": 19,
+        "ink": 0.213922
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "icon-title",
+      "text": "ICON VISIBILITY",
+      "bbox": {
+        "x": 929,
+        "y": 192,
+        "w": 86,
+        "h": 8,
+        "ink": 0.350291
+      }
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "icon-meta",
+      "text": "7/8 PLOTTED",
+      "bbox": {
+        "x": 1177,
+        "y": 192,
+        "w": 63,
+        "h": 6,
+        "ink": 0.425926
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "wordmark",
+      "text": "ORION",
+      "bbox": {
+        "x": 34,
+        "y": 27,
+        "w": 125,
+        "h": 30,
+        "ink": 0.464533
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "mission",
+      "text": "MARS EXPEDITION // COMMANDER D3SO",
+      "bbox": {
+        "x": 33,
+        "y": 74,
+        "w": 224,
+        "h": 10,
+        "ink": 0.483036
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "stat-label",
+      "text": "RANKING",
+      "bbox": {
+        "x": 609,
+        "y": 29,
+        "w": 45,
+        "h": 7,
+        "ink": 0.653968
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "stat-value",
+      "text": "PATHFINDER III",
+      "bbox": {
+        "x": 610,
+        "y": 47,
+        "w": 206,
+        "h": 15,
+        "ink": 0.344337
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "stat-sub",
+      "text": "LV 12 · GLOBAL #95 · TOP 5%",
+      "bbox": {
+        "x": 609,
+        "y": 71,
+        "w": 217,
+        "h": 7,
+        "ink": 0.284398
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "tab-active",
+      "text": "MAP",
+      "bbox": {
+        "x": 33,
+        "y": 127,
+        "w": 29,
+        "h": 10,
+        "ink": 0.555172
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "tab-inactive",
+      "text": "PROGRESS",
+      "bbox": {
+        "x": 354,
+        "y": 127,
+        "w": 68,
+        "h": 10,
+        "ink": 0.497059
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "panel-title",
+      "text": "ARES BASIN // SECTOR 07",
+      "bbox": {
+        "x": 42,
+        "y": 193,
+        "w": 139,
+        "h": 7,
+        "ink": 0.361768
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "panel-meta",
+      "text": "SCALE 1:40K",
+      "bbox": {
+        "x": 817,
+        "y": 193,
+        "w": 61,
+        "h": 7,
+        "ink": 0.395785
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "row-label",
+      "text": "RELAY TOWER 01",
+      "bbox": {
+        "x": 953,
+        "y": 237,
+        "w": 100,
+        "h": 9,
+        "ink": 0.387778
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "row-sub",
+      "text": "ONLINE · 4.8 KM",
+      "bbox": {
+        "x": 953,
+        "y": 237,
+        "w": 100,
+        "h": 17,
+        "ink": 0.241765
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "field-note",
+      "text": "MARKERS 7/8 VISIBLE · CLICK A MARKER FOR DETAIL · ORANGE = NAV TARGET",
+      "bbox": {
+        "x": 49,
+        "y": 689,
+        "w": 381,
+        "h": 7,
+        "ink": 0.256843
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "footer-hints",
+      "text": "ESC BACK · TAB FOCUS · CLICK SELECT · 1–4 TABS",
+      "bbox": {
+        "x": 25,
+        "y": 774,
+        "w": 306,
+        "h": 6,
+        "ink": 0.301198
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "nav-label",
+      "text": "NAV TARGET",
+      "bbox": {
+        "x": 1097,
+        "y": 762,
+        "w": 63,
+        "h": 4,
+        "ink": 0.511905
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "nav-value",
+      "text": "SUPPLY CACHE 02",
+      "bbox": {
+        "x": 1100,
+        "y": 762,
+        "w": 155,
+        "h": 18,
+        "ink": 0.234767
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "icon-title",
+      "text": "ICON VISIBILITY",
+      "bbox": {
+        "x": 930,
+        "y": 193,
+        "w": 86,
+        "h": 7,
+        "ink": 0.340532
+      }
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "icon-meta",
+      "text": "7/8 PLOTTED",
+      "bbox": {
+        "x": 1175,
+        "y": 193,
+        "w": 63,
+        "h": 5,
+        "ink": 0.415873
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "wordmark",
+      "text": "ORION",
+      "bbox": {
+        "x": 34,
+        "y": 28,
+        "w": 125,
+        "h": 29,
+        "ink": 0.494069
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "mission",
+      "text": "MARS EXPEDITION // COMMANDER D3SO",
+      "bbox": {
+        "x": 33,
+        "y": 74,
+        "w": 220,
+        "h": 10,
+        "ink": 0.319545
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "stat-label",
+      "text": "RANKING",
+      "bbox": {
+        "x": 608,
+        "y": 28,
+        "w": 46,
+        "h": 8,
+        "ink": 0.671196
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "stat-value",
+      "text": "PATHFINDER III",
+      "bbox": {
+        "x": 609,
+        "y": 48,
+        "w": 207,
+        "h": 14,
+        "ink": 0.358868
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "stat-sub",
+      "text": "LV 12 · GLOBAL #95 · TOP 5%",
+      "bbox": {
+        "x": 609,
+        "y": 71,
+        "w": 217,
+        "h": 7,
+        "ink": 0.273864
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "tab-active",
+      "text": "MAP",
+      "bbox": {
+        "x": 33,
+        "y": 127,
+        "w": 29,
+        "h": 9,
+        "ink": 0.559387
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "tab-inactive",
+      "text": "PROGRESS",
+      "bbox": {
+        "x": 353,
+        "y": 127,
+        "w": 69,
+        "h": 9,
+        "ink": 0.52818
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "panel-title",
+      "text": "ARES BASIN // SECTOR 07",
+      "bbox": {
+        "x": 41,
+        "y": 191,
+        "w": 139,
+        "h": 9,
+        "ink": 0.318145
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "panel-meta",
+      "text": "SCALE 1:40K",
+      "bbox": {
+        "x": 820,
+        "y": 190,
+        "w": 60,
+        "h": 8,
+        "ink": 0.372917
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "row-label",
+      "text": "RELAY TOWER 01",
+      "bbox": {
+        "x": 953,
+        "y": 237,
+        "w": 100,
+        "h": 9,
+        "ink": 0.368889
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "row-sub",
+      "text": "ONLINE · 4.8 KM",
+      "bbox": {
+        "x": 952,
+        "y": 237,
+        "w": 102,
+        "h": 17,
+        "ink": 0.219146
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "field-note",
+      "text": "MARKERS 7/8 VISIBLE · CLICK A MARKER FOR DETAIL · ORANGE = NAV TARGET",
+      "bbox": {
+        "x": 49,
+        "y": 688,
+        "w": 382,
+        "h": 8,
+        "ink": 0.27356
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "footer-hints",
+      "text": "ESC BACK · TAB FOCUS · CLICK SELECT · 1–4 TABS",
+      "bbox": {
+        "x": 25,
+        "y": 773,
+        "w": 305,
+        "h": 7,
+        "ink": 0.254801
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "nav-label",
+      "text": "NAV TARGET",
+      "bbox": {
+        "x": 1097,
+        "y": 759,
+        "w": 63,
+        "h": 7,
+        "ink": 0.507937
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "nav-value",
+      "text": "SUPPLY CACHE 02",
+      "bbox": {
+        "x": 1100,
+        "y": 762,
+        "w": 156,
+        "h": 20,
+        "ink": 0.185897
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "icon-title",
+      "text": "ICON VISIBILITY",
+      "bbox": {
+        "x": 929,
+        "y": 191,
+        "w": 85,
+        "h": 8,
+        "ink": 0.35
+      }
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "icon-meta",
+      "text": "7/8 PLOTTED",
+      "bbox": {
+        "x": 1177,
+        "y": 190,
+        "w": 63,
+        "h": 8,
+        "ink": 0.353175
+      }
+    },
+    {
+      "state": "map",
+      "compare": "gpui/unity",
+      "rmse": 0.0563485
+    },
+    {
+      "state": "map",
+      "compare": "unity/godot",
+      "rmse": 0.0514856
+    },
+    {
+      "state": "map",
+      "compare": "gpui/godot",
+      "rmse": 0.0650874
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/map.webp",
+      "rmse": 0
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/map.webp",
+      "rmse": 0
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/map.webp",
+      "rmse": 0
+    },
+    {
+      "state": "map-popover",
+      "compare": "gpui/unity",
+      "rmse": 0.124545
+    },
+    {
+      "state": "map-popover",
+      "compare": "unity/godot",
+      "rmse": 0.120764
+    },
+    {
+      "state": "map-popover",
+      "compare": "gpui/godot",
+      "rmse": 0.0924578
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/map-popover.webp",
+      "rmse": 0.00876909
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/map-popover.webp",
+      "rmse": 0
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/map-popover.webp",
+      "rmse": 0
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 323,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 637,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 317,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 25,
+      "y": 177,
+      "expected": "#E9E5D8",
+      "actual": "rgb(233,229,216)",
+      "delta": 0,
+      "description": "drawer top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 582,
+      "y": 726,
+      "expected": "#E9E5D8",
+      "actual": "rgb(233,229,216)",
+      "delta": 0,
+      "description": "drawer bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 16,
+      "y": 168,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside drawer top-left"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 584,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside drawer bottom-right"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 960,
+      "y": 200,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "roster panel background"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 1082,
+      "y": 242,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ACCESS chip top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 1154,
+      "y": 260,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ACCESS chip bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 1078,
+      "y": 238,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside ACCESS chip top-left"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "x": 1158,
+      "y": 262,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside ACCESS chip bottom-right"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 323,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 637,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 317,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 25,
+      "y": 177,
+      "expected": "#E9E5D8",
+      "actual": "rgb(233,229,216)",
+      "delta": 0,
+      "description": "drawer top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 582,
+      "y": 726,
+      "expected": "#E9E5D8",
+      "actual": "rgb(233,229,216)",
+      "delta": 0,
+      "description": "drawer bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 16,
+      "y": 168,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside drawer top-left"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 584,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside drawer bottom-right"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 960,
+      "y": 200,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "roster panel background"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 1082,
+      "y": 242,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ACCESS chip top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 1154,
+      "y": 260,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ACCESS chip bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 1078,
+      "y": 238,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside ACCESS chip top-left"
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "x": 1158,
+      "y": 262,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside ACCESS chip bottom-right"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 323,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 637,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 317,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 25,
+      "y": 177,
+      "expected": "#E9E5D8",
+      "actual": "rgb(233,229,216)",
+      "delta": 0,
+      "description": "drawer top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 582,
+      "y": 726,
+      "expected": "#E9E5D8",
+      "actual": "rgb(233,229,216)",
+      "delta": 0,
+      "description": "drawer bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 16,
+      "y": 168,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside drawer top-left"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 584,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside drawer bottom-right"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 960,
+      "y": 200,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "roster panel background"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 1082,
+      "y": 242,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ACCESS chip top-left fill"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 1154,
+      "y": 260,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ACCESS chip bottom-right fill"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 1078,
+      "y": 238,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside ACCESS chip top-left"
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "x": 1158,
+      "y": 262,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside ACCESS chip bottom-right"
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "drawer-title",
+      "text": "ARES LOGISTICS GUILD",
+      "bbox": {
+        "x": 50,
+        "y": 237,
+        "w": 320,
+        "h": 20,
+        "ink": 0.425469
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "drawer-tagline",
+      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "bbox": {
+        "x": 50,
+        "y": 274,
+        "w": 206,
+        "h": 8,
+        "ink": 0.31068
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "drawer-body",
+      "text": "The guild owns every viable freight lane in the basin.",
+      "bbox": {
+        "x": 50,
+        "y": 330,
+        "w": 482,
+        "h": 10,
+        "ink": 0.21639
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "roster-name",
+      "text": "ARES LOGISTICS GUILD",
+      "bbox": {
+        "x": 54,
+        "y": 230,
+        "w": 320,
+        "h": 20,
+        "ink": 0.686094
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "roster-tagline",
+      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "bbox": {
+        "x": 54,
+        "y": 250,
+        "w": 280,
+        "h": 8,
+        "ink": 0.154911
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "list-title",
+      "text": "FACTION ROSTER",
+      "bbox": {
+        "x": 38,
+        "y": 180,
+        "w": 240,
+        "h": 20,
+        "ink": 1
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "status-chip",
+      "text": "ACCESS",
+      "bbox": {
+        "x": 1097,
+        "y": 247,
+        "w": 41,
+        "h": 8,
+        "ink": 0.509146
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "dossier",
+      "text": "OPEN →",
+      "bbox": {
+        "x": 1180,
+        "y": 247,
+        "w": 39,
+        "h": 8,
+        "ink": 0.461538
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "drawer-title",
+      "text": "ARES LOGISTICS GUILD",
+      "bbox": {
+        "x": 49,
+        "y": 239,
+        "w": 320,
+        "h": 20,
+        "ink": 0.406875
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "drawer-tagline",
+      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "bbox": {
+        "x": 49,
+        "y": 276,
+        "w": 206,
+        "h": 6,
+        "ink": 0.283981
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "drawer-body",
+      "text": "The guild owns every viable freight lane in the basin.",
+      "bbox": {
+        "x": 49,
+        "y": 329,
+        "w": 483,
+        "h": 11,
+        "ink": 0.13514
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "roster-name",
+      "text": "ARES LOGISTICS GUILD",
+      "bbox": {
+        "x": 54,
+        "y": 230,
+        "w": 320,
+        "h": 20,
+        "ink": 0.7375
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "roster-tagline",
+      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "bbox": {
+        "x": 54,
+        "y": 250,
+        "w": 279,
+        "h": 10,
+        "ink": 0.171326
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "list-title",
+      "text": "FACTION ROSTER",
+      "bbox": {
+        "x": 38,
+        "y": 180,
+        "w": 240,
+        "h": 20,
+        "ink": 1
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "status-chip",
+      "text": "ACCESS",
+      "bbox": {
+        "x": 1100,
+        "y": 250,
+        "w": 40,
+        "h": 7,
+        "ink": 0.507143
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "dossier",
+      "text": "OPEN →",
+      "bbox": {
+        "x": 1182,
+        "y": 247,
+        "w": 38,
+        "h": 7,
+        "ink": 0.477444
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "drawer-title",
+      "text": "ARES LOGISTICS GUILD",
+      "bbox": {
+        "x": 49,
+        "y": 239,
+        "w": 321,
+        "h": 21,
+        "ink": 0.421006
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "drawer-tagline",
+      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "bbox": {
+        "x": 49,
+        "y": 274,
+        "w": 207,
+        "h": 8,
+        "ink": 0.31099
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "drawer-body",
+      "text": "The guild owns every viable freight lane in the basin.",
+      "bbox": {
+        "x": 49,
+        "y": 330,
+        "w": 483,
+        "h": 10,
+        "ink": 0.210766
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "roster-name",
+      "text": "ARES LOGISTICS GUILD",
+      "bbox": {
+        "x": 54,
+        "y": 230,
+        "w": 320,
+        "h": 20,
+        "ink": 0.751875
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "roster-tagline",
+      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "bbox": {
+        "x": 54,
+        "y": 250,
+        "w": 275,
+        "h": 10,
+        "ink": 0.146909
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "list-title",
+      "text": "FACTION ROSTER",
+      "bbox": {
+        "x": 38,
+        "y": 180,
+        "w": 240,
+        "h": 20,
+        "ink": 1
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "status-chip",
+      "text": "ACCESS",
+      "bbox": {
+        "x": 1097,
+        "y": 246,
+        "w": 40,
+        "h": 8,
+        "ink": 0.5125
+      }
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "dossier",
+      "text": "OPEN →",
+      "bbox": {
+        "x": 1180,
+        "y": 248,
+        "w": 38,
+        "h": 8,
+        "ink": 0.414474
+      }
+    },
+    {
+      "state": "progress",
+      "compare": "gpui/unity",
+      "rmse": 0.089822
+    },
+    {
+      "state": "progress",
+      "compare": "unity/godot",
+      "rmse": 0.0756189
+    },
+    {
+      "state": "progress",
+      "compare": "gpui/godot",
+      "rmse": 0.0834975
+    },
+    {
+      "state": "progress",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/progress.webp",
+      "rmse": 0
+    },
+    {
+      "state": "progress",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/progress.webp",
+      "rmse": 0
+    },
+    {
+      "state": "progress",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/progress.webp",
+      "rmse": 0
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 643,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 957,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 637,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 42,
+      "y": 226,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "grid panel background"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 850,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "detail panel background"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 1254,
+      "y": 200,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "detail panel inside right edge"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 1258,
+      "y": 200,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside detail panel right edge"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "x": 300,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "content gap below panels"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 643,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 957,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 637,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 42,
+      "y": 226,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "grid panel background"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 850,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "detail panel background"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 1254,
+      "y": 200,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "detail panel inside right edge"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 1258,
+      "y": 200,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside detail panel right edge"
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "x": 300,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "content gap below panels"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 643,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 957,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 637,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 42,
+      "y": 226,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "grid panel background"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 850,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "detail panel background"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 1254,
+      "y": 200,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "detail panel inside right edge"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 1258,
+      "y": 200,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "outside detail panel right edge"
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "x": 300,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "content gap below panels"
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "grid-title",
+      "text": "ABILITY CATALOG",
+      "bbox": {
+        "x": 41,
+        "y": 192,
+        "w": 97,
+        "h": 8,
+        "ink": 0.380155
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "grid-meta",
+      "text": "10 MODULES · SELECT ONE, THEN A SLOT",
+      "bbox": {
+        "x": 612,
+        "y": 192,
+        "w": 204,
+        "h": 6,
+        "ink": 0.35866
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "card-name",
+      "text": "THREADING",
+      "bbox": {
+        "x": 82,
+        "y": 310,
+        "w": 69,
+        "h": 9,
+        "ink": 0.404187
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "detail-title",
+      "text": "ABILITY DETAIL",
+      "bbox": {
+        "x": 865,
+        "y": 192,
+        "w": 83,
+        "h": 8,
+        "ink": 0.365964
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "ability-name",
+      "text": "OVERCLOCK",
+      "bbox": {
+        "x": 865,
+        "y": 235,
+        "w": 148,
+        "h": 18,
+        "ink": 0.422673
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "ability-body",
+      "text": "Relays output draw 40% for six seconds",
+      "bbox": {
+        "x": 865,
+        "y": 297,
+        "w": 345,
+        "h": 23,
+        "ink": 0.110145
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "grid-title",
+      "text": "ABILITY CATALOG",
+      "bbox": {
+        "x": 42,
+        "y": 193,
+        "w": 97,
+        "h": 7,
+        "ink": 0.33137
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "grid-meta",
+      "text": "10 MODULES · SELECT ONE, THEN A SLOT",
+      "bbox": {
+        "x": 610,
+        "y": 193,
+        "w": 204,
+        "h": 5,
+        "ink": 0.394118
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "card-name",
+      "text": "THREADING",
+      "bbox": {
+        "x": 82,
+        "y": 313,
+        "w": 70,
+        "h": 8,
+        "ink": 0.439286
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "detail-title",
+      "text": "ABILITY DETAIL",
+      "bbox": {
+        "x": 866,
+        "y": 193,
+        "w": 80,
+        "h": 7,
+        "ink": 0.344643
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "ability-name",
+      "text": "OVERCLOCK",
+      "bbox": {
+        "x": 865,
+        "y": 234,
+        "w": 148,
+        "h": 18,
+        "ink": 0.405781
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "ability-body",
+      "text": "Relays output draw 40% for six seconds",
+      "bbox": {
+        "x": 865,
+        "y": 297,
+        "w": 345,
+        "h": 23,
+        "ink": 0.0819156
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "grid-title",
+      "text": "ABILITY CATALOG",
+      "bbox": {
+        "x": 41,
+        "y": 191,
+        "w": 97,
+        "h": 8,
+        "ink": 0.345361
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "grid-meta",
+      "text": "10 MODULES · SELECT ONE, THEN A SLOT",
+      "bbox": {
+        "x": 612,
+        "y": 190,
+        "w": 204,
+        "h": 8,
+        "ink": 0.352941
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "card-name",
+      "text": "THREADING",
+      "bbox": {
+        "x": 81,
+        "y": 311,
+        "w": 69,
+        "h": 9,
+        "ink": 0.415459
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "detail-title",
+      "text": "ABILITY DETAIL",
+      "bbox": {
+        "x": 865,
+        "y": 191,
+        "w": 83,
+        "h": 8,
+        "ink": 0.329819
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "ability-name",
+      "text": "OVERCLOCK",
+      "bbox": {
+        "x": 865,
+        "y": 235,
+        "w": 148,
+        "h": 17,
+        "ink": 0.426073
+      }
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "ability-body",
+      "text": "Relays output draw 40% for six seconds",
+      "bbox": {
+        "x": 865,
+        "y": 298,
+        "w": 346,
+        "h": 22,
+        "ink": 0.101025
+      }
+    },
+    {
+      "state": "abilities",
+      "compare": "gpui/unity",
+      "rmse": 0.0730244
+    },
+    {
+      "state": "abilities",
+      "compare": "unity/godot",
+      "rmse": 0.0767624
+    },
+    {
+      "state": "abilities",
+      "compare": "gpui/godot",
+      "rmse": 0.0779677
+    },
+    {
+      "state": "abilities",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/abilities.webp",
+      "rmse": 0
+    },
+    {
+      "state": "abilities",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/abilities.webp",
+      "rmse": 0
+    },
+    {
+      "state": "abilities",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/abilities.webp",
+      "rmse": 0
+    },
+    {
+      "state": "abilities-hover",
+      "compare": "gpui/unity",
+      "rmse": 0.0850023
+    },
+    {
+      "state": "abilities-hover",
+      "compare": "unity/godot",
+      "rmse": 0.0942103
+    },
+    {
+      "state": "abilities-hover",
+      "compare": "gpui/godot",
+      "rmse": 0.0941903
+    },
+    {
+      "state": "abilities-hover",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/abilities-hover.webp",
+      "rmse": 0
+    },
+    {
+      "state": "abilities-hover",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/abilities-hover.webp",
+      "rmse": 0
+    },
+    {
+      "state": "abilities-hover",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/abilities-hover.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 963,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 1277,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 957,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 26,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "GENERAL panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 629,
+      "y": 300,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "GENERAL panel inside right edge"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 634,
+      "y": 300,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap between top panels"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 300,
+      "y": 446,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap below GENERAL panel"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 650,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "CONTROLLER panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 26,
+      "y": 462,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "REMAP panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 650,
+      "y": 462,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "AUDIO panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 300,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap below bottom panels"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 554,
+      "y": 224,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "settings switch corner outside pill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 564,
+      "y": 224,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "settings switch stadium arc filled"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 556,
+      "y": 238,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "settings switch track left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "x": 600,
+      "y": 238,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "settings switch thumb centre"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 963,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 1277,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 957,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 26,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "GENERAL panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 629,
+      "y": 300,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "GENERAL panel inside right edge"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 634,
+      "y": 300,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap between top panels"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 300,
+      "y": 446,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap below GENERAL panel"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 650,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "CONTROLLER panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 26,
+      "y": 462,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "REMAP panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 650,
+      "y": 462,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "AUDIO panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 300,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap below bottom panels"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 554,
+      "y": 224,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "settings switch corner outside pill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 564,
+      "y": 224,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "settings switch stadium arc filled"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 556,
+      "y": 238,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "settings switch track left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "x": 600,
+      "y": 238,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "settings switch thumb centre"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 4,
+      "y": 4,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 4,
+      "y": 780,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 963,
+      "y": 107,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 1277,
+      "y": 157,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 957,
+      "y": 132,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 100,
+      "y": 150,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 26,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "GENERAL panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 629,
+      "y": 300,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "GENERAL panel inside right edge"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 634,
+      "y": 300,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap between top panels"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 300,
+      "y": 446,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap below GENERAL panel"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 650,
+      "y": 178,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "CONTROLLER panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 26,
+      "y": 462,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "REMAP panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 650,
+      "y": 462,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "AUDIO panel top-left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 300,
+      "y": 730,
+      "expected": "#141412",
+      "actual": "rgb(20,20,18)",
+      "delta": 0,
+      "description": "gap below bottom panels"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 554,
+      "y": 224,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "settings switch corner outside pill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 564,
+      "y": 224,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "settings switch stadium arc filled"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 556,
+      "y": 238,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "settings switch track left fill"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 600,
+      "y": 238,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "settings switch thumb centre"
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "general-title",
+      "text": "GENERAL",
+      "bbox": {
+        "x": 41,
+        "y": 190,
+        "w": 50,
+        "h": 8,
+        "ink": 0.455
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "general-meta",
+      "text": "PERSONAL PREFERENCES",
+      "bbox": {
+        "x": 490,
+        "y": 190,
+        "w": 126,
+        "h": 6,
+        "ink": 0.468254
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "row-label",
+      "text": "AUTO-SAVE",
+      "bbox": {
+        "x": 41,
+        "y": 221,
+        "w": 70,
+        "h": 9,
+        "ink": 0.369841
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "row-sub",
+      "text": "Write a checkpoint on every pad handshake.",
+      "bbox": {
+        "x": 40,
+        "y": 237,
+        "w": 207,
+        "h": 10,
+        "ink": 0.331401
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "controller-label",
+      "text": "LOOK SENSITIVITY",
+      "bbox": {
+        "x": 665,
+        "y": 221,
+        "w": 111,
+        "h": 9,
+        "ink": 0.39039
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "controller-value",
+      "text": "45%",
+      "bbox": {
+        "x": 1208,
+        "y": 222,
+        "w": 31,
+        "h": 10,
+        "ink": 0.36129
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "audio-label",
+      "text": "MASTER",
+      "bbox": {
+        "x": 665,
+        "y": 501,
+        "w": 49,
+        "h": 9,
+        "ink": 0.424036
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "remap-label",
+      "text": "INTERACT",
+      "bbox": {
+        "x": 41,
+        "y": 501,
+        "w": 59,
+        "h": 9,
+        "ink": 0.393597
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "general-title",
+      "text": "GENERAL",
+      "bbox": {
+        "x": 42,
+        "y": 191,
+        "w": 47,
+        "h": 7,
+        "ink": 0.446809
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "general-meta",
+      "text": "PERSONAL PREFERENCES",
+      "bbox": {
+        "x": 489,
+        "y": 191,
+        "w": 125,
+        "h": 5,
+        "ink": 0.48
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "row-label",
+      "text": "AUTO-SAVE",
+      "bbox": {
+        "x": 41,
+        "y": 223,
+        "w": 70,
+        "h": 9,
+        "ink": 0.368254
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "row-sub",
+      "text": "Write a checkpoint on every pad handshake.",
+      "bbox": {
+        "x": 40,
+        "y": 238,
+        "w": 207,
+        "h": 10,
+        "ink": 0.306763
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "controller-label",
+      "text": "LOOK SENSITIVITY",
+      "bbox": {
+        "x": 665,
+        "y": 223,
+        "w": 111,
+        "h": 9,
+        "ink": 0.388388
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "controller-value",
+      "text": "45%",
+      "bbox": {
+        "x": 1208,
+        "y": 223,
+        "w": 30,
+        "h": 10,
+        "ink": 0.376667
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "audio-label",
+      "text": "MASTER",
+      "bbox": {
+        "x": 665,
+        "y": 501,
+        "w": 49,
+        "h": 9,
+        "ink": 0.430839
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "remap-label",
+      "text": "INTERACT",
+      "bbox": {
+        "x": 41,
+        "y": 501,
+        "w": 59,
+        "h": 9,
+        "ink": 0.416196
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "general-title",
+      "text": "GENERAL",
+      "bbox": {
+        "x": 41,
+        "y": 190,
+        "w": 50,
+        "h": 8,
+        "ink": 0.4075
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "general-meta",
+      "text": "PERSONAL PREFERENCES",
+      "bbox": {
+        "x": 491,
+        "y": 190,
+        "w": 125,
+        "h": 6,
+        "ink": 0.408
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "row-label",
+      "text": "AUTO-SAVE",
+      "bbox": {
+        "x": 41,
+        "y": 223,
+        "w": 71,
+        "h": 9,
+        "ink": 0.377152
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "row-sub",
+      "text": "Write a checkpoint on every pad handshake.",
+      "bbox": {
+        "x": 40,
+        "y": 238,
+        "w": 206,
+        "h": 10,
+        "ink": 0.301942
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "controller-label",
+      "text": "LOOK SENSITIVITY",
+      "bbox": {
+        "x": 665,
+        "y": 223,
+        "w": 111,
+        "h": 9,
+        "ink": 0.359359
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "controller-value",
+      "text": "45%",
+      "bbox": {
+        "x": 1209,
+        "y": 223,
+        "w": 30,
+        "h": 11,
+        "ink": 0.366667
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "audio-label",
+      "text": "MASTER",
+      "bbox": {
+        "x": 665,
+        "y": 503,
+        "w": 49,
+        "h": 9,
+        "ink": 0.430839
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "remap-label",
+      "text": "INTERACT",
+      "bbox": {
+        "x": 41,
+        "y": 501,
+        "w": 55,
+        "h": 8,
+        "ink": 0.370455
+      }
+    },
+    {
+      "state": "settings",
+      "compare": "gpui/unity",
+      "rmse": 0.0915976
+    },
+    {
+      "state": "settings",
+      "compare": "unity/godot",
+      "rmse": 0.0839362
+    },
+    {
+      "state": "settings",
+      "compare": "gpui/godot",
+      "rmse": 0.0917576
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/settings.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/settings.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/settings.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings-remap-modal",
+      "compare": "gpui/unity",
+      "rmse": 0.119891
+    },
+    {
+      "state": "settings-remap-modal",
+      "compare": "unity/godot",
+      "rmse": 0.0469377
+    },
+    {
+      "state": "settings-remap-modal",
+      "compare": "gpui/godot",
+      "rmse": 0.120006
+    },
+    {
+      "state": "settings-remap-modal",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/settings-remap-modal.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings-remap-modal",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/settings-remap-modal.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings-remap-modal",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/settings-remap-modal.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings-subtitle",
+      "compare": "gpui/unity",
+      "rmse": 0.0901238
+    },
+    {
+      "state": "settings-subtitle",
+      "compare": "unity/godot",
+      "rmse": 0.082991
+    },
+    {
+      "state": "settings-subtitle",
+      "compare": "gpui/godot",
+      "rmse": 0.0892652
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "gpui",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/gpui/settings-subtitle.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "unity",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/unity/settings-subtitle.webp",
+      "rmse": 0
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "godot",
+      "kind": "golden",
+      "golden": "examples/game-pause-menu/evidence/goldens/godot/settings-subtitle.webp",
+      "rmse": 0
+    }
+  ],
+  "failures": []
+}

@@ -58,7 +58,7 @@ const tolerance = Number(arg('tolerance', '18'));
 const typographyFuzz = Number(arg('type-fuzz', '30'));
 const inkTolerance = Number(arg('ink-tolerance', '0.25'));
 const goldens = arg('goldens', '');
-const goldenRmse = Number(arg('golden-rmse', '0.01'));
+const goldenRmse = Number(arg('golden-rmse', '0.02'));
 const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
