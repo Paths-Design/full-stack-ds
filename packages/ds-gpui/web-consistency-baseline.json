@@ -73,7 +73,7 @@
         },
         "gpui": {
           "parts": 3,
-          "props": 4,
+          "props": 5,
           "behavior": 0,
           "a11y": 0,
           "refs": 1
@@ -112,8 +112,8 @@
         },
         "gpui": {
           "parts": 3,
-          "props": 4,
-          "behavior": 0,
+          "props": 5,
+          "behavior": 1,
           "a11y": 0,
           "refs": 0
         }
@@ -307,8 +307,8 @@
         },
         "gpui": {
           "parts": 2,
-          "props": 8,
-          "behavior": 0,
+          "props": 9,
+          "behavior": 1,
           "a11y": 0,
           "refs": 1
         }
@@ -346,7 +346,7 @@
         },
         "gpui": {
           "parts": 5,
-          "props": 7,
+          "props": 9,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -424,7 +424,7 @@
         },
         "gpui": {
           "parts": 8,
-          "props": 3,
+          "props": 4,
           "behavior": 0,
           "a11y": 0,
           "refs": 3
@@ -502,7 +502,7 @@
         },
         "gpui": {
           "parts": 3,
-          "props": 9,
+          "props": 11,
           "behavior": 0,
           "a11y": 0,
           "refs": 2
@@ -658,7 +658,7 @@
         },
         "gpui": {
           "parts": 4,
-          "props": 4,
+          "props": 5,
           "behavior": 0,
           "a11y": 0,
           "refs": 1
@@ -892,7 +892,7 @@
         },
         "gpui": {
           "parts": 1,
-          "props": 7,
+          "props": 8,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1165,7 +1165,7 @@
         },
         "gpui": {
           "parts": 2,
-          "props": 6,
+          "props": 8,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1204,7 +1204,7 @@
         },
         "gpui": {
           "parts": 8,
-          "props": 7,
+          "props": 8,
           "behavior": 0,
           "a11y": 0,
           "refs": 5
@@ -1243,7 +1243,7 @@
         },
         "gpui": {
           "parts": 2,
-          "props": 4,
+          "props": 5,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1399,7 +1399,7 @@
         },
         "gpui": {
           "parts": 4,
-          "props": 5,
+          "props": 6,
           "behavior": 1,
           "a11y": 0,
           "refs": 0
@@ -1438,7 +1438,7 @@
         },
         "gpui": {
           "parts": 2,
-          "props": 3,
+          "props": 4,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1477,7 +1477,7 @@
         },
         "gpui": {
           "parts": 6,
-          "props": 8,
+          "props": 11,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1594,7 +1594,7 @@
         },
         "gpui": {
           "parts": 5,
-          "props": 1,
+          "props": 2,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1945,7 +1945,7 @@
         },
         "gpui": {
           "parts": 5,
-          "props": 5,
+          "props": 6,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -1984,7 +1984,7 @@
         },
         "gpui": {
           "parts": 8,
-          "props": 3,
+          "props": 4,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -2101,7 +2101,7 @@
         },
         "gpui": {
           "parts": 3,
-          "props": 3,
+          "props": 4,
           "behavior": 0,
           "a11y": 0,
           "refs": 0
@@ -2183,8 +2183,8 @@
       },
       "gpui": {
         "parts": 180,
-        "props": 226,
-        "behavior": 3,
+        "props": 249,
+        "behavior": 5,
         "a11y": 0,
         "refs": 18,
         "present": 55

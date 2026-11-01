@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Badge, Button, Checkbox, Divider, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -367,4 +367,22 @@ fn mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint(
         assert_eq!(painted[0].background, gpui::Background::from(gpui::rgb(color)));
         assert_eq!(painted[0].border_widths, gpui::Edges::all(px(0.)));
     }
+}
+
+#[gpui::test]
+fn mounted_button_action_callback_pointer_and_keyboard(cx: &mut TestAppContext) {
+    let calls = Rc::new(Cell::new(0usize));
+    let recorded = calls.clone();
+    let (view, cx) = cx.add_window_view(|_, _| {
+        Button::default().label("Run").on_click(move |_window, _cx| recorded.set(recorded.get() + 1))
+    });
+    let root = cx.debug_bounds("button-root").expect("generated Button root must render");
+    cx.simulate_click(root.center(), Modifiers::default());
+    assert_eq!(calls.get(), 1, "pointer activation invokes the action handler once");
+    let focused = view.read_with(cx, |button, _| button.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "pointer activation focuses the action root");
+    tap_key(cx, "space");
+    assert_eq!(calls.get(), 2, "Space activates the action");
+    tap_key(cx, "enter");
+    assert_eq!(calls.get(), 3, "Enter activates the action");
 }

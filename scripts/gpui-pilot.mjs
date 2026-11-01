@@ -29,6 +29,7 @@ const requiredEngineTests = [
   "mounted_named_slots_preserve_locations_and_do_not_invoke_hidden_factories",
   "mounted_stat_variants_and_retained_content_reach_layout",
   "mounted_nested_controls_own_pointer_focus_and_keyboard_requests",
+  "mounted_button_action_callback_pointer_and_keyboard",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 // Every admitted component carries one generated mount witness. This is a

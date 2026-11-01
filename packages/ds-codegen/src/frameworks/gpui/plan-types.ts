@@ -44,6 +44,20 @@ export interface GpuiRefPlan {
   omissions: GpuiOmission[];
 }
 
+/** A consumer-supplied callback realized as a stored handler field. */
+export interface GpuiCallbackPlan {
+  prop: string;
+  field: string;
+}
+
+/** A native part that invokes one stored callback on activation. */
+export interface GpuiActivationPlan {
+  part: string;
+  handler: string;
+  /** Root hosts also take focus and keyboard activation. */
+  keyboard: boolean;
+}
+
 export interface GpuiPlan {
   channel: GpuiChannel | undefined;
   part: string | undefined;
@@ -63,6 +77,10 @@ export interface GpuiPlan {
   excludedProps: string[];
   /** Retained by-reference children, in anatomy pre-order. */
   refs: GpuiRefPlan[];
+  /** Realized callback props (stored handlers). */
+  callbacks: GpuiCallbackPlan[];
+  /** Anatomy parts that invoke a stored callback. */
+  activations: GpuiActivationPlan[];
   omissions: GpuiOmission[];
 }
 

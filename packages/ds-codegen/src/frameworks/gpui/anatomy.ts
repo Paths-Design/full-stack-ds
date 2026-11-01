@@ -20,7 +20,7 @@ import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import { classifyProp, loadBoundary, type GpuiBoundary } from './boundary.js';
 import { supported, validScalar } from './style-vocabulary.js';
-import type { GpuiOmission, GpuiPlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan } from './plan-types.js';
+import type { GpuiActivationPlan, GpuiCallbackPlan, GpuiOmission, GpuiPlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan } from './plan-types.js';
 
 const RESERVED = new Set(['self','super','crate','type','mod','fn','match','default','new','request_change','theme','variants','label','focus_handle','request_key','content','set_content','clear_content','has_content','render_content','slot','slots','slot_key','set_slot','clear_slot','has_slot','render_slot']);
 
@@ -165,6 +165,8 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomySt
 
 interface AnatomyState {
   boundary: GpuiBoundary;
+  /** Callback props realized as stored handlers; their click events are wired. */
+  wiredCallbacks: Set<string>;
   omissions: GpuiOmission[];
   realizedText: Set<string>;
   realizedBoolean: Set<string>;
@@ -257,6 +259,8 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   }
   copy.propertyBindings = {};
   for (const key of Object.keys(copy.events)) {
+    const binding = copy.events[key];
+    if (key === 'click' && binding?.kind === 'prop' && state.wiredCallbacks.has(binding.prop)) continue;
     const rule = key === 'click' ? 'anatomy-click-event' : ['keydown','keyup','keypress'].includes(key) ? 'anatomy-keyboard-event' : 'anatomy-focus-event';
     omit(state, { kind: 'event', source: `${copy.part ?? 'root'}/${key}`, ...boundaryReason(state.boundary, rule, `${key} event is not consumed by the GPUI projection`) });
   }
@@ -327,7 +331,7 @@ function nodesOf(node: DomNodeIR | undefined): DomNodeIR[] {
  * consumes, and every fact the projection dropped with its boundary rule.
  */
 export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBoundary()): { ir: ComponentIR; plan: GpuiPlan; omissions: GpuiOmission[] } {
-  const state: AnatomyState = { boundary, omissions: [], realizedText: new Set(), realizedBoolean: new Set(), realizedAxes: new Set(), realizedSlots: [] };
+  const state: AnatomyState = { boundary, wiredCallbacks: new Set(), omissions: [], realizedText: new Set(), realizedBoolean: new Set(), realizedAxes: new Set(), realizedSlots: [] };
 
   // Realize variant axes first: guards and styles both depend on them.
   const usedMethods = new Set<string>();
@@ -422,6 +426,25 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     omit(state, omissionFor(prop.name, 'prop type has no GPUI field projection'));
   }
 
+  // Callback props are consumer handlers: stored, and invoked by wired events.
+  // The contract's event payload is narrowed to window/app access.
+  const callbacks: GpuiCallbackPlan[] = [];
+  for (const prop of ir.styledProps) {
+    if (prop.propType.kind !== 'callback') continue;
+    const method = identifier(prop.name);
+    if (!method) {
+      omit(state, omissionFor(prop.name, 'callback prop name cannot be projected onto a Rust identifier'));
+      continue;
+    }
+    if (usedMethods.has(method)) {
+      omit(state, omissionFor(prop.name, 'callback prop identifier collides with another realized method'));
+      continue;
+    }
+    usedMethods.add(method);
+    callbacks.push({ prop: prop.name, field: method });
+    state.wiredCallbacks.add(prop.name);
+  }
+
   // Content-bound props must be realized text fields; add any the prop walk missed.
   for (const node of nodesOf(ir.dom)) {
     if (node.content && 'kind' in node.content && node.content.kind === 'prop' && !state.realizedText.has(node.content.prop)) {
@@ -454,6 +477,18 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   const dom = transformNode(ir.dom ?? emptyRoot(), state);
   if (!dom) throw new Error(`GPUI_ANATOMY_ROOT_OMITTED: ${ir.name}`);
   const refs = collectRefs(dom, state.omissions, state);
+  // A native part's click event bound to a realized callback prop invokes it.
+  // Read from the original anatomy: the projection clears event maps.
+  const activations: GpuiActivationPlan[] = [];
+  const visitActivations = (node: DomNodeIR, isRoot: boolean): void => {
+    const click = node.events?.click;
+    if (click?.kind === 'prop' && state.wiredCallbacks.has(click.prop)) {
+      const handler = identifier(click.prop);
+      if (handler) activations.push({ part: node.part ?? 'root', handler, keyboard: isRoot });
+    }
+    node.children.forEach(child => visitActivations(child, false));
+  };
+  if (ir.dom && !ir.dom.componentRef) visitActivations(ir.dom, true);
   const transformed: ComponentIR = { ...ir, dom };
   const childContent = hasChildrenPlaceholder(transformed) || nodesOf(dom).some(node => node.tag === 'children' || node.tag === 'slot' && !node.slotName);
 
@@ -490,6 +525,8 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     textProps,
     childContent,
     refs,
+    callbacks,
+    activations,
     slots: realizedSlots,
     slotVariants,
     defaultValue: 'false',

@@ -84,6 +84,19 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
+### Action controls
+
+A part whose click event is bound to a callback prop is an **action**, not a
+value channel: the generated component stores the consumer handler
+(`crate::callback::ActionHandler`, narrowed from the contract's event parameter
+to window/app access) and invokes it when the part is activated. Root actions
+(`Button`) add a persistent focus handle, tab stop and Space/Enter activation;
+part actions (`AlertNotice.dismiss`, Walkthrough's skip/previous/next) are
+pointer-activated. The handler props are stored for every callback-typed prop, so
+an unwired handler is inert rather than lost, and the receipt lists the
+realized callbacks and activations. The event payload itself is not projected —
+that narrowing is the documented non-claim.
+
 ### By-reference composition
 
 Anatomy nodes that render another contract (`componentRef`) are realized as

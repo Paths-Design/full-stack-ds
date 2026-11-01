@@ -31,6 +31,7 @@ StyleRule {part:"track",conditions:&[StyleCondition::Focus],declarations:&[Style
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
   let state=StyleState{variants:&variants,checked:self.state.value(),disabled:self.state.disabled,indeterminate:false,hovered:self.hovered,active:self.active,focused:self.focused};
@@ -71,9 +72,11 @@ impl Render for Switch{fn render(&mut self,window:&mut Window,cx:&mut Context<Se
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
+
  let style_state=StyleState{variants:&variants,checked:self.state.value(),disabled:self.state.disabled,indeterminate:false,hovered:self.hovered,active:self.active,focused:self.focused};
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"switch-root".to_string()).child(apply_part_style(div(),"track",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"switch-track".to_string()).child(apply_part_style(div(),"thumb",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"switch-thumb".to_string()))).children(self.render_content(window,cx)).id("switch");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
+
  let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}));
  root.into_any_element()
 }}

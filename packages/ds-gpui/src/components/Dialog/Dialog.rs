@@ -27,6 +27,7 @@ StyleRule {part:"modal",conditions:&[StyleCondition::Variant {axis:"size",value:
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
@@ -79,10 +80,12 @@ impl Render for Dialog{fn render(&mut self,window:&mut Window,cx:&mut Context<Se
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
+
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let ref_icon=self.ref_icon.get_or_insert_with(||cx.new(|_|crate::components::Icon::default().name("x").size("sm"))).clone();
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-root".to_string()).child(apply_part_style(div(),"backdrop",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-backdrop".to_string())).child(apply_part_style(div(),"modal",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-modal".to_string()).child(apply_part_style(div(),"header",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-header".to_string()).child(apply_part_style(div(),"title",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-title".to_string()).children(self.render_slot(Self::slot_key("title"),window,cx))).when(self.dismissible,|node|node.child(apply_part_style(div(),"closeButton",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-closeButton".to_string()).child(apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-root".to_string()).child(ref_icon.clone()))))).child(apply_part_style(div(),"body",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-body".to_string()).children(self.render_content(window,cx))).child(apply_part_style(div(),"footer",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"dialog-footer".to_string()).children(self.render_slot(Self::slot_key("footer"),window,cx)))).id("dialog");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
+
 
  root.into_any_element()
 }}

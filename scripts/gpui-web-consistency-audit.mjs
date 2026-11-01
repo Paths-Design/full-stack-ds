@@ -212,7 +212,8 @@ function measureComponent(name) {
   row.targets.gpui = {
     parts: gpuiParts.filter(part => parts.includes(part)).length,
     props: props.filter(prop => builders.has(snake(prop)) || setters.has(`set_${snake(prop)}`)).length,
-    behavior: behavior === 0 ? 1 : /impl EventEmitter<ChangeRequest>/.test(gpuiSource) ? 1 : 0,
+    // Value controls emit ChangeRequest; action controls invoke a stored callback.
+    behavior: behavior === 0 ? 1 : /impl EventEmitter<ChangeRequest>|crate::callback::invoke\(/.test(gpuiSource) ? 1 : 0,
     a11y: a11y && /role=|aria-/.test(gpuiSource) ? 1 : 0,
     refs: Math.min(refs.length, (gpuiSource.match(/Option<gpui::Entity<crate::components::/g) ?? []).length),
   };
