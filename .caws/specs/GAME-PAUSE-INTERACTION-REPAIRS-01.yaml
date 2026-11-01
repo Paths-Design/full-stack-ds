@@ -47,3 +47,8 @@ evidence:
     evidence_ref: "Inspected Godot I13 scene checks: pressed JOY_BUTTON_X binds PAD 2 and closes remap; Escape cancel preserves vehicleBoost. Raw 221/221 log: .caws/state/game-pause-interaction-repairs/game-pause-godot-integrated.log"
     recorded_at: "2026-11-01T23:55:28.493Z"
     commit_sha: b9118c57f640a1fc356571c793d4b206ad2a83a3
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected Godot I15 dispatched click: Progress activates, map popover closes and overlay releases; same-tab and bare outside clicks also dismiss. Raw 221/221 log: .caws/state/game-pause-interaction-repairs/game-pause-godot-integrated.log"
+    recorded_at: "2026-11-01T23:55:46.734Z"
+    commit_sha: b9118c57f640a1fc356571c793d4b206ad2a83a3
