@@ -73,3 +73,11 @@ evidence:
     exit_code: 0
     artifact_path: scripts/gpui-pilot.mjs
     commit_sha: "542de0370"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "no dimension regressed (audit --check passes on main; parts 180/214 and props 229/379 unchanged, as dynamic child props do not alter the parent prop surface the audit measures) and each projected binding is recorded in the component receipt as a dynamicProps entry (receipts regenerated; codegen test asserts dynamicProps contains disabled for Chip and the update call is emitted)"
+    recorded_at: "2026-11-01T10:52:00.031Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/anatomy.ts
+    commit_sha: "542de0370"
