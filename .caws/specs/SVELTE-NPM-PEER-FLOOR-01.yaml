@@ -2,7 +2,6 @@ id: SVELTE-NPM-PEER-FLOOR-01
 title: 'Require the Svelte compiler API floor used by published components'
 mode: fix
 lifecycle_state: active
-worktree: svelte-npm-peer-floor
 created_at: '2026-11-01T03:28:06.522Z'
 updated_at: '2026-11-01T03:29:39.688Z'
 created_by_session: '01a18e6c-feec-7162-83fe-0a60125b9b40'
