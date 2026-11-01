@@ -59,3 +59,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot row passive-media-projection: a Texture set as src reaches the native TextureRect on the Image scene and alt reaches accessibility_description; the anatomy runtime also accepts a loadable res:// path (remote fetching refused and named)"
     recorded_at: "2026-11-01T10:28:26.629Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 32 rows; only passive-media-projection was added; all 31 prior rows unchanged; catalog-load admitted 55 failures []"
+    recorded_at: "2026-11-01T10:28:27.769Z"
