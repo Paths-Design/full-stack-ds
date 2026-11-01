@@ -52,3 +52,8 @@ evidence:
     evidence_ref: "Manual primary-artifact inspection: .caws/state/release-evidence/TABLE-WEB-RESPONSIVE-01/svelte-minimum-current/types-5.20.0-public-nodenext.json and types-5.20.0-all-declarations-bundler.json report zero diagnostics with TypeScript6.0.3, skipLibCheck=false and exact Svelte5.20 types, with no foreign Svelte program files. Current payload/compiler provenance is retained beside them. .caws/state/svelte-peer-floor-frozen.log records the frozen lock consistency check; f5befc357335e18bce9b3897f7672f04ae01d372 changes only the peer floor and no dependency resolution. Commit verification checks identity; raw command outcomes were inspected separately."
     recorded_at: "2026-11-01T08:24:55.993Z"
     commit_sha: f5befc357335e18bce9b3897f7672f04ae01d372
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Manual primary runtime inspection: .caws/state/release-evidence/TABLE-WEB-RESPONSIVE-01/svelte-minimum-current/runtime-evidence/runtime.json plus field-association.json and PNGs record exact compiler/runtime5.20.0 with installed UQAu76 package bytes. Button activation count=1; two visible Fields have distinct c1/c2 control IDs, correct label.control and description endpoints; Dialog opens and closes; no browser exceptions. The probe hash-checks transformed package inputs and all83 selected Svelte runtime modules. Button/Field/Dialog sources are unchanged by the peer-only floor commit; later Table scrolling has supplementary observations. This is Chromium client execution, not hydration, OS accessibility or the entire open-ended peer range."
+    recorded_at: "2026-11-01T08:24:58.563Z"
+    commit_sha: f5befc357335e18bce9b3897f7672f04ae01d372
