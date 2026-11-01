@@ -42,6 +42,7 @@ const out = resolve(arg('out', join(root, 'parity')));
 const maxRmse = Number(arg('max-rmse', '0.14'));
 const tolerance = Number(arg('tolerance', '18'));
 const typographyFuzz = Number(arg('type-fuzz', '30'));
+const inkTolerance = Number(arg('ink-tolerance', '0.25'));
 const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
@@ -187,28 +188,33 @@ function textBBox(file, probe) {
     '-transparent', hex,
     '-alpha', 'extract', '-negate',
     '-bordercolor', 'black', '-border', '1',
-    '-trim', '-format', '%wx%h%O', 'info:',
+    '-trim', '-format', '%wx%h%O|%[fx:mean]', 'info:',
   ]);
-  const match = /^(\d+)x(\d+)\+(-?\d+)\+(-?\d+)$/.exec(result.stdout.trim());
+  const match = /^(\d+)x(\d+)\+(-?\d+)\+(-?\d+)\|([\d.]+)$/.exec(result.stdout.trim());
   if (!match) return null;
   const w = parseInt(match[1], 10);
   const h = parseInt(match[2], 10);
   if (w <= 1 && h <= 1) return null;
   // -border 1 shifts the reported page offset by 1; undo it to stay in image space.
+  // The trimmed mask's mean is the ink-coverage fraction inside the bbox: glyph
+  // weight, not just geometry.
   return {
     x: probe.x + parseInt(match[3], 10) - 1,
     y: probe.y + parseInt(match[4], 10) - 1,
     w,
     h,
+    ink: Number(match[5]),
   };
 }
 
 function bboxDelta(a, b) {
+  const inkBase = Math.max(a.ink, b.ink, 0.001);
   return {
     x: Math.abs(a.x - b.x),
     y: Math.abs(a.y - b.y),
     w: Math.abs(a.w - b.w),
     h: Math.abs(a.h - b.h),
+    ink: Math.abs(a.ink - b.ink) / inkBase,
   };
 }
 
@@ -262,7 +268,16 @@ for (const state of STATES) {
     const [first, ...rest] = boxes;
     for (const other of rest) {
       const delta = bboxDelta(first.bbox, other.bbox);
-      const limits = { x: typeTolerance.x ?? 3, y: typeTolerance.y ?? 3, w: typeTolerance.w ?? 4, h: typeTolerance.h ?? 4 };
+      const limits = {
+        x: typeTolerance.x ?? 3,
+        y: typeTolerance.y ?? 3,
+        w: typeTolerance.w ?? 4,
+        h: typeTolerance.h ?? 4,
+        // Body/secondary copy on paper is dominated by rasteriser AA; those
+        // probes may relax ink coverage in the authority. Weight anchors keep
+        // the default tolerance.
+        ink: probe.inkTolerance ?? inkTolerance,
+      };
       const bad = Object.entries(delta).filter(([axis, value]) => value > limits[axis]);
       if (bad.length) {
         failures.push(

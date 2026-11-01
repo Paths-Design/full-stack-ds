@@ -19,7 +19,59 @@ use gpui::{
     App, Bounds, KeyBinding, TitlebarOptions, WindowBounds, WindowOptions, prelude::*, px, size,
 };
 
+/// Typography parity: disable macOS font smoothing for this application domain
+/// before GPUI's text system initialises.
+///
+/// The pinned `gpui_macos` renderer implements CoreGraphics-style glyph dilation
+/// when `AppleFontSmoothing` is enabled (`glyph_dilation_for_color`), which makes
+/// light-on-dark text paint noticeably heavier than the same Inter Bold face in
+/// the Unity and Godot lanes. Writing `AppleFontSmoothing = 0` into the current
+/// application's preferences domain keeps the weight probe comparable without
+/// touching the user's global font settings.
+#[cfg(target_os = "macos")]
+fn disable_macos_font_smoothing() {
+    use core_foundation_sys::base::{CFRelease, CFTypeRef};
+    use core_foundation_sys::number::{kCFNumberSInt32Type, CFNumberCreate};
+    use core_foundation_sys::preferences::{
+        kCFPreferencesCurrentApplication, CFPreferencesAppSynchronize, CFPreferencesSetAppValue,
+    };
+    use core_foundation_sys::string::{kCFStringEncodingUTF8, CFStringCreateWithCString};
+    use std::ptr;
+
+    unsafe {
+        let key = CFStringCreateWithCString(
+            ptr::null(),
+            c"AppleFontSmoothing".as_ptr(),
+            kCFStringEncodingUTF8,
+        );
+        if key.is_null() {
+            return;
+        }
+        let value: i32 = 0;
+        let number = CFNumberCreate(
+            ptr::null(),
+            kCFNumberSInt32Type,
+            &value as *const i32 as *const std::ffi::c_void,
+        );
+        if !number.is_null() {
+            CFPreferencesSetAppValue(
+                key,
+                number as CFTypeRef,
+                kCFPreferencesCurrentApplication,
+            );
+            CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
+            CFRelease(number as CFTypeRef);
+        }
+        CFRelease(key as CFTypeRef);
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn disable_macos_font_smoothing() {}
+
 fn main() {
+    // Must run before any GPUI text layout: gpui_macos caches the preference.
+    disable_macos_font_smoothing();
     let initial_tab = app::initial_tab_from_args();
     let capture_dir = app::capture_dir_from_args();
     #[cfg(not(feature = "capture"))]

@@ -242,7 +242,6 @@ namespace GamePauseMenu
                 tab.name = "tab-" + definition.Id;
                 Ui.At(tab, new LayoutRect(definition.X, 0, definition.W, Layout.TabBar.Rect.H));
                 Ui.StripBox(tab);
-                Ui.Radius(tab, 0);
                 tab.style.paddingLeft = 0;
                 tab.style.paddingRight = 0;
                 tab.style.paddingTop = 0;
@@ -250,6 +249,7 @@ namespace GamePauseMenu
                 tab.style.borderTopWidth = 0;
                 tab.style.borderBottomWidth = 0;
                 tab.style.borderRightWidth = 0;
+                Ui.Radius(tab, 0);
                 tab.style.fontSize = (float)Layout.Size("tab");
                 tab.style.unityFontStyleAndWeight = FontStyle.Bold;
                 tab.style.letterSpacing = (float)Layout.Size("letterSpacingTab");

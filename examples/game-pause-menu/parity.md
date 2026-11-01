@@ -347,13 +347,56 @@ heights. Fonts are vendored at [`fonts/`](fonts/README.md):
 - **No synthetic styling**: no faux bold, no faux italic, no tracking offset,
   no text shadows. Fallbacks are disabled where the engine allows it; Inter
   covers every glyph in the fixture copy.
-- **Verification**: `parity-check.mjs` measures the pixel bounding box of 39
-  pinned text strings (wordmark, stat values, tab labels, panel titles, row
-  labels/secondaries, field note, footer hints, nav target, drawer copy, chips,
-  card/detail copy, settings labels/values) in each engine's captures — 117
-  bbox measurements per run — and fails when a pairwise delta exceeds ±4 px in
-  x/y or ±6/±5 px in w/h. The mask is a 30 % colour-distance transparency, so
-  antialiased glyph edges are included consistently. This is a metric probe,
-  not a raster-equality claim; the remaining difference is glyph
-  anti-aliasing/hinting (Unity dynamic-font rasterisation is the widest
-  residual, up to ~4 px on 10 px labels).
+- **Verification**: `parity-check.mjs` measures the pixel bounding box **and
+  ink coverage** of 39 pinned text strings (wordmark, stat values, tab labels,
+  panel titles, row labels/secondaries, field note, footer hints, nav target,
+  drawer copy, chips, card/detail copy, settings labels/values) in each
+  engine's captures — 117 bbox+weight measurements per run — and fails when a
+  pairwise bbox delta exceeds ±4 px in x/y or ±6/±5 px in w/h, or when pairwise
+  ink coverage differs by more than 25 % (body-copy probes on paper may relax
+  to 45 % because rasteriser AA dominates there). The mask is a 30 %
+  colour-distance transparency, so antialiased glyph edges are included
+  consistently. This is a metric probe, not raster-equality proof.
+- **GPUI stroke weight.** The pinned `gpui_macos` renderer thickens glyphs via
+  CoreGraphics-style dilation when macOS font smoothing is enabled
+  (`glyph_dilation_for_color`), which made GPUI's Inter Bold read heavier than
+  Unity/Godot (row-label ink coverage 0.479 vs 0.332/0.342). The GPUI lane now
+  writes `AppleFontSmoothing = 0` into its own application preferences domain
+  before GPUI's text system initialises; the same probe measures 0.343 and the
+  ink-coverage check guards the regression. No global user preference is
+  touched.
+
+## Design-token provenance
+
+Every authority colour and type size stores its token provenance:
+
+- `colorTokens` maps each of the 19 `colors` roles to a semantic token plus the
+  mode it resolves in (`dark`, `light` or `both`). Eleven roles resolve through
+  existing Orion semantic tokens in dark mode; five (`signalDeep`, `bone`,
+  `paper`, `paperMuted`, `sage`) use the brand's light-mode values because they
+  are light content surfaces inside the dark chrome; three graphic status/
+  surface roles (`moss`, `alert`, `clear`) are new Orion brand tokens
+  (`semantic.color.surface.moss`, `semantic.color.status.alert`,
+  `semantic.color.status.clear`).
+- `typeTokens` maps all 20 `type` entries to token values: 11 sizes map to the
+  core typography ramp or semantic sizes, the three app-specific sizes
+  (11 px / 13 px / 28 px) are new Orion brand `typography.graphic.size.*`
+  tokens, and both tracking entries map to the zero letter-spacing token.
+- The gate `node scripts/game-pause-token-provenance.mjs` (pnpm
+  `tokens:check:game-pause-authority`) fails on any authority colour/size with
+  no provenance, any unknown provenance key, or any value that does not equal
+  the resolved token/brand value. The authority no longer owns a parallel
+  palette: every literal is checked against `resolved.tokens.json` + the Orion
+  brand layer.
+- **Runtime loaders.** GPUI embeds `resolved.tokens.json` and
+  `orion.tokens.json` at compile time and overwrites its parsed palette and
+  type scale from the provenance maps before any view renders. Godot's
+  `setup.sh` copies both token files into `res://fixtures/ds-tokens/` and
+  `TokenResolver` rewrites the authority's colours/type sizes at load. Unity
+  continues to consume the generated `.fsds-brand-orion` scope, which now
+  projects every brand-layer variable that resolves to a USS scalar (Orion:
+  217 light / 123 dark, up from 93 / 68); the lane's Card token channel uses
+  those variables for panel/ability-card surfaces. The shared
+  `orion-appearance.json` fixture is retained only for the shared fixture
+  corpus' validation tests; it is not a rendering palette for any lane (Godot
+  no longer loads it, GPUI keeps it out of the render path).

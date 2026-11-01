@@ -835,7 +835,8 @@
         "y": 326,
         "w": 486,
         "h": 14,
-        "text": "The guild owns every viable freight lane in the basin."
+        "text": "The guild owns every viable freight lane in the basin.",
+        "inkTolerance": 0.45
       },
       {
         "state": "progress",
@@ -945,7 +946,8 @@
         "y": 290,
         "w": 378,
         "h": 30,
-        "text": "Relays output draw 40% for six seconds"
+        "text": "Relays output draw 40% for six seconds",
+        "inkTolerance": 0.45
       },
       {
         "state": "settings",
@@ -1033,6 +1035,146 @@
       "y": 4,
       "w": 6,
       "h": 5
+    }
+  },
+  "colorTokens": {
+    "signal": {
+      "token": "semantic.color.background.accent",
+      "mode": "dark"
+    },
+    "signalDeep": {
+      "token": "semantic.color.foreground.accent",
+      "mode": "light"
+    },
+    "signalHot": {
+      "token": "semantic.color.foreground.accent",
+      "mode": "dark"
+    },
+    "onSignal": {
+      "token": "semantic.color.foreground.inverse",
+      "mode": "both"
+    },
+    "ink": {
+      "token": "semantic.color.background.primary",
+      "mode": "dark"
+    },
+    "charcoal": {
+      "token": "semantic.color.background.secondary",
+      "mode": "dark"
+    },
+    "graphite": {
+      "token": "semantic.color.background.tertiary",
+      "mode": "dark"
+    },
+    "boneBright": {
+      "token": "semantic.color.foreground.primary",
+      "mode": "dark"
+    },
+    "bone": {
+      "token": "semantic.color.background.secondary",
+      "mode": "light"
+    },
+    "paper": {
+      "token": "semantic.color.background.secondary",
+      "mode": "light"
+    },
+    "paperMuted": {
+      "token": "semantic.color.foreground.tertiary",
+      "mode": "light"
+    },
+    "sage": {
+      "token": "semantic.color.background.highlight",
+      "mode": "light"
+    },
+    "moss": {
+      "token": "semantic.color.surface.moss",
+      "mode": "both"
+    },
+    "alert": {
+      "token": "semantic.color.status.alert",
+      "mode": "both"
+    },
+    "clear": {
+      "token": "semantic.color.status.clear",
+      "mode": "both"
+    },
+    "rule": {
+      "token": "semantic.color.border.subtle",
+      "mode": "dark"
+    },
+    "ruleStrong": {
+      "token": "semantic.color.border.default",
+      "mode": "dark"
+    },
+    "muted": {
+      "token": "semantic.color.foreground.disabled",
+      "mode": "dark"
+    },
+    "textSecondary": {
+      "token": "semantic.color.foreground.secondary",
+      "mode": "dark"
+    }
+  },
+  "typeTokens": {
+    "wordmark": {
+      "token": "core.typography.ramp.9"
+    },
+    "mission": {
+      "token": "semantic.typography.graphic.size.compact"
+    },
+    "statLabel": {
+      "token": "core.typography.ramp.1"
+    },
+    "statValue": {
+      "token": "core.typography.ramp.6"
+    },
+    "statSub": {
+      "token": "semantic.typography.graphic.size.compact"
+    },
+    "chip": {
+      "token": "core.typography.ramp.1"
+    },
+    "tab": {
+      "token": "semantic.typography.graphic.size.label"
+    },
+    "panelTitle": {
+      "token": "semantic.typography.graphic.size.compact"
+    },
+    "panelMeta": {
+      "token": "core.typography.ramp.1"
+    },
+    "rowLabel": {
+      "token": "core.typography.ramp.2"
+    },
+    "rowSub": {
+      "token": "core.typography.ramp.1"
+    },
+    "value": {
+      "token": "core.typography.ramp.3"
+    },
+    "bigValue": {
+      "token": "core.typography.ramp.6"
+    },
+    "title": {
+      "token": "core.typography.ramp.7"
+    },
+    "body": {
+      "token": "semantic.typography.graphic.size.label"
+    },
+    "micro": {
+      "token": "core.typography.ramp.1"
+    },
+    "footer": {
+      "token": "semantic.typography.graphic.size.compact"
+    },
+    "letterSpacingMicro": {
+      "token": "core.typography.letter.spacing.normal"
+    },
+    "letterSpacingTab": {
+      "token": "core.typography.letter.spacing.normal"
+    },
+    "drawerTitle": {
+      "token": "semantic.typography.graphic.size.display"
     }
   }
 }

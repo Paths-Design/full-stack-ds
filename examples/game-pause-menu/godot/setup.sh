@@ -50,6 +50,13 @@ rm -rf "$LANE_DIR/fonts"
 mkdir -p "$LANE_DIR/fonts"
 cp -R "$LANE_DIR/../fonts/inter" "$LANE_DIR/fonts/inter"
 
+# Design-token parity: copy the committed token graph + Orion brand file so the
+# lane resolves its palette from tokens instead of a lane-local palette copy.
+rm -rf "$LANE_DIR/fixtures/ds-tokens"
+mkdir -p "$LANE_DIR/fixtures/ds-tokens"
+cp "$WORKTREE_ROOT/packages/ds-tokens/generated/resolved.tokens.json" "$LANE_DIR/fixtures/ds-tokens/resolved.tokens.json"
+cp "$WORKTREE_ROOT/packages/ds-tokens/src/brands/orion.tokens.json" "$LANE_DIR/fixtures/ds-tokens/orion.tokens.json"
+
 for required in \
   components/Tabs/Tabs.tscn \
   components/Switch/Switch.tscn \
@@ -63,6 +70,13 @@ for required in \
   runtime/glyph_catalog.json; do
   if [[ ! -e "$TARGET_DIR/$required" ]]; then
     echo "FSDS Godot setup: copied package is incomplete, missing $required" >&2
+    exit 1
+  fi
+done
+
+for required in fixtures/ds-tokens/resolved.tokens.json fixtures/ds-tokens/orion.tokens.json; do
+  if [[ ! -e "$LANE_DIR/$required" ]]; then
+    echo "FSDS Godot setup: token source is missing at $LANE_DIR/$required" >&2
     exit 1
   fi
 done

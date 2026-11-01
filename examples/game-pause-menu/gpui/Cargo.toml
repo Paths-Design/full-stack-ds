@@ -43,3 +43,10 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # Capture-only encoder for the evidence PNGs (feature `capture`).
 image = { version = "0.25", default-features = false, features = ["png"], optional = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# Typography parity: the pinned gpui_macos renderer dilates glyphs when macOS
+# font smoothing is enabled. The lane disables it in its own preferences domain
+# before GPUI's text system initialises so Inter Bold rasterises at the same
+# stroke weight as the Unity/Godot lanes.
+core-foundation-sys = "0.8"
