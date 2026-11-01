@@ -128,3 +128,11 @@ contracts:
   - name: 'disabled-navigation'
     type: behavior
     path: 'packages/ds-contracts/components/Links/Links.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected 2d742ff53 fresh installed consumers at .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01/final-runs/fsds-release-packages-PEe0Nq/browser-{react,vue,svelte,angular,lit}.json and disabled-focus screenshots: pointer/Enter cancellation, disabled href absence, real Tab and 2px focus, AX disabled/focused, same-anchor reenabling, callback/native navigation once, omitted target same-page and explicit _blank popup. Final 8ee024b94 changes only the authored-test inventory; package trees are identical."
+    recorded_at: "2026-11-01T18:58:02.991Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
