@@ -72,3 +72,11 @@ evidence:
     exit_code: 0
     artifact_path: scripts/gpui-web-consistency-audit.mjs
     commit_sha: "8215ab6ad"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/gpui-web-consistency.md records the measured matrix, divergence classes and limits and is linked from the target doc and snapshot; docs:check-links resolves 276 relative links; this slice's package.json change was restamped in governed-ci.md (fresh on main). The only remaining stale stamp on main is docs/architecture/unity-target.md, staled at 95d422c3 outside this slice and scoped by the active ENGINE-FORM-FOUNDATION-01 and GAME-PAUSE-PARITY-DEFENSIBILITY-01 specs"
+    recorded_at: "2026-11-01T10:24:22.388Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-web-consistency.md
+    commit_sha: bc30a28e3
