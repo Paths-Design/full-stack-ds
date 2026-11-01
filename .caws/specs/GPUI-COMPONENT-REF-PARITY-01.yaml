@@ -47,3 +47,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "all 11 ref-bearing components emit one retained Option<Entity<Child>> field per componentRef node and render it lazily in the tree; components without references regenerate byte-identically (git diff shows only the 11 ref-bearing .rs files plus codegen, baseline and docs)"
+    recorded_at: "2026-11-01T10:40:00.402Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/PageNavigator/PageNavigator.rs
+    commit_sha: "94652ada7"
