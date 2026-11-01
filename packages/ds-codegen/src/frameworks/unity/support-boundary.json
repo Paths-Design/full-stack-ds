@@ -1407,7 +1407,7 @@
     },
     {
       "id": "prop-citation-refused",
-      "match": ["contract:/props/*/members/plain:cite/**"],
+      "match": ["contract:/props/*/members/plain:cite/**", "contract:/anatomy/dom/bindings/cite"],
       "disposition": "refused",
       "reason": "The citation URL is a document-link semantic (HTML cite) with no UI Toolkit consumer; the generated container exposes no Cite property."
     },

@@ -686,6 +686,9 @@ function emitProps(ir: ComponentIR): string {
   const emitted = new Set<string>();
   for (const prop of ir.styledProps) {
     if (RESERVED_PROPS.has(prop.name)) continue;
+    if (citationMetadataUsesProp(ir.dom, prop.name)) {
+      lines.push(`${INDENT}/** Source URL metadata has no native citation carrier. */`);
+    }
     lines.push(`${INDENT}${prop.safeName}${prop.required ? "" : "?"}: ${rnPropType(ir, prop)};`);
     emitted.add(prop.safeName);
   }
@@ -2348,10 +2351,18 @@ function treeHasBindingName(node: DomNodeIR | undefined, name: string): boolean 
   return node.children.some((child) => treeHasBindingName(child, name));
 }
 
+function citationMetadataUsesProp(node: DomNodeIR | undefined, prop: string): boolean {
+  if (!node) return false;
+  const binding = node.bindings.cite;
+  return binding?.kind === "prop" && binding.prop === prop ||
+    node.children.some(child => citationMetadataUsesProp(child, prop));
+}
+
 function isSupportedBindingForComponent(name: string, component: string): boolean {
   if (name.startsWith("data-")) return false;
   // DOM tab order is omitted by the native renderer and consumes no prop.
   if (name === "tabindex" || name === "tabIndex") return false;
+  if (name === "cite") return false;
   if (name === "aria-describedby") return false;
   if (name === "name" || name === "required" || name === "aria-invalid") return false;
   if (name === "htmlFor" || name === "form") return false;

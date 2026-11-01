@@ -1657,7 +1657,8 @@
       "match": [
         "contract:/props/*/members/*:cite",
         "contract:/props/*/members/*:cite/**",
-        "contract:/props/cite"
+        "contract:/props/cite",
+        "contract:/anatomy/dom/bindings/cite"
       ],
       "disposition": "refused",
       "reason": "citation metadata has no native meaning in the Godot target"

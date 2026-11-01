@@ -167,6 +167,18 @@ function surfaceIr(name: string, replacement: string) {
 }
 
 describe("Unity passive anatomy path", () => {
+  it("omits root citation metadata without accepting unrelated unlowered bindings", () => {
+    const ir = irFor("Blockquote", "QuotationPanel");
+    expect(ir.dom!.bindings.cite).toEqual({ kind: "prop", prop: "cite" });
+    const output = emit(ir);
+    expect(output).toContain("public partial class QuotationPanel : VisualElement");
+    expect(output).not.toContain("Cite");
+    for (const attribute of ["title", "href"]) {
+      const unsupported = structuredClone(ir);
+      unsupported.dom!.bindings[attribute] = { kind: "prop", prop: "cite" };
+      expect(() => emit(unsupported)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: QuotationPanel root has unlowered authored facts");
+    }
+  });
   it("emits a channel-free rule host with a real orientation style carrier", () => {
     const ir = irFor("Divider", "UnrelatedRule");
     ir.styledProps = ir.styledProps.filter(prop => prop.name === "orientation");

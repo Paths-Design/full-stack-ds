@@ -43,6 +43,11 @@ const catchAll = rule({
 const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Godot support boundary", () => {
+  it("keeps source citation metadata explicitly refused without a native carrier", () => {
+    const contract = load("Blockquote");
+    (contract.anatomy as { dom: { bindings?: Record<string, string> } }).dom.bindings = { cite: "prop:cite" };
+    expect(classifyLeaves(contract).find(leaf => leaf.pointer === "/anatomy/dom/bindings/cite")).toMatchObject({ rule: "prop-citation", disposition: "refused" });
+  });
   it("does not claim renamed anchor callbacks or disabled-link aria bindings are realized", () => {
     const contract = load("Links");
     contract.name = "DestinationControl";

@@ -31,6 +31,11 @@ const boundaryOf = (rules: Record<string, unknown>[]): Boundary => validateBound
 const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Unity support boundary", () => {
+  it("keeps source citation metadata explicitly refused without a native carrier", () => {
+    const contract = load("Blockquote");
+    (contract.anatomy as { dom: { bindings?: Record<string, string> } }).dom.bindings = { cite: "prop:cite" };
+    expect(classifyContract(contract).find(leaf => leaf.pointer === "/anatomy/dom/bindings/cite")).toMatchObject({ rule: "prop-citation-refused", disposition: "refused" });
+  });
   it("classifies a renamed root anchor callback as pending while retaining native disabled support", () => {
     const contract = load("Links");
     contract.name = "DestinationControl";

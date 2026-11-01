@@ -18,6 +18,9 @@
     "dom": {
       "tag": "blockquote",
       "part": "root",
+      "bindings": {
+        "cite": "prop:cite"
+      },
       "children": [
         {
           "tag": "children"

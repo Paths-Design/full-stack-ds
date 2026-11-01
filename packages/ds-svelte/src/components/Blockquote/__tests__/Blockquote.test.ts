@@ -73,5 +73,18 @@ describe("Blockquote — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
-
+it("updates and omits source URL metadata while retaining the content snippet", async () => {
+  const quote = "التصميم — 日本語 — “quoted”";
+  const children = createRawSnippet(() => ({ render: () => `<span lang="ar" dir="rtl">${quote}</span>` }));
+  const { container, rerender } = render(Blockquote as unknown as Component<Record<string, unknown>>, { props: { children } });
+  const element = container.querySelector("blockquote");
+  expect(element).not.toBeNull();
+  for (const cite of [undefined, "https://example.test/مصدر?edition=2&lang=ar", "/sources/日本語#quote", "", undefined]) {
+    await rerender({ cite, children });
+    expect(container.querySelector("blockquote")).toBe(element);
+    expect(element!.getAttribute("cite")).toBe(cite ?? null);
+    expect(element!.textContent).toBe(quote);
+    expect(element!.querySelector("a, button, [tabindex]")).toBeNull();
+  }
+});
 // @custom:end

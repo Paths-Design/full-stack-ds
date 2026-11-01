@@ -89,5 +89,27 @@ function classTokens(component: { classes: () => string }): string[] {
 // @generated:end
 
 // @custom:start tests
+import { Input } from "@angular/core";
+@Component({ standalone: true, imports: [BlockquoteComponent], template: '<fsds-blockquote [cite]="cite"><span lang="ar" dir="rtl">{{quote}}</span></fsds-blockquote>' })
+class CitationHost {
+  @Input() cite?: string;
+  quote = "التصميم — 日本語 — “quoted”";
+}
 
+it("updates and omits citation metadata on the native quotation element", async () => {
+  TestBed.configureTestingModule({ imports: [CitationHost] });
+  const fixture = TestBed.createComponent(CitationHost);
+  fixture.detectChanges();
+  const element = fixture.nativeElement.querySelector("blockquote") as HTMLQuoteElement;
+  expect(element).not.toBeNull();
+  for (const cite of [undefined, "https://example.test/مصدر?edition=2&lang=ar", "/sources/日本語#quote", "", undefined]) {
+    fixture.componentRef.setInput("cite", cite);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector("blockquote")).toBe(element);
+    expect(element.getAttribute("cite")).toBe(cite ?? null);
+    expect(element.textContent).toBe(fixture.componentInstance.quote);
+    expect(element.querySelector("a, button, [tabindex]")).toBeNull();
+  }
+});
 // @custom:end

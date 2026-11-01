@@ -78,5 +78,17 @@ describe("Blockquote — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
-
+it("updates and omits source URL metadata without replacing quoted content", async () => {
+  const quote = "التصميم — 日本語 — “quoted”";
+  const wrapper = mount(Blockquote as Component, { props: { cite: undefined }, slots: { default: `<span lang="ar" dir="rtl">${quote}</span>` } });
+  const element = wrapper.find("blockquote").element;
+  for (const cite of [undefined, "https://example.test/مصدر?edition=2&lang=ar", "/sources/日本語#quote", "", undefined]) {
+    await wrapper.setProps({ cite });
+    expect(wrapper.find("blockquote").element).toBe(element);
+    expect(element.getAttribute("cite")).toBe(cite ?? null);
+    expect(element.textContent).toBe(quote);
+    expect(element.querySelector("a, button, [tabindex]")).toBeNull();
+  }
+  wrapper.unmount();
+});
 // @custom:end
