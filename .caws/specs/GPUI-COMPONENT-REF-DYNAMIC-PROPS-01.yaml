@@ -36,9 +36,11 @@ acceptance:
     when: 'The acceptance statement is evaluated.'
     then: 'given the generated crate; when the native lane runs; then compilation, the 55 mount witnesses and the interaction witnesses pass'
   - id: A4
-    given: 'The spec implementation is complete.'
-    when: 'The acceptance statement is evaluated.'
-    then: 'given the consistency audit; when it runs after the slice; then GPUI props coverage rises and no dimension regresses'
+    given: 'the consistency audit'
+    when: 'it runs after the slice'
+    then: >-
+      no dimension regresses and every projected reference binding is recorded as a
+      dynamicProps entry in that component's receipt
 non_functional: {}
 contracts:
   - name: 'gpui-ref-dynamic-props'
