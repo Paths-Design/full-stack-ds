@@ -67,3 +67,7 @@ evidence:
     status: pass
     evidence_ref: "docs/architecture/godot-target.md 'Passive/style long tail and the closed corpus boundary' section states the closure (8915 lowered / 8586 refused / 0 pending / 163 rules), the media realization and every refusal class; packages/ds-godot/README.md gains a 'Boundary state' section; docs/current-implementation-snapshot.md updated; docs:check-links passes. docs:check-claims fails identically on unmodified canonical main and this branch for docs/architecture/unity-target.md (stamp stale since 95d422c31, another lane's commit) — a pre-existing failure, not caused or restamped by this slice"
     recorded_at: "2026-11-01T10:28:28.907Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=godot twice -> tree unchanged (byte-stable); pnpm run generate:check exit 0; pnpm run audit:godot-boundary exit 0 (pending 0); pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 92 tests passed (boundary.test.ts updated: pending count now asserted 0, no-dead-rule example moved to the refused bucket); pnpm run test:godot passed"
+    recorded_at: "2026-11-01T10:28:30.160Z"
