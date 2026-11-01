@@ -37,6 +37,7 @@ import type {
 } from "../../ir.js";
 import { componentNeedsInstanceId } from "../../id-relationships.js";
 import {
+  hasDisabledActivation,
   hasChildrenPlaceholder,
   TABLE_COMPOSITION_TAGS,
   nativeTableAttrsFor,
@@ -1383,7 +1384,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   const assocConsumerPart = ir.fieldAssociation?.consumerPart;
 
   const importLines: string[] = [];
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction${hasDisabledActivation(ir.dom) ? ", isActivationDisabled" : ""} } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) importLines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (hasHook) {
@@ -2046,6 +2047,12 @@ function renderSvelteDomNode(
     (node.componentInstance?.events ?? []).map((e) => [e.name, e]),
   );
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderSvelteBindingValue(node.disabledActivation.disabled, ctx);
+      const callback = renderSvelteBindingValue(expr, ctx);
+      attrs.push(`onclick={(e) => { if (canActivateInteraction(e, false, isActivationDisabled(${disabled}))) (${callback})?.(e); }}`);
+      continue;
+    }
     if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
       const channel = node.nativeTextChannel;
       attrs.push(`on${eventName}={(e) => requestNativeTextChange(e, () => ${ctx.hookVar}.set${capitalizeSvelte(channel)}((e.currentTarget as HTMLInputElement).value), () => ${ctx.hookVar}.${channel})}`);
@@ -2074,6 +2081,11 @@ function renderSvelteDomNode(
     const rendered = renderSvelteEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderSvelteBindingValue(node.disabledActivation.disabled, ctx);
+    attrs.push(`onclick={(e) => { canActivateInteraction(e, false, isActivationDisabled(${disabled})); }}`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2107,6 +2119,11 @@ function renderSvelteDomNode(
   }
 
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderSvelteBindingValue(node.disabledActivation.disabled, ctx);
+      attrs.push(`href={isActivationDisabled(${disabled}) ? undefined : ${renderSvelteBindingValue(expr, ctx)}}`);
+      continue;
+    }
     if (key === "textContent" || key === "children") {
       if (textContentExpr === null) {
         textContentExpr = renderSvelteTextChildExpression(expr, ctx);

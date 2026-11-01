@@ -778,6 +778,14 @@
       "reason": "The machine-readable datetime attribute has no UI Toolkit consumer; the visible timestamp text is projected, the datetime wiring is withheld."
     },
     {
+      "id": "anatomy-anchor-activation-event",
+      "match": ["contract:/anatomy/dom/events/click"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["a"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "LinkControl emits Activated destination requests through Action<string>; it does not wire the declared cancellable callback or a navigation default action. The click callback is withheld."
+    },
+    {
       "id": "anatomy-action-event-click",
       "match": ["contract:/anatomy/dom/events/click"],
       "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
@@ -1097,6 +1105,13 @@
       "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
       "disposition": "refused",
       "reason": "ARIA state attributes have no UI Toolkit consumer: the runtime exposes no assistive-technology tree."
+    },
+    {
+      "id": "prop-anchor-activation-callback",
+      "match": ["contract:/props/*/members/anchor-activation:*/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "LinkControl carries destination metadata and Activated requests but no cancellable event payload. The declared anchor activation callback prop is withheld."
     },
     {
       "id": "prop-action-callback",

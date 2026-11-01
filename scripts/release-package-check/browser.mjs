@@ -10,7 +10,7 @@ const imports = framework => 'import "@full-stack-ds/tokens/tokens.css";\n' + (f
 const react = `${imports("react")}
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { Button, Icon, useFsdsMessages, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/react";
+import { Button, Icon, Links, type LinkActivationEvent, useFsdsMessages, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/react";
 import { FsdsMessagesProvider } from "@full-stack-ds/react/primitives";
 function App() {
   const [count, setCount] = React.useState(0);
@@ -19,6 +19,14 @@ function App() {
   const [sort, setSort] = React.useState<"ascending" | "descending">("ascending");
   const [responsive, setResponsive] = React.useState<boolean | undefined>();
   const [contentLabel, setContentLabel] = React.useState<string | undefined>();
+  const [linkDisabled, setLinkDisabled] = React.useState<boolean | undefined>();
+  const [cancelLink, setCancelLink] = React.useState(false);
+  const [linkEvents, setLinkEvents] = React.useState<object[]>([]);
+  const activateLink = (event: LinkActivationEvent) => {
+    const before = event.defaultPrevented;
+    if (cancelLink) event.preventDefault();
+    setLinkEvents(value => [...value, { hash: location.hash, before, after: event.defaultPrevented }]);
+  };
   const messages = useFsdsMessages("ReleaseProbe", { label: "Untranslated" });
   return React.createElement("main", null,
     React.createElement(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled, onClick: () => setCount(value => value + 1) }, "Packed action"),
@@ -27,6 +35,14 @@ function App() {
     React.createElement("output", { id: "click-count" }, String(count)),
     React.createElement("output", { id: "translated-message" }, messages.label),
     React.createElement("output", { id: "table-count" }, String(tableCount)),
+    React.createElement("section", { id: "link-consumer", lang: "ar", dir: "rtl" },
+      React.createElement("button", { id: "toggle-link-disabled", onClick: () => setLinkDisabled(value => !value) }, "Toggle link disabled"),
+      React.createElement("button", { id: "toggle-link-cancel", onClick: () => setCancelLink(value => !value) }, "Toggle link cancellation"),
+      React.createElement("output", { id: "link-events" }, JSON.stringify(linkEvents)),
+      React.createElement("button", { id: "before-link" }, "Before link"),
+      React.createElement(Links, { href: "#packed-destination", target: "_self", rel: "noopener noreferrer", disabled: linkDisabled, onClick: activateLink }, React.createElement("span", { id: "link-child" }, "الانتقال إلى الطلبات — Prêt")),
+      React.createElement("div", { id: "initial-disabled-link" }, React.createElement(Links, { href: "#initial-disabled", disabled: true, onClick: activateLink }, "Indisponible")),
+      React.createElement("div", { id: "blank-link" }, React.createElement(Links, { href: "#packed-new-target", target: "_blank", rel: "noopener noreferrer" }, "Nouvel onglet"))),
     React.createElement("button", { id: "responsive-default", onClick: () => setResponsive(undefined) }, "Default viewport"),
     React.createElement("button", { id: "responsive-true", onClick: () => setResponsive(true) }, "Enable viewport"),
     React.createElement("button", { id: "responsive-false", onClick: () => setResponsive(false) }, "Disable viewport"),
@@ -48,7 +64,7 @@ createRoot(document.getElementById("app")!).render(React.createElement(FsdsMessa
 `;
 const vue = `${imports("vue")}
 import { createApp, h, ref } from "vue";
-import { Button, Icon, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/vue";
+import { Button, Icon, Links, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/vue";
 createApp({ setup() {
   const count = ref(0);
   const disabled = ref(false);
@@ -56,12 +72,29 @@ createApp({ setup() {
   const sort = ref<"ascending" | "descending">("ascending");
   const responsive = ref<boolean | undefined>();
   const contentLabel = ref<string | undefined>();
+  const linkDisabled = ref<boolean | undefined>();
+  const cancelLink = ref(false);
+  const linkEvents = ref<object[]>([]);
+  const activateLink = (event: LinkActivationEvent) => {
+    const before = event.defaultPrevented;
+    if (cancelLink.value) event.preventDefault();
+    linkEvents.value.push({ hash: location.hash, before, after: event.defaultPrevented });
+  };
   return () => h("main", null, [
     h(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled: disabled.value, onClick: () => { count.value += 1; } }, { default: () => "Packed action" }),
     h(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
     h("button", { id: "toggle-disabled", onClick: () => { disabled.value = !disabled.value; } }, "Toggle disabled"),
     h("output", { id: "click-count" }, String(count.value)),
     h("output", { id: "table-count" }, String(tableCount.value)),
+    h("section", { id: "link-consumer", lang: "ar", dir: "rtl" }, [
+      h("button", { id: "toggle-link-disabled", onClick: () => { linkDisabled.value = !linkDisabled.value; } }, "Toggle link disabled"),
+      h("button", { id: "toggle-link-cancel", onClick: () => { cancelLink.value = !cancelLink.value; } }, "Toggle link cancellation"),
+      h("output", { id: "link-events" }, JSON.stringify(linkEvents.value)),
+      h("button", { id: "before-link" }, "Before link"),
+      h(Links, { href: "#packed-destination", target: "_self", rel: "noopener noreferrer", disabled: linkDisabled.value, onClick: activateLink }, { default: () => h("span", { id: "link-child" }, "الانتقال إلى الطلبات — Prêt") }),
+      h("div", { id: "initial-disabled-link" }, [h(Links, { href: "#initial-disabled", disabled: true, onClick: activateLink }, { default: () => "Indisponible" })]),
+      h("div", { id: "blank-link" }, [h(Links, { href: "#packed-new-target", target: "_blank", rel: "noopener noreferrer" }, { default: () => "Nouvel onglet" })]),
+    ]),
     h("button", { id: "responsive-default", onClick: () => { responsive.value = undefined; } }, "Default viewport"),
     h("button", { id: "responsive-true", onClick: () => { responsive.value = true; } }, "Enable viewport"),
     h("button", { id: "responsive-false", onClick: () => { responsive.value = false; } }, "Disable viewport"),
@@ -86,13 +119,21 @@ createApp({ setup() {
 } }).mount("#app");
 `;
 const svelteApp = `<script lang="ts">
-  import { Button, Icon, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/svelte";
+  import { Button, Icon, Links, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/svelte";
   let count = $state(0);
   let disabled = $state(false);
   let tableCount = $state(0);
   let sort = $state<"ascending" | "descending">("ascending");
   let responsive = $state<boolean | undefined>();
   let contentLabel = $state<string | undefined>();
+  let linkDisabled = $state<boolean | undefined>();
+  let cancelLink = $state(false);
+  let linkEvents = $state<object[]>([]);
+  const activateLink = (event: LinkActivationEvent) => {
+    const before = event.defaultPrevented;
+    if (cancelLink) event.preventDefault();
+    linkEvents.push({ hash: location.hash, before, after: event.defaultPrevented });
+  };
 </script>
 <main>
   <Button variant="primary" size="large" ariaLabel="Packed action" {disabled} onClick={() => { count += 1; }}>Packed action</Button>
@@ -100,6 +141,15 @@ const svelteApp = `<script lang="ts">
   <button id="toggle-disabled" onclick={() => { disabled = !disabled; }}>Toggle disabled</button>
   <output id="click-count">{count}</output>
   <output id="table-count">{tableCount}</output>
+  <section id="link-consumer" lang="ar" dir="rtl">
+    <button id="toggle-link-disabled" onclick={() => { linkDisabled = !linkDisabled; }}>Toggle link disabled</button>
+    <button id="toggle-link-cancel" onclick={() => { cancelLink = !cancelLink; }}>Toggle link cancellation</button>
+    <output id="link-events">{JSON.stringify(linkEvents)}</output>
+    <button id="before-link">Before link</button>
+    <Links href="#packed-destination" target="_self" rel="noopener noreferrer" disabled={linkDisabled} onClick={activateLink}><span id="link-child">الانتقال إلى الطلبات — Prêt</span></Links>
+    <div id="initial-disabled-link"><Links href="#initial-disabled" disabled={true} onClick={activateLink}>Indisponible</Links></div>
+    <div id="blank-link"><Links href="#packed-new-target" target="_blank" rel="noopener noreferrer">Nouvel onglet</Links></div>
+  </section>
   <button id="responsive-default" onclick={() => { responsive = undefined; }}>Default viewport</button>
   <button id="responsive-true" onclick={() => { responsive = true; }}>Enable viewport</button>
   <button id="responsive-false" onclick={() => { responsive = false; }}>Disable viewport</button>
@@ -125,14 +175,23 @@ const svelteApp = `<script lang="ts">
 const angular = `${imports("angular")}
 import { Component, enableProdMode, provideZonelessChangeDetection, signal } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
-import { ButtonComponent, IconComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent } from "@full-stack-ds/angular";
-@Component({ selector: "packed-consumer", standalone: true, imports: [ButtonComponent, IconComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
+import { ButtonComponent, IconComponent, LinksComponent, type LinkActivationEvent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent } from "@full-stack-ds/angular";
+@Component({ selector: "packed-consumer", standalone: true, imports: [ButtonComponent, IconComponent, LinksComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
   <main>
     <fsds-button variant="primary" size="large" ariaLabel="Packed action" [disabled]="disabled()" [onClick]="activate">Packed action</fsds-button>
     <fsds-icon name="alarm" size="lg" [decorative]="false" ariaLabel="Packed alarm" />
     <button id="toggle-disabled" (click)="disabled.set(!disabled())">Toggle disabled</button>
     <output id="click-count">{{ count() }}</output>
     <output id="table-count">{{ tableCount() }}</output>
+    <section id="link-consumer" lang="ar" dir="rtl">
+      <button id="toggle-link-disabled" (click)="linkDisabled.set(!linkDisabled())">Toggle link disabled</button>
+      <button id="toggle-link-cancel" (click)="cancelLink.set(!cancelLink())">Toggle link cancellation</button>
+      <output id="link-events">{{ linkEventsJSON() }}</output>
+      <button id="before-link">Before link</button>
+      <fsds-links href="#packed-destination" target="_self" rel="noopener noreferrer" [disabled]="linkDisabled()" [onClick]="activateLink"><span id="link-child">الانتقال إلى الطلبات — Prêt</span></fsds-links>
+      <div id="initial-disabled-link"><fsds-links href="#initial-disabled" [disabled]="true" [onClick]="activateLink">Indisponible</fsds-links></div>
+      <div id="blank-link"><fsds-links href="#packed-new-target" target="_blank" rel="noopener noreferrer">Nouvel onglet</fsds-links></div>
+    </section>
     <button id="responsive-default" (click)="responsive.set(undefined)">Default viewport</button>
     <button id="responsive-true" (click)="responsive.set(true)">Enable viewport</button>
     <button id="responsive-false" (click)="responsive.set(false)">Disable viewport</button>
@@ -161,6 +220,15 @@ class PackedConsumer {
   readonly sort = signal<"ascending" | "descending">("ascending");
   readonly responsive = signal<boolean | undefined>(undefined);
   readonly contentLabel = signal<string | undefined>(undefined);
+  readonly linkDisabled = signal<boolean | undefined>(undefined);
+  readonly cancelLink = signal(false);
+  readonly linkEvents = signal<object[]>([]);
+  readonly linkEventsJSON = () => JSON.stringify(this.linkEvents());
+  readonly activateLink = (event: LinkActivationEvent) => {
+    const before = event.defaultPrevented;
+    if (this.cancelLink()) event.preventDefault();
+    this.linkEvents.update(value => [...value, { hash: location.hash, before, after: event.defaultPrevented }]);
+  };
   readonly toggleSort = () => this.sort.update(value => value === "ascending" ? "descending" : "ascending");
   readonly editTable = () => this.tableCount.update(value => value + 1);
   readonly activate = () => this.count.update(value => value + 1);
@@ -169,7 +237,7 @@ enableProdMode();
 bootstrapApplication(PackedConsumer, { providers: [provideZonelessChangeDetection()] }).catch(error => { console.error(error); throw error; });
 `;
 const lit = `${imports("lit")}
-import { ButtonElement, IconElement, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
+import { ButtonElement, IconElement, LinksElement, type LinkActivationEvent, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
 import { StackElement } from "@full-stack-ds/lit/primitives";
 if (StackElement !== RootStack) throw new Error("Public entries have different Stack constructors");
 const stack = new StackElement();
@@ -188,6 +256,45 @@ toggle.textContent = "Toggle disabled";
 toggle.onclick = () => { button.disabled = !button.disabled; };
 stack.textContent = "Packed stack";
 document.getElementById("app")!.append(stack, button, icon, toggle, count);
+const linkConsumer = document.createElement("section");
+Object.assign(linkConsumer, { id: "link-consumer", lang: "ar", dir: "rtl" });
+const link = new LinksElement();
+Object.assign(link, { href: "#packed-destination", target: "_self", rel: "noopener noreferrer" });
+const linkChild = document.createElement("span");
+linkChild.id = "link-child";
+linkChild.textContent = "الانتقال إلى الطلبات — Prêt";
+link.append(linkChild);
+let cancelLink = false;
+const linkEvents: object[] = [];
+const linkOutput = document.createElement("output");
+linkOutput.id = "link-events";
+linkOutput.textContent = "[]";
+const activateLink = (event: LinkActivationEvent) => {
+  const before = event.defaultPrevented;
+  if (cancelLink) event.preventDefault();
+  linkEvents.push({ hash: location.hash, before, after: event.defaultPrevented });
+  linkOutput.textContent = JSON.stringify(linkEvents);
+};
+link.onClick = activateLink;
+const initialDisabled = document.createElement("div");
+initialDisabled.id = "initial-disabled-link";
+const unavailableLink = new LinksElement();
+Object.assign(unavailableLink, { href: "#initial-disabled", disabled: true, onClick: activateLink, textContent: "Indisponible" });
+initialDisabled.append(unavailableLink);
+const blank = document.createElement("div");
+blank.id = "blank-link";
+const blankLink = new LinksElement();
+Object.assign(blankLink, { href: "#packed-new-target", target: "_blank", rel: "noopener noreferrer", textContent: "Nouvel onglet" });
+blank.append(blankLink);
+const linkControls = ([
+  ["toggle-link-disabled", "Toggle link disabled", () => { link.disabled = !link.disabled; }],
+  ["toggle-link-cancel", "Toggle link cancellation", () => { cancelLink = !cancelLink; }],
+  ["before-link", "Before link", () => {}],
+] as const).map(([id, text, activate]) => {
+  const control = document.createElement("button"); control.id = id; control.textContent = text; control.onclick = activate; return control;
+});
+linkConsumer.append(linkControls[0], linkControls[1], linkOutput, linkControls[2], link, initialDisabled, blank);
+document.getElementById("app")!.append(linkConsumer);
 const table = new TableElement();
 table.ariaLabel = "Packed table";
 table.style.setProperty("--fsds-core-spacing-size-03", "11px");
@@ -337,6 +444,147 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
           await expect(page.locator("#packed-stack")).toBeVisible();
           assert.equal(await page.locator("#packed-stack").evaluate(element => getComputedStyle(element).display), "flex");
         }
+        const link = page.getByRole("link", { name: "الانتقال إلى الطلبات — Prêt", exact: true });
+        const linkChild = page.locator("#link-child");
+        const pointerActivateDisabled = async target => {
+          await target.scrollIntoViewIfNeeded();
+          const bounds = await target.boundingBox();
+          assert.ok(bounds && bounds.width > 0 && bounds.height > 0, framework + ": disabled pointer scenario must have a visible hit target");
+          // Locator.click's enabled check rejects aria-disabled; use actual mouse input.
+          await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+        };
+        const linkEvents = () => page.locator("#link-events").evaluate(element => JSON.parse(element.textContent));
+        const linkHash = () => page.evaluate(() => location.hash);
+        const clearLinkHash = () => page.evaluate(() => history.replaceState(null, "", location.pathname + location.search));
+        const settleLinkInput = () => page.evaluate(() => new Promise(resolveFrame => requestAnimationFrame(() => requestAnimationFrame(resolveFrame))));
+        const settleLinkStyle = () => link.evaluate(async element => {
+          await Promise.all(element.getAnimations().map(animation => animation.finished.catch(() => {})));
+        });
+        const linkFacts = element => {
+          const style = getComputedStyle(element);
+          return {
+            tag: element.tagName, hrefPresent: element.hasAttribute("href"), href: element.getAttribute("href"),
+            target: element.getAttribute("target"), rel: element.getAttribute("rel"),
+            disabled: element.getAttribute("aria-disabled"), role: element.getAttribute("role"), tabIndex: element.tabIndex,
+            direction: style.direction, pointerEvents: style.pointerEvents, color: style.color,
+            outlineWidth: style.outlineWidth, outlineStyle: style.outlineStyle,
+            focused: element.getRootNode().activeElement === element,
+          };
+        };
+        const focusLinkByTab = async () => {
+          await page.locator("#before-link").focus();
+          await page.keyboard.press("Tab");
+          assert.equal(await link.evaluate(element => element.getRootNode().activeElement === element), true, framework + ": real Tab must reach the inner anchor, including Shadow DOM");
+          const facts = await link.evaluate(linkFacts);
+          assert.ok(parseFloat(facts.outlineWidth) > 0, framework + ": keyboard focus must have a visible computed outline width");
+          assert.equal(facts.outlineStyle, "solid", framework + ": keyboard focus must use the packed focus token rather than a browser default auto outline");
+          return facts;
+        };
+        await expect(link).toBeVisible();
+        await expect(linkChild).toHaveText("الانتقال إلى الطلبات — Prêt");
+        const linkBefore = await link.elementHandle();
+        assert.ok(linkBefore);
+        observation.links = { initial: await link.evaluate(linkFacts), transitions: [], activation: [] };
+        assert.equal(observation.links.initial.tag, "A");
+        assert.equal(observation.links.initial.hrefPresent, true, framework + ": undefined disabled must preserve the actual href attribute");
+        assert.equal(observation.links.initial.href, "#packed-destination");
+        assert.equal(observation.links.initial.target, "_self");
+        assert.equal(observation.links.initial.rel, "noopener noreferrer");
+        assert.equal(observation.links.initial.direction, "rtl");
+        assert.notEqual(observation.links.initial.disabled, "true");
+        const initialDisabledLink = page.locator("#initial-disabled-link").getByRole("link", { name: "Indisponible", exact: true });
+        observation.links.initialDisabled = await initialDisabledLink.evaluate(linkFacts);
+        assert.equal(observation.links.initialDisabled.hrefPresent, false, framework + ": initially disabled links must omit href rather than blank it");
+        assert.equal(observation.links.initialDisabled.disabled, "true");
+        assert.equal(observation.links.initialDisabled.role, "link");
+        assert.equal(observation.links.initialDisabled.tabIndex, 0);
+        await pointerActivateDisabled(initialDisabledLink);
+        await initialDisabledLink.focus();
+        await page.keyboard.press("Enter");
+        await settleLinkInput();
+        assert.deepEqual(await linkEvents(), [], framework + ": initially disabled pointer and Enter must not invoke the consumer");
+        assert.equal(await linkHash(), "", framework + ": initially disabled pointer and Enter must not navigate");
+        Object.assign(observation.links.initialDisabled, { callbackCount: 0, hash: await linkHash() });
+        const blankLink = page.locator("#blank-link").getByRole("link", { name: "Nouvel onglet", exact: true });
+        observation.links.newTarget = await blankLink.evaluate(linkFacts);
+        assert.equal(observation.links.newTarget.href, "#packed-new-target");
+        assert.equal(observation.links.newTarget.target, "_blank");
+        assert.equal(observation.links.newTarget.rel, "noopener noreferrer");
+        // A real new-target activation retains the browser's native navigation path.
+        const [popup] = await Promise.all([page.context().waitForEvent("page"), blankLink.click()]);
+        try {
+          await popup.waitForURL(url => url.hash === "#packed-new-target");
+          observation.links.newTarget.popupURL = popup.url();
+          assert.equal(await linkHash(), "");
+        } finally { await popup.close(); }
+        await page.locator("#toggle-link-cancel").click();
+        await linkChild.click();
+        await expect.poll(linkEvents).toEqual([{ hash: "", before: false, after: true }]);
+        assert.equal(await linkHash(), "", framework + ": nested pointer callback cancellation must prevent native navigation");
+        observation.links.activation.push({ input: "pointer", cancelled: true, callbacks: await linkEvents(), hash: await linkHash() });
+        observation.links.enabledFocus = await focusLinkByTab();
+        await page.keyboard.press("Enter");
+        await expect.poll(linkEvents).toEqual([{ hash: "", before: false, after: true }, { hash: "", before: false, after: true }]);
+        assert.equal(await linkHash(), "", framework + ": Enter callback cancellation must prevent native navigation");
+        observation.links.activation.push({ input: "Enter", cancelled: true, callbacks: await linkEvents(), hash: await linkHash() });
+        await page.mouse.move(0, 0);
+        await page.locator("#toggle-link-disabled").click();
+        await expect(link).toHaveAttribute("aria-disabled", "true");
+        await expect(link).not.toHaveAttribute("href");
+        await settleLinkStyle();
+        const disabledFacts = await link.evaluate(linkFacts);
+        assert.equal(disabledFacts.hrefPresent, false);
+        assert.equal(disabledFacts.role, "link");
+        assert.equal(disabledFacts.tabIndex, 0);
+        assert.equal(disabledFacts.pointerEvents, "auto", framework + ": disabled links remain hit-testable for discovery");
+        assert.equal(await link.evaluate((element, previous) => element === previous, linkBefore), true);
+        observation.links.transitions.push({ state: "disabled", sameAnchor: true, ...disabledFacts });
+        await pointerActivateDisabled(linkChild);
+        await settleLinkInput();
+        assert.equal((await linkEvents()).length, 2, framework + ": disabled nested pointer activation must not invoke the consumer");
+        assert.equal(await linkHash(), "", framework + ": disabled nested pointer activation must not navigate");
+        await page.mouse.move(0, 0);
+        observation.links.disabledFocus = await focusLinkByTab();
+        const linkSession = await page.context().newCDPSession(page);
+        const linkAX = await linkSession.send("Accessibility.getFullAXTree");
+        writeFileSync(join(evidence, `browser-links-${framework}-disabled-AX.json`), JSON.stringify(linkAX, null, 2));
+        const disabledAXLink = linkAX.nodes.find(node => !node.ignored && node.role?.value === "link" && node.name?.value === "الانتقال إلى الطلبات — Prêt");
+        assert.ok(disabledAXLink, framework + ": localized disabled link must remain in the accessibility tree");
+        observation.links.disabledAX = Object.fromEntries((disabledAXLink.properties ?? []).map(property => [property.name, property.value?.value]));
+        assert.equal(observation.links.disabledAX.disabled, true, framework + ": the focused link must expose disabled state");
+        assert.equal(observation.links.disabledAX.focused, true, framework + ": keyboard focus must reach the accessible link");
+        await linkSession.detach();
+        await page.keyboard.press("Enter");
+        await settleLinkInput();
+        assert.equal((await linkEvents()).length, 2, framework + ": disabled Enter must not invoke the consumer");
+        assert.equal(await linkHash(), "", framework + ": disabled Enter must not navigate");
+        observation.links.activation.push({ input: "disabled pointer and Enter", callbacks: await linkEvents(), callbackCount: 2, hash: await linkHash() });
+        await linkChild.hover();
+        await settleLinkStyle();
+        observation.links.disabledHover = await link.evaluate(linkFacts);
+        assert.equal(observation.links.disabledHover.color, disabledFacts.color, framework + ": disabled hover must suppress pointer color changes");
+        assert.equal(observation.links.disabledHover.outlineWidth, observation.links.disabledFocus.outlineWidth, framework + ": disabled hover must preserve keyboard focus outline width");
+        assert.equal(observation.links.disabledHover.outlineStyle, "solid", framework + ": disabled hover must preserve the packed keyboard focus outline");
+        await page.screenshot({ path: join(evidence, `packed-links-${framework}-disabled-focus.png`), fullPage: true });
+        await page.locator("#toggle-link-disabled").click();
+        await page.locator("#toggle-link-cancel").click();
+        await expect(link).toHaveAttribute("href", "#packed-destination");
+        assert.notEqual(await link.getAttribute("aria-disabled"), "true");
+        assert.equal(await link.evaluate((element, previous) => element === previous, linkBefore), true);
+        observation.links.transitions.push({ state: "reenabled", sameAnchor: true, ...await link.evaluate(linkFacts) });
+        await linkChild.click();
+        await expect.poll(linkHash).toBe("#packed-destination");
+        await expect.poll(linkEvents).toEqual([{ hash: "", before: false, after: true }, { hash: "", before: false, after: true }, { hash: "", before: false, after: false }]);
+        observation.links.activation.push({ input: "pointer", cancelled: false, callbacks: await linkEvents(), hash: await linkHash() });
+        await clearLinkHash();
+        await focusLinkByTab();
+        await page.keyboard.press("Enter");
+        await expect.poll(linkHash).toBe("#packed-destination");
+        await expect.poll(linkEvents).toEqual([{ hash: "", before: false, after: true }, { hash: "", before: false, after: true }, { hash: "", before: false, after: false }, { hash: "", before: false, after: false }]);
+        observation.links.activation.push({ input: "Enter", cancelled: false, callbacks: await linkEvents(), hash: await linkHash() });
+        assert.equal(await link.evaluate((element, previous) => element === previous, linkBefore), true);
+        await linkBefore.dispose();
+        await clearLinkHash();
         const table = page.getByRole("table", { name: "Packed table", exact: true });
         await expect(table.getByRole("columnheader")).toHaveText(["Workspace", "Team", "Places"]);
         await expect(table.getByRole("rowheader")).toHaveText("Team A");
@@ -503,7 +751,7 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         assert.deepEqual(failures, [], framework + ": browser failures");
         observation.passed = true;
         observations.push(observation);
-        console.log(`Installed ${framework}: Button, Icon, Table metadata, tokens and styles verified`);
+        console.log(`Installed ${framework}: Button, Icon, Links activation/focus/navigation, Table metadata, tokens and styles verified`);
       } catch (error) { observation.error = error.stack ?? String(error); throw error; }
       finally { observation.failures = failures; writeFileSync(join(evidence, `browser-${framework}.json`), JSON.stringify(observation, null, 2)); await page.close(); }
     }

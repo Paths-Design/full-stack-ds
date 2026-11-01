@@ -10,7 +10,7 @@
  */
 import assert from "node:assert/strict";
 
-import { guardsAgainstDisabled, propertiesUnder, suppressionLeakId } from "./audit.mjs";
+import { auditComponentCss, guardsAgainstDisabled, propertiesUnder, suppressionLeakId } from "./audit.mjs";
 
 let failures = 0;
 function check(name, fn) {
@@ -109,6 +109,68 @@ check("two properties leaking under the same pseudo are distinct ledger entries"
   const a = suppressionLeakId({ component: "Links", pseudo: ":hover", property: "color" });
   const b = suppressionLeakId({ component: "Links", pseudo: ":hover", property: "outline-color" });
   assert.notEqual(a, b);
+});
+
+const namedContract = (names = ["pointer"]) => ({
+  name: "X", cssPrefix: "x", anatomy: { dom: { tag: "a" } },
+  states: { dimensions: {
+    pointer: { category: "interaction", values: ["rest", "hover", "visited"], initial: "rest" },
+    focus: { category: "interaction", values: ["blur", "focus"], initial: "blur" },
+    availability: { category: "availability", values: ["enabled", "disabled"], initial: "enabled", suppresses: { names } },
+  } },
+});
+const leaked = (css, contract = namedContract()) => auditComponentCss("X", contract, css).leaks.map((row) => `${row.pseudo} ${row.property}`);
+
+check("guarded rules still expose their properties to the primitive", () => {
+  assert.deepEqual([...propertiesUnder('.x:hover:not([aria-disabled="true"]) { color: red; }', ":hover")], ["color"]);
+});
+check("a guarded hover does not hide an unguarded visited rule", () => {
+  assert.deepEqual(leaked('.x:hover:not([aria-disabled="true"]) { color: red; } .x:visited { color: blue; }'), [":visited color"]);
+});
+check("an unrelated guard cannot hide a leak or bless another selector-list branch", () => {
+  assert.deepEqual(leaked('.other:not([aria-disabled="true"]) { color: red; } .x:hover, .x:visited:not([aria-disabled="true"]) { color: blue; }'), [":hover color"]);
+});
+check("names-only pointer suppression imposes no focus obligation", () => {
+  assert.deepEqual(leaked('.x:hover:not([aria-disabled="true"]) { color: red; } .x:visited:not([aria-disabled="true"]) { color: blue; } .x:focus-visible { outline-color: black; }'), []);
+});
+check("focus-only suppression imposes no pointer obligation", () => {
+  assert.deepEqual(leaked('.x:hover { color: red; } .x:visited { color: blue; } .x:focus-visible { outline-color: black; }', namedContract(["focus"])), [":focus-visible outline-color"]);
+});
+check("only an exact root source reset can win back an unguarded root rule", () => {
+  assert.deepEqual(leaked('.x:hover { color: red; } .x[aria-disabled="true"] { color: grey; }'), []);
+  assert.deepEqual(leaked('.x:hover { color: red; } .x__part[aria-disabled="true"] { color: grey; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x:hover { color: red; } .other[aria-disabled="true"] { color: grey; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x[aria-disabled="true"] { color: grey; } .x:hover { color: red; }'), [":hover color"]);
+});
+check("partial resets and guards preserve the exact remaining obligations", () => {
+  assert.deepEqual(leaked('.x { &:hover { color: red; border-color: blue; } &[aria-disabled="true"] { color: grey; } &:visited { color: purple; } }'), [":hover border-color", ":visited color"]);
+});
+check("a guard on an ancestor cannot protect the interaction subject", () => {
+  assert.deepEqual(leaked('.x:not([aria-disabled="true"]) .x__part:hover { color: red; }'), [":hover color"]);
+});
+check("category suppression remains effective without target dimension fixtures", () => {
+  const contract = namedContract();
+  contract.states.dimensions = { availability: { ...contract.states.dimensions.availability, suppresses: { categories: ["interaction"] } } };
+  assert.deepEqual(leaked('.x:hover { color: red; } .x:focus-visible { outline-color: black; }', contract), [":hover color", ":focus-visible outline-color"]);
+});
+check("unknown names fail instead of silently discarding an obligation", () => {
+  assert.throws(() => leaked('.x:hover { color: red; }', namedContract(["missing"])), /STATE_SUPPRESSION_UNKNOWN_DIMENSION/);
+});
+check("native input suppression requires the exact source binding and state carrier", () => {
+  const contract = namedContract();
+  contract.anatomy.dom = { tag: "div", part: "root", children: [{ tag: "input", part: "field", bindings: { disabled: "prop:disabled" } }] };
+  const css = '.x__field:hover:not(:disabled) { color: red; } .x:has(.x__field:focus-visible) .x__indicator { outline-color: red; }';
+  contract.states.dimensions.availability.suppresses = { categories: ["interaction"] };
+  assert.deepEqual(leaked(css, contract), []);
+  assert.equal(auditComponentCss("X", contract, css).nativeExclusions[0].reason, "native-disabled-source-cannot-match");
+  contract.anatomy.dom.children[0].bindings.disabled = "prop:otherDisabled";
+  assert.deepEqual(leaked(css, contract), [":hover color", ":focus-visible outline-color"]);
+});
+check("category and name obligations form a union without suppressing other dimensions", () => {
+  const contract = namedContract();
+  contract.states.dimensions.selection = { category: "selection", values: ["unchecked", "checked"], initial: "unchecked" };
+  contract.states.dimensions.availability.suppresses.categories = ["selection"];
+  assert.deepEqual(leaked('.x:hover { color: red; } .x:checked { border-color: blue; } .x:focus-visible { outline-color: black; }', contract), [":hover color", ":checked border-color"]);
 });
 
 if (failures > 0) {

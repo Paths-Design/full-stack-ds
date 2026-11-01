@@ -24,6 +24,18 @@ function buildSequenceFixture(c = sequenceFixture()) {
   return buildComponentIR(c, { allContracts: new Map([[c.name, c], ["Pagination", pagination], ["Icon", fixture("Icon")]]) });
 }
 describe("Godot bounded lowering", () => {
+  it("withholds the cancellable anchor callback and reports its actual API omission", () => {
+    const ir = buildComponentIR(fixture("Links"));
+    ir.name = "DestinationControl";
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") });
+    const script = files.find(file => file.relativePath === "DestinationControl/DestinationControl.gd")!.contents;
+    expect(script).not.toContain("func set_on_click");
+    expect(script).not.toContain("LinkActivationEvent");
+    const receipt = JSON.parse(files.find(file => file.relativePath === "DestinationControl/capabilities.json")!.contents);
+    expect(receipt.excludedProps).toContain("onClick");
+    expect(receipt.omissions).toContain("onClick: callback surface has no native signal projection");
+    expect(receipt.omissions).toContain("disabled: bound to the aria-disabled attribute; native attribute projection unverified");
+  });
   it("projects a static nested componentRef from renamed item anatomy", () => {
     const source = fixture("Accordion");
     const ir = buildComponentIR(source, { allContracts: new Map([["Accordion", source], ["Icon", fixture("Icon")]]) });

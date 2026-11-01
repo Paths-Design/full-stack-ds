@@ -47,6 +47,7 @@ import type {
 } from "../../ir.js";
 import { componentNeedsInstanceId } from "../../id-relationships.js";
 import {
+  hasDisabledActivation,
   TABLE_COMPOSITION_TAGS,
   NATIVE_FOCUSABLE_TAGS,
   canonicalTsType,
@@ -1598,7 +1599,7 @@ function generateDomTreeImports(ir: ComponentIR, componentBody: string): string 
     const names = [...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : []), "injectFsdsMessages"];
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction${hasDisabledActivation(ir.dom) ? ", isActivationDisabled" : ""} } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) lines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) lines.push(`import { afterNextRender } from "@angular/core";`);
@@ -2171,7 +2172,8 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     }
   }
 
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  if (hasDisabledActivation(ir.dom)) lines.push(`  protected isActivationDisabled = isActivationDisabled;`);
   for (const channel of ir.nativeTextChannels ?? []) {
     lines.push(`  protected requestNativeText${capitalizeAngular(channel)}(event: Event): void {`,
       `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });`,
@@ -2904,6 +2906,12 @@ function renderAngularDomNode(
   // produces `(click)="behavior.X()"`. Legacy `bindings.onX` is filtered
   // below to avoid double-emit.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderAngularBindingValue(node.disabledActivation.disabled, ctx);
+      const callback = renderAngularBindingValue(expr, ctx);
+      attrs.push(`(click)="canActivateInteraction($event, false, isActivationDisabled(${disabled})) && (${callback})?.($event)"`);
+      continue;
+    }
     if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
       attrs.push(`(${eventName})="requestNativeText${capitalizeAngular(node.nativeTextChannel)}($event)"`);
       continue;
@@ -2925,6 +2933,11 @@ function renderAngularDomNode(
       : renderAngularEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderAngularBindingValue(node.disabledActivation.disabled, ctx);
+    attrs.push(`(click)="canActivateInteraction($event, false, isActivationDisabled(${disabled}))"`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2964,6 +2977,11 @@ function renderAngularDomNode(
     (node.componentInstance?.bindings ?? []).map((b) => [b.sourceAttr, b]),
   );
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderAngularBindingValue(node.disabledActivation.disabled, ctx);
+      attrs.push(`[attr.href]="isActivationDisabled(${disabled}) ? null : ${renderAngularBindingValue(expr, ctx)}"`);
+      continue;
+    }
     // Dual-pathway dedup: parseDomNode mirrored `bindings.onX` to
     // `events.<x>` for back-compat. The canonical events loop above
     // already emitted the handler — skip the legacy attribute pass.

@@ -71,6 +71,12 @@ export const buttonTokenScopes = {
       ref: "semantic.color.foreground.inverse",
       fallback: "#fafafa",
     },
+    "button.color.foreground.disabled": {
+      name: "button.color.foreground.disabled",
+      cssVar: "--fsds-button-color-foreground-disabled",
+      ref: "semantic.color.foreground.disabled",
+      fallback: "#727272",
+    },
     "button.color.border.default": {
       name: "button.color.border.default",
       cssVar: "--fsds-button-color-border-default",

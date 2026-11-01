@@ -17,6 +17,16 @@ const completeFixture = (name: string) => loadContractWithSidecars(root, name) a
 const emit = (contract: ComponentContract) => createUnityEmitter().emitComponent(buildComponentIR(contract), { componentsRoot: "", contractsRoot })[0]!.contents;
 
 describe("Unity capability lowering", () => {
+  it("retains destination requests and native disabling while withholding cancellable anchor callbacks", () => {
+    const contract = fixture("Links");
+    contract.name = "DestinationControl";
+    const source = emit(contract);
+    expect(source).toContain("public event Action<string> Activated");
+    expect(source).toContain("public bool Disabled");
+    expect(source).toContain("set => SetEnabled(!value)");
+    expect(source).not.toContain("OnClick");
+    expect(source).not.toContain("LinkActivationEvent");
+  });
   it.each([
     ["Switch", "BooleanControl"], ["Accordion", "ItemGroup"], ["Tabs", "ItemGroup"], ["Popover", "AnchoredSurface"],
   ])("%s survives identity substitution with the same attached behavior", (name, expected) => {

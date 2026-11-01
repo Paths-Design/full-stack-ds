@@ -5,13 +5,17 @@ export interface ActivationEvent {
   currentTarget: EventTarget | null;
 }
 
+export function isActivationDisabled(value: unknown): boolean {
+  return value === true || value === "true";
+}
+
 /** Consumer cancellation is observed before native default cancellation.
  * Native summary activation must be cancelled even for a disabled binding. */
-export function canActivateInteraction(event: ActivationEvent, cancelNativeDefault = false): boolean {
+export function canActivateInteraction(event: ActivationEvent, cancelNativeDefault = false, disabledValue?: unknown): boolean {
   const cancelled = event.defaultPrevented;
   const host = event.currentTarget as HTMLElement | null;
-  const disabled = host?.hasAttribute("disabled") || host?.getAttribute("aria-disabled") === "true";
-  if (cancelNativeDefault) event.preventDefault();
+  const disabled = isActivationDisabled(disabledValue) || host?.hasAttribute("disabled") || host?.getAttribute("aria-disabled") === "true";
+  if (cancelNativeDefault || disabled) event.preventDefault();
   return !cancelled && !disabled;
 }
 

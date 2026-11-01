@@ -1,5 +1,37 @@
 export const webCases = [
   {
+    name: "invalid-managed-link-tab-order", error: 2353, fragment: "tabIndex",
+    source: `import type { LinksProps } from "@full-stack-ds/react"; const link: LinksProps = { tabIndex: -1 };`
+  },
+  {
+    name: "portable-link-activation",
+    source: `
+import type { LinksProps as R, LinkActivationEvent as RE } from "@full-stack-ds/react";
+import type { LinksProps as V, LinkActivationEvent as VE } from "@full-stack-ds/vue";
+import type { LinksProps as S, LinkActivationEvent as SE } from "@full-stack-ds/svelte";
+import type { LinksComponent as A, LinkActivationEvent as AE } from "@full-stack-ds/angular";
+import type { LinksElement as L, LinkActivationEvent as LE } from "@full-stack-ds/lit";
+const cancel = (event: RE) => { if (!event.defaultPrevented) event.preventDefault(); };
+const r: R = { disabled: true, onClick: cancel }; const v: V = { onClick: cancel }; const s: S = { onClick: cancel };
+const a: A["onClick"] = cancel; const l: L["onClick"] = cancel;
+const event = { defaultPrevented: false, preventDefault() {} };
+const same: [RE, VE, SE, AE, LE] = [event, event, event, event, event];
+`
+  },
+  {
+    name: "invalid-link-activation-payload", error: 2322, count: 5, fragment: "number",
+    source: `
+import type { LinksProps as R } from "@full-stack-ds/react";
+import type { LinksProps as V } from "@full-stack-ds/vue";
+import type { LinksProps as S } from "@full-stack-ds/svelte";
+import type { LinksComponent as A } from "@full-stack-ds/angular";
+import type { LinksElement as L } from "@full-stack-ds/lit";
+const wrong = (event: number) => {};
+const r: R = { onClick: wrong }; const v: V = { onClick: wrong }; const s: S = { onClick: wrong };
+const a: A["onClick"] = wrong; const l: L["onClick"] = wrong;
+`
+  },
+  {
     name: "native-table-accessibility-attributes",
     source: `
 import type { TableHeaderCellProps as R } from "@full-stack-ds/react";
@@ -135,6 +167,22 @@ const s: S = { kind: "invalid", text: "text" };
 ];
 
 export const nativeCases = [
+  {
+    name: "portable-link-activation",
+    source: `
+import type { LinksProps, LinkActivationEvent } from "@full-stack-ds/react-native";
+const cancel = (event: LinkActivationEvent) => { if (!event.defaultPrevented) event.preventDefault(); };
+const link: LinksProps = { href: "https://example.test/docs", disabled: true, onClick: cancel, children: "المستندات" };
+`
+  },
+  {
+    name: "invalid-link-activation-payload", error: 2322, fragment: "number",
+    source: `import type { LinksProps } from "@full-stack-ds/react-native"; const link: LinksProps = { onClick: (event: number) => {} };`
+  },
+  {
+    name: "readonly-link-activation-state", error: 2540, fragment: "defaultPrevented",
+    source: `import type { LinkActivationEvent } from "@full-stack-ds/react-native"; function cancel(event: LinkActivationEvent) { event.defaultPrevented = true; }`
+  },
   {
     "name": "valid",
     "source": "\nimport { Button, type ButtonProps, type ButtonVariant, type SelectOption } from \"@full-stack-ds/react-native\";\nimport type { StackProps } from \"@full-stack-ds/react-native/primitives\";\nimport type { FsdsTheme } from \"@full-stack-ds/react-native/tokens\";\nconst button: ButtonProps = { variant: \"primary\" };\nconst variant: ButtonVariant = \"outline\";\nconst option: SelectOption = { value: \"one\", label: \"One\" };\nconst stack: StackProps = { layout: \"native\" };\nconst theme: FsdsTheme = { brand: \"consumer\", tokens: { \"color.example\": \"#123456\" } };\nvoid Button;"

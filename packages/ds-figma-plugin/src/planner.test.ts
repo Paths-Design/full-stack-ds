@@ -29,6 +29,21 @@ function dim(plan: FigmaStatePlan, name: string): PlannedDimension {
 }
 
 describe("planFigmaStateSurface", () => {
+  it("retains names-only pointer suppression metadata and resolves category/name unions without masking focus", () => {
+    const descriptor: PlannerDescriptor = { component: { name: "Probe" }, states: { dimensions: {
+      pointer: { category: "interaction", values: ["rest", "hover", "visited"], initial: "rest" },
+      focus: { category: "interaction", values: ["blur", "focus"], initial: "blur" },
+      selection: { category: "selection", values: ["off", "on"], initial: "off" },
+      availability: { category: "availability", values: ["enabled", "disabled"], initial: "enabled", suppresses: { names: ["pointer"] } },
+    } } };
+    expect(planFigmaStateSurface(descriptor).suppressions).toEqual([{
+      sourceDimension: "availability", sourceValues: ["disabled"], suppressesCategories: [], suppressedDimensions: ["pointer"],
+    }]);
+    descriptor.states!.dimensions!.availability.suppresses = { categories: ["selection"], names: ["pointer", "selection"] };
+    expect(planFigmaStateSurface(descriptor).suppressions[0].suppressedDimensions).toEqual(["pointer", "selection"]);
+    descriptor.states!.dimensions!.availability.suppresses = { names: ["missing"] };
+    expect(() => planFigmaStateSurface(descriptor)).toThrow(/STATE_SUPPRESSION_UNKNOWN_DIMENSION.*missing/);
+  });
   // A1: determinism
   it("A1: is deterministic — same descriptor yields a deeply equal plan", () => {
     const d = loadDescriptor("Button");

@@ -532,7 +532,9 @@ function emitImports(ir: ComponentIR, component: string): string {
     ir.dom &&
     !rootIsTextComponent(ir) &&
     rootRendersTextWrapper(ir) &&
-    variantStyleFacts(ir).some((fact) => fact.textEntries.length > 0)
+    (variantStyleFacts(ir).some((fact) => fact.textEntries.length > 0) ||
+      loweredStateKeys(ir).includes("disabled") && stateStyleFacts(ir).some(state => state.stateKey === "disabled" &&
+        [...state.variantEntries.values()].some(entries => entries.some(entry => entry.layer === "text"))))
   ) {
     rnTypeImports.add("TextStyle");
   }
@@ -1446,7 +1448,7 @@ function emitVariantStyleConsts(ir: ComponentIR): string[] {
     for (const state of stateStyleFacts(ir)) {
       if (!loweredStateKeys(ir).includes(state.stateKey)) continue;
       const statePairs = axisFacts
-        .filter((fact) => state.variantEntries.has(fact.styleKey))
+        .filter((fact) => rootStateEntries(ir, state.variantEntries.get(fact.styleKey) ?? []).length > 0)
         .map(
           (fact) =>
             `${JSON.stringify(fact.value)}: styles.${fact.styleKey}_${state.stateKey}`,
@@ -1454,6 +1456,14 @@ function emitVariantStyleConsts(ir: ComponentIR): string[] {
       if (statePairs.length > 0) {
         lines.push(
           `${INDENT}const ${stateVariantStyleConstName(state.stateKey, safeName)} = ${safeName} !== undefined ? ({ ${statePairs.join(", ")} } as Record<string, ${rootStyleType(ir)} | undefined>)[${safeName}] : undefined;`,
+        );
+      }
+      if (state.stateKey === "disabled" && !rootIsText && rootRendersTextWrapper(ir)) {
+        const textPairs = axisFacts
+          .filter(fact => rootStateEntries(ir, state.variantEntries.get(fact.styleKey) ?? [], true).length > 0)
+          .map(fact => `${JSON.stringify(fact.value)}: styles.${fact.textStyleKey}_disabled`);
+        if (textPairs.length > 0) lines.push(
+          `${INDENT}const textDisabledStyleFor${capitalize(safeName)} = ${safeName} !== undefined ? ({ ${textPairs.join(", ")} } as Record<string, TextStyle | undefined>)[${safeName}] : undefined;`,
         );
       }
     }
@@ -1528,17 +1538,34 @@ function rootRendersTextWrapper(ir: ComponentIR): boolean {
 
 /**
  * Whether each interactive state can be lowered for this component's root:
- * pressed needs a Pressable host; disabled needs a disabled prop to read.
+ * pressed needs a Pressable host; disabled needs an authored availability binding.
  */
 function loweredStateKeys(ir: ComponentIR): RnStateKey[] {
-  if (!ir.dom || usesNativeToggle(ir)) return [];
+  // These dispatch branches render their own root styles instead of the
+  // generic emitNodeProps state-style array.
+  if (!ir.dom || ir.dom.componentInstance || ir.dom.iteration ||
+      isCompoundSelectionContainer(ir) || nativeHighlightTransform(ir) ||
+      rnAnchoredSurface(ir) || usesNativeToggle(ir) || isCheckboxControl(ir)) return [];
   const rootIsPressable = rnComponentForNode(ir.dom) === "Pressable";
-  const hasDisabledProp = Boolean(findProp(ir, "disabled"));
+  const hasDisabledProp = rootDisabledStyleExpression(ir) !== null;
   return stateStyleFacts(ir)
     .map((state) => state.stateKey)
     .filter((stateKey) =>
       stateKey === "pressed" ? rootIsPressable : hasDisabledProp,
     );
+}
+
+/** Availability comes from the authored host binding, not a conventional prop name. */
+function rootDisabledStyleExpression(ir: ComponentIR): string | null {
+  const node = ir.dom;
+  if (!node) return null;
+  if (node.bindings.disabled) return bindingExpr(node.bindings.disabled, ir);
+  const disabled = node.disabledActivation?.disabled ?? node.bindings["aria-disabled"];
+  return disabled ? rnBooleanishExpr(bindingExpr(disabled, ir)) : null;
+}
+
+function rootStateEntries(ir: ComponentIR, entries: JoinedStyleEntry[], text = false): JoinedStyleEntry[] {
+  return entries.filter(entry => text ? entry.layer === "text" : rootIsTextComponent(ir) || entry.layer === "view");
 }
 
 /**
@@ -1552,12 +1579,12 @@ function stateStyleExpressions(ir: ComponentIR): Map<RnStateKey, string[]> {
   for (const state of stateStyleFacts(ir)) {
     if (!lowered.has(state.stateKey)) continue;
     const exprs: string[] = [];
-    if (state.rootEntries.length > 0) {
+    if (rootStateEntries(ir, state.rootEntries).length > 0) {
       exprs.push(`styles.root_state_${state.stateKey}`);
     }
     for (const axis of realizedVariantAxes(ir)) {
       const axisFacts = variantStyleFacts(ir).filter((fact) => fact.axis === axis);
-      if (axisFacts.some((fact) => state.variantEntries.has(fact.styleKey))) {
+      if (axisFacts.some((fact) => rootStateEntries(ir, state.variantEntries.get(fact.styleKey) ?? []).length > 0)) {
         exprs.push(stateVariantStyleConstName(state.stateKey, axisFacts[0]!.axisSafeName));
       }
     }
@@ -1603,6 +1630,19 @@ function rootTextStyleExpression(ir: ComponentIR): string | null {
     const axisFacts = variantStyleFacts(ir).filter((fact) => fact.axis === axis);
     if (axisFacts.some((fact) => fact.textEntries.length > 0)) {
       parts.push(textVariantStyleConstName(axisFacts[0]!.axisSafeName));
+    }
+  }
+  const disabled = loweredStateKeys(ir).includes("disabled") ? rootDisabledStyleExpression(ir) : null;
+  const disabledState = stateStyleFacts(ir).find(state => state.stateKey === "disabled");
+  if (disabled && disabledState && rootStateEntries(ir, disabledState.rootEntries, true).length > 0) {
+    parts.push(`(${disabled}) ? styles.rootText_state_disabled : undefined`);
+  }
+  if (disabled && disabledState) {
+    for (const axis of realizedVariantAxes(ir)) {
+      const facts = variantStyleFacts(ir).filter(fact => fact.axis === axis);
+      if (facts.some(fact => rootStateEntries(ir, disabledState.variantEntries.get(fact.styleKey) ?? [], true).length > 0)) {
+        parts.push(`(${disabled}) ? textDisabledStyleFor${capitalize(facts[0]!.axisSafeName)} : undefined`);
+      }
     }
   }
   if (parts.length === 0) return null;
@@ -2006,9 +2046,12 @@ function emitNodeProps(
     const stateExprs = stateStyleExpressions(ir);
     const pressedExprs = stateExprs.get("pressed") ?? [];
     const disabledExprs = stateExprs.get("disabled") ?? [];
+    const disabledExpression = rootDisabledStyleExpression(ir);
+    const disabledCondition = disabledExpression && /^[A-Za-z_$][\w$]*$/.test(disabledExpression)
+      ? disabledExpression : `(${disabledExpression})`;
     const stateParts = [
       ...pressedExprs.map((expr) => `pressed ? ${expr} : undefined`),
-      ...disabledExprs.map((expr) => `disabled ? ${expr} : undefined`),
+      ...disabledExprs.map((expr) => `${disabledCondition} ? ${expr} : undefined`),
     ]
       .map((part) => `, ${part}`)
       .join("");
@@ -2050,6 +2093,11 @@ function emitNodeProps(
   }
 
   const accessibilityState: string[] = [];
+  if (component === "Pressable" && node.disabledActivation && !node.bindings.disabled) {
+    const disabled = rnBooleanishExpr(bindingExpr(node.disabledActivation.disabled, ir));
+    props.push(`${pad}disabled={${disabled}}`);
+    accessibilityState.push(`disabled: ${disabled}`);
+  }
   const sequence = ir.motion.sequence;
   if (sequence) {
     if (isRootNode) props.push(`${pad}onTouchStart={sequence.touchStart}`, `${pad}onTouchEnd={sequence.touchEnd}`, `${pad}onTouchCancel={sequence.touchEnd}`);
@@ -2112,7 +2160,7 @@ function emitNodeProps(
       continue;
     }
     if (name === "aria-disabled") {
-      if (node.bindings.disabled) continue;
+      if (node.bindings.disabled || component === "Pressable" && node.disabledActivation) continue;
       // An aria-disabled control is perceivable but not operable: the web
       // guards its activation, and a Pressable blocks the press natively.
       if (component === "Pressable") props.push(`${pad}disabled={${rnBooleanishExpr(expr)}}`);
@@ -2195,14 +2243,31 @@ function emitNodeProps(
       continue;
     }
     if (name === "href" && component === "Pressable") {
-      props.push(`${pad}onPress={() => { if (${expr}) void Linking.openURL(String(${expr})); }}`);
+      // Navigation and authored activation share one handler so neither can
+      // overwrite the other, and cancellation is observed before Linking.
       continue;
     }
   }
   for (const [eventName, binding] of Object.entries(node.events)) {
     const eventProp = eventPropFor(component, eventName);
     if (!eventProp) continue;
+    if (component === "Pressable" && node.tag === "a" && eventProp === "onPress") continue;
     props.push(`${pad}${eventProp}={${eventHandlerExpr(component, eventName, binding, ir, node.activation)}}`);
+  }
+  if (component === "Pressable" && node.tag === "a") {
+    const href = node.bindings.href ? bindingExpr(node.bindings.href, ir) : undefined;
+    const activation = Object.entries(node.events).find(([eventName]) => eventPropFor(component, eventName) === "onPress");
+    const disabled = node.disabledActivation ? rnBooleanishExpr(bindingExpr(node.disabledActivation.disabled, ir)) : undefined;
+    const invoke = activation
+      ? activation[1].kind === "prop"
+        ? `${bindingExpr(activation[1], ir)}?.(event); `
+        : `(${eventHandlerExpr(component, activation[0], activation[1], ir, node.activation)})(); `
+      : "";
+    if (href && !activation && !disabled) {
+      props.push(`${pad}onPress={() => { if (${href}) void Linking.openURL(String(${href})); }}`);
+    } else if (href || activation || disabled) props.push(
+      `${pad}onPress={(event) => { if (${disabled ? `${disabled} || ` : ""}event.defaultPrevented) return; ${invoke}${href ? `if (!event.defaultPrevented && ${href}) void Linking.openURL(String(${href})); ` : ""}}}`,
+    );
   }
   const hasOnPressEvent = Object.keys(node.events).some(
     (eventName) => eventPropFor(component, eventName) === "onPress",
@@ -2689,11 +2754,27 @@ function generateReactNativeStylesFile(ir: ComponentIR): string {
       extraStyles.set(selection.styleKey, styleObjectLiteral(selection.entries));
     }
     for (const state of stateStyleFacts(ir)) {
-      if (state.rootEntries.length > 0) {
-        extraStyles.set(`root_state_${state.stateKey}`, styleObjectLiteral(state.rootEntries));
+      const lowered = loweredStateKeys(ir).includes(state.stateKey);
+      // Existing native-pseudo view styles retain their emission contract.
+      // Newly admitted ARIA and text states need an actual root consumer.
+      if (!lowered && state.stateKey === "disabled" &&
+          rootStateBlock(ir, "disabled")?.selector.startsWith(`.${ir.cssPrefix}[aria-disabled="true"]`)) continue;
+      const rootEntries = rootStateEntries(ir, state.rootEntries).filter(entry => entry.layer === "view" || lowered);
+      if (rootEntries.length > 0) {
+        extraStyles.set(`root_state_${state.stateKey}`, styleObjectLiteral(rootEntries));
+      }
+      if (lowered && !rootIsText && rootRendersTextWrapper(ir) && state.stateKey === "disabled") {
+        const textEntries = rootStateEntries(ir, state.rootEntries, true);
+        if (textEntries.length > 0) extraStyles.set("rootText_state_disabled", styleObjectLiteral(textEntries));
       }
       for (const [variantStyleKey, entries] of state.variantEntries) {
-        extraStyles.set(`${variantStyleKey}_${state.stateKey}`, styleObjectLiteral(entries));
+        const rootEntries = rootStateEntries(ir, entries).filter(entry => entry.layer === "view" || lowered);
+        if (rootEntries.length > 0) extraStyles.set(`${variantStyleKey}_${state.stateKey}`, styleObjectLiteral(rootEntries));
+        if (lowered && !rootIsText && rootRendersTextWrapper(ir) && state.stateKey === "disabled") {
+          const textEntries = rootStateEntries(ir, entries, true);
+          const fact = variantStyleFacts(ir).find(fact => fact.styleKey === variantStyleKey)!;
+          if (textEntries.length > 0) extraStyles.set(`${fact.textStyleKey}_disabled`, styleObjectLiteral(textEntries));
+        }
       }
     }
     for (const key of extraStyles.keys()) keys.add(key);
@@ -3030,8 +3111,8 @@ function rootIsTextComponent(ir: ComponentIR): boolean {
  * blocks (`.button:active { background-color: var(--…-active) }`) lower to
  * Pressable state styles: `:active` → pressed (style-function form),
  * `:disabled` → the disabled prop. `:hover` / `:focus-visible` have no
- * Pressable analog and are intentionally not realized. View-layer only —
- * text-layer state styling would need state plumbed into the text wrapper.
+ * Pressable analog and are intentionally not realized. Disabled text styles
+ * reach the projected text wrapper; pressed styling stays on the host.
  */
 const RN_STATE_PSEUDOS = [
   { pseudo: "active", stateKey: "pressed" },
@@ -3040,11 +3121,7 @@ const RN_STATE_PSEUDOS = [
 
 type RnStateKey = (typeof RN_STATE_PSEUDOS)[number]["stateKey"];
 
-function stateBlockEntries(
-  ir: ComponentIR,
-  pseudo: string,
-  scopeKey: string,
-): JoinedStyleEntry[] {
+function rootStateBlock(ir: ComponentIR, pseudo: string) {
   // Match the state block by its state PREFIX, not by exact string equality.
   //
   // RN is reading a web selector as a fact ("this is the :active block"), and
@@ -3055,19 +3132,30 @@ function stateBlockEntries(
   //
   // Boundary-checked so `.button:active` does not match a hypothetical
   // `.button:active-within`; a guard always continues with `:` or `[`.
-  const stateSelector = `.${ir.cssPrefix}:${pseudo}`;
-  const block = ir.cssBlocks.find((candidate) => {
-    if (candidate.selector === stateSelector) return true;
-    if (!candidate.selector.startsWith(stateSelector)) return false;
-    const next = candidate.selector.charAt(stateSelector.length);
-    return next === ":" || next === "[";
+  const stateSelectors = [`.${ir.cssPrefix}:${pseudo}`,
+    ...(pseudo === "disabled" ? [`.${ir.cssPrefix}[aria-disabled="true"]`] : [])];
+  return ir.cssBlocks.find((candidate) => {
+    return stateSelectors.some(stateSelector => {
+      if (candidate.selector === stateSelector) return true;
+      if (!candidate.selector.startsWith(stateSelector)) return false;
+      const next = candidate.selector.charAt(stateSelector.length);
+      return next === ":" || next === "[";
+    });
   });
+}
+
+function stateBlockEntries(
+  ir: ComponentIR,
+  pseudo: string,
+  scopeKey: string,
+): JoinedStyleEntry[] {
+  const block = rootStateBlock(ir, pseudo);
   if (!block) return [];
   const scope = ir.tokenScopes.find((candidate) => candidate.scope === scopeKey);
   const out: JoinedStyleEntry[] = [];
   for (const [cssProp, declValue] of Object.entries(block.declarations)) {
     const mapping = CSS_TO_RN_STYLE[cssProp];
-    if (!mapping || mapping.layer !== "view") continue;
+    if (!mapping || mapping.layer !== "view" && pseudo !== "disabled") continue;
     const varName = cssVarReference(declValue);
     if (varName) {
       const token = scope?.values.find((candidate) => candidate.cssVar === varName);

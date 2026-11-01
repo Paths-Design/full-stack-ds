@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { canActivateInteraction, isActivationDisabled } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
@@ -11,6 +12,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:start types
 export type LinkTarget = "_self" | "_blank" | "_parent" | "_top";
 export type LinkSize = "small" | "medium" | "large";
+export type LinkActivationEvent = { readonly defaultPrevented: boolean; preventDefault(): void };
 // @generated:end
 
 // @custom:start types
@@ -126,7 +128,7 @@ export class LinksElement extends LitElement {
         text-decoration-color: var(--fsds-links-color-foreground-hover, #b31b1b);
       }
 
-      &:visited {
+      &:visited:not([aria-disabled="true"]) {
         color: var(--fsds-links-design-visited-foreground-color, var(--fsds-links-color-foreground-visited, #e55b5a));
       }
 
@@ -134,10 +136,9 @@ export class LinksElement extends LitElement {
         color: var(--fsds-links-design-disabled-foreground-color, var(--fsds-links-color-foreground-disabled, #727272));
         cursor: not-allowed;
         text-decoration-line: none;
-        pointer-events: none;
       }
 
-      &:focus-visible:not([aria-disabled="true"]) {
+      &:focus-visible {
         outline-width: var(--fsds-links-design-focus-focus-width, var(--fsds-links-focus-ring-width, 2px));
         outline-color: var(--fsds-links-design-focus-focus-color, var(--fsds-links-focus-ring-color, #0566fe));
         outline-style: var(--fsds-links-design-focus-focus-style, var(--fsds-links-focus-ring-style, solid));
@@ -173,6 +174,7 @@ export class LinksElement extends LitElement {
   @property({ type: String }) rel?: string;
   @property({ type: String }) size?: LinkSize;
   @property({ type: Boolean }) disabled?: boolean;
+  @property({ attribute: false }) onClick?: (event: LinkActivationEvent) => void;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -188,7 +190,7 @@ export class LinksElement extends LitElement {
   }
 
   override render() {
-    return html`<a class="${this.computeClasses()}" href=${ifDefined(this.href)} target=${ifDefined(this.target)} rel=${ifDefined(this.rel)} data-fsds-box="">
+    return html`<a class="${this.computeClasses()}" role="link" tabindex="0" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false, isActivationDisabled(this.disabled))) (this.onClick)?.(e); }} href=${ifDefined(isActivationDisabled(this.disabled) ? undefined : this.href)} target=${ifDefined(this.target)} rel=${ifDefined(this.rel)} aria-disabled=${ifDefined(this.disabled === undefined ? undefined : (this.disabled ? 'true' : 'false'))} data-fsds-box="">
   <slot></slot>
 </a>`;
   }

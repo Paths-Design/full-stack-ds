@@ -45,6 +45,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { diffLedger, loadLedger, reportRatchet } from "../lib/ledger-ratchet.mjs";
+import { DERIVABLE_STATE_TO_PSEUDO } from "../pseudo-state-audit/audit.mjs";
+import { getCssPrefix } from "../../packages/ds-codegen/dist/contract.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
@@ -54,7 +56,7 @@ const OUT_DIR = resolve(REPO, "docs/internal/state-suppression-audit");
 const LEDGER_PATH = resolve(HERE, "known-leaks.json");
 
 /** Interaction pseudos the codegen can emit, per DERIVABLE_STATE_TO_PSEUDO. */
-const INTERACTION_PSEUDOS = [":hover", ":active", ":focus-visible", ":focus"];
+const INTERACTION_PSEUDOS = [":hover", ":active", ":focus-visible", ":focus-within", ":focus"];
 
 /**
  * Elements for which `disabled` is a native attribute. Only on these can a
@@ -120,24 +122,48 @@ export function suppressionLeakId(row) {
  * Brace-matched rather than regex-sliced so a nested block (a media query, a
  * `:has()` inside the state block) doesn't truncate the scan at the first `}`.
  */
-export function propertiesUnder(css, selector) {
-  const found = new Set();
-  const opener = new RegExp(`&?${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{`, "g");
-  for (const match of css.matchAll(opener)) {
-    let index = match.index + match[0].length;
-    let depth = 1;
-    const start = index;
-    while (depth > 0 && index < css.length) {
-      if (css[index] === "{") depth += 1;
-      else if (css[index] === "}") depth -= 1;
-      index += 1;
-    }
-    const body = css.slice(start, index - 1);
-    // Only top-level declarations of this block: strip nested blocks first.
-    const flattened = body.replace(/\{[^{}]*\}/g, "");
-    for (const decl of flattened.matchAll(/(^|[;{\s])([a-z-]+)\s*:/g)) found.add(decl[2]);
+function cssRules(css, parents = [], rules = [], inherited = false) {
+  const text = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  let statement = "";
+  const own = { selectors: parents, properties: new Set(), order: rules.length, inherited };
+  if (parents.length) rules.push(own);
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    if (char === ";") {
+      const declaration = statement.trim().match(/^([a-z-]+)\s*:/);
+      if (declaration) own.properties.add(declaration[1]);
+      statement = "";
+    } else if (char === "{") {
+      const header = statement.trim();
+      statement = "";
+      const start = i + 1;
+      let depth = 1;
+      while (depth && ++i < text.length) {
+        if (text[i] === "{") depth += 1;
+        if (text[i] === "}") depth -= 1;
+      }
+      const selectors = header.startsWith("@") ? parents : header.split(/,(?![^()]*\))/).flatMap((part) => {
+        const selector = part.trim();
+        return parents.length ? parents.map((parent) => selector.includes("&") ? selector.replaceAll("&", parent) : `${parent} ${selector}`) : [selector];
+      });
+      cssRules(text.slice(start, i), selectors, rules, header.startsWith("@"));
+    } else statement += char;
   }
-  return found;
+  const declaration = statement.trim().match(/^([a-z-]+)\s*:/);
+  if (declaration) own.properties.add(declaration[1]);
+  return rules;
+}
+
+const withoutGuards = (selector) => selector.replace(/:not\([^()]*\)/g, "");
+const hasState = (selector, state) => {
+  const plain = withoutGuards(selector);
+  return state.startsWith(":")
+    ? new RegExp(`${state}(?![A-Za-z-])`).test(plain)
+    : plain.includes(state);
+};
+
+export function propertiesUnder(css, selector) {
+  return new Set(cssRules(css).filter((rule) => !rule.inherited && rule.selectors.some((s) => hasState(s, selector))).flatMap((rule) => [...rule.properties]));
 }
 
 /** Does the sheet guard interaction selectors against the suppressed state? */
@@ -145,41 +171,94 @@ export function guardsAgainstDisabled(css) {
   return /:not\(\s*:disabled\s*\)|:not\(\s*\[disabled\]\s*\)|:not\(\s*\[aria-disabled=/.test(css);
 }
 
-export function auditComponent(component) {
-  const contract = readJSON(resolve(CONTRACTS, component, `${component}.contract.json`));
+/** Native source carriers must be bound to the same disabled prop; a random
+ * input or a guard on another part cannot discharge this relation. */
+function nativeDisabledCarriers(contract, root, dim, active) {
+  if (active !== "disabled") return [];
+  const prop = dim.derivesFrom?.[active]?.prop ?? active;
+  const carriers = [];
+  function visit(node) {
+    if (!node || typeof node !== "object") return;
+    if (NATIVE_DISABLEABLE.has(node.tag) && node.bindings?.disabled === `prop:${prop}`) {
+      carriers.push(node.part === "root" ? root : `${root}__${node.part}`);
+    }
+    for (const child of node.children ?? []) visit(child);
+  }
+  visit(contract.anatomy?.dom);
+  return carriers;
+}
+
+export function auditComponentCss(component, contract, css) {
   const dimensions = contract?.states?.dimensions;
   if (!dimensions || typeof dimensions !== "object") return null;
-
-  const suppressing = Object.entries(dimensions).find(([, dim]) =>
-    (dim?.suppresses?.categories ?? []).includes("interaction"),
-  );
-  if (!suppressing) return null;
-
-  const css = readText(resolve(REACT, component, `${component}.css`));
-  if (!css) return null;
-
+  const sources = Object.entries(dimensions).filter(([, dim]) => dim.suppresses?.categories?.length || dim.suppresses?.names?.length);
+  if (!sources.length || !css) return null;
   const rootTag = contract?.anatomy?.dom?.tag;
   const rootAttrs = contract?.anatomy?.dom?.attrs ?? {};
   const hasTabIndex = "tabindex" in rootAttrs || "tabIndex" in rootAttrs;
-  const guarded = guardsAgainstDisabled(css);
-  const suppressedProps = propertiesUnder(css, ":disabled");
-
+  const root = `.${getCssPrefix(contract)}`;
+  const rules = cssRules(css);
+  let guarded = true;
+  const suppressedProps = new Set();
   const leaks = [];
-  for (const pseudo of INTERACTION_PSEUDOS) {
-    for (const property of propertiesUnder(css, pseudo)) {
-      if (suppressedProps.has(property)) continue; // won back by the later rule
-      if (guarded) continue; // selector cannot match a suppressed element
-      leaks.push({
-        component,
-        dimension: suppressing[0],
-        pseudo,
-        property,
-        rootTag: rootTag ?? "unknown",
-        reachability: leakReachability(pseudo, rootTag, hasTabIndex),
-      });
+  const nativeExclusions = [];
+  for (const [source, dim] of sources) {
+    const categories = dim.suppresses.categories ?? [];
+    const names = dim.suppresses.names ?? [];
+    for (const name of names) {
+      if (!Object.hasOwn(dimensions, name)) throw new Error(`[STATE_SUPPRESSION_UNKNOWN_DIMENSION] ${component}.${source}: ${name}`);
+    }
+    const pseudos = new Set(categories.includes("interaction") ? INTERACTION_PSEUDOS : []);
+    for (const [name, target] of Object.entries(dimensions)) {
+      if (name === source || (!names.includes(name) && !categories.includes(target.category))) continue;
+      for (const value of target.values ?? []) {
+        const pseudo = DERIVABLE_STATE_TO_PSEUDO[value];
+        if (pseudo) pseudos.add(pseudo);
+      }
+    }
+    for (const active of (dim.values ?? []).filter((value) => value !== (dim.initial ?? dim.values[0]))) {
+      const state = dim.a11y?.attribute
+        ? `[${dim.a11y.attribute}="${String(dim.a11y.values?.[active] ?? "true")}"]`
+        : NATIVE_DISABLEABLE.has(rootTag) ? ":disabled" : '[aria-disabled="true"]';
+      const guard = `:not(${state})`;
+      const nativeCarriers = nativeDisabledCarriers(contract, root, dim, active);
+      const resets = rules.filter((rule) => rule.selectors.includes(`${root}${state}`));
+      for (const reset of resets) for (const property of reset.properties) suppressedProps.add(property);
+      for (const rule of rules) for (const selector of rule.selectors) for (const pseudo of pseudos) {
+        if (!hasState(selector, pseudo)) continue;
+        // A guard on a different rule, selector-list branch, or ancestor does
+        // not protect this state-bearing selector's subject.
+        const subject = selector.split(/\s*[>+~]\s*|\s+(?![^[]*\])/).at(-1);
+        if (subject.includes(guard)) continue;
+        const nativeGuard = nativeCarriers.some((carrier) => subject.startsWith(`${carrier}:`) && subject.includes(":not(:disabled)"));
+        if (nativeGuard) continue;
+        // Native disabled controls cannot focus or activate. A relational
+        // :has() rule testing that exact source carrier is excluded by the UA,
+        // independently of the painted descendant's tag.
+        const nativeExcluded = [":focus", ":focus-visible", ":active"].includes(pseudo) && nativeCarriers.some((carrier) =>
+          withoutGuards(selector).includes(`:has(${carrier}${pseudo})`) || withoutGuards(subject) === `${carrier}${pseudo}`,
+        );
+        if (nativeExcluded) {
+          nativeExclusions.push({ dimension: source, selector, pseudo, reason: "native-disabled-source-cannot-match" });
+          continue;
+        }
+        guarded = false;
+        for (const property of rule.properties) {
+          const rootState = selector === `${root}${pseudo}`;
+          if (rootState && resets.some((reset) => reset.order > rule.order && reset.properties.has(property))) continue;
+          const leak = { component, dimension: source, pseudo, property, rootTag: rootTag ?? "unknown", reachability: leakReachability(pseudo, rootTag, hasTabIndex) };
+          if (!leaks.some((row) => suppressionLeakId(row) === suppressionLeakId(leak))) leaks.push(leak);
+        }
+      }
     }
   }
-  return { component, rootTag, guarded, suppressedProps: [...suppressedProps], leaks };
+  return { component, rootTag, guarded, suppressedProps: [...suppressedProps], nativeExclusions, leaks };
+}
+
+export function auditComponent(component) {
+  const contract = readJSON(resolve(CONTRACTS, component, `${component}.contract.json`));
+  const css = readText(resolve(REACT, component, `${component}.css`));
+  return auditComponentCss(component, contract, css);
 }
 
 export function runAudit() {

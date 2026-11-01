@@ -45,6 +45,21 @@ const statusOf = (component, dim, value) => {
 const promptStatus = (component) => classify(component).promptObligation?.status;
 
 console.log("Known-REALIZED — derivable pseudo-class states on Button:");
+check("named suppression classifies only its target dimension, and category/name targets form a union", () => {
+  const contract = { name: "Probe", cssPrefix: "probe", states: { dimensions: {
+    pointer: { category: "interaction", values: ["rest", "hover"], initial: "rest" },
+    focus: { category: "interaction", values: ["blur", "focus"], initial: "blur" },
+    availability: { category: "availability", values: ["enabled", "disabled"], initial: "enabled", suppresses: { names: ["pointer"] } },
+  } } };
+  const fixture = { contract, css: ".probe { color: red; }", tokensCss: "", styles: { active: {} } };
+  const status = (name) => classify("Probe", fixture).dims.find((row) => row.dim === name).values[1].status;
+  assert.equal(status("pointer"), "behavioral");
+  assert.equal(status("focus"), "gap");
+  contract.states.dimensions.availability.suppresses.categories = ["interaction"];
+  assert.equal(status("focus"), "behavioral");
+  contract.states.dimensions.availability.suppresses.names = ["missing"];
+  assert.throws(() => classify("Probe", fixture), /STATE_SUPPRESSION_UNKNOWN_DIMENSION/);
+});
 for (const [dim, value] of [
   ["pointer", "hover"],
   ["focus", "focus"],

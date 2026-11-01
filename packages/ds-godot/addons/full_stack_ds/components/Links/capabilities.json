@@ -273,10 +273,13 @@
     "href",
     "target",
     "rel",
-    "disabled"
+    "disabled",
+    "onClick"
   ],
   "omissions": [
-    "root: attribute bindings (href, target, rel) not projected natively",
+    "root: attributes (role, tabindex) not projected natively",
+    "root: attribute bindings (href, target, rel, aria-disabled) not projected natively",
+    "root: event bindings (click) are not wired natively",
     "structure.padding: host root has no padded panel to inset its children",
     "structure.padding-block: host root has no padded panel to inset its children",
     "structure.padding-block-start: no Godot anatomy style mapping",
@@ -300,7 +303,8 @@
     "href: bound to the href attribute; native attribute projection unverified",
     "target: bound to the target attribute; native attribute projection unverified",
     "rel: bound to the rel attribute; native attribute projection unverified",
-    "disabled: no executable native projection"
+    "disabled: bound to the aria-disabled attribute; native attribute projection unverified",
+    "onClick: callback surface has no native signal projection"
   ],
   "theme": "source-bearing anatomy style subset",
   "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",
