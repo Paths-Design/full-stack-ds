@@ -22,7 +22,9 @@ scope:
     - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
   out: []
 invariants:
-  - 'TODO: describe one invariant this spec guarantees.'
+  - 'The ten components admitted before this slice keep their current emitted semantics; no admitted component silently loses a fact it previously emitted'
+  - 'No silent drops: every contract or sidecar fact the Godot target does not lower is classified in the support boundary and named in that component''s capability receipt'
+  - 'Godot stays outside the admission rail; the rail-admitted web and react-native generated trees remain byte-identical after this slice'
 acceptance:
   - id: A1
     given: 'The spec implementation is complete.'
