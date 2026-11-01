@@ -64,7 +64,7 @@ export function Field({
           style={styles.label}
           accessibilityRole="text"
         >
-          {renderTextChildren(slots?.label)}
+          {slots?.label}
         </RNText>
       </View>
       <View
@@ -79,20 +79,20 @@ export function Field({
           style={styles.help}
           accessibilityRole="text"
         >
-          {renderTextChildren(slots?.help)}
+          {slots?.help}
         </RNText>
         <RNText
           style={styles.error}
           accessibilityRole="text"
         >
-          {renderTextChildren(slots?.error)}
+          {slots?.error}
         </RNText>
         {validating ? (
         <RNText
           style={styles.validatingIndicator}
           accessibilityRole="text"
         >
-          {renderTextChildren(slots?.validatingIndicator)}
+          {slots?.validatingIndicator}
         </RNText>
         ) : null}
       </View>

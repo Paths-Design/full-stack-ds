@@ -37,7 +37,7 @@ describe("projected native text children (aliased host boundary)", () => {
     mounted.push(renderer);
     expect(rawTextParents(renderer.toJSON())).toEqual([{ parent: "View", value: "123" }]);
   });
-  it.each([0, 12345.67, -1, "مرحبا 👩🏽‍💻 １２３", "12\u202f345,67\u00a0€"])("places %s inside Text", value => {
+  it.each([0, 12345.67, -1, 0n, 123456789012345678901234567890n, "مرحبا 👩🏽‍💻 １２３", "12\u202f345,67\u00a0€"])("places %s inside Text", value => {
     const renderer = mount(value);
     expect(rawTextParents(renderer.toJSON())).toEqual([]);
     expect(textContent(renderer.toJSON())).toBe(String(value));
@@ -74,6 +74,7 @@ describe("projected native text children (aliased host boundary)", () => {
     { name: "array", children: [0, " long text"] },
     { name: "fragment", children: <Fragment key="body">{0}{" long text"}</Fragment> },
     { name: "nested structural tree", children: [0, [false, <Fragment key="body">{" long"}<>{" text"}{null}</></Fragment>], undefined] },
+    { name: "bigint structural tree", children: [0n, <Fragment key="body">{" long"}<>{" text"}</></Fragment>] },
   ])("uses one line-limited Text block for a scalar-only $name", ({ children }) => {
     const style: TextProps["style"] = [{ color: "#123456" }, { fontWeight: "700" }];
     const renderer = mount(children, { style, numberOfLines: 2 });

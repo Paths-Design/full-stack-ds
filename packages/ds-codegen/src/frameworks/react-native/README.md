@@ -43,7 +43,7 @@ pnpm run governed:rail:react-native
   `Switch` primitive.
 - Walks `ComponentIR.dom` for the rest of the corpus, lowering common HTML-ish
   hosts to `View`, `Pressable`, `TextInput`, `RNText`, and `RNImage`.
-- Projects synchronous scalar children into native `Text` hosts. Scalar-only
+- Projects synchronous string, number and bigint children into native `Text` hosts. Scalar-only
   arrays and fragments form one text block, retaining one style and line limit.
   Mixed content preserves supplied elements and keyed consumer state; the
   normalizer traverses structural fragments, not arbitrary consumer elements.

@@ -30,7 +30,7 @@ function prepare(child: ReactNode): Prepared {
     const iterable = child as Iterable<ReactNode>;
     if (typeof iterable[Symbol.iterator] === "function") return prepareCollection(iterable);
   }
-  const hasText = typeof child === "string" || typeof child === "number";
+  const hasText = typeof child === "string" || typeof child === "number" || typeof child === "bigint";
   return { kind: "leaf", node: child, hasText, textOnly: hasText || child == null || typeof child === "boolean" };
 }
 

@@ -60,7 +60,7 @@ export function CodeBlock({ code, tokens: suppliedTokens, highlight = true, show
   const styles = useMemo(() => createCodeBlockStyles(fsdsTheme), [fsdsTheme]);
   const source = useMemo(() => prepareSourceLines(code, suppliedTokens, highlight), [code, suppliedTokens, highlight]);
   return <View testID={testID} style={[styles.root, style]} accessible accessibilityLabel={accessibilityLabel ?? code} accessibilityLabelledBy={accessibilityLabelledBy}>
-    {(typeof children === "number" || children) ? renderTextChildren(children, { style: styles.rootText }) : source.lines.map((line) => <CodeBlockLine key={line.number} number={line.number} showLineNumbers={showLineNumbers}>{line.tokens.map((token, index) => source.highlighted ? <CodeBlockToken key={index} kind={token.kind}>{token.text}</CodeBlockToken> : token.text)}</CodeBlockLine>)}
+    {(typeof children === "number" || typeof children === "bigint" || children) ? renderTextChildren(children, { style: styles.rootText }) : source.lines.map((line) => <CodeBlockLine key={line.number} number={line.number} showLineNumbers={showLineNumbers}>{line.tokens.map((token, index) => source.highlighted ? <CodeBlockToken key={index} kind={token.kind}>{token.text}</CodeBlockToken> : token.text)}</CodeBlockLine>)}
   </View>;
 }
 // @generated:end

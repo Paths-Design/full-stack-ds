@@ -164,7 +164,7 @@ function emitHighlightPresentation(ir: ComponentIR, transform: HighlightTransfor
   lines.push(`  const styles = useMemo(() => create${ir.name}Styles(fsdsTheme), [fsdsTheme]);`);
   lines.push(`  const source = useMemo(() => prepareSourceLines(${sourceProp}, suppliedTokens, ${gateProp}), [${sourceProp}, suppliedTokens, ${gateProp}]);`);
   lines.push(`  return <View testID={testID} style={[styles.root, style]} accessible accessibilityLabel={accessibilityLabel ?? ${sourceProp}} accessibilityLabelledBy={accessibilityLabelledBy}>`);
-  lines.push(`    {(typeof children === "number" || children) ? renderTextChildren(children, { style: styles.rootText }) : source.lines.map((line) => <${lineName} key={line.number} number={line.number} showLineNumbers={${lineNumbersProp}}>{line.tokens.map((token, index) => source.highlighted ? <${tokenName} key={index} kind={token.kind}>{token.text}</${tokenName}> : token.text)}</${lineName}>)}`);
+  lines.push(`    {(typeof children === "number" || typeof children === "bigint" || children) ? renderTextChildren(children, { style: styles.rootText }) : source.lines.map((line) => <${lineName} key={line.number} number={line.number} showLineNumbers={${lineNumbersProp}}>{line.tokens.map((token, index) => source.highlighted ? <${tokenName} key={index} kind={token.kind}>{token.text}</${tokenName}> : token.text)}</${lineName}>)}`);
   lines.push(`  </View>;`);
   lines.push(`}`);
   lines.push("// @generated:end");
@@ -1854,14 +1854,14 @@ function emitNode(
     const checked = bindingExpr(radio.bindings.checked, ir);
     const rendered = [`${pad}<Pressable`, ...attrs, `${pad}>`,
       `${pad}${INDENT}<RNText accessible={false}>{${checked} ? "◉ " : "○ "}</RNText>`,
-      ...emitNodeChildren(target, ir, depth + 1), `${pad}</Pressable>`].join("\n");
+      ...emitNodeChildren(target, ir, depth + 1, "Pressable"), `${pad}</Pressable>`].join("\n");
     return applyIfGuard(rendered, node, ir, pad);
   }
 
   const isOverlay = node.part !== undefined && node.part === surfaceOverlayPartName(ir);
   const component = isOverlay ? "Pressable" : rnComponentForNodeInIr(ir, node);
   const attrs = emitNodeProps(node, ir, component, depth + 1, keyExpr);
-  const childLines = emitNodeChildren(node, ir, depth + 1);
+  const childLines = emitNodeChildren(node, ir, depth + 1, component);
   const pad = INDENT.repeat(depth);
   let rendered: string;
   if (VOID_RN_COMPONENTS.has(component) || childLines.length === 0) {
@@ -1920,7 +1920,7 @@ function emitComponentRefNode(
     props.push(`${propPad}${handlerProp}={${bindingExpr(ev.expr, ir)}}`);
   }
 
-  const childLines = emitNodeChildren(node, ir, depth + 1);
+  const childLines = emitNodeChildren(node, ir, depth + 1, component);
   let rendered: string;
   if (childLines.length === 0) {
     rendered = [`${pad}<${component}`, ...props, `${pad}/>`].join("\n");
@@ -1936,7 +1936,7 @@ function emitComponentRefNode(
   return applyIfGuard(nativeMotionInstance(ir, node, rendered), node, ir, pad);
 }
 
-function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): string[] {
+function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number, parentComponent: string): string[] {
   const sequence = ir.motion.sequence;
   if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} position={fsdsMessages.${sequence.labels.position}} />`];
   if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}</RNText>`];
@@ -1962,12 +1962,12 @@ function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): stri
       // ARCH-COMPOSER-SLOT-PROJECTION-001: a named slot projects its own
       // `slots.<name>` content, distinct from the default `{children}`.
       const source = `slots?.${child.slotName}`;
-      lines.push(`${INDENT.repeat(depth)}{${rnComponentForNode(node) === "RNText" ? source : textChildrenExpression(source, maxLinesExpressionForNode(node, ir), textStyleExpr ?? "")}}`);
+      lines.push(`${INDENT.repeat(depth)}{${parentComponent === "RNText" ? source : textChildrenExpression(source, maxLinesExpressionForNode(node, ir), textStyleExpr ?? "")}}`);
       continue;
     }
     if (child.tag === "children" || child.tag === "slot") {
       lines.push(
-        emitChildrenSlot(rnComponentForNode(node), depth, maxLinesExpressionForNode(node, ir), textStyleExpr ?? ""),
+        emitChildrenSlot(parentComponent, depth, maxLinesExpressionForNode(node, ir), textStyleExpr ?? ""),
       );
       continue;
     }
@@ -1976,7 +1976,7 @@ function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): stri
   }
   if (node.children.length === 0 && node.part === "root") {
     lines.push(
-      emitChildrenSlot(rnComponentForNode(node), depth, maxLinesExpressionForNode(node, ir), textStyleExpr ?? ""),
+      emitChildrenSlot(parentComponent, depth, maxLinesExpressionForNode(node, ir), textStyleExpr ?? ""),
     );
   }
   return lines;

@@ -7,7 +7,9 @@ import { Button } from "../../Button/Button";
 import { Tooltip } from "../../Tooltip/Tooltip";
 import { Truncate } from "../../Truncate/Truncate";
 import { CodeBlock } from "../../CodeBlock/CodeBlock";
+import { Field } from "../../Field/Field";
 import { Stack } from "../../../primitives/stack";
+import { FsdsThemeProvider } from "../../../tokens";
 
 const mounted: ReactTestRenderer[] = [];
 afterEach(() => act(() => mounted.splice(0).forEach(renderer => renderer.unmount())));
@@ -26,15 +28,15 @@ function invalidText(tree: ReactTestRendererJSON | ReactTestRendererJSON[] | str
 const textHosts = (renderer: ReactTestRenderer) => renderer.root.findAllByType("Text" as never);
 
 describe("generated native projected text hosts", () => {
-  it("keeps an explicit zero override instead of selecting highlighted source fallback", () => {
-    const renderer = mount(<CodeBlock code="fallback source" language="typescript">{0}</CodeBlock>);
+  it.each([0, 0n, 123456789012345678901234567890n])("keeps an explicit %s override instead of selecting highlighted source fallback", value => {
+    const renderer = mount(<CodeBlock code="fallback source" language="typescript">{value}</CodeBlock>);
     expect(invalidText(renderer.toJSON())).toEqual([]);
     expect(textHosts(renderer)).toHaveLength(1);
-    expect(textHosts(renderer)[0].children.join("")).toBe("0");
+    expect(textHosts(renderer)[0].children.join("")).toBe(String(value));
     act(() => renderer.update(<CodeBlock code="fallback source" language="typescript" />));
     expect(textHosts(renderer).flatMap(node => node.children).join("")).toContain("fallback source");
   });
-  it.each([0, 12345.67, "١٬٢٣٤"])("renders Stat value %s inside native Text", children => {
+  it.each([0, 12345.67, 0n, 123456789012345678901234567890n, "١٬٢٣٤"])("renders Stat value %s inside native Text", children => {
     const renderer = mount(<Stat size="lg" trend="up">{children}</Stat>);
     expect(invalidText(renderer.toJSON())).toEqual([]);
     const label = textHosts(renderer).find(node => node.props.children === children);
@@ -75,6 +77,16 @@ describe("generated native projected text hosts", () => {
     expect(invalidText(renderer.toJSON())).toEqual([]);
     expect(textHosts(renderer).flatMap(node => node.children)).toEqual(["0", "0", "日本語"]);
     expect(textHosts(renderer)).toHaveLength(2);
+  });
+
+  it("projects named Field text slots into their existing styled Text hosts", () => {
+    const renderer = mount(<FsdsThemeProvider value={{ tokens: { "field.label.color": "#123456" } }}><Field name="projected-content" validating slots={{ label: [0n, " label"], help: <>help</>, error: "error", validatingIndicator: "checking", control: <Text testID="control">control</Text> }} /></FsdsThemeProvider>);
+    expect(invalidText(renderer.toJSON())).toEqual([]);
+    const texts = textHosts(renderer);
+    expect(texts).toHaveLength(5);
+    expect(texts.map(node => node.children.join(""))).toEqual(["0 label", "control", "help", "error", "checking"]);
+    expect(StyleSheet.flatten(texts[0].props.style)).toMatchObject({ color: "#123456" });
+    expect(renderer.root.findByProps({ testID: "control" }).props.children).toBe("control");
   });
 
   it.each([

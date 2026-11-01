@@ -38,6 +38,16 @@ describe("native projected scalar content boundaries", () => {
     expect(anchored).toContain("renderTextChildren(content)");
   });
 
+  it("recognizes named-slot hosts promoted to native Text by their style facts", () => {
+    const source = generateReactNativeComponentSource(corpusIR("Field")).componentFile;
+    expect(source).toContain("<RNText\n          style={styles.label}");
+    for (const slot of ["label", "help", "error", "validatingIndicator"]) {
+      expect(source).toContain(`{slots?.${slot}}`);
+      expect(source).not.toContain(`renderTextChildren(slots?.${slot}`);
+    }
+    expect(source).toContain("renderTextChildren(slots?.control)");
+  });
+
   it("normalizes named and default slots independently under a renamed container", () => {
     const contract = JSON.parse(JSON.stringify(loadCorpusContract("Stat")).replaceAll("stat.design.", "metric.design."));
     contract.name = "Metric";
