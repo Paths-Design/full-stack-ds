@@ -71,3 +71,11 @@ evidence:
     command: node scripts/gpui-pilot.mjs
     artifact_path: scripts/gpui-pilot.mjs
     commit_sha: d59cd27dd
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "requiredEngineTests is unchanged at 16 hand-written interaction witnesses; the pilot receipt for the merged tree shows missingEngineTests=0 on the cargo test check alongside 55/55 mount witnesses"
+    recorded_at: "2026-11-01T08:33:37.041Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: d59cd27dd
