@@ -54,3 +54,11 @@ evidence:
     exit_code: 0
     artifact_path: docs/architecture/gpui-target.md
     commit_sha: a10216e51
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "two consecutive generate --target=gpui runs hash identically over packages/ds-gpui/src (BYTE_STABLE) and the working tree shows no generated component modification beyond the ledger/docs; the audit ratchet stays green at its round-8 numbers"
+    recorded_at: "2026-11-01T12:04:30.945Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    commit_sha: "3ddcdc2fe"
