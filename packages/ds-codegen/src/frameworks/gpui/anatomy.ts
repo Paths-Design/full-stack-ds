@@ -363,6 +363,27 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   const transformed: ComponentIR = { ...ir, dom };
   const childContent = hasChildrenPlaceholder(transformed) || nodesOf(dom).some(node => node.tag === 'children' || node.tag === 'slot' && !node.slotName);
 
+  // Contract-level capabilities the projection does not realize. These are
+  // single facts on the IR, so the receipt names each family once instead of
+  // trying to infer it from omitted nodes.
+  const topLevel: Array<[boolean, string, string, string]> = [
+    [Boolean(ir.surface), 'surface', 'surface-layer', 'overlay positioning, modality and dismissal have no GPUI overlay runtime'],
+    [Boolean(ir.interaction), 'interaction', 'interaction', 'disclosure/paging/selection interaction has no GPUI state model'],
+    [Boolean(ir.formControl), 'control', 'form-control', 'control semantics are realized only by the bounded boolean-control planner, which does not admit this shape'],
+    [Boolean(ir.compositeControl), 'compositeControl', 'composite-control', 'composite control state has no GPUI realization'],
+    [Boolean(ir.pagedSet), 'pagedSet', 'paged-set', 'paged sets have no GPUI state model'],
+    [Boolean(ir.dateGrid), 'dateGrid', 'date-grid', 'date grids have no GPUI state model'],
+    [Boolean(ir.transfer), 'transfer', 'transfer', 'transfer selection has no GPUI state model'],
+    [Boolean(ir.motion.sequence), 'motion', 'motion', 'motion sequences have no GPUI animation runtime'],
+    [ir.messages.length > 0, 'messages', 'messages', 'message catalogs are not lowered by this target'],
+    [ir.unresolvedA11yObligations.length > 0, 'a11y', 'a11y', 'no accessibility mapping is realized'],
+    [ir.keyboardActions.length > 0, 'keyboard', 'anatomy-keyboard-event', 'keyboard actions have no GPUI carrier in this projection'],
+    [Boolean(ir.textOverflow), 'textOverflow', 'text-overflow', 'declared truncation policy has no GPUI text runtime'],
+  ];
+  for (const [present, kind, rule, fallback] of topLevel) {
+    if (present) omit(state, { kind, source: 'contract', ...boundaryReason(boundary, rule, fallback) });
+  }
+
   const plan: GpuiPlan = {
     channel: undefined,
     part: undefined,
