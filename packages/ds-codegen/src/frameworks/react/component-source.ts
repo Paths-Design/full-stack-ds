@@ -2490,7 +2490,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
   for (const { node, refName } of propertyBindingNodes) {
     const assignments = Object.entries(node.propertyBindings)
       .map(([key, expr]) => {
-        const valueExpr = renderReactBinding(key, expr, renderCtx);
+        const valueExpr = renderReactBinding(key, expr, renderCtx, node.componentRef === undefined && NUMERIC_JSX_ATTRS.has(jsxAttrName(key)));
         if (valueExpr === null) return null;
         // DOM_PROPERTY_ONLY_KEYS_COERCION: the source prop is typically
         // optional (`boolean | undefined`) while the target DOM property is
@@ -2821,8 +2821,8 @@ function renderReactDomNode(
     const jsxKey = jsxAttrName(key);
     // Numeric JSX attributes need expression syntax (`tabIndex={-1}`),
     // not string syntax (`tabIndex="-1"`).
-    if (NUMERIC_JSX_ATTRS.has(jsxKey) && /^-?\d+$/.test(value)) {
-      attrs.push(`${jsxKey}={${value}}`);
+    if (node.componentRef === undefined && NUMERIC_JSX_ATTRS.has(jsxKey) && /^-?\d+$/.test(value)) {
+      attrs.push(`${jsxKey}={${Number(value)}}`);
     } else {
       attrs.push(`${jsxKey}="${escapeJsxString(value)}"`);
     }
@@ -2980,7 +2980,7 @@ function renderReactDomNode(
     }
     const valueExpr = key === "value" && node.nativeTextChannel
       ? `nativeText${capitalize(node.nativeTextChannel)}.value`
-      : renderReactBinding(key, expr, ctx);
+      : renderReactBinding(key, expr, ctx, node.componentRef === undefined && NUMERIC_JSX_ATTRS.has(jsxAttrName(key)));
     if (valueExpr === null) continue; // skip unsupported
     if (key === "textContent" || key === "children") {
       // Dual-pathway retention: if the new `content` field is already set,
@@ -3039,11 +3039,12 @@ function renderReactDomNode(
     // a string literal. When the binding is a literal that parses as a
     // number, emit the unquoted form so React sees a number.
     if (
+      node.componentRef === undefined &&
       NUMERIC_JSX_ATTRS.has(jsxKey) &&
       expr.kind === "literal" &&
       /^-?\d+$/.test(expr.value)
     ) {
-      attrs.push(`${jsxKey}={${expr.value}}`);
+      attrs.push(`${jsxKey}={${Number(expr.value)}}`);
       continue;
     }
     attrs.push(`${jsxKey}={${valueExpr}}`);
@@ -3468,6 +3469,7 @@ function renderReactBinding(
   attr: string,
   expr: BindingExpression,
   ctx: ReactRenderContext,
+  numericLiterals = false,
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
@@ -3478,7 +3480,9 @@ function renderReactBinding(
       return appendPath(base, expr.path);
     }
     case "literal":
-      return JSON.stringify(expr.value);
+      return numericLiterals && /^-?\d+$/.test(expr.value)
+        ? String(Number(expr.value))
+        : JSON.stringify(expr.value);
     case "message":
       return composeMessageExpression("fsdsMessages", expr, (value) =>
         renderReactBinding("__message_param__", value, ctx));
@@ -3597,8 +3601,8 @@ function renderReactBinding(
     }
     case "conditional": {
       const condition = renderReactBinding("__conditional_condition__", expr.condition, ctx);
-      const whenTrue = renderReactBinding("__conditional_true__", expr.whenTrue, ctx);
-      const whenFalse = renderReactBinding("__conditional_false__", expr.whenFalse, ctx);
+      const whenTrue = renderReactBinding("__conditional_true__", expr.whenTrue, ctx, numericLiterals);
+      const whenFalse = renderReactBinding("__conditional_false__", expr.whenFalse, ctx, numericLiterals);
       if (condition === null || whenTrue === null || whenFalse === null) return null;
       return `(${condition} ? ${whenTrue} : ${whenFalse})`;
     }

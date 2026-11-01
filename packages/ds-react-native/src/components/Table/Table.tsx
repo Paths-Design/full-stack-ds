@@ -4,6 +4,7 @@ import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createTableStyles } from "./Table.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -13,6 +14,7 @@ import { createTableStyles } from "./Table.styles";
 // @generated:start props
 export interface TableProps {
   responsive?: boolean;
+  contentLabel?: string;
   ariaLabel?: string;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -23,7 +25,10 @@ export interface TableProps {
 // @generated:end
 
 // @generated:start component
+const TableMessages = { content: "Table content" };
+
 export function Table({
+  contentLabel: contentLabelProp,
   ariaLabel,
   children,
   style,
@@ -31,13 +36,15 @@ export function Table({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: TableProps) {
+  const fsdsMessages = useFsdsMessages("Table", TableMessages);
+  const contentLabel = contentLabelProp ?? fsdsMessages.content;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createTableStyles(fsdsTheme), [fsdsTheme]);
   return (
     <View
       testID={testID}
       style={[styles.root, style]}
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={accessibilityLabel ?? contentLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
       <View

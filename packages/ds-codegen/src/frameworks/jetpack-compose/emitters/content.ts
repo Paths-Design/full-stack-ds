@@ -18,6 +18,12 @@ import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalPro
  */
 export function emitStaticContent(ir: ComponentIR): string {
   const name = ir.name;
+  const regionLabel = ir.root.persistentRegionLabel;
+  const regionLabelName = regionLabel ? kotlinParamName(regionLabel.safeName) : undefined;
+  const regionLabelDefault = kotlinStringDefault(ir, regionLabel);
+  const regionModifier = !regionLabel ? "" : regionLabelDefault === null
+    ? `.then(if (${regionLabelName} != null) Modifier.semantics(mergeDescendants = false) { contentDescription = ${regionLabelName} } else Modifier)`
+    : `.semantics(mergeDescendants = false) { contentDescription = ${regionLabelName} }`;
   const segment = packageSegment(name);
   const axes = Object.keys(ir.variants ?? {}).map((axis) => {
     const values = ir.variants[axis] ?? [];
@@ -123,8 +129,11 @@ export function emitStaticContent(ir: ComponentIR): string {
   }
   if (elementAxis) {
     lines.push(`import androidx.compose.ui.semantics.heading`);
+  }
+  if (elementAxis || regionLabel) {
     lines.push(`import androidx.compose.ui.semantics.semantics`);
   }
+  if (regionLabel) lines.push(`import androidx.compose.ui.semantics.contentDescription`);
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
     for (const line of referenceImports(ir)) lines.push(line);
@@ -174,6 +183,7 @@ export function emitStaticContent(ir: ComponentIR): string {
       `    ${kotlinParamName(elementAxis.propName)}: ${elementAxis.typeName} = ${elementAxis.typeName}.${kotlinEnumName(elementAxis.defaultExpr)},`,
     );
   }
+  if (regionLabel) lines.push(`    ${regionLabelName}: String${regionLabelDefault === null ? "?" : ""} = ${regionLabelDefault ?? "null"},`);
   lines.push(`    content: @Composable () -> Unit,`);
   lines.push(`) {`);
   if (usesTheme) {
@@ -231,8 +241,8 @@ export function emitStaticContent(ir: ComponentIR): string {
           ].join("\n")
         : "{ content() }";
     const box = elementAxis
-      ? `Box(modifier.then(chromeModifier).then(headingModifier)) ${decorationBody}`
-      : `Box(modifier.then(chromeModifier)) ${decorationBody}`;
+      ? `Box(modifier.then(chromeModifier).then(headingModifier)${regionModifier}) ${decorationBody}`
+      : `Box(modifier.then(chromeModifier)${regionModifier}) ${decorationBody}`;
     // Wrapping: text style outermost (M3 LocalTextStyle bridge), then the
     // content-color provider, then the box — each only when its fact exists.
     const contentLines: string[] = [];
@@ -253,7 +263,7 @@ export function emitStaticContent(ir: ComponentIR): string {
       for (const l of contentLines) lines.push(`    ${l}`);
     }
   } else {
-    lines.push(`    Box(modifier) { content() }`);
+    lines.push(`    Box(modifier${regionModifier}) { content() }`);
   }
   lines.push(`}`);
   lines.push(`// @generated:end`);

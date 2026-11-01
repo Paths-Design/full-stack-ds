@@ -932,6 +932,16 @@
       "reason": "React passthrough attributes (class/style) have no engine-target meaning"
     },
     {
+      "id": "prop-content-region-label",
+      "match": [
+        "contract:/props/*/members/plain:contentLabel/**",
+        "contract:/props/*/members/plain:contentLabel",
+        "contract:/props/contentLabel"
+      ],
+      "disposition": "refused",
+      "reason": "The Web viewport content label has no generated native property or runtime consumer in the anatomy projection; the capability receipt excludes the prop and names its unprojected ARIA binding."
+    },
+    {
       "id": "prop-aria-label",
       "match": [
         "contract:/props/*/members/plain:ariaLabel/**",

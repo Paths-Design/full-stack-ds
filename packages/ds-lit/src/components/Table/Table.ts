@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { type TemplateResult } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -18,6 +19,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 // @custom:end
 
 // @generated:start component
+const TableMessages = { content: "Table content" };
+
 export class TableElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -105,6 +108,10 @@ export class TableElement extends LitElement {
       line-height: var(--fsds-table-design-root-typography-line-height, var(--fsds-table-text-line-height, 1.5));
       overflow-x: auto;
 
+      &[data-responsive="false"] {
+        overflow-x: visible;
+      }
+
       &:hover {
         background-color: var(--fsds-table-design-hover-background-fill, var(--fsds-table-color-background-hover, #f7f7f7));
       }
@@ -162,10 +169,13 @@ export class TableElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Table", TableMessages);
+
   /** Native template children for insertion contexts that cannot contain slots. */
   @property({ attribute: false }) renderContent?: (slotName?: string) => unknown;
 
-  @property({ type: Boolean }) responsive?: boolean;
+  @property({ type: Boolean }) responsive?: boolean = true;
+  @property({ type: String }) contentLabel?: string;
   @property({ attribute: 'aria-label', reflect: true })
   override ariaLabel: string | null = null;
 
@@ -181,7 +191,7 @@ export class TableElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" data-fsds-box="">
+    return html`<div class="${this.computeClasses()}" role="region" data-responsive=${((this.responsive ?? true) ? "true" : "false")} tabindex=${((this.responsive ?? true) ? "0" : "-1")} aria-label=${ifDefined((this.contentLabel ?? this.fsdsMessages.value.content))} data-fsds-box="">
   <table class=${'table__container'} aria-label=${ifDefined(this.ariaLabel ?? undefined)}>
     ${this.renderContent?.()}
   </table>

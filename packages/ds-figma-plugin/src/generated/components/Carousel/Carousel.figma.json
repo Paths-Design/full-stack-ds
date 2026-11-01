@@ -634,6 +634,20 @@
     "booleanModifiers": []
   },
   "root": {
+    "persistentRegionLabel": {
+      "name": "label",
+      "safeName": "label",
+      "type": "string",
+      "typeRefs": [],
+      "required": false,
+      "description": "Accessible name for the carousel region.",
+      "defaultExpr": "\"Featured content\"",
+      "defaultMessage": "regionLabel",
+      "propType": {
+        "kind": "fallback",
+        "raw": "string"
+      }
+    },
     "element": "section",
     "explicitRole": "region",
     "implicitRole": "region",

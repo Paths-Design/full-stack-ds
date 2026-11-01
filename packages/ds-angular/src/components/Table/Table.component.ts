@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -16,12 +17,14 @@ import { NgClass } from "@angular/common";
 // @custom:end
 
 // @generated:start component
+const TableMessages = { content: "Table content" };
+
 @Component({
   selector: "fsds-table",
   standalone: true,
   imports: [NgClass],
   host: { "data-fsds-component": "table" },
-  template: `<div [ngClass]="classes()" data-fsds-box="">
+  template: `<div [ngClass]="classes()" role="region" [attr.data-responsive]="((responsive ?? true) ? 'true' : 'false')" [tabindex]="((responsive ?? true) ? '0' : '-1')" [attr.aria-label]="(contentLabel ?? fsdsMessages().content)" data-fsds-box="">
   <table [ngClass]="'table__container'" [attr.aria-label]="ariaLabel">
     <ng-content />
   </table>
@@ -29,7 +32,9 @@ import { NgClass } from "@angular/common";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent {
-  @Input() responsive?: boolean;
+  protected readonly fsdsMessages = injectFsdsMessages("Table", TableMessages);
+  @Input() responsive?: boolean = true;
+  @Input() contentLabel?: string;
   @Input() ariaLabel?: string;
   @Input() class?: string;
 

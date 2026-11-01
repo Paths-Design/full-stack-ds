@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { listComponentContracts } from "../../contracts-fs.js";
-import { auditContract, gpuiAllowlist, loadContractWithSidecars, validateBoundary } from "./boundary.js";
+import { auditContract, classifyLeaves, gpuiAllowlist, loadContractWithSidecars, validateBoundary } from "./boundary.js";
 import boundaryJson from "./support-boundary.json" with { type: "json" };
 
 const root = path.resolve(__dirname, "../../../../..");
@@ -52,6 +52,17 @@ describe("GPUI support boundary", () => {
     expect(last.catchAll).toBe(true);
     expect(last.disposition).toBe("refused");
     expect(boundary.rules.filter(rule => rule.catchAll)).toHaveLength(1);
+  });
+
+  it("classifies the viewport content label through the accessibility substrate boundary", () => {
+    const contract = loadContractWithSidecars(root, "Table");
+    const labels = classifyLeaves(contract, boundary).filter(leaf => leaf.keyed.startsWith("/props/styled/members/plain:contentLabel/"));
+    expect(labels.map(leaf => leaf.keyed.split("/").at(-1)).sort()).toEqual(["defaultMessage", "description", "name", "type"]);
+    for (const leaf of labels) {
+      expect(leaf).toMatchObject(leaf.keyed.endsWith("/description")
+        ? { rule: "documentation", disposition: "refused", catchAll: false }
+        : { rule: "prop-aria-label", disposition: "substrate", catchAll: false });
+    }
   });
 });
 

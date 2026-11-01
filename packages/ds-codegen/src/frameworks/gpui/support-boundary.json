@@ -839,6 +839,9 @@
     {
       "id": "prop-aria-label",
       "match": [
+        "contract:/props/*/members/plain:contentLabel/**",
+        "contract:/props/*/members/plain:contentLabel",
+        "contract:/props/contentLabel",
         "contract:/props/*/members/plain:ariaLabel/**",
         "contract:/props/*/members/plain:ariaLabel",
         "contract:/props/ariaLabel"

@@ -28,7 +28,7 @@ describe("Table — unit", () => {
 
 describe("Table — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const { element } = await renderElement("fsds-table", { "ariaLabel": "Test Table" }, [{"html":"<tbody><tr><td>content</td></tr></tbody>"}]);
+    const { element } = await renderElement("fsds-table", { "contentLabel": "Test Table" }, [{"html":"<tbody><tr><td>content</td></tr></tbody>"}]);
     const results = await axe(element, componentAxeOptions);
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });
