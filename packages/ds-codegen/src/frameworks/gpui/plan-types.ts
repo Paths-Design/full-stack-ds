@@ -63,6 +63,8 @@ export interface GpuiPresencePlan {
   valueProp: string;
   defaultValueProp?: string;
   changeHandlerProp?: string;
+  /** Declared trigger part that toggles the presence state itself. */
+  triggerPart?: string;
 }
 
 /** A consumer-supplied callback realized as a stored handler field. */

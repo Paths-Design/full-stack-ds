@@ -252,9 +252,9 @@ function source(ir: ComponentIR, plan: Plan, styles: Styles): string {
  ` : '';
  return `// Generated from ${ir.name} normalized contract IR. Do not hand-edit.
 use std::collections::BTreeMap;
-use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle${plan.channel?',EventEmitter':''}${plan.channel||plan.activations.length?',MouseButton,Subscription':''}};
+use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle${plan.channel||plan.presence?.triggerPart?',EventEmitter':''}${plan.channel||plan.activations.length?',MouseButton,Subscription':''}};
 ${nativeContent?'use crate::content::NativeContent;':''}
-${plan.channel?'use crate::control::{BooleanState,ChangeRequest};':plan.presence?'use crate::control::BooleanState;':''}
+${plan.channel||plan.presence?.triggerPart?'use crate::control::{BooleanState,ChangeRequest};':plan.presence?'use crate::control::BooleanState;':''}
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style${styles.rules.some(rule=>rule.pseudo)?',render_pseudo':''}};
 ${slotEnum}
 pub struct ${ir.name}{${plan.channel?'pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.presence?'pub open_state:BooleanState,':''}${plan.valueChannel?'pub open_value:Option<SharedString>,':''}${plan.callbacks.map(callback=>`pub ${callback.field}:Option<crate::callback::ActionHandler>,`).join('')}${!plan.channel&&plan.activations.length?'pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.childContent?'content:Option<NativeContent>,':''}${plan.slots.length?`slots:BTreeMap<${slotType},NativeContent>,`:''}${flattenRefs(plan.refs).map(ref=>`${ref.field}:Option<gpui::Entity<crate::components::${ref.refType}>>,`).join('')}pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,${fields.join('')}}
@@ -265,10 +265,11 @@ impl ${ir.name}{
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
- ${plan.presence?`pub fn open(mut self,value:Option<bool>)->Self{self.open_state.controlled=value;self}
- pub fn default_open(mut self,value:bool)->Self{self.open_state=BooleanState::new(value);self}
- pub fn set_open(&mut self,value:Option<bool>,cx:&mut Context<Self>){self.open_state.controlled=value;cx.notify();}
- pub fn is_open(&self)->bool{self.open_state.value()}`:''}${plan.valueChannel?`\n pub fn value(mut self,value:Option<SharedString>)->Self{self.open_value=value;self}\n pub fn set_value(&mut self,value:Option<SharedString>,cx:&mut Context<Self>){self.open_value=value;cx.notify();}\n pub fn default_value(mut self,value:impl Into<SharedString>)->Self{let value:SharedString=value.into();self.open_value=if value.is_empty(){None}else{Some(value)};self}\n pub fn is_open(&self)->bool{self.open_value.is_some()}\n fn toggle_open(&mut self,cx:&mut Context<Self>){self.open_value=if self.open_value.is_some(){None}else{Some(SharedString::from("item"))};cx.notify()}`:''}${plan.callbacks.map(callback=>`pub fn ${callback.field}(mut self,handler:impl Fn(&mut gpui::Window,&mut gpui::App)+'static)->Self{self.${callback.field}=Some(std::rc::Rc::new(handler));self}
+ ${plan.presence?`pub fn ${snake(plan.presence.valueProp)}(mut self,value:Option<bool>)->Self{self.open_state.controlled=value;self}
+ pub fn ${plan.presence.defaultValueProp?snake(plan.presence.defaultValueProp):'default_open'}(mut self,value:bool)->Self{self.open_state=BooleanState::new(value);self}
+ pub fn set_${snake(plan.presence.valueProp)}(&mut self,value:Option<bool>,cx:&mut Context<Self>){self.open_state.controlled=value;cx.notify();}
+ pub fn ${snake(plan.presence.valueProp)==='open'?'is_open':'is_'+snake(plan.presence.valueProp)}(&self)->bool{self.open_state.value()}`+(plan.presence.triggerPart?`
+ fn toggle_open(&mut self,cx:&mut Context<Self>){if let Some(value)=self.open_state.request_toggle(){cx.emit(ChangeRequest{channel:${q(plan.presence.channelName)},handler:${q(plan.presence.changeHandlerProp??plan.presence.channelName)},value});cx.notify();}}`:''):''}${plan.valueChannel?`\n pub fn value(mut self,value:Option<SharedString>)->Self{self.open_value=value;self}\n pub fn set_value(&mut self,value:Option<SharedString>,cx:&mut Context<Self>){self.open_value=value;cx.notify();}\n pub fn default_value(mut self,value:impl Into<SharedString>)->Self{let value:SharedString=value.into();self.open_value=if value.is_empty(){None}else{Some(value)};self}\n pub fn is_open(&self)->bool{self.open_value.is_some()}\n fn toggle_open(&mut self,cx:&mut Context<Self>){self.open_value=if self.open_value.is_some(){None}else{Some(SharedString::from("item"))};cx.notify()}`:''}${plan.callbacks.map(callback=>`pub fn ${callback.field}(mut self,handler:impl Fn(&mut gpui::Window,&mut gpui::App)+'static)->Self{self.${callback.field}=Some(std::rc::Rc::new(handler));self}
  pub fn set_${callback.field}(&mut self,handler:impl Fn(&mut gpui::Window,&mut gpui::App)+'static,cx:&mut Context<Self>){self.${callback.field}=Some(std::rc::Rc::new(handler));cx.notify();}`).join('\n ')}
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
@@ -277,7 +278,7 @@ impl ${ir.name}{
  }
  ${axisMethods}\n${fieldMethods}\n${controls}\n${contentMethods}\n${slotMethods}
 }
-${plan.channel?`impl EventEmitter<ChangeRequest> for ${ir.name}{}`:''}
+${plan.channel||plan.presence?.triggerPart?`impl EventEmitter<ChangeRequest> for ${ir.name}{}`:''}
 impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel||nativeContent||plan.refs.length||plan.activations.length?'cx':'_cx'}:&mut Context<Self>)->impl IntoElement{
  ${nativeContent?`NativeContent::assert_unique_views(${plan.childContent?'self.content.iter()':''}${plan.childContent&&plan.slots.length?'.chain(self.slots.values())':plan.slots.length?'self.slots.values()':''});`:''}
  ${guard(plan,ir.dom!)?`if !(${guard(plan,ir.dom!)}){return gpui::Empty.into_any_element();}`:''}
@@ -383,7 +384,7 @@ function anatomyFiles(ir: ComponentIR) {
   omittedFactKinds:[...new Set(omitted.map(omission=>omission.kind))].sort(),
   refs:plan.refs.map(ref=>({field:ref.field,refType:ref.refType,projectedAttrs:ref.attrs.map(attr=>attr.prop),dynamicProps:ref.dynamic.map(entry=>entry.prop),events:ref.events.map(entry=>entry.targetHandlerProp),omissions:ref.omissions})),
   callbacks:plan.callbacks.map(callback=>callback.prop),
-  ...(plan.presence?{presence:{channel:plan.presence.channelName,valueProp:plan.presence.valueProp,realized:['controlled-uncontrolled-open-state','guarded-presence-parts'],omissions:['modality-trapping','dismissal','timing','layer-ordering']}}:{}),
+  ...(plan.presence?{presence:{channel:plan.presence.channelName,valueProp:plan.presence.valueProp,triggerPart:plan.presence.triggerPart??null,realized:['controlled-uncontrolled-open-state',...(plan.presence.triggerPart?['declared-trigger-toggle','change-request-emission']:[]),'guarded-presence-parts'],omissions:['modality-trapping','dismissal','timing','layer-ordering',...(plan.presence.triggerPart?['text-clamp-measurement']:[])]}}:{}),
   ...(plan.valueChannel?{valueChannel:{channel:plan.valueChannel.valueProp,triggerPart:plan.valueChannel.triggerPart,gatedPart:plan.valueChannel.gatedPart,realized:['controlled-uncontrolled-open-value','trigger-toggle-pointer-keyboard','gated-panel'],omissions:['multi-open-array-value','item-identities','collapsible-suppression']}}:{}),
   activations:plan.activations.map(activation=>({part:activation.part,handler:activation.handler,keyboard:activation.keyboard})),
   omissions:['control-semantics','accessibility','form-submission','field-association','motion','compound-composition','overlay-behaviour','iteration','content-transform','glyph-rendering','duplicate-view-placement','complete-cross-platform-parity'],
