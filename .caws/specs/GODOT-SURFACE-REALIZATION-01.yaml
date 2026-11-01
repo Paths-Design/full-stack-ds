@@ -50,3 +50,8 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "surface-family pending probe (node tmp/surface-pending.mjs) prints no component rows -> Dialog, Sheet, Toast, Command, Tooltip, Walkthrough all at 0 pending leaves; pnpm run audit:godot-boundary -> exit 0 with 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; corpus ledger 157 rules, lowered 8896 / pending 295 / refused 8310, 0 unclassified"
+    recorded_at: "2026-11-01T09:43:37.330Z"
