@@ -60,3 +60,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot rows: disclosure-roving-focus (arrow advance + wrap, automatic activation follows focus), disclosure-aria-expanded (per-item structural aria-expanded), disclosure-dismissal (outside click, closeOnOutsideClick gate honoured, escape), disclosure-style-projection (font 16 / colour #141414 / line spacing 29 reach trigger, item button and item-body text), disclosure-accessibility (accessible name, aria-controls + aria-labelledby wired, focus ring width 2 colour #0566fe, projected state mapping), disclosure-activation-mode (automatic selects, manual moves focus only), disclosure-focus-ring (anatomy summary host focusable, ring painted on focus and cleared on exit)"
     recorded_at: "2026-11-01T09:35:22.257Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 29 rows; all 21 pre-existing rows byte-identical to the slice baseline (/tmp/godot-pilot-baseline vs final receipt compared row-by-row: 0 changed, 0 missing); catalog-load admitted 55 failures []"
+    recorded_at: "2026-11-01T09:35:23.887Z"
