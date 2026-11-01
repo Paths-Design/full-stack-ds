@@ -67,3 +67,7 @@ evidence:
     status: pass
     evidence_ref: "docs/architecture/godot-target.md 'Form-control family' section states zero pending (1698 lowered / 1573 refused) and the refusals with reasons (checkbox tri-state, OTP field-group runtime, validation callbacks/read-only, data-driven options/iteration, authored bindings, keyboard/tabindex authoring, transfer model); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; docs:check-claims and docs:check-links pass"
     recorded_at: "2026-11-01T09:55:50.861Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=godot twice -> second run leaves the tree unchanged; pnpm run generate:check exit 0; pnpm run audit:godot-boundary exit 0; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 92 tests passed; pnpm run test:godot passed:true"
+    recorded_at: "2026-11-01T09:55:52.195Z"
