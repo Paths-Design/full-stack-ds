@@ -1,9 +1,11 @@
 id: GODOT-COLLECTION-REALIZATION-01
 title: 'Godot collections+date family realization: Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel pending-ledger closure'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Collections/date family completed by refusal: eight components at zero pending leaves, with the date-grid, paged-set, dynamic component-ref, formatting, inert-axis, navigation and authored-binding facts refused with written reasons'
 created_at: '2026-11-01T09:56:48.514Z'
-updated_at: '2026-11-01T09:56:55.733Z'
+updated_at: '2026-11-01T10:06:44.743Z'
 created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
 blast_radius:
   modules:
