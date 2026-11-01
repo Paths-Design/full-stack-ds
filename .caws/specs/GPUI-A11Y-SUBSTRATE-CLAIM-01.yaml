@@ -37,3 +37,12 @@ contracts:
   - name: 'gpui-accessibility-substrate'
     type: schema
     path: 'packages/ds-codegen/src/frameworks/gpui/support-boundary.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "the boundary ledger records the four dispositions (lowered, pending, substrate, refused) and every accessibility family — a11y, anatomy details role/aria, aria bindings/attrs/roles, prop ariaLabel/aria-labelledby/aria-describedby, state a11y — carries substrate with the pinned revision a38fc8c8de6e4010fadcfde7dd111d90dfd66845 and the missing accesskit/role API named; validateBoundary accepts it and the ledger test pins both the substrate classification and the refused catch-all"
+    recorded_at: "2026-11-01T12:04:27.967Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    commit_sha: "3ddcdc2fe"
