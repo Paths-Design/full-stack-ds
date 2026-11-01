@@ -1,0 +1,98 @@
+id: LINKS-DISABLED-ACTIVATION-01
+title: 'Make disabled links non-operable and keyboard discoverable across published targets'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-01T16:17:38.248Z'
+updated_at: '2026-11-01T16:17:38.248Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Contract-owned anchor availability, generic activation lowering, native disabled paint and focused state suppression'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Links'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/disabled-activation.test.ts'
+    - 'packages/ds-codegen/src/states-to-css.test.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/react/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/rn-guarded-state-block.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/disabled-state-styles.test.ts'
+    - 'packages/ds-react/src/components/Links'
+    - 'packages/ds-react/src/index.ts'
+    - 'packages/ds-vue/src/components/Links'
+    - 'packages/ds-vue/src/index.ts'
+    - 'packages/ds-svelte/src/components/Links'
+    - 'packages/ds-svelte/src/index.ts'
+    - 'packages/ds-angular/src/components/Links'
+    - 'packages/ds-angular/src/index.ts'
+    - 'packages/ds-lit/src/components/Links'
+    - 'packages/ds-lit/src/index.ts'
+    - 'packages/ds-react-native/src/components/Links'
+    - 'packages/ds-react-native/src/index.ts'
+    - 'packages/ds-react/src/primitives/interaction.ts'
+    - 'packages/ds-vue/src/primitives/interaction.ts'
+    - 'packages/ds-svelte/src/primitives/interaction.ts'
+    - 'packages/ds-angular/src/primitives/interaction.ts'
+    - 'packages/ds-lit/src/primitives/interaction.ts'
+    - 'packages/ds-figma-plugin/src/planner.ts'
+    - 'packages/ds-figma-plugin/src/planner.test.ts'
+    - 'scripts/state-suppression-audit'
+    - 'scripts/pseudo-state-audit'
+    - 'e2e/links-disabled.spec.ts'
+    - 'e2e/fixtures/links-disabled'
+    - 'scripts/release-package-check'
+    - 'docs/codegen-authority.md'
+    - 'docs/architecture/design/box-model-primitive.md'
+    - 'packages/ds-figma-plugin/generated/components/Links'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Links'
+    - 'packages/ds-jetpack-compose/src/main/kotlin/com/fullstackds/components/Links'
+    - 'packages/ds-unity/Runtime/Generated/Links'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS'
+    - 'packages/ds-godot/addons/full_stack_ds/components/Links'
+    - 'packages/ds-godot/verification/capability-inventory.json'
+    - 'packages/ds-gpui/src/components/Links'
+  out: []
+invariants:
+  - 'Enabled web links preserve native navigation, target/rel and modified activation; no component-name special cases or audit allowances'
+  - 'All eight package readiness obligations remain open beyond this bounded Links slice; no npm publication'
+acceptance:
+  - id: A1
+    given: 'enabled and disabled Links in five web consumers'
+    when: 'pointer Enter and consumer cancellation run through enabled disabled and reenabled states'
+    then: 'disabled anchors omit href expose link and disabled semantics remain tabbable with visible focus and suppress navigation and callbacks while enabled links navigate and notify once with target and rel preserved'
+  - id: A2
+    given: 'React Native Links and portable public callback types'
+    when: 'activation cancellation and disabled state transition run'
+    then: 'enabled activation opens the URL once disabled and cancelled activation never open it and disabled accessibility state and resolved text styling restore on reenabling with explicit native-runtime proof limits'
+  - id: A3
+    given: 'named pointer suppression and existing category suppression'
+    when: 'CSS design selectors Figma metadata and audits are produced'
+    then: 'pointer hover and visited are suppressed while focus remains visible named referents are checked and unrelated or partially guarded rules cannot hide actual leaks'
+  - id: A4
+    given: 'generated Links and freshly packed published libraries'
+    when: 'required scoped full and browser consumer checks run'
+    then: 'public positive and negative types resolve generated artifacts match and relevant regressions pass with remaining parent publication blockers explicitly retained'
+observability:
+  - 'Keep raw browser navigation/focus/callback observations native layer tests type diagnostics and gate receipts under canonical ignored release evidence'
+rollback:
+  - 'Revert the isolated Links contract and generic lowering changes and regenerate'
+non_functional: {}
+contracts:
+  - name: 'disabled-navigation'
+    type: behavior
+    path: 'packages/ds-contracts/components/Links/Links.contract.json'
