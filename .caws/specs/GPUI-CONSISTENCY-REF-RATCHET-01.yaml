@@ -43,3 +43,12 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "the audit reports declared componentRef nodes vs realized references per target in its matrix, baseline and console summary: web trio 20/20, GPUI 18/20 (Progres/Nav nested refs identified); the dimension is part of DIMENSIONS so the generic regression/staleness ratchet covers it, and the audit now reads only committed generated source (no gitignored receipts), verified by identical numbers before and after regeneration"
+    recorded_at: "2026-11-01T10:56:11.419Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: f12a60839
