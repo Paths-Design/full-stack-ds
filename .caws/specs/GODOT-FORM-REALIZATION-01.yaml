@@ -50,3 +50,8 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "form-family pending probe (node tmp/family3-pending.mjs) prints no component rows -> all nine form controls at 0 pending; family counts pending 0 / lowered 1698 / refused 1573; pnpm run audit:godot-boundary exit 0 ('every leaf classified, ... inventory matches a fresh regen') with ledger 158 rules, lowered 8906 / pending 244 / refused 8351, 0 unclassified"
+    recorded_at: "2026-11-01T09:55:45.402Z"
