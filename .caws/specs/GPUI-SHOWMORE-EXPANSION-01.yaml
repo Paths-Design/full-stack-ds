@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "ShowMore plans expansion state from its boolean channel and declared trigger: generated source carries expanded/default_expanded/set_expanded/is_expanded, a generated toggle_open with ChangeRequest emission (channel/handler names embedded), the trigger part's pointer+Space+Enter activation and impl EventEmitter<ChangeRequest>; surface presence keeps guarded-part semantics and regenerates byte-identically; the receipt names triggerPart and the text-clamp-measurement omission"
+    recorded_at: "2026-11-01T12:29:24.336Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/ShowMore/ShowMore.rs
+    commit_sha: ef80f6f15
