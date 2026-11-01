@@ -79,3 +79,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/frameworks/gpui/support-boundary.json
     commit_sha: "8e1e2e4a1"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "generate --target=gpui run twice: 55 file groups each time; src tree sha256 91ce98e311af5895c079f1a75be9cafd0fe98042ad1b39b0110bfbaf38531714 identical before and after; every component carries capabilities.json naming exclusions"
+    recorded_at: "2026-11-01T08:17:08.735Z"
+    command: "pnpm run generate:gpui && find packages/ds-gpui/src -type f | sort | xargs shasum -a 256 | shasum -a 256"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components
+    commit_sha: "083d81833"
