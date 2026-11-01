@@ -39,6 +39,8 @@ Godot's accessibility tree is not populated by this project, so that aria state 
 
 The disclosure family (Accordion, Tabs, Popover, Details) has no pending boundary leaves: every contract fact is either lowered with a headless witness or refused with a written reason. That includes manual/automatic activation (`activationMode`), the anatomy-hosted focus ring on Details' summary, and the projected accessibility name/relations.
 
+The overlay-surface family (Dialog, Sheet, Toast, Command, Tooltip, Walkthrough) is closed too: `runtime/surface.gd` realises presence, inert declared-prop projection and the `ariaLabelledby`/`ariaDescribedby` props wired onto Godot's native accessibility relations. Blocking modality/backdrop, message defaults, data-model and data-driven children, consumer callbacks and iterated anatomy are refused with written reasons in `support-boundary.json`.
+
 ## Generate and verify
 
 From the repository root:

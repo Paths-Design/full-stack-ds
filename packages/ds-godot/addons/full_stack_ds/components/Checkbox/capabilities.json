@@ -12,7 +12,7 @@
   "omissions": [
     "indeterminate: the declared behaviour is not realised by the shared runtime yet (boundary prop-runtime-behaviour)",
     "ariaLabel: lowered (boundary prop-aria-label)",
-    "ariaLabelledby: ARIA state/relationship exposure is not realised by the shared runtime yet (boundary prop-aria)",
+    "ariaLabelledby: The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above. (boundary prop-aria)",
     "root.display: platform web only",
     "root.align-items: platform web only",
     "root.cursor: platform web only",
