@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: gpui-component-parity
 created_at: '2026-11-01T07:23:06.432Z'
-updated_at: '2026-11-01T07:40:15.282Z'
+updated_at: '2026-11-01T07:40:22.159Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
@@ -21,10 +21,11 @@ scope:
     - 'scripts/gpui-pilot.mjs'
     - 'docs/architecture/gpui-target.md'
     - 'docs/current-implementation-snapshot.md'
-    - README.md
-    - docs/normal-form.md
-    - AGENTS.md
   out: []
+  support:
+    - README.md
+    - AGENTS.md
+    - docs/normal-form.md
 invariants:
   - 'The seven components admitted before this slice keep their current emitted semantics; no admitted component silently loses a fact it previously emitted'
   - 'No silent drops: every contract or sidecar fact the GPUI target does not lower is classified in the support boundary and named in that component''s capability receipt'
