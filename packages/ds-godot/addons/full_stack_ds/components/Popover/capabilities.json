@@ -7,6 +7,91 @@
     "closeOnOutsideClick",
     "closeOnBlur"
   ],
+  "omissions": [
+    "root.position: platform web,ios,android only",
+    "root.display: platform web only",
+    "trigger.display: platform web only",
+    "trigger.align-items: platform web only",
+    "trigger.cursor: platform web only",
+    "content.min-width: platform web only",
+    "content.max-width: platform web only",
+    "content.contain: platform web only",
+    "content.animation: platform web only",
+    "content.background-color: no Godot control style mapping",
+    "content.border-color: no Godot control style mapping",
+    "content.border-radius: no Godot control style mapping",
+    "content.padding: no Godot control style mapping",
+    "content.gap: no Godot control style mapping",
+    "content.box-shadow: no Godot control style mapping",
+    "content.z-index: no Godot control style mapping",
+    "content.display: platform web only",
+    "content.border-style: platform web only",
+    "content.border-width: platform web only",
+    "defaultOpen: declined by the surface shape; no native realization on this target",
+    "placement: declined by the surface shape; no native realization on this target",
+    "closeOnEscape: declined by the surface shape; no native realization on this target",
+    "closeOnOutsideClick: declined by the surface shape; no native realization on this target",
+    "closeOnBlur: declined by the surface shape; no native realization on this target"
+  ],
+  "disclosure": {
+    "focus": {
+      "strategy": "none",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": [
+      {
+        "event": "escape",
+        "enabledByProp": "closeOnEscape",
+        "defaultEnabled": true
+      },
+      {
+        "event": "outsideClick",
+        "enabledByProp": "closeOnOutsideClick",
+        "defaultEnabled": true
+      },
+      {
+        "event": "blur",
+        "enabledByProp": "closeOnBlur",
+        "defaultEnabled": true
+      }
+    ],
+    "portal": {
+      "enabled": true,
+      "layering": "popover"
+    },
+    "modality": "non-blocking",
+    "surfaceKind": "popover"
+  },
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "trigger",
+        "to": "content",
+        "attribute": "aria-controls"
+      },
+      {
+        "from": "trigger",
+        "to": "content",
+        "attribute": "aria-expanded"
+      }
+    ],
+    "stateAria": [
+      {
+        "category": "disclosure",
+        "attribute": "aria-expanded",
+        "values": {
+          "closed": "false",
+          "open": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-controls",
+      "aria-expanded"
+    ],
+    "role": "group"
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [
@@ -15,13 +100,6 @@
     "closeOnEscape",
     "closeOnOutsideClick",
     "closeOnBlur"
-  ],
-  "omissions": [
-    "defaultOpen: declined by the surface shape; no native realization on this target",
-    "placement: declined by the surface shape; no native realization on this target",
-    "closeOnEscape: declined by the surface shape; no native realization on this target",
-    "closeOnOutsideClick: declined by the surface shape; no native realization on this target",
-    "closeOnBlur: declined by the surface shape; no native realization on this target"
   ],
   "proof": "requires-runtime-witness"
 }

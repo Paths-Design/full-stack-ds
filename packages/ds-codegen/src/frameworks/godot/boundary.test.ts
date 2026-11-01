@@ -124,10 +124,18 @@ describe("Godot support boundary", () => {
     expect(classifyProp(boundary, "onChange")).toMatchObject({ disposition: "lowered" });
     expect(classifyProp(boundary, "defaultValue")).toMatchObject({ disposition: "lowered" });
     // Pending: semantics the shared runtime does not realise yet.
-    expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "pending" });
-    expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "pending" });
-    expect(classifyProp(boundary, "options")).toMatchObject({ disposition: "pending" });
-    expect(classifyProp(boundary, "initialFocus")).toMatchObject({ disposition: "pending" });
+    // Validation state is projected structurally (required/invalid); validation
+    // execution and read-only mode remain refused.
+    expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "lowered" });
+    // Value formatting has no runtime on this target; it is refused, not pending.
+    expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "refused" });
+    // Data-driven children props are refused: the runtime does not iterate or
+    // persist consumer data.
+    expect(classifyProp(boundary, "options")).toMatchObject({ disposition: "refused" });
+    // Activation mode is realised by the control runtime; initial focus is
+    // refused because mount-time focus is the embedding scene's decision.
+    expect(classifyProp(boundary, "activationMode")).toMatchObject({ disposition: "lowered" });
+    expect(classifyProp(boundary, "initialFocus")).toMatchObject({ disposition: "refused" });
     // Refused: DOM/authoring facts with no native meaning.
     expect(classifyProp(boundary, "as")).toMatchObject({ disposition: "refused" });
     expect(classifyProp(boundary, "type")).toMatchObject({ disposition: "refused" });
@@ -208,7 +216,9 @@ describe("Godot support boundary", () => {
       expect(leaf.pointer.startsWith("/")).toBe(true);
     }
     // A non-lowered leaf is still named by a rule (never silently dropped).
-    const pendingLeaf = classified.find(leaf => leaf.disposition === "pending");
+    // Button has no pending leaves any more, so the check uses a component that
+    // still carries one.
+    const pendingLeaf = classifyContract(load("Avatar"), boundary).find(leaf => leaf.disposition === "pending");
     expect(pendingLeaf?.rule).toBeTruthy();
     // contractLeaves merges the identity-keyed sidecar leaves.
     expect(contractLeaves(load("Button")).some(leaf => leaf.source === "styles")).toBe(true);

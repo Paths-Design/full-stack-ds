@@ -249,6 +249,14 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-valuenow",
+      "aria-valuemin",
+      "aria-valuemax"
+    ]
+  },
   "projectedProps": [
     "intent"
   ],

@@ -44,6 +44,10 @@ namespace GamePauseMenu
         public readonly List<HeaderStatLayout> Stats = new List<HeaderStatLayout>();
         public LayoutRect PausedChip;
         public string PausedText;
+        public string WordmarkColor, WordmarkAccentColor, MissionColor, StatLabelColor, StatValueColor, StatSubColor;
+        public LayoutRect Ghost;
+        public string GhostText, GhostColor;
+        public double GhostOpacity;
     }
 
     public sealed class TabLayout
@@ -65,6 +69,7 @@ namespace GamePauseMenu
     {
         public LayoutRect Rect;
         public string RuleTop;
+        public string Background, HintsColor, NavLabelColor;
         public LayoutRect Hints;
         public string HintsText;
         public LayoutRect NavLabel;
@@ -490,6 +495,12 @@ namespace GamePauseMenu
                 Rect = read.RectField(root, "rect", "header.rect"),
                 Background = read.Str(root, "background", "header.background"),
                 RuleBottom = read.Str(root, "ruleBottom", "header.ruleBottom"),
+                WordmarkColor = read.Str(root, "wordmarkColor", "header.wordmarkColor"),
+                WordmarkAccentColor = read.Str(root, "wordmarkAccentColor", "header.wordmarkAccentColor"),
+                MissionColor = read.Str(root, "missionColor", "header.missionColor"),
+                StatLabelColor = read.Str(root, "statLabelColor", "header.statLabelColor"),
+                StatValueColor = read.Str(root, "statValueColor", "header.statValueColor"),
+                StatSubColor = read.Str(root, "statSubColor", "header.statSubColor"),
             };
             var wordmark = read.ObjectField(root, "wordmark", "header.wordmark");
             header.Wordmark = new LayoutRect(
@@ -524,6 +535,11 @@ namespace GamePauseMenu
             var paused = read.ObjectField(root, "pausedChip", "header.pausedChip");
             header.PausedChip = read.Rect(paused, "header.pausedChip");
             header.PausedText = read.Str(paused, "text", "header.pausedChip.text");
+            var ghost = read.ObjectField(root, "ghost", "header.ghost");
+            header.Ghost = read.Rect(ghost, "header.ghost");
+            header.GhostText = read.Str(ghost, "text", "header.ghost.text");
+            header.GhostColor = read.Str(ghost, "color", "header.ghost.color");
+            header.GhostOpacity = read.NumberField(ghost, "opacity", "header.ghost.opacity");
             return header;
         }
 
@@ -563,6 +579,9 @@ namespace GamePauseMenu
             {
                 Rect = read.RectField(root, "rect", "footer.rect"),
                 RuleTop = read.Str(root, "ruleTop", "footer.ruleTop"),
+                Background = read.Str(root, "background", "footer.background"),
+                HintsColor = read.Str(root, "hintsColor", "footer.hintsColor"),
+                NavLabelColor = read.Str(root, "navLabelColor", "footer.navLabelColor"),
             };
             var hints = read.ObjectField(root, "hints", "footer.hints");
             footer.Hints = new LayoutRect(

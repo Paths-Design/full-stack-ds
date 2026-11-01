@@ -150,6 +150,21 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "field",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-describedby",
+      "aria-readonly"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "length": "6",
@@ -201,7 +216,6 @@
     "field.border-radius: host control paints no panel",
     "field.border-color: host control paints no panel",
     "field.background-color: host control paints no panel",
-    ".otp__field:focus-visible: state selector not lowered",
     ".otp__field:disabled: state selector not lowered",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "root accessibility role and labeling: native projection unverified",

@@ -301,6 +301,57 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "trigger",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    },
+    {
+      "part": "searchInput",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "trigger",
+        "to": "content",
+        "attribute": "aria-controls"
+      },
+      {
+        "from": "trigger",
+        "to": "content",
+        "attribute": "aria-expanded"
+      }
+    ],
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-selected",
+        "values": {
+          "unselected": "false",
+          "selected": "true"
+        }
+      },
+      {
+        "category": "disclosure",
+        "attribute": "aria-expanded",
+        "values": {
+          "closed": "false",
+          "open": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-expanded",
+      "aria-haspopup"
+    ]
+  },
   "projectedProps": [
     "open",
     "disabled"
@@ -414,7 +465,6 @@
     "option.background-color: host control paints no panel",
     "emptyState.text-align: platform web only",
     "emptyState.color: host panel renders no text",
-    ".select__trigger:focus-visible: state selector not lowered",
     ".select__trigger:hover: state selector not lowered",
     ".select--disabled .select__trigger.cursor: platform web only",
     ".select--disabled .select__trigger.opacity: platform web only",
@@ -433,7 +483,6 @@
     "searchInput.box-sizing: platform web only",
     "searchInput.font-family: platform web only",
     "searchInput.line-height: no Godot anatomy style mapping",
-    ".select__searchInput:focus-visible: state selector not lowered",
     ".select__option[aria-selected=\"true\"]: selector outside normalized native grammar",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "root accessibility role and labeling: native projection unverified",

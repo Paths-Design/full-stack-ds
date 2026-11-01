@@ -257,6 +257,14 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "root",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
   "projectedProps": [
     "size"
   ],
@@ -285,7 +293,6 @@
     "root.cursor: platform web only",
     "hover: state selector not lowered",
     "disabled: state selector not lowered",
-    "focus: state selector not lowered",
     "visited: selector outside normalized native grammar",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "root accessibility role and labeling: native projection unverified",

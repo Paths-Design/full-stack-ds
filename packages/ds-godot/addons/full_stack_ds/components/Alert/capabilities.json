@@ -407,6 +407,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [
     "intent",
     "level"
@@ -463,7 +468,7 @@
     "dismiss.font: platform web only",
     "dismiss.line-height: platform web only",
     ".alert__dismiss:hover: state selector not lowered",
-    ".alert__dismiss:focus-visible: state selector not lowered",
+    ".alert__dismiss:focus-visible: focus selector carries no outline declarations",
     "title: selector targets part title with no generated host",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "root accessibility role and labeling: native projection unverified",

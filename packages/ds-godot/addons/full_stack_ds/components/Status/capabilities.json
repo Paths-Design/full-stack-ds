@@ -332,6 +332,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [
     "status"
   ],

@@ -51,9 +51,33 @@ func _apply_declared_props() -> void:
 		declared_props[prop] = JSON.parse_string(str(defaults[prop]))
 
 ## Write one declared prop value from consumer code. The value is projected
-## back out unchanged; this runtime attaches no behaviour to it.
+## back out unchanged, except for the accessibility labeling props, which are
+## wired onto Godot's native accessibility relations: `ariaLabelledby` and
+## `ariaDescribedby` accept a node path (or a node) the consumer owns.
 func set_contract_prop(prop: String, value: Variant) -> void:
 	declared_props[prop] = value
+	match prop:
+		"ariaLabelledby": _wire_aria_relation(value, "labelled")
+		"ariaDescribedby": _wire_aria_relation(value, "described")
+
+## Resolve a node path or node reference and attach it to the matching native
+## accessibility relation list. An unresolvable path leaves the relation empty
+## rather than inventing a target.
+func _wire_aria_relation(value: Variant, kind: String) -> void:
+	var target: Node = null
+	if value is Node: target = value
+	elif value is NodePath: target = get_node_or_null(value)
+	elif value is String and not value.is_empty(): target = get_node_or_null(NodePath(value))
+	if target == null: return
+	var path := target.get_path()
+	if kind == "labelled":
+		var labelled: Array[NodePath] = accessibility_labeled_by_nodes.duplicate()
+		if not labelled.has(path): labelled.append(path)
+		accessibility_labeled_by_nodes = labelled
+	else:
+		var described: Array[NodePath] = accessibility_described_by_nodes.duplicate()
+		if not described.has(path): described.append(path)
+		accessibility_described_by_nodes = described
 
 func get_contract_prop(prop: String, fallback: Variant = null) -> Variant:
 	return declared_props.get(prop, fallback)

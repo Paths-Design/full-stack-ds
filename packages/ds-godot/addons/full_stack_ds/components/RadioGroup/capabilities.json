@@ -88,6 +88,11 @@
       ]
     }
   ],
+  "accessibility": {
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [],
   "defaults": {
     "options": "[{\"value\":\"alpha\",\"label\":\"Alpha\"},{\"value\":\"beta\",\"label\":\"Beta\"}]",

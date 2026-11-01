@@ -220,6 +220,36 @@
       ]
     }
   ],
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "root",
+        "to": "label",
+        "attribute": "aria-labelledby"
+      },
+      {
+        "from": "label",
+        "to": "control",
+        "attribute": "for"
+      },
+      {
+        "from": "control",
+        "to": "help",
+        "attribute": "aria-describedby"
+      },
+      {
+        "from": "control",
+        "to": "error",
+        "attribute": "aria-describedby"
+      }
+    ],
+    "labeling": [
+      "aria-labelledby",
+      "aria-describedby",
+      "aria-errormessage"
+    ],
+    "role": "group"
+  },
   "projectedProps": [
     "status"
   ],

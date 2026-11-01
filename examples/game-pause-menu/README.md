@@ -15,11 +15,14 @@ panels, a full-width signal-orange tab band, mint map/dossier fields, a steel
 shell/footer, hairline rules, uppercase Inter micro-labels and square corners.
 The style is registered as the `orion` brand in
 [`packages/ds-tokens/src/brands/orion.tokens.json`](../../packages/ds-tokens/src/brands/orion.tokens.json)
-(`data-brand="orion"`). A first restyle pass (orange tab band, mint dossier,
-steel shell/footer, GPUI modal scrim) reduced source-design oracle violations
-from 90 to 36 and brought map/map-popover/progress into the reference bands; the
-remaining gaps — oversized grey display typography, industrial framing, and the
-still-dark abilities/settings fields — are **not claimed** and are recorded in
+(`data-brand="orion"`). Two restyle passes now give the menu the reference's orange tab band, mint
+header/footer and map/dossier fields, a 160 px grey ghost `N5` display layer,
+steel shell gaps and the GPUI modal scrim. The source-design oracle audit moved
+from 90 violations / 0 clean observations to **30 / 6**: settings meets the
+bands, abilities misses the ink ceiling by ~1.7 points, map/progress carry more
+mint than the reference collage band, and the full-screen remap modal is
+dominated by its scrim. Industrial framing and per-tab mint/grey field
+conversion are still not claimed; the review record is
 [`evidence/visual-review.md`](evidence/visual-review.md).
 
 ## Portfolio entry
@@ -63,7 +66,7 @@ all three lanes to it:
   OSes, physical-input parity, accessibility or usability parity, or full
   source-design composition fidelity. The restyle pass is recorded in
   [`evidence/visual-review.md`](evidence/visual-review.md); the oracle audit now
-  records 36 composition violations across 24 lane/state observations (9 clean)
+  records 30 composition violations across 24 lane/state observations (6 clean)
   and still flags the abilities/settings ink/mint balance. The coverage matrix
   and conditions for a stronger claim are in
   [`evidence/parity-matrix.md`](evidence/parity-matrix.md).
@@ -102,11 +105,11 @@ the design system's "pill" is a token value rather than a geometry contract:
 
 The authority is token-aware rather than a parallel palette: all 19 colours
 carry a `colorTokens` entry (semantic token + `dark`/`light`/`both` mode) and
-all 20 type values carry a `typeTokens` entry. Eleven colours resolve through
+all 21 type values carry a `typeTokens` entry. Eleven colours resolve through
 existing Orion semantic tokens in dark mode, five use the brand's light-mode
 values for the light content surfaces embedded in the dark chrome, and the
 three graphic status/surface hues (`moss`, `alert`, `clear`) are new Orion brand
-tokens. The three app-specific type sizes (11/13/28 px) are new Orion
+tokens. The app-specific type sizes (11/13/28 px) plus the 160 px ghost display size are new Orion
 `typography.graphic.size.*` tokens; the rest map to the core typography ramp and
 zero tracking token. `node scripts/game-pause-token-provenance.mjs` fails if any
 excerpted value drifts from `resolved.tokens.json` + `orion.tokens.json`.

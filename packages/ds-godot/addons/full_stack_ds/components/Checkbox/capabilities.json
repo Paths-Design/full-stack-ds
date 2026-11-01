@@ -10,14 +10,55 @@
     "ariaLabelledby"
   ],
   "omissions": [
-    "indeterminate: the declared behaviour is not realised by the shared runtime yet (boundary prop-runtime-behaviour)",
+    "indeterminate: Godot's CheckBox exposes no tri-state/indeterminate property in 4.7 and the target has no OTP field-group runtime, so length/mode/readOnly/indeterminate behaviour is not realised rather than faked. (boundary prop-runtime-behaviour)",
     "ariaLabel: lowered (boundary prop-aria-label)",
-    "ariaLabelledby: ARIA state/relationship exposure is not realised by the shared runtime yet (boundary prop-aria)",
+    "ariaLabelledby: The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above. (boundary prop-aria)",
+    "root.display: platform web only",
+    "root.align-items: platform web only",
+    "root.cursor: platform web only",
+    ".checkbox:hover .checkbox__indicator: part indicator is not hosted by the control runtime",
+    "input: part input is not hosted by the control runtime",
+    "indicator: part indicator is not hosted by the control runtime",
+    ".checkbox:has(.checkbox__input:checked) .checkbox__indicator: part indicator is not hosted by the control runtime",
+    ".checkbox:has(.checkbox__input:focus-visible) .checkbox__indicator: part indicator is not hosted by the control runtime",
+    ".checkbox__indicator::after: part indicator is not hosted by the control runtime",
+    ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after: part indicator is not hosted by the control runtime",
+    ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator: part indicator is not hosted by the control runtime",
+    ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after: part indicator is not hosted by the control runtime",
+    ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator: part indicator is not hosted by the control runtime",
     "size: declined by the boolean shape; no native realization on this target",
     "defaultChecked: declined by the boolean shape; no native realization on this target",
     "name: declined by the boolean shape; no native realization on this target",
     "value: declined by the boolean shape; no native realization on this target"
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "auto",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": [],
+    "portal": {
+      "enabled": false
+    }
+  },
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-checked",
+        "values": {
+          "unchecked": "false",
+          "checked": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-labelledby",
+      "aria-checked"
+    ]
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

@@ -1,6 +1,6 @@
 # Visual review record — Orion N5 pause menu
 
-**Status: first restyle pass complete; human re-review pending.** The human
+**Status: restyle pass 2 complete; human re-review pending.** The human
 review decision was “require the Orion style restyle first”, so this record now
 covers both the original gap and the first restyle pass.
 
@@ -63,19 +63,18 @@ review is required before any stronger claim is recorded.
 ### Where the reference is not met
 
 The original oracle audit recorded **90 composition-band violations across 24
-lane/state observations, with zero clean observations**. After the first restyle
-pass it records **36 violations with 9 clean observations** (map, map-popover
-and progress meet the bands in all three lanes). Representative post-restyle
-values:
+lane/state observations, with zero clean observations**. After the second restyle pass it records **30 violations with 6 clean
+observations** (settings and settings-subtitle meet the bands in all lanes).
+Representative post-pass-2 values:
 
 | Screen | Ink | Mint | Grey | Orange | Cream |
 |---|---:|---:|---:|---:|---:|
 | Reference style board | .400 | .279 | .179 | .108 | .000 |
 | Reference orbital panel | .426 | .217 | .275 | .066 | .000 |
-| `map` (GPUI) | .358 | .387 | .162 | .059 | .002 |
-| `progress` (GPUI) | .472 | .255 | .157 | .062 | .001 |
-| `abilities` (GPUI) | .733 | .002 | .168 | .058 | .001 |
-| `settings` (GPUI) | .703 | .001 | .199 | .062 | .003 |
+| `map` (GPUI) | .241 | .554 | .095 | .059 | .001 |
+| `progress` (GPUI) | .356 | .422 | .090 | .062 | .001 |
+| `abilities` (GPUI) | .617 | .170 | .104 | .057 | .000 |
+| `settings` (GPUI) | .586 | .169 | .135 | .062 | .002 |
 
 1. **Surface hierarchy is inverted.** The reference uses large mint and grey
    fields with orange bands; the app is 55–91 % near-black and confines mint to
@@ -107,12 +106,23 @@ Authority-driven changes:
 - GPUI gained the full-viewport ink/0.78 remap-modal scrim Unity and Godot
   already had — the brighter chrome exposed that as a genuine cross-engine gap.
 
-The oracle now reports **36 composition violations / 9 clean observations**,
-down from 90 / 0. Map, map-popover and progress now meet the bands in all lanes.
-Abilities and settings still fail the ink/mint balance (roughly 70 % ink, ~0 %
-mint) and the reference's oversized grey display type, industrial framing and
-orange data plates are still absent. Those remain explicit non-claims; the docs
-describe the bounded claim; see [`../README.md`](../README.md) and
+## Restyle pass 2 (2026-11-01)
+
+- added a 160 px grey ghost `N5` display layer in the header (new `type.ghost`
+  and Orion brand size token), and switched the header and footer to mint
+  fields with ink secondary text; the orange tab band now sits between two mint
+  surfaces;
+- the shell gaps stay steel; panels stay charcoal housings;
+- the oracle now reports **30 composition violations / 6 clean observations**:
+  settings and settings-subtitle meet the bands in all lanes; abilities misses
+  the ink ceiling by ~1.7 points; map/progress now carry more mint than the
+  reference collage band because header + footer + map field stack; the
+  full-screen remap modal is dominated by its scrim and is not a meaningful
+  composition sample.
+- still absent: industrial housing/framing and a full per-tab mint/grey panel
+  conversion. Those remain explicit non-claims.
+
+The docs describe the bounded claim; see [`../README.md`](../README.md) and
 [`../parity.md`](../parity.md).
 
 ## Human review checklist
@@ -123,9 +133,10 @@ used:
 - [ ] Palette and typography parity across the eight captured states is
       visually acceptable, including the Unity body-copy weight residual.
 - [ ] The map screen is accepted as the strongest on-brand screen.
-- [ ] Restyle pass 1 (orange band, mint dossier, steel shell/footer, GPUI modal
-      scrim) moves the result far enough toward the reference to accept the
-      remaining composition non-claims, or a second restyle is requested.
+- [ ] Restyle pass 2 (mint header/footer, 160 px grey ghost `N5`, orange band)
+      moves the result far enough toward the reference to accept the remaining
+      industrial-framing and per-tab field non-claims, or a third restyle is
+      requested.
 - [ ] The bounded claim (not full/pixel parity; 1× 1280 × 800; pinned macOS
       host; eight states; no a11y/usability claim) is the intended claim.
 - [ ] The Unity “ledgered migration started” wording is acceptable.

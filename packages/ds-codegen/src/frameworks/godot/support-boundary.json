@@ -87,8 +87,8 @@
       "match": [
         "contract:/anatomy/details/*/role"
       ],
-      "disposition": "pending",
-      "reason": "accessibility roles are a semantic mapping the shared runtime does not expose yet"
+      "disposition": "refused",
+      "reason": "The web element role an authored anatomy describes; native targets lower parts and channels, not the authored element descriptor."
     },
     {
       "id": "anatomy-details-focusable",
@@ -96,40 +96,40 @@
         "contract:/anatomy/details/*/focusable",
         "contract:/anatomy/details/*/interactive"
       ],
-      "disposition": "pending",
-      "reason": "focus and interaction behaviour is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored focusability/interactivity descriptors of the web element; native focus is realized from focus/channel facts, not from this descriptor."
     },
     {
       "id": "anatomy-details-multiple",
       "match": [
         "contract:/anatomy/details/*/multiple"
       ],
-      "disposition": "pending",
-      "reason": "multi-selection behaviour is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The control runtime tracks one open item per control; multi-open disclosure is not realised, so the descriptor is not claimed."
     },
     {
       "id": "anatomy-details-subcomponent",
       "match": [
         "contract:/anatomy/details/*/subcomponent"
       ],
-      "disposition": "pending",
-      "reason": "relationships between parts are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Documents that the authored anatomy hosts a subcomponent; the target composes emitted instances instead."
     },
     {
       "id": "anatomy-details-aria",
       "match": [
         "contract:/anatomy/details/*/aria/**"
       ],
-      "disposition": "pending",
-      "reason": "ARIA attribute semantics are not exposed by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored ARIA descriptors of the web element; structural projection is emitted from bindings and states."
     },
     {
       "id": "anatomy-details-collapse-intent",
       "match": [
         "contract:/anatomy/details/*/collapsibleTo"
       ],
-      "disposition": "pending",
-      "reason": "the authored disclosure/collapse intent is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authoring intent for a collapsible container; the target lowers the declared channels and parts instead."
     },
     {
       "id": "anatomy-details-component-ref",
@@ -177,8 +177,8 @@
         "contract:/anatomy/dom/**/ref:*/if",
         "contract:/anatomy/dom/**/ref:*/children/**"
       ],
-      "disposition": "pending",
-      "reason": "dynamic composition of a referenced component is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Dynamic component-ref facts (bindings, events, guards, children on a componentRef) are not lowered: the planner emits a static host for each admitted ref and the consumer binds its own behaviour."
     },
     {
       "id": "anatomy-content-transform",
@@ -221,8 +221,8 @@
       "match": [
         "contract:/anatomy/dom/**/iterate/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Iterated anatomy emits one host and names the repeats; the iteration source itself is not lowered into scene construction."
     },
     {
       "id": "anatomy-guards",
@@ -231,16 +231,16 @@
         "contract:/anatomy/dom/**/children/*/if",
         "contract:/anatomy/dom/**/ref:*/if"
       ],
-      "disposition": "pending",
-      "reason": "conditional part presence is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Conditional anatomy guards are not mounted: a guarded region is emitted structurally only when unguarded, and the condition itself has no native carrier here."
     },
     {
       "id": "anatomy-dom-properties",
       "match": [
         "contract:/anatomy/dom/**/properties/**"
       ],
-      "disposition": "pending",
-      "reason": "native property bindings on a part are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored DOM properties are not applied: the runtime projects declared props, not element properties."
     },
     {
       "id": "anatomy-aria-label-binding",
@@ -293,8 +293,8 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/role"
       ],
-      "disposition": "pending",
-      "reason": "accessibility roles are a semantic mapping the shared runtime does not expose yet"
+      "disposition": "refused",
+      "reason": "An authored role binding is DOM authoring; Godot exposes no accessible-role property to bind it to."
     },
     {
       "id": "anatomy-dom-binding-media",
@@ -320,16 +320,16 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/title"
       ],
-      "disposition": "pending",
-      "reason": "hover tooltip presentation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored title bindings are not projected; the tooltip channel has no native carrier in this runtime."
     },
     {
       "id": "anatomy-dom-binding-empty",
       "match": [
         "contract:/anatomy/dom/**/bindings"
       ],
-      "disposition": "pending",
-      "reason": "an empty authored binding object carries no native fact"
+      "disposition": "refused",
+      "reason": "A bindings block with no entry carries no fact a target can project."
     },
     {
       "id": "anatomy-aria-binding",
@@ -343,8 +343,8 @@
         "contract:/anatomy/dom/**/bindings/aria-hidden",
         "contract:/anatomy/dom/**/bindings/aria-*"
       ],
-      "disposition": "pending",
-      "reason": "ARIA state exposure is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "structural state is projected from the anatomy aria bindings: expanded/selected/checked/disabled"
     },
     {
       "id": "anatomy-form-binding",
@@ -360,8 +360,8 @@
         "contract:/anatomy/dom/**/bindings/required",
         "contract:/anatomy/dom/**/bindings/aria-invalid"
       ],
-      "disposition": "pending",
-      "reason": "form validation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored validation bindings are not evaluated; a consumer sets the projected required/invalid state instead."
     },
     {
       "id": "anatomy-association-binding",
@@ -379,8 +379,8 @@
         "contract:/anatomy/dom/**/bindings/target",
         "contract:/anatomy/dom/**/bindings/rel"
       ],
-      "disposition": "pending",
-      "reason": "web navigation semantics are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored href/target/rel bindings are not projected; navigation is consumer-owned."
     },
     {
       "id": "anatomy-media-binding",
@@ -396,40 +396,40 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/data-*"
       ],
-      "disposition": "pending",
-      "reason": "data-attribute carriers drive CSS-only presentation and are not projected by the native style grammar"
+      "disposition": "refused",
+      "reason": "Authored data-* bindings have no native carrier; structural state is projected from channels/states instead."
     },
     {
       "id": "anatomy-focus-binding",
       "match": [
         "contract:/anatomy/dom/**/bindings/tabindex"
       ],
-      "disposition": "pending",
-      "reason": "keyboard focus order is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored tabindex bindings are not projected; focus order is decided by the scene tree and the projected focus strategy."
     },
     {
       "id": "anatomy-dom-attrs-aria",
       "match": [
         "contract:/anatomy/dom/**/attrs/aria-*"
       ],
-      "disposition": "pending",
-      "reason": "ARIA attribute semantics are not exposed by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored aria attributes are DOM authoring; structural ARIA state is projected from states/bindings, not from these literal attributes."
     },
     {
       "id": "anatomy-dom-attrs-role",
       "match": [
         "contract:/anatomy/dom/**/attrs/role"
       ],
-      "disposition": "pending",
-      "reason": "accessibility roles are a semantic mapping the shared runtime does not expose yet"
+      "disposition": "refused",
+      "reason": "Authored role attributes are DOM authoring; Godot exposes no accessible-role property, so they are neither projected nor approximated."
     },
     {
       "id": "anatomy-dom-attrs-data",
       "match": [
         "contract:/anatomy/dom/**/attrs/data-*"
       ],
-      "disposition": "pending",
-      "reason": "data-attribute carriers drive CSS-only presentation and are not projected by the native style grammar"
+      "disposition": "refused",
+      "reason": "Authored data-* attributes are not projected; structural state comes from channels and states."
     },
     {
       "id": "anatomy-dom-attrs-dom",
@@ -453,8 +453,8 @@
       "match": [
         "contract:/anatomy/dom/**/attrs/maxlength"
       ],
-      "disposition": "pending",
-      "reason": "form validation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored maxlength is not applied; an admitted field keeps its native length policy."
     },
     {
       "id": "anatomy-glyph-svg-attrs",
@@ -480,8 +480,8 @@
         "contract:/anatomy/dom/**/events/keyup",
         "contract:/anatomy/dom/**/events/keypress"
       ],
-      "disposition": "pending",
-      "reason": "keyboard navigation is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored keyboard event handlers are not bound; the runtime handles the focus/dismissal keys the contracts declare."
     },
     {
       "id": "anatomy-focus-event",
@@ -491,16 +491,16 @@
         "contract:/anatomy/dom/**/events/focusin",
         "contract:/anatomy/dom/**/events/focusout"
       ],
-      "disposition": "pending",
-      "reason": "focus management is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored focus-event handlers are not bound; the runtime handles the focus keys the contracts declare."
     },
     {
       "id": "surface-dismissal",
       "match": [
         "contract:/surface/dismissal/**"
       ],
-      "disposition": "pending",
-      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "surface dismissal modes map onto the same realised trigger wiring"
     },
     {
       "id": "surface-layer",
@@ -509,8 +509,8 @@
         "contract:/surface/anchor/**",
         "contract:/surface/timing/**"
       ],
-      "disposition": "pending",
-      "reason": "content-layer positioning and timing are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Anchor/positioning/timing policy is runtime-owned: collision flip-shift, placement props and entry/exit timing are not implemented, so the declared layer policy is not claimed."
     },
     {
       "id": "surface-modality",
@@ -518,8 +518,8 @@
         "contract:/surface/modality",
         "contract:/surface/modalityProp"
       ],
-      "disposition": "pending",
-      "reason": "modality and focus containment are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Blocking modality (backdrop, focus containment, modality gate) is not realised by the presence-only surface runtime."
     },
     {
       "id": "surface-content",
@@ -545,16 +545,16 @@
       "match": [
         "contract:/dismissal/**"
       ],
-      "disposition": "pending",
-      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "shared control runtime closes the surface on escape, outside click and focus leave, honouring the declared enabledBy gates"
     },
     {
       "id": "relationships",
       "match": [
         "contract:/relationships/**"
       ],
-      "disposition": "pending",
-      "reason": "relationships between parts are not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "part relations are wired onto accessibility_controls_nodes / labeled_by_nodes / described_by_nodes; unhosted parts are named omissions rather than claimed"
     },
     {
       "id": "form",
@@ -574,36 +574,122 @@
       "via": "the declared value model/channel/part projects onto the generated control configuration"
     },
     {
+      "id": "a11y-labeling",
+      "match": [
+        "contract:/a11y/labeling/**",
+        "contract:/a11y/labeling"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime projects the accessible name from the visible label and wires the declared part relations onto the native accessibility node properties"
+    },
+    {
+      "id": "a11y-role",
+      "match": [
+        "contract:/a11y/role"
+      ],
+      "disposition": "refused",
+      "reason": "Godot exposes no accessible-role property on Control; a role cannot be projected, and inventing one would misreport the native tree."
+    },
+    {
+      "id": "a11y-apg",
+      "match": [
+        "contract:/a11y/apgPattern"
+      ],
+      "disposition": "refused",
+      "reason": "The APG pattern reference is authoring guidance naming the expected interaction model; the target realises behaviour from focus/dismissal/channel facts, not from this name."
+    },
+    {
+      "id": "a11y-keyboard",
+      "match": [
+        "contract:/a11y/keyboard/**",
+        "contract:/a11y/keyboard"
+      ],
+      "disposition": "refused",
+      "reason": "The keyboard table documents bindings; the runtime realises arrow navigation and escape dismissal from the focus and dismissal facts, so the table itself is not emitted."
+    },
+    {
       "id": "a11y",
       "match": [
         "contract:/a11y/**"
       ],
-      "disposition": "pending",
-      "reason": "accessibility semantics are not exposed by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Remaining accessibility declarations have no native carrier on this target: role lists, obligation-suppression bookkeeping and description/live-region facts are neither projected nor approximated; the realised labeling facts are split out above."
     },
     {
       "id": "messages",
       "match": [
         "contract:/messages/**"
       ],
-      "disposition": "pending",
-      "reason": "message formatting/localization is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Contract message defaults are consumer-facing copy; this target has no localization catalog and synthesizes no message-bound chrome, so the defaults are not emitted."
+    },
+    {
+      "id": "portal-target",
+      "match": [
+        "contract:/portal/defaultTarget"
+      ],
+      "disposition": "refused",
+      "reason": "A DOM mount target has no native meaning; the surface hosts on the target's own overlay layer."
+    },
+    {
+      "id": "portal-positioning",
+      "match": [
+        "contract:/portal/positioning",
+        "contract:/portal/collision"
+      ],
+      "disposition": "refused",
+      "reason": "collision flip/shift and selector-sourced placement are not implemented; anchored placement is runtime-owned, so the declared positioning policy is not claimed."
+    },
+    {
+      "id": "portal-backdrop",
+      "match": [
+        "contract:/portal/backdrop"
+      ],
+      "disposition": "refused",
+      "reason": "A modal backdrop is not realised: the presence surface mounts on an overlay layer without a backdrop, focus containment or scroll lock."
     },
     {
       "id": "portal",
       "match": [
-        "contract:/portal/**"
+        "contract:/portal/enabled",
+        "contract:/portal/layering"
       ],
-      "disposition": "pending",
-      "reason": "portaling/host layers are not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "the control runtime mounts revealed content on a dedicated overlay layer"
+    },
+    {
+      "id": "focus-return",
+      "match": [
+        "contract:/focus/returnFocus"
+      ],
+      "disposition": "lowered",
+      "via": "dismissing a surface returns focus to its trigger"
+    },
+    {
+      "id": "focus-initial",
+      "match": [
+        "contract:/focus/initialFocus"
+      ],
+      "disposition": "refused",
+      "reason": "mount-time initial focus is the embedding scene's decision; the control runtime does not steal focus when the component enters the tree."
+    },
+    {
+      "id": "focus-scroll-lock",
+      "match": [
+        "contract:/focus/scrollLock"
+      ],
+      "disposition": "refused",
+      "reason": "a native scene has no document scroll to lock; the runtime mounts overlays on its own layer instead."
     },
     {
       "id": "focus",
       "match": [
-        "contract:/focus/**"
+        "contract:/focus/strategy",
+        "contract:/focus/orientation",
+        "contract:/focus/wrap"
       ],
-      "disposition": "pending",
-      "reason": "focus management is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "shared control runtime rotates the focus ring across triggers by keyboard direction and honours the declared wrap"
     },
     {
       "id": "interaction",
@@ -642,8 +728,8 @@
       "match": [
         "contract:/states/*/*/a11y/**"
       ],
-      "disposition": "pending",
-      "reason": "state accessibility exposure is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "each declared state dimension maps its semantic value onto the authored ARIA attribute as structural native state (booleans preserved)"
     },
     {
       "id": "states",
@@ -667,8 +753,8 @@
         "contract:/slots/**/required",
         "contract:/slots/required"
       ],
-      "disposition": "pending",
-      "reason": "required slot content is not enforced by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "A slot requirement documents what the consumer must supply; it is composition guidance, not a fact any rendering target emits."
     },
     {
       "id": "slots",
@@ -699,24 +785,24 @@
       "match": [
         "contract:/pagedSet/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven pagination children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The paged-set model (channel, items, count, disabled) has no runtime: the target builds no page list or navigation chrome."
     },
     {
       "id": "date-grid",
       "match": [
         "contract:/dateGrid/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven date-grid children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The date-grid model (value/month channels, mode, min/max, caption, locale) has no runtime: the target renders no calendar grid, so the declared grid facts are not lowered."
     },
     {
       "id": "transfer",
       "match": [
         "contract:/transfer/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven transfer children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The dual-list transfer model has no native runtime on this target; the declared array channel and partitioned lists are consumer-composed."
     },
     {
       "id": "text-overflow",
@@ -727,36 +813,45 @@
       "reason": "native text clamping is not realised by the shared runtime yet"
     },
     {
+      "id": "motion-sequence-facts",
+      "match": [
+        "contract:/motion/sequenceTransition/**",
+        "contract:/motion/progress/**"
+      ],
+      "disposition": "lowered",
+      "via": "the sequence runtime lowers the declared transition duration/easing tokens and the progress driver facts"
+    },
+    {
       "id": "motion",
       "match": [
         "contract:/motion/**"
       ],
-      "disposition": "pending",
-      "reason": "motion/animation is not realised by the shared runtime beyond the bounded sequence adapter"
+      "disposition": "refused",
+      "reason": "beyond the sequence transition/progress facts, the motion vocabulary has no target motion to lower: reduced-motion alternatives, pulse/shimmer/countdown loops and their keyframes are not replayed, and state changes apply immediately."
     },
     {
       "id": "keyframes",
       "match": [
         "contract:/keyframes/**"
       ],
-      "disposition": "pending",
-      "reason": "CSS keyframe motion has no native mapping in the shared runtime"
+      "disposition": "refused",
+      "reason": "CSS keyframes have no native equivalent on this target; no keyframe timeline is authored or replayed."
     },
     {
       "id": "state-machine",
       "match": [
         "contract:/stateMachine/**"
       ],
-      "disposition": "pending",
-      "reason": "the authored state machine is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The declarative transition table documents the state changes the runtime already implements from channel and interaction facts; it is authoring guidance, not an emission fact."
     },
     {
       "id": "data-model",
       "match": [
         "contract:/dataModel/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "A data-model entity describes the shape of consumer data; no target emits a data schema, so the declaration is not lowered."
     },
     {
       "id": "prop-channel-value",
@@ -1091,8 +1186,8 @@
         "contract:/props/*/members/*:onSkip/**",
         "contract:/props/onSkip"
       ],
-      "disposition": "pending",
-      "reason": "per-step sequence callbacks are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Consumer callbacks are not bound by the anatomy runtime; the consumer wires its own controls and receives no generated callback property."
     },
     {
       "id": "prop-dismissal",
@@ -1119,8 +1214,28 @@
         "contract:/props/*/members/*:closeOnBackdropClick/**",
         "contract:/props/closeOnBackdropClick"
       ],
-      "disposition": "pending",
-      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "closeOnEscape / closeOnOutsideClick / closeOnBlur are read as dismissal gates by the runtime"
+    },
+    {
+      "id": "prop-activation-mode",
+      "match": [
+        "contract:/props/*/members/*:activationMode",
+        "contract:/props/*/members/*:activationMode/**",
+        "contract:/props/activationMode"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime selects the focused item under automatic activation and only moves focus under manual activation"
+    },
+    {
+      "id": "prop-return-focus",
+      "match": [
+        "contract:/props/*/members/*:returnFocus",
+        "contract:/props/*/members/*:returnFocus/**",
+        "contract:/props/returnFocus"
+      ],
+      "disposition": "lowered",
+      "via": "dismissing a surface returns focus to its trigger"
     },
     {
       "id": "prop-focus-management",
@@ -1144,8 +1259,8 @@
         "contract:/props/*/members/*:politeness/**",
         "contract:/props/politeness"
       ],
-      "disposition": "pending",
-      "reason": "focus/keyboard/announcement management is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "initial-focus props are refused for the same reason as focus/initialFocus: mount-time focus is the embedding scene's decision; the realised activation-mode and return-focus props are split out above."
     },
     {
       "id": "prop-modality-layer",
@@ -1160,8 +1275,21 @@
         "contract:/props/*/members/*:placement/**",
         "contract:/props/placement"
       ],
-      "disposition": "pending",
-      "reason": "modality, placement and content-layer positioning are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "modal/side placement props are not honoured by the presence-only surface runtime; the scene root stays a panel and placement is runtime-owned."
+    },
+    {
+      "id": "prop-validation-state",
+      "match": [
+        "contract:/props/*/members/*:required",
+        "contract:/props/*/members/*:required/**",
+        "contract:/props/required",
+        "contract:/props/*/members/*:invalid",
+        "contract:/props/*/members/*:invalid/**",
+        "contract:/props/invalid"
+      ],
+      "disposition": "lowered",
+      "via": "the control and anatomy runtimes project the declared required/invalid state onto structural aria_required/aria_invalid and expose it to consumers; validation itself stays the consumer's responsibility"
     },
     {
       "id": "prop-form-validation",
@@ -1182,8 +1310,68 @@
         "contract:/props/*/members/*:readOnly/**",
         "contract:/props/readOnly"
       ],
-      "disposition": "pending",
-      "reason": "form validation and read-only state are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The remaining validation props (validate callbacks, readOnly) are not honoured: the runtime executes no validation and exposes no read-only mode; the realised required/invalid state projection is split out above."
+    },
+    {
+      "id": "prop-variant-axes-extended",
+      "match": [
+        "contract:/props/*/members/*:presentation",
+        "contract:/props/*/members/*:presentation/**",
+        "contract:/props/presentation",
+        "contract:/props/*/members/*:progress",
+        "contract:/props/*/members/*:progress/**",
+        "contract:/props/progress",
+        "contract:/props/*/members/*:indicator",
+        "contract:/props/*/members/*:indicator/**",
+        "contract:/props/indicator",
+        "contract:/props/*/members/*:mode",
+        "contract:/props/*/members/*:mode/**",
+        "contract:/props/mode",
+        "contract:/props/*/members/*:radius",
+        "contract:/props/*/members/*:radius/**",
+        "contract:/props/radius"
+      ],
+      "disposition": "refused",
+      "reason": "These declared axes are inert on this target: the collection/date contracts declare no axis-conditioned style rule the runtime could switch, and the target does not synthesize variant chrome. The axis value is stored as a declared prop only."
+    },
+    {
+      "id": "prop-inert-display-flags",
+      "match": [
+        "contract:/props/*/members/*:showValue",
+        "contract:/props/*/members/*:showValue/**",
+        "contract:/props/showValue",
+        "contract:/props/*/members/*:showChoices",
+        "contract:/props/*/members/*:showChoices/**",
+        "contract:/props/showChoices",
+        "contract:/props/*/members/*:showPlaceholder",
+        "contract:/props/*/members/*:showPlaceholder/**",
+        "contract:/props/showPlaceholder",
+        "contract:/props/*/members/*:showStatusIcon",
+        "contract:/props/*/members/*:showStatusIcon/**",
+        "contract:/props/showStatusIcon",
+        "contract:/props/*/members/*:expandable",
+        "contract:/props/*/members/*:expandable/**",
+        "contract:/props/expandable",
+        "contract:/props/*/members/*:responsive",
+        "contract:/props/*/members/*:responsive/**",
+        "contract:/props/responsive",
+        "contract:/props/*/members/*:aspectRatio",
+        "contract:/props/*/members/*:aspectRatio/**",
+        "contract:/props/aspectRatio"
+      ],
+      "disposition": "refused",
+      "reason": "Display flags the runtimes store as inert declared props; the target does not synthesize the chrome they would switch on."
+    },
+    {
+      "id": "prop-delay-timer",
+      "match": [
+        "contract:/props/*/members/*:showAfterMs",
+        "contract:/props/*/members/*:showAfterMs/**",
+        "contract:/props/showAfterMs"
+      ],
+      "disposition": "refused",
+      "reason": "Delayed-appearance timers are consumer scheduling on this target; the runtime mounts content immediately and honours no delay."
     },
     {
       "id": "prop-formatting",
@@ -1217,46 +1405,10 @@
         "contract:/props/lines",
         "contract:/props/*/members/*:maxLines",
         "contract:/props/*/members/*:maxLines/**",
-        "contract:/props/maxLines",
-        "contract:/props/*/members/*:expandable",
-        "contract:/props/*/members/*:expandable/**",
-        "contract:/props/expandable",
-        "contract:/props/*/members/*:showAfterMs",
-        "contract:/props/*/members/*:showAfterMs/**",
-        "contract:/props/showAfterMs",
-        "contract:/props/*/members/*:progress",
-        "contract:/props/*/members/*:progress/**",
-        "contract:/props/progress",
-        "contract:/props/*/members/*:showValue",
-        "contract:/props/*/members/*:showValue/**",
-        "contract:/props/showValue",
-        "contract:/props/*/members/*:showChoices",
-        "contract:/props/*/members/*:showChoices/**",
-        "contract:/props/showChoices",
-        "contract:/props/*/members/*:presentation",
-        "contract:/props/*/members/*:presentation/**",
-        "contract:/props/presentation",
-        "contract:/props/*/members/*:showPlaceholder",
-        "contract:/props/*/members/*:showPlaceholder/**",
-        "contract:/props/showPlaceholder",
-        "contract:/props/*/members/*:showStatusIcon",
-        "contract:/props/*/members/*:showStatusIcon/**",
-        "contract:/props/showStatusIcon",
-        "contract:/props/*/members/*:indicator",
-        "contract:/props/*/members/*:indicator/**",
-        "contract:/props/indicator",
-        "contract:/props/*/members/*:responsive",
-        "contract:/props/*/members/*:responsive/**",
-        "contract:/props/responsive",
-        "contract:/props/*/members/*:aspectRatio",
-        "contract:/props/*/members/*:aspectRatio/**",
-        "contract:/props/aspectRatio",
-        "contract:/props/*/members/*:radius",
-        "contract:/props/*/members/*:radius/**",
-        "contract:/props/radius"
+        "contract:/props/maxLines"
       ],
-      "disposition": "pending",
-      "reason": "formatting/presentation projection is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Value formatting and syntax highlighting have no runtime on this target: there is no locale/number/date formatter and no tokenizer, so consumers format and tokenize before passing values."
     },
     {
       "id": "prop-data-children",
@@ -1301,8 +1453,8 @@
         "contract:/props/*/members/*:shouldCloseOnSelect/**",
         "contract:/props/shouldCloseOnSelect"
       ],
-      "disposition": "pending",
-      "reason": "data-driven children and their selection/filter behaviour are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Data-driven children (steps, options, filters, storage keys) are consumer-composed; the runtime does not iterate or persist them."
     },
     {
       "id": "prop-structured-data",
@@ -1373,8 +1525,19 @@
         "contract:/props/*/members/*:rel/**",
         "contract:/props/rel"
       ],
-      "disposition": "pending",
-      "reason": "web navigation semantics are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "URL/navigation-target props have no native meaning on this target; consumers handle navigation themselves."
+    },
+    {
+      "id": "prop-aria-labeling",
+      "match": [
+        "contract:/props/*/members/*:ariaLabelledby",
+        "contract:/props/*/members/*:ariaLabelledby/**",
+        "contract:/props/*/members/*:ariaDescribedby",
+        "contract:/props/*/members/*:ariaDescribedby/**"
+      ],
+      "disposition": "lowered",
+      "via": "the surface runtime wires the declared ariaLabelledby/ariaDescribedby values onto accessibility_labeled_by_nodes / accessibility_described_by_nodes"
     },
     {
       "id": "prop-aria",
@@ -1395,8 +1558,8 @@
         "contract:/props/*/members/*:ariaHidden/**",
         "contract:/props/ariaHidden"
       ],
-      "disposition": "pending",
-      "reason": "ARIA state/relationship exposure is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above."
     },
     {
       "id": "prop-field-association",
@@ -1427,8 +1590,8 @@
         "contract:/props/*/members/*:mode/**",
         "contract:/props/mode"
       ],
-      "disposition": "pending",
-      "reason": "the declared behaviour is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Godot's CheckBox exposes no tri-state/indeterminate property in 4.7 and the target has no OTP field-group runtime, so length/mode/readOnly/indeterminate behaviour is not realised rather than faked."
     },
     {
       "id": "prop-presentation-semantics",
@@ -1464,16 +1627,16 @@
         "styles:/*::*/**",
         "styles:/**/*::*/**"
       ],
-      "disposition": "pending",
-      "reason": "pseudo-element surfaces have no native mapping in the shared runtime"
+      "disposition": "refused",
+      "reason": "native controls have no pseudo-element nodes; ::before/::after content boxes are not synthesized."
     },
     {
       "id": "styles-starting-style",
       "match": [
         "styles:/@starting-style/**"
       ],
-      "disposition": "pending",
-      "reason": "CSS entry animation (@starting-style) has no native mapping"
+      "disposition": "refused",
+      "reason": "CSS @starting-style entry animation has no native equivalent and is not approximated."
     },
     {
       "id": "styles-platform-metadata",
@@ -1520,8 +1683,8 @@
         "styles:/**/rotate/**",
         "styles:/**/will-change/**"
       ],
-      "disposition": "pending",
-      "reason": "motion and animation are not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "Godot Controls have no CSS transitions, animations or transforms; state changes apply immediately, so transition/animation/transform declarations are not approximated."
     },
     {
       "id": "styles-focus-ring",
@@ -1531,30 +1694,37 @@
         "styles:/**/outline-*/**",
         "styles:/**/outline-*"
       ],
-      "disposition": "pending",
-      "reason": "focus-ring presentation is not realised while focus management is pending"
+      "disposition": "lowered",
+      "via": "focus-predicate outline rules project into a focus ring: the control shape builds the native focus StyleBox, the anatomy shape paints a projected ring on a focusable part host"
     },
     {
       "id": "styles-elevation",
       "match": [
         "styles:/**/box-shadow/**"
       ],
-      "disposition": "pending",
-      "reason": "elevation/shadow painting is not part of the shared painted style vocabulary"
+      "disposition": "refused",
+      "reason": "box-shadow blur/spread has no StyleBox mapping in this projection; elevation is not approximated."
+    },
+    {
+      "id": "styles-effects-contain",
+      "match": [
+        "styles:/**/contain/**",
+        "styles:/**/clip/**",
+        "styles:/**/mask/**",
+        "styles:/**/filter/**",
+        "styles:/**/backdrop-filter/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS containment, clipping, masks and filters have no StyleBox/Control equivalent; they are not approximated."
     },
     {
       "id": "styles-effects",
       "match": [
         "styles:/**/opacity/**",
-        "styles:/**/visibility/**",
-        "styles:/**/mask/**",
-        "styles:/**/clip/**",
-        "styles:/**/contain/**",
-        "styles:/**/filter/**",
-        "styles:/**/backdrop-filter/**"
+        "styles:/**/visibility/**"
       ],
-      "disposition": "pending",
-      "reason": "visual-effect painting is not part of the shared painted style vocabulary"
+      "disposition": "refused",
+      "reason": "Opacity and visibility are declared under state selectors in the corpus; the runtime applies only unconditional declarations, so state-scoped effects are not claimed."
     },
     {
       "id": "styles-content-layer",
@@ -1569,8 +1739,8 @@
         "styles:/**/left/**",
         "styles:/**/z-index/**"
       ],
-      "disposition": "pending",
-      "reason": "content-layer layout is not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "position/inset/z-index describe CSS layout and stacking; native containers own layout and the overlay layer owns stacking, so these declarations are not projected."
     },
     {
       "id": "styles-interaction-affordance",
@@ -1580,15 +1750,31 @@
         "styles:/**/user-select/**",
         "styles:/**/resize/**"
       ],
-      "disposition": "pending",
-      "reason": "pointer/selection affordances are not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "Cursor, user-select and resize declarations are authored per state; the control runtime has no state selector to switch them, so they are not projected (the uniform cursor subset is applied when declared unconditionally)."
+    },
+    {
+      "id": "styles-typography-line",
+      "match": [
+        "styles:/**/line-height/**",
+        "styles:/**/line-height"
+      ],
+      "disposition": "lowered",
+      "via": "projected into the control configuration and applied as integer native line spacing on the text nodes under the hosted part"
+    },
+    {
+      "id": "styles-typography-align",
+      "match": [
+        "styles:/**/text-align/**",
+        "styles:/**/text-align"
+      ],
+      "disposition": "refused",
+      "reason": "text-align is declared only under state/variant selectors the control shape does not host; the runtime can set alignment but no unconditional declaration exists to project."
     },
     {
       "id": "styles-typography",
       "match": [
-        "styles:/**/line-height/**",
         "styles:/**/letter-spacing/**",
-        "styles:/**/text-align/**",
         "styles:/**/text-transform/**",
         "styles:/**/text-decoration/**",
         "styles:/**/text-decoration-line/**",
@@ -1615,8 +1801,8 @@
         "styles:/**/line-clamp/**",
         "styles:/**/-webkit-box-orient/**"
       ],
-      "disposition": "pending",
-      "reason": "CSS typography and text-formatting machinery is not projected by the shared painted style vocabulary"
+      "disposition": "refused",
+      "reason": "CSS text layout with no Godot Label/Button equivalent in this projection: letter spacing, font family/style, text decoration, list styling, generated content, bidi direction, line clamping, white-space and hyphenation are not approximated."
     },
     {
       "id": "styles-media-fit",

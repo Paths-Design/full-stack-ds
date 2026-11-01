@@ -1,0 +1,75 @@
+id: GODOT-FORM-REALIZATION-01
+title: 'Godot form-control family realization: Select, Checkbox, ToggleSwitch, Input, TextField, Field, OTP, RadioGroup, Shuttle pending-ledger closure'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Form-control family completed: nine components at zero pending leaves with validation state and aria labeling projected structurally on both runtimes, and the tri-state/OTP-runtime/data-driven/binding/transfer facts refused with written reasons'
+created_at: '2026-11-01T09:44:07.932Z'
+updated_at: '2026-11-01T09:55:54.547Z'
+created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
+blast_radius:
+  modules:
+    - 'Godot form-control realization: aria props, tri-state boolean, validation projection and data-driven refusal'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A pending fact moves to lowered only with a headless witness, and to refused only with a written reason'
+  - 'No admitted component may rely on a catch-all boundary rule; the audit stays at zero violations'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the nine form-control components; when the support boundary is re-audited; then every pending leaf is realized and flipped to lowered with a witness or refused with a written reason, and audit:godot-boundary exits 0 with zero pending leaves for all nine'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the adjudicated realizable subset; when the shared runtimes run headless; then aria labelling props, the checkbox indeterminate tri-state and the required/invalid validation projection are exercised by pilot rows'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pilot lane; when pnpm run test:godot runs; then new rows exercise the realized form behaviour and all pre-existing rows stay unchanged and green'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs and capability receipts; when read; then the bounded claim and non-claims for the form family (executed validation, data-driven options, transfer semantics) are stated'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus-wide gates; when run after the slice; then generate --target=godot is byte-stable, generate:check passes, the boundary audit exits 0, the ds-codegen godot suites and pnpm run test:godot pass'
+non_functional: {}
+contracts:
+  - name: 'form-control-runtime'
+    type: behavior
+    path: 'packages/ds-godot/addons/full_stack_ds/runtime/control.gd'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "form-family pending probe (node tmp/family3-pending.mjs) prints no component rows -> all nine form controls at 0 pending; family counts pending 0 / lowered 1698 / refused 1573; pnpm run audit:godot-boundary exit 0 ('every leaf classified, ... inventory matches a fresh regen') with ledger 158 rules, lowered 8906 / pending 244 / refused 8351, 0 unclassified"
+    recorded_at: "2026-11-01T09:55:45.402Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:godot row form-aria-validation: Checkbox (control shape) projects aria_required/aria_invalid from the required/invalid props and wires accessibility_labeled_by_nodes from the aria_labelledby path; Input (anatomy shape) does the same through set_contract_prop; the anatomy/control runtimes share the accessibility-facts projection module"
+    recorded_at: "2026-11-01T09:55:47.691Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 31 rows; only form-aria-validation was added (30 prior rows unchanged: 21 original + 7 disclosure + surface-aria-labeling); catalog-load admitted 55 failures []; zero JSON parse warnings after guarding absent default keys"
+    recorded_at: "2026-11-01T09:55:49.505Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Form-control family' section states zero pending (1698 lowered / 1573 refused) and the refusals with reasons (checkbox tri-state, OTP field-group runtime, validation callbacks/read-only, data-driven options/iteration, authored bindings, keyboard/tabindex authoring, transfer model); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; docs:check-claims and docs:check-links pass"
+    recorded_at: "2026-11-01T09:55:50.861Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=godot twice -> second run leaves the tree unchanged; pnpm run generate:check exit 0; pnpm run audit:godot-boundary exit 0; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 92 tests passed; pnpm run test:godot passed:true"
+    recorded_at: "2026-11-01T09:55:52.195Z"

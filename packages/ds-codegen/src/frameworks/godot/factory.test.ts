@@ -284,13 +284,13 @@ describe("Godot bounded lowering", () => {
     const plan = godotPlan(buildComponentIR(prose));
     expect(plan.operation).toBe("static-text");
     if (!("styles" in plan)) throw new Error("Static plan lost its style projection");
-    expect(plan.styles.find(entry => entry.source === "--display")?.declarations.find(entry => entry.property === "font-size")?.value).toBe("4rem");
+    expect((plan.styles ?? []).find(entry => entry.source === "--display")?.declarations.find(entry => entry.property === "font-size")?.value).toBe("4rem");
     const divider = styledFixture("Divider");
     divider.tokens!["divider.color"]!.fallback = "#123456";
     const rule = godotPlan(buildComponentIR(divider));
     expect(rule.operation).toBe("rule");
     if (!("styles" in rule)) throw new Error("Rule plan lost its style projection");
-    expect(rule.styles.find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "border-top-color")?.value).toBe("#123456");
+    expect((rule.styles ?? []).find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "border-top-color")?.value).toBe("#123456");
     // A prop outside the narrow static allowlist makes the static shape decline;
     // the generic anatomy fallback then has to account for it, and an
     // unadjudicated family is refused rather than silently excluded.
@@ -322,7 +322,7 @@ describe("Godot bounded lowering", () => {
     const plan = godotPlan(ir);
     expect(plan.operation).toBe("static-text");
     if (!("styles" in plan)) throw new Error("Static plan lost its style projection");
-    expect(plan.styles.find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "color")).toBeUndefined();
+    expect((plan.styles ?? []).find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "color")).toBeUndefined();
     const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
     expect(files.find(file => file.relativePath === "Text/theme.tres")!.contents).not.toContain("Color(1, 0, 0, 1)");
   });

@@ -293,6 +293,36 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "summary",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
+  "accessibility": {
+    "relationships": [
+      {
+        "from": "summary",
+        "to": "content",
+        "attribute": "aria-controls"
+      }
+    ],
+    "stateAria": [
+      {
+        "category": "disclosure",
+        "attribute": "aria-expanded",
+        "values": {
+          "closed": "false",
+          "open": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label"
+    ]
+  },
   "projectedProps": [
     "variant"
   ],
@@ -342,7 +372,6 @@
     "summary.color: host panel renders no text",
     "summary.font-weight: host panel renders no text",
     ".details__summary:hover: state selector not lowered",
-    ".details__summary:focus-visible: state selector not lowered",
     "summaryContent.display: platform web only",
     "summaryContent.align-items: platform web only",
     "summaryContent.flex: platform web only",

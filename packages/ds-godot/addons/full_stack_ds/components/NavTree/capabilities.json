@@ -219,6 +219,21 @@
       ]
     }
   ],
+  "focusRings": [
+    {
+      "part": "headingLink",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-labelledby"
+    ],
+    "role": "listitem"
+  },
   "projectedProps": [],
   "defaults": {
     "iconSize": "\"sm\""
@@ -279,7 +294,6 @@
     ".nav-tree__item::before: selector targets part item with no generated host",
     ".nav-tree__item::after: selector targets part item with no generated host",
     ".nav-tree__headingLink:hover: state selector not lowered",
-    ".nav-tree__headingLink:focus-visible: state selector not lowered",
     ".nav-tree__item:last-child::before: selector outside normalized native grammar",
     ".nav-tree__item > *: selector outside normalized native grammar",
     ".nav-tree__item > *:hover: selector outside normalized native grammar",

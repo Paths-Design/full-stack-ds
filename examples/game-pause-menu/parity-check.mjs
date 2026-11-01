@@ -91,8 +91,8 @@ const SWITCH_OFF = { x: 1176, y: 472 };
 const SETTING_SWITCH_ON = { x: 552, y: 222 };
 
 const COMMON = [
-  [4, 4, 'charcoal', 'header background'],
-  [4, 780, 'ruleStrong', 'footer background'],
+  [4, 4, 'sage', 'header background'],
+  [4, 780, 'sage', 'footer background'],
 ];
 
 const PROBES = {

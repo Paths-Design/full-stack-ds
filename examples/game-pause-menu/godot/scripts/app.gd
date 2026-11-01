@@ -147,11 +147,17 @@ func _build_header() -> Control:
 	UI.place(rule_bottom, 0, rect.size.y - 1, rect.size.x, 1)
 	band.add_child(rule_bottom)
 
+	var ghost_data: Dictionary = parity.header["ghost"]
+	var ghost := UI.label(str(ghost_data["text"]), orion.type_size("ghost"), 700, str(ghost_data["color"]), 0.0)
+	UI.place(ghost, float(ghost_data["x"]), float(ghost_data["y"]), float(ghost_data["w"]), float(ghost_data["h"]))
+	ghost.modulate.a = float(ghost_data["opacity"])
+	band.add_child(ghost)
+
 	var wordmark_data: Dictionary = parity.header["wordmark"]
 	var wordmark := UI.hbox(10)
 	UI.place(wordmark, float(wordmark_data["x"]), float(wordmark_data["y"]), 420, float(wordmark_data["h"]))
-	var main := UI.label(str(wordmark_data["textMain"]), orion.type_size("wordmark"), 800, "boneBright", 0.0)
-	var accent := UI.label(str(wordmark_data["textAccent"]), orion.type_size("wordmark"), 800, "signal", 0.0)
+	var main := UI.label(str(wordmark_data["textMain"]), orion.type_size("wordmark"), 800, str(parity.header["wordmarkColor"]), 0.0)
+	var accent := UI.label(str(wordmark_data["textAccent"]), orion.type_size("wordmark"), 800, str(parity.header["wordmarkAccentColor"]), 0.0)
 	main.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	accent.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	wordmark.add_child(main)
@@ -159,7 +165,7 @@ func _build_header() -> Control:
 	band.add_child(wordmark)
 
 	var mission_data: Dictionary = parity.header["mission"]
-	var mission := UI.label(str(mission_data["text"]), orion.type_size("mission"), 400, "muted", orion.micro_spacing())
+	var mission := UI.label(str(mission_data["text"]), orion.type_size("mission"), 400, str(parity.header["missionColor"]), orion.micro_spacing())
 	UI.place(mission, float(mission_data["x"]), float(mission_data["y"]), 700, 18)
 	band.add_child(mission)
 
@@ -184,13 +190,13 @@ func _build_header() -> Control:
 
 func _add_header_stat(band: Control, stat: Dictionary) -> void:
 	var x := float(stat["x"])
-	var label := UI.micro(str(stat["label"]), "muted")
+	var label := UI.micro(str(stat["label"]), str(parity.header["statLabelColor"]))
 	UI.place(label, x, float(stat["labelY"]), 190, 14)
 	band.add_child(label)
-	var value := UI.label(str(stat["value"]), orion.type_size("statValue"), 800, "boneBright", 0.0)
+	var value := UI.label(str(stat["value"]), orion.type_size("statValue"), 800, str(parity.header["statValueColor"]), 0.0)
 	UI.place(value, x, float(stat["valueY"]), 190, 28)
 	band.add_child(value)
-	var sub := UI.label(str(stat["sub"]), orion.type_size("statSub"), 400, "muted", 0.0)
+	var sub := UI.label(str(stat["sub"]), orion.type_size("statSub"), 400, str(parity.header["statSubColor"]), 0.0)
 	UI.place(sub, x, float(stat["subY"]), 190, 16)
 	band.add_child(sub)
 
@@ -293,7 +299,7 @@ func _build_footer() -> Control:
 	var band := Control.new()
 	band.name = "FooterBand"
 	UI.place_rect(band, rect)
-	var ground := UI.rect_node("ruleStrong")
+	var ground := UI.rect_node(str(footer_data.get("background", "sage")))
 	ground.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	band.add_child(ground)
 	var rule_top := UI.rect_node(str(footer_data.get("ruleTop", "rule")))
@@ -301,13 +307,13 @@ func _build_footer() -> Control:
 	band.add_child(rule_top)
 
 	var hints_data: Dictionary = footer_data["hints"]
-	var hints := UI.label(str(hints_data["text"]), orion.type_size("footer"), 400, "textSecondary", 0.0)
+	var hints := UI.label(str(hints_data["text"]), orion.type_size("footer"), 400, str(footer_data.get("hintsColor", "ink")), 0.0)
 	UI.place(hints, float(hints_data["x"]), float(hints_data["y"]) - rect.position.y, 820, 16)
 	band.add_child(hints)
 
 	var nav_data: Dictionary = footer_data["navTarget"]
 	var value_right := float(nav_data["valueRight"])
-	var nav_label := UI.micro(str(nav_data["label"]), "textSecondary")
+	var nav_label := UI.micro(str(nav_data["label"]), str(footer_data.get("navLabelColor", "ink")))
 	nav_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	UI.place(nav_label, float(nav_data["labelX"]), float(nav_data["labelY"]) - 1.0 - rect.position.y, 160, 14)
 	band.add_child(nav_label)
@@ -324,7 +330,7 @@ func _update_nav_target_footer() -> void:
 	var nav_data: Dictionary = parity.footer["navTarget"]
 	if nav_target.is_empty():
 		nav_target_label.text = str(nav_data["empty"])
-		nav_target_label.add_theme_color_override("font_color", orion.color("textSecondary"))
+		nav_target_label.add_theme_color_override("font_color", orion.color(str(parity.footer.get("navLabelColor", "ink"))))
 		return
 	var icon := fixtures.icon_by_id(nav_target)
 	nav_target_label.text = str(icon.get("label", ""))
