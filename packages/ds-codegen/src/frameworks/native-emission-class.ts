@@ -149,6 +149,17 @@ export function isStaticContent(ir: ComponentIR): boolean {
   return false;
 }
 
+/** A persistently exposed named content region, without component identity. */
+export function staticContentRegionLabel(ir: ComponentIR): ResolvedPropIR | undefined {
+  const root = ir.dom;
+  if (!isStaticContent(ir) || !root || root.attrs.role !== "region") return undefined;
+  // Conditional roles and visibility require their own state lowering.
+  if (root.bindings.role || root.bindings["aria-hidden"] || root.attrs["aria-hidden"] === "true") return undefined;
+  const label = root.bindings["aria-label"];
+  if (label?.kind !== "prop" || (label.path?.length ?? 0) > 0) return undefined;
+  return ir.styledProps.find(prop => (prop.name === label.prop || prop.safeName === label.prop) && prop.type === "string");
+}
+
 /** A bare rule leaf: an hr root with no children and no channels (Divider). */
 export function isBareRuleLeaf(ir: ComponentIR): boolean {
   return (

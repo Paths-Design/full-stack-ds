@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
@@ -20,6 +23,7 @@ import com.fullstackds.tokens.toFsdsDp
 @Composable
 fun Table(
     modifier: Modifier = Modifier,
+    contentLabel: String = LocalFsdsMessages.current.string("Table.content", "Table content"),
     content: @Composable () -> Unit,
 ) {
     val fsdsTheme = LocalFsdsTheme.current
@@ -45,6 +49,6 @@ fun Table(
         .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
-    Box(modifier.then(chromeModifier)) { content() }
+    Box(modifier.then(chromeModifier).semantics(mergeDescendants = false) { contentDescription = contentLabel }) { content() }
 }
 // @generated:end

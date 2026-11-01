@@ -39,21 +39,21 @@ export interface SwiftStringProp {
   accessor: string[];
 }
 
-export function swiftStringProp(ir: ComponentIR, name: string, indent: string): SwiftStringProp {
+export function swiftStringProp(ir: ComponentIR, name: string, indent: string, identifier = name): SwiftStringProp {
   const message = propMessage(ir, name);
   if (message) {
     return {
       stored: `${indent}private let ${name}Prop: String?`,
-      param: `${name}: String? = nil,`,
-      assign: `${indent}${indent}self.${name}Prop = ${name}`,
-      accessor: [`${indent}private var ${name}: String { ${name}Prop ?? ${swiftMessage(ir, message)} }`],
+      param: `${identifier}: String? = nil,`,
+      assign: `${indent}${indent}self.${name}Prop = ${identifier}`,
+      accessor: [`${indent}private var ${identifier}: String { ${name}Prop ?? ${swiftMessage(ir, message)} }`],
     };
   }
   const authored = ir.styledProps.find((p) => p.safeName === name)?.defaultExpr?.replace(/^["']|["']$/g, "");
   return {
-    stored: `${indent}private let ${name}: String?`,
-    param: `${name}: String? = ${authored ? swiftLiteral(authored) : "nil"},`,
-    assign: `${indent}${indent}self.${name} = ${name}`,
+    stored: `${indent}private let ${identifier}: String?`,
+    param: `${identifier}: String? = ${authored ? swiftLiteral(authored) : "nil"},`,
+    assign: `${indent}${indent}self.${identifier} = ${identifier}`,
     accessor: [],
   };
 }

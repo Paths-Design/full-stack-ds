@@ -64,6 +64,7 @@ import {
   isSelectionControl,
   isSequencePager,
   isStaticContent,
+  staticContentRegionLabel,
   isValueChannelControl,
   isVisualOnlyLeaf,
   soleValueChannel,
@@ -3265,6 +3266,9 @@ function emitDisclosureComponent(ir: ComponentIR): string {
 
 function emitStaticContentComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
+  const regionLabel = staticContentRegionLabel(ir);
+  const regionLabelName = regionLabel ? escapeSwiftKeyword(regionLabel.safeName) : undefined;
+  const regionLabelDecl = regionLabel ? swiftStringProp(ir, regionLabel.safeName, INDENT, regionLabelName) : undefined;
   const chrome = resolveChrome(ir);
   const axes = collectVariantAxes(ir);
   const textPart = nativeTextPart(ir);
@@ -3310,6 +3314,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   for (const axis of axes) {
     lines.push(`${INDENT}private let ${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}${axis.defaultMember === null ? "?" : ""}`);
   }
+  if (regionLabelDecl) lines.push(regionLabelDecl.stored, ...regionLabelDecl.accessor);
   lines.push(`${INDENT}private let content: Content`);
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
@@ -3322,6 +3327,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
       ? `${axis.prop}: ${axis.typeName} = .${swiftCaseRef(axis.defaultMember)},`
       : `${axis.prop}: ${axis.typeName}? = nil,`,
   );
+  if (regionLabelDecl) params.push(regionLabelDecl.param);
   params.push(
     countChildrenLeaves(ir) === 0
       ? "@ViewBuilder content: () -> Content = { EmptyView() }"
@@ -3331,6 +3337,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
   for (const axis of axes) lines.push(`${INDENT}${INDENT}self.${escapeSwiftKeyword(axis.prop)} = ${escapeSwiftKeyword(axis.prop)}`);
+  if (regionLabelDecl) lines.push(regionLabelDecl.assign);
   lines.push(`${INDENT}${INDENT}self.content = content()`);
   lines.push(`${INDENT}}`);
   if (ir.tokenScopes.length > 0) {
@@ -3360,20 +3367,33 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   }
   lines.push("");
   lines.push(`${INDENT}public var body: some View {`);
-  lines.push(`${INDENT}${INDENT}content`);
+  const contentLines = [`${INDENT}${INDENT}content`];
   if (textRules?.hasProperties) {
-    lines.push(`${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
-    lines.push(`${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+    contentLines.push(`${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    contentLines.push(`${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
   }
-  if (ir.dom!.tag === "pre") lines.push(`${INDENT}${INDENT}${INDENT}.font(.system(.body, design: .monospaced))`);
+  if (ir.dom!.tag === "pre") contentLines.push(`${INDENT}${INDENT}${INDENT}.font(.system(.body, design: .monospaced))`);
   if (ir.tokenScopes.length > 0) {
-    if (chrome.blockPadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);
-    if (chrome.inlinePadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.horizontal, inlinePadding)`);
-    if (chrome.background) lines.push(`${INDENT}${INDENT}${INDENT}.background(background)`);
-    if (chrome.radius) lines.push(`${INDENT}${INDENT}${INDENT}.clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))`);
-    if (chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(${textRules?.hasProperties ? "nativeTextStyle.color ?? foreground" : "foreground"})`);
+    if (chrome.blockPadding) contentLines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);
+    if (chrome.inlinePadding) contentLines.push(`${INDENT}${INDENT}${INDENT}.padding(.horizontal, inlinePadding)`);
+    if (chrome.background) contentLines.push(`${INDENT}${INDENT}${INDENT}.background(background)`);
+    if (chrome.radius) contentLines.push(`${INDENT}${INDENT}${INDENT}.clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))`);
+    if (chrome.foreground) contentLines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(${textRules?.hasProperties ? "nativeTextStyle.color ?? foreground" : "foreground"})`);
   }
-  if (textRules?.hasProperties && !chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? Color.primary)`);
+  if (textRules?.hasProperties && !chrome.foreground) contentLines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? Color.primary)`);
+  if (regionLabel && regionLabel.defaultMessage === undefined) {
+    lines.push(`${INDENT}${INDENT}if let fsdsRegionLabel = ${regionLabelName} {`);
+    lines.push(...contentLines.map(line => INDENT + line));
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityElement(children: .contain)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel(SwiftUI.Text(verbatim: fsdsRegionLabel))`);
+    lines.push(`${INDENT}${INDENT}} else {`, ...contentLines.map(line => INDENT + line), `${INDENT}${INDENT}}`);
+  } else {
+    lines.push(...contentLines);
+    if (regionLabel) {
+      lines.push(`${INDENT}${INDENT}${INDENT}.accessibilityElement(children: .contain)`);
+      lines.push(`${INDENT}${INDENT}${INDENT}.accessibilityLabel(SwiftUI.Text(verbatim: ${regionLabelName}))`);
+    }
+  }
   lines.push(`${INDENT}}`);
   lines.push(`}`);
   if (fallbackSources.length === 1) {
@@ -3382,7 +3402,10 @@ function emitStaticContentComponent(ir: ComponentIR): string {
     lines.push(`${INDENT}public init(`);
     for (const param of params.slice(0, -1)) lines.push(`${INDENT}${INDENT}${param}`);
     lines.push(`${INDENT}${INDENT}${source}: String = ""`, `${INDENT}) {`);
-    const argumentsList = axes.map(axis => `${axis.prop}: ${escapeSwiftKeyword(axis.prop)}`).join(", ");
+    const argumentsList = [
+      ...axes.map(axis => `${axis.prop}: ${escapeSwiftKeyword(axis.prop)}`),
+      ...(regionLabelName ? [`${regionLabelName}: ${regionLabelName}`] : []),
+    ].join(", ");
     lines.push(`${INDENT}${INDENT}self.init(${argumentsList}) { SwiftUI.Text(verbatim: ${source}) }`);
     lines.push(`${INDENT}}`, "}");
   }
@@ -4052,7 +4075,7 @@ function emitComposerComponent(
 /** Swift keywords that may appear as union values (e.g. CardDensity `default`, ListVariant `as`). */
 const SWIFT_KEYWORDS: ReadonlySet<string> = new Set([
   "default", "in", "out", "case", "for", "if", "else", "return", "init",
-  "as", "is", "guard", "while", "defer", "where", "extension",
+  "as", "is", "guard", "while", "defer", "where", "extension", "class",
   "internal", "public", "private", "open", "static", "self", "Type", "Protocol",
 ]);
 
