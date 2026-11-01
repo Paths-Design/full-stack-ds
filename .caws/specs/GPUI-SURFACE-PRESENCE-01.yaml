@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Dialog, Sheet, Toast and Command emit controlled/uncontrolled presence state (pub open_state:BooleanState, open/default_open/set_open/is_open) with backdrop and panel guarded by when(self.open_state.value(), ...); the receipt names the presence channel and its omissions (modality trapping, dismissal, timing, layer ordering); surfaces without a guarded boolean channel keep the anatomy projection; non-surface components regenerate byte-identically"
+    recorded_at: "2026-11-01T11:55:28.133Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Dialog/Dialog.rs
+    commit_sha: "4ebef372d"
