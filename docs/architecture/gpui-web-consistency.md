@@ -45,7 +45,7 @@ Aggregates over the 55-component corpus (214 declared parts, 379 declared props,
 | React | 213/214 | 379/379 | 30/30 | 41/44 |
 | Vue | 213/214 | 379/379 | 30/30 | 41/44 |
 | Svelte | 213/214 | 379/379 | 30/30 | 40/44 |
-| GPUI | 166/214 | 229/379 | 3/30 | 0/44 |
+| GPUI | 180/214 | 229/379 | 3/30 | 0/44 |
 
 The three web frameworks are internally consistent (they are one IR through
 three emitters). GPUI is consistent on **component identity** (55/55), partial on
@@ -53,10 +53,12 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
 
 ### Divergence classes
 
-- **Parts**: equal to web in 31 components, fewer in 24, never more. Worst
-  gaps are composition and collection shapes: PageNavigator 3/10, Chip 1/5,
-  Details 3/6, Pagination 2/5, Select 6/9, Accordion 5/7, Button 1/3,
-  Calendar 5/7. The single web-side miss is one Toast part.
+- **Parts**: equal to web in 35 components, fewer in 20, never more. The
+  by-reference composition slice closed the child-component gap (PageNavigator
+  3/10→8/10, Chip 1/5→3/5, Button 1/3→2/3, Details 3/6→4/6, Accordion 5/7→6/7,
+  Alert/Avatar/Status/Carousel +1 each). Remaining gaps are collection and
+  overlay shapes: PageNavigator 8/10, Chip 3/5, Pagination 2/5, Select 6/9,
+  Calendar 5/7, Plus the single web-side miss of one Toast part.
 - **Props**: 10 components project the full web prop surface, 5 at 80–99%,
   28 at 50–79%, 10 at 1–49%, 2 at 0%. The web targets project every declared prop.
 - **Behavior**: 3 of 30 behavior-bearing components (Switch, ToggleSwitch,
