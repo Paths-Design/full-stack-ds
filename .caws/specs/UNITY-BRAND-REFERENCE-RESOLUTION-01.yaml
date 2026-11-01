@@ -28,7 +28,10 @@ acceptance:
   - id: A1
     given: 'generated core semantic theme and brand scopes including base and brand-only alias chains'
     when: 'an explicit native theme-root scope is projected'
-    then: 'supported scalar values match source CSS precedence with correct light and dark restatement and existing graph-only unbranded base behavior is preserved'
+    then: >-
+      supported scalar values match source CSS layer and brand precedence with
+      correct light and dark restatement and the unbranded root honors default-brand
+      declarations as the native Theme API specifies
   - id: A2
     given: 'missing malformed cyclic or unsupported alias targets and fallback values'
     when: 'brand declarations resolve'
