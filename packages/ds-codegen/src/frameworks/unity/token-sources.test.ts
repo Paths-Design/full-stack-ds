@@ -67,6 +67,9 @@ describe("Unity token source CSS", () => {
     '@layer brand { @supports (color: red) { :root { --fsds-x: 1px; } } }',
     `@layer brand { [data-brand="probe"] { --fsds-x: 1px; } ${branded("light")} { --fsds-x: 2px; } }`,
     `@layer theme { ${dark} { --fsds-x: 1px; } @media (prefers-color-scheme: dark) { :root { --fsds-x: 2px; } } }`,
+    `@layer theme { ${light} { --fsds-x: 1px; } ${dark} { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { :root { --fsds-x: 2px; } } }`,
+    `@layer brand { [data-brand="probe"] { --fsds-x: 1px; } ${branded("dark")} { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { [data-brand="probe"] { --fsds-x: 2px; } } }`,
+    `@layer brand { :where(:root) { --fsds-x: 1px; } :where(${dark}) { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { :where(:root) { --fsds-x: 2px; } } }`,
     '@layer brand { :where(:root) { --fsds-x: 1px; } } @layer core { :root { --fsds-x: 2px; } }',
   ])("refuses source grammar or precedence it cannot preserve: %s", css => {
     expect(() => parseTokenCss(css)).toThrow(/UNITY_USS_TOKEN_CSS_UNSUPPORTED/);

@@ -106,6 +106,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
     return brands.get(id)!;
   };
   const checks: { actual: Map<string, string>; expected: () => Map<string, string>; selector: string; subset?: boolean }[] = [];
+  const mediaModes = new Map<string, ThemeDeclarations>();
+  const lightGuards = new Set<string>();
   const seenLayers: string[] = [];
   for (const layer of rules(withoutComments(css))) {
     if (layer.body === undefined) {
@@ -133,6 +135,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
           const mode: TokenTheme | undefined = rule.selector === themeSelector("light") ? "light"
             : rule.selector === themeSelector("dark") || (media && rule.selector === ":root") ? "dark" : undefined;
           if (!mode) fail(rule.selector);
+          if (media && rule.selector === ":root" && values.size) mediaModes.set("theme", theme);
+          if (media && mode === "light") lightGuards.add("theme");
           if (media) checks.push({ actual: values, expected: () => theme[mode], selector: rule.selector });
           else for (const [key, value] of values) theme[mode].set(key, value);
           continue;
@@ -141,7 +145,7 @@ export function parseTokenCss(css: string): TokenCssScopes {
         // declare values on the native theme root itself.
         const descendant = / \.[a-z][a-z0-9-]*(?:,|$)/.test(rule.selector);
         const rootSelector = descendant ? rule.selector.replace(/ \.[a-z][a-z0-9-]*(?=,|$)/g, "") : rule.selector;
-        const id = /\[data-brand="([a-z][a-z0-9-]*)"\]/.exec(rootSelector)?.[1];
+        const id = /\[data-brand="([A-Za-z0-9_-]+)"\]/.exec(rootSelector)?.[1];
         if (id) {
           const bare = `[data-brand="${id}"]`;
           const mode: TokenTheme | undefined = rootSelector === bare ? (media ? "dark" : "light")
@@ -149,6 +153,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
             : rootSelector === brandSelector(id, "dark") || descendant && rootSelector === componentThemeSelector(id, "dark") ? "dark" : undefined;
           if (!mode) fail(rule.selector);
           const target = brand(id)[mode];
+          if (!descendant && media && mode === "dark" && values.size) mediaModes.set(`brand:${id}`, brand(id));
+          if (!descendant && !media && rootSelector === brandSelector(id, "light")) lightGuards.add(`brand:${id}`);
           if (descendant || media || rootSelector === brandSelector(id, "light")) checks.push({ actual: values, expected: () => target, selector: rule.selector, subset: descendant });
           else for (const [key, value] of values) target.set(key, value);
           continue;
@@ -160,6 +166,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
           : descendant && rootSelector === ':where(:root:not([data-brand]):is(.light,[data-theme="light"]))' ? "light"
           : descendant && rootSelector === ':where(:root:not([data-brand]):is(.dark,[data-theme="dark"]))' ? "dark" : undefined;
         if (!defaultMode) fail(rule.selector);
+        if (!descendant && media && rule.selector === ":where(:root)" && values.size) mediaModes.set("default", defaults);
+        if (!descendant && media && defaultMode === "light") lightGuards.add("default");
         if (media || descendant) checks.push({ actual: values, expected: () => defaults[defaultMode], selector: rule.selector, subset: descendant });
         else for (const [key, value] of values) defaults[defaultMode].set(key, value);
       }
@@ -171,6 +179,9 @@ export function parseTokenCss(css: string): TokenCssScopes {
   for (const check of checks) {
     const expected = check.expected();
     if ((!check.subset && check.actual.size !== expected.size) || [...check.actual].some(([key, value]) => expected.get(key) !== value)) fail(`divergent duplicate ${check.selector}`);
+  }
+  for (const [mode, definitions] of mediaModes) {
+    if (!lightGuards.has(mode) || [...definitions.dark.keys()].some(name => !definitions.light.has(name))) fail(`missing explicit-light guard for ${mode}`);
   }
   const common = [...core, ...semantic];
   return { base: { light: new Map([...common, ...theme.light]), dark: new Map([...common, ...theme.dark]) }, defaults, brands: [...brands.values()].sort((a, b) => a.id.localeCompare(b.id)) };
