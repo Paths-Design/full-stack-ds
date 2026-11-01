@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: blockquote-citation
 created_at: '2026-11-01T23:18:54.561Z'
-updated_at: '2026-11-01T23:18:57.543Z'
+updated_at: '2026-11-01T23:32:36.562Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -38,6 +38,8 @@ scope:
     - 'packages/ds-gpui/src/components/Blockquote'
     - 'scripts/release-package-check'
     - 'scripts/public-types-consumer/fixtures.mjs'
+    - packages/ds-codegen/src/frameworks/unity/walker.ts
+    - packages/ds-codegen/src/frameworks/unity/walker.test.ts
   out: []
 invariants:
   - 'Keep source URLs as metadata and preserve quote content, native element semantics, public optional string props and styling; do not create visible attribution or URL activation behavior'
