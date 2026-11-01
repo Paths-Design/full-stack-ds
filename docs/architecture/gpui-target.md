@@ -107,6 +107,19 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
+### Collection open value
+
+A contract that exposes a string-valued disclosure channel toggled by a declared
+trigger part (Accordion's `value`/`defaultValue`/`onValueChange` on `trigger`,
+gating the `content` part) realizes controlled or uncontrolled open value:
+`value(Option<SharedString>)`, `set_value(..)`, `default_value(..)`, `is_open()`,
+plus a generated `toggle_open` method wired to the trigger part's pointer, Space
+and Enter activation. The gated content part renders only while a value is set;
+the receipt names the opens that are **not** carried — multi-open array values,
+per-item identities (the anatomy projection renders one item template) and
+`collapsible` suppression. Contracts with a non-string channel keep the anatomy
+fallback.
+
 ### Surface presence
 
 A surface contract whose boolean presence channel gates anatomy parts

@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Details, Dialog, Divider, PageNavigator, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Accordion, Alert, Badge, Button, Checkbox, Details, Dialog, Divider, PageNavigator, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -442,4 +442,24 @@ fn mounted_dialog_presence_gates_backdrop_and_panel(cx: &mut TestAppContext) {
     view.update(cx, |dialog, cx| dialog.set_open(Some(true), cx));
     cx.run_until_parked();
     assert!(cx.debug_bounds("dialog-backdrop").is_some(), "reopening restores the backdrop");
+}
+
+#[gpui::test]
+fn mounted_accordion_collection_open_toggles_trigger_and_gated_panel(cx: &mut TestAppContext) {
+    let (view, cx) = cx.add_window_view(|_, _| Accordion::default());
+    assert!(cx.debug_bounds("accordion-content").is_none(), "collapsed accordion renders no panel");
+    let trigger = cx.debug_bounds("accordion-trigger").expect("trigger part must render");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(view.read_with(cx, |accordion, _| accordion.is_open()), "click opens the panel");
+    assert!(cx.debug_bounds("accordion-content").is_some(), "open panel reaches layout");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(!view.read_with(cx, |accordion, _| accordion.is_open()), "second click collapses");
+    let focused = view.read_with(cx, |accordion, _| accordion.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "activation focuses the trigger");
+    tap_key(cx, "space");
+    assert!(view.read_with(cx, |accordion, _| accordion.is_open()), "Space opens");
+    tap_key(cx, "enter");
+    assert!(!view.read_with(cx, |accordion, _| accordion.is_open()), "Enter collapses");
+    let (_controlled, cx) = cx.add_window_view(|_, _| Accordion::default().value(Some("item".into())));
+    assert!(cx.debug_bounds("accordion-content").is_some(), "controlled value opens the panel");
 }

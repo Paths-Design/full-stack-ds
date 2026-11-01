@@ -34,6 +34,7 @@ const requiredEngineTests = [
   "mounted_page_navigator_nested_reference_children_render",
   "mounted_details_disclosure_toggles_from_trigger_click_and_keyboard",
   "mounted_dialog_presence_gates_backdrop_and_panel",
+  "mounted_accordion_collection_open_toggles_trigger_and_gated_panel",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 // Every admitted component carries one generated mount witness. This is a

@@ -34,8 +34,8 @@
         },
         "gpui": {
           "parts": 6,
-          "props": 2,
-          "behavior": 0,
+          "props": 4,
+          "behavior": 1,
           "a11y": 0,
           "refs": 1
         }
@@ -2183,8 +2183,8 @@
       },
       "gpui": {
         "parts": 180,
-        "props": 257,
-        "behavior": 12,
+        "props": 259,
+        "behavior": 13,
         "a11y": 0,
         "refs": 20,
         "present": 55
