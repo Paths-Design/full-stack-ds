@@ -47,3 +47,12 @@ contracts:
   - name: 'gpui-mount-witnesses'
     type: contract-test
     path: 'packages/ds-gpui/src/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "generate --target=gpui emits <Name>/<Name>.test.rs for every admitted component and the generated barrel declares each behind #[cfg(test)] (#[path=...] mod <module>_mount); the codegen test pins the barrel contract and asserts one witness per component"
+    recorded_at: "2026-11-01T08:33:27.941Z"
+    command: "pnpm run generate:gpui && pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/mod.rs
+    commit_sha: d59cd27dd
