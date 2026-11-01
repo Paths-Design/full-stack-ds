@@ -1,0 +1,469 @@
+{
+  "operation": "anatomy",
+  "parts": [
+    "trigger",
+    "text",
+    "content",
+    "search",
+    "searchInput",
+    "options",
+    "option",
+    "emptyState"
+  ],
+  "styles": [
+    {
+      "source": "tokens",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "box-model.padding",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block-start",
+          "value": "4px",
+          "token": "semantic.input.size.medium.padding-block"
+        },
+        {
+          "property": "box-model.padding-block-end",
+          "value": "4px",
+          "token": "semantic.input.size.medium.padding-block"
+        },
+        {
+          "property": "box-model.padding-inline",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline-start",
+          "value": "8px",
+          "token": "semantic.input.size.medium.padding-inline"
+        },
+        {
+          "property": "box-model.padding-inline-end",
+          "value": "8px",
+          "token": "semantic.input.size.medium.padding-inline"
+        },
+        {
+          "property": "box-model.gap",
+          "value": "8px",
+          "token": "semantic.input.size.medium.gap"
+        },
+        {
+          "property": "box-model.width",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-width",
+          "value": "0"
+        },
+        {
+          "property": "box-model.max-width",
+          "value": "none"
+        },
+        {
+          "property": "box-model.height",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-height",
+          "value": "32px",
+          "token": "semantic.input.size.medium.min-height"
+        },
+        {
+          "property": "box-model.max-height",
+          "value": "none"
+        },
+        {
+          "property": "select.color.background",
+          "value": "#ffffff",
+          "token": "semantic.color.background.primary"
+        },
+        {
+          "property": "select.color.foreground",
+          "value": "#141414",
+          "token": "semantic.color.foreground.primary"
+        },
+        {
+          "property": "select.color.border",
+          "value": "#a0a0a1",
+          "token": "semantic.color.border.primary"
+        },
+        {
+          "property": "select.color.placeholder",
+          "value": "#474647",
+          "token": "semantic.color.foreground.secondary"
+        },
+        {
+          "property": "select.size.padding",
+          "value": "4px",
+          "token": "core.spacing.size.03"
+        },
+        {
+          "property": "select.size.radius",
+          "value": "6px",
+          "token": "semantic.shape.control.radius.default"
+        },
+        {
+          "property": "select.size.border",
+          "value": "1px",
+          "token": "semantic.shape.control.border.defaultWidth"
+        },
+        {
+          "property": "select.size.sm.height",
+          "value": "24px",
+          "token": "semantic.control.size.sm.height"
+        },
+        {
+          "property": "select.size.md.height",
+          "value": "32px",
+          "token": "semantic.control.size.md.height"
+        },
+        {
+          "property": "select.size.lg.height",
+          "value": "48px",
+          "token": "semantic.control.size.lg.height"
+        },
+        {
+          "property": "select.font.size",
+          "value": "16px",
+          "token": "semantic.typography.body.02"
+        },
+        {
+          "property": "select.font.lineHeight",
+          "value": "1.5",
+          "token": "semantic.typography.line.height.body"
+        },
+        {
+          "property": "select.focus.ring.width",
+          "value": "2px",
+          "token": "semantic.focus.ring.width"
+        },
+        {
+          "property": "select.focus.ring.color",
+          "value": "#0566fe",
+          "token": "semantic.focus.ring.color"
+        },
+        {
+          "property": "select.focus.ring.style",
+          "value": "solid",
+          "token": "semantic.focus.ring.style"
+        },
+        {
+          "property": "select.focus.ring.offset",
+          "value": "2px",
+          "token": "semantic.focus.ring.offset"
+        }
+      ]
+    },
+    {
+      "source": "structure",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "8px",
+          "token": "box-model.gap"
+        },
+        {
+          "property": "min-height",
+          "value": "32px",
+          "token": "box-model.min-height"
+        }
+      ]
+    },
+    {
+      "source": "trigger",
+      "part": "trigger",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "select.color.foreground",
+          "designSlot": "select.design.trigger.foreground.color"
+        },
+        {
+          "property": "font-size",
+          "value": "16px",
+          "token": "select.font.size",
+          "designSlot": "select.design.trigger.typography.size"
+        }
+      ]
+    },
+    {
+      "source": "content",
+      "part": "content",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "select.size.padding",
+          "designSlot": "select.design.content.spacing.gap"
+        }
+      ]
+    },
+    {
+      "source": "option",
+      "part": "option",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "select.color.foreground",
+          "designSlot": "select.design.option.foreground.color"
+        }
+      ]
+    },
+    {
+      "source": "emptyState",
+      "part": "emptyState",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "4px",
+          "token": "select.size.padding",
+          "designSlot": "select.design.empty-state.spacing.padding"
+        }
+      ]
+    },
+    {
+      "source": ".select--open .select__trigger",
+      "part": "trigger",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "open",
+          "value": "true"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "select.color.border",
+          "value": "#d92d2e",
+          "token": "semantic.color.border.accent"
+        }
+      ]
+    },
+    {
+      "source": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "disabled",
+          "value": "true"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "select.color.background",
+          "value": "#d0d0d0",
+          "token": "semantic.color.background.disabled"
+        },
+        {
+          "property": "select.color.foreground",
+          "value": "#727272",
+          "token": "semantic.color.foreground.disabled"
+        },
+        {
+          "property": "select.color.border",
+          "value": "#b8b8b8",
+          "token": "semantic.color.border.disabled"
+        }
+      ]
+    },
+    {
+      "source": "searchInput",
+      "part": "searchInput",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "select.color.foreground",
+          "designSlot": "select.design.search-input.foreground.color"
+        },
+        {
+          "property": "font-size",
+          "value": "16px",
+          "token": "select.font.size",
+          "designSlot": "select.design.search-input.typography.size"
+        }
+      ]
+    }
+  ],
+  "projectedProps": [
+    "open",
+    "disabled"
+  ],
+  "defaults": {
+    "options": "[{\"value\":\"alpha\",\"label\":\"Alpha\"},{\"value\":\"beta\",\"label\":\"Beta\"},{\"value\":\"gamma\",\"label\":\"Gamma\"}]",
+    "defaultValue": "\"beta\"",
+    "defaultOpen": "true",
+    "triggerLabel": "\"Select an option\"",
+    "size": "\"md\"",
+    "placeholder": "\"Select an option\"",
+    "searchLabel": "\"Search options\""
+  },
+  "excludedProps": [
+    "options",
+    "value",
+    "defaultValue",
+    "onChange",
+    "defaultOpen",
+    "onOpenChange",
+    "multiple",
+    "triggerLabel",
+    "size",
+    "filterFn",
+    "searchable",
+    "empty",
+    "placeholder",
+    "searchLabel"
+  ],
+  "omissions": [
+    "trigger: attributes (type, role, aria-haspopup) not projected natively",
+    "trigger: attribute bindings (disabled, aria-label, aria-expanded) not projected natively",
+    "trigger: event bindings (click) are not wired natively",
+    "trigger: keyboard and focus management not lowered",
+    "trigger: generated relationship id attributes not lowered",
+    "text: content binding (projection:selectionLabel) not projected; host text is unbound",
+    "content: attributes (role) not projected natively",
+    "content: keyboard and focus management not lowered",
+    "content: render guard (if open) not lowered; host always emitted",
+    "content: generated relationship id attributes not lowered",
+    "search: render guard (if searchable) not lowered; host always emitted",
+    "searchInput: attributes (type) not projected natively",
+    "searchInput: attribute bindings (aria-label, disabled) not projected natively",
+    "option: attributes (role, type) not projected natively",
+    "option: attribute bindings (aria-selected, data-value, disabled, aria-disabled) not projected natively",
+    "option: event bindings (click) are not wired natively",
+    "option: keyboard and focus management not lowered",
+    "option: iteration (array over options) emits a single host; repeated native instances not lowered",
+    "option: content binding (iterationLocal:item) not projected; host text is unbound",
+    "emptyState: render guard (if empty) not lowered; host always emitted",
+    "structure.padding: host root has no padded panel to inset its children",
+    "structure.padding-block: host root has no padded panel to inset its children",
+    "structure.padding-block-start: no Godot anatomy style mapping",
+    "structure.padding-block-end: no Godot anatomy style mapping",
+    "structure.padding-inline: host root has no padded panel to inset its children",
+    "structure.padding-inline-start: no Godot anatomy style mapping",
+    "structure.padding-inline-end: no Godot anatomy style mapping",
+    "structure.min-width: no Godot anatomy style mapping",
+    "root.display: platform web only",
+    "root.flex-direction: platform web only",
+    "root.position: platform web only",
+    "text.flex: platform web only",
+    "text.min-width: platform web only",
+    "text.overflow: platform web only",
+    "text.text-overflow: platform web only",
+    "text.white-space: platform web only",
+    "text.text-align: platform web only",
+    "trigger.display: platform web only",
+    "trigger.align-items: platform web only",
+    "trigger.justify-content: platform web only",
+    "trigger.gap: host control has no stacked layout to space",
+    "trigger.padding: host control has no padded panel to inset its children",
+    "trigger.border-style: platform web only",
+    "trigger.border-width: host control paints no panel",
+    "trigger.border-radius: host control paints no panel",
+    "trigger.border-color: host control paints no panel",
+    "trigger.background-color: host control paints no panel",
+    "trigger.line-height: no Godot anatomy style mapping",
+    "trigger.cursor: platform web only",
+    "trigger.width: platform web only",
+    "trigger.box-sizing: platform web only",
+    "content.background-color: host stack paints no panel",
+    "content.border-style: platform web only",
+    "content.border-width: host stack paints no panel",
+    "content.border-radius: host stack paints no panel",
+    "content.border-color: host stack paints no panel",
+    "content.box-shadow: platform web only",
+    "content.padding: host stack has no padded panel to inset its children",
+    "content.max-height: platform web only",
+    "content.overflow-y: platform web only",
+    "content.display: platform web only",
+    "content.flex-direction: platform web only",
+    "search.display: platform web only",
+    "search.align-items: platform web only",
+    "options.display: platform web only",
+    "options.flex-direction: platform web only",
+    "options.gap: platform web only",
+    "options.list-style: platform web only",
+    "options.padding: platform web only",
+    "options.margin: platform web only",
+    "option.display: platform web only",
+    "option.align-items: platform web only",
+    "option.gap: host control has no stacked layout to space",
+    "option.padding: host control has no padded panel to inset its children",
+    "option.border-radius: host control paints no panel",
+    "option.cursor: platform web only",
+    "option.border: platform web only",
+    "option.width: platform web only",
+    "option.text-align: platform web only",
+    "option.font: platform web only",
+    "option.background-color: host control paints no panel",
+    "emptyState.text-align: platform web only",
+    "emptyState.color: host panel renders no text",
+    ".select__trigger:focus-visible: state selector not lowered",
+    ".select__trigger:hover: state selector not lowered",
+    ".select--disabled .select__trigger.cursor: platform web only",
+    ".select--disabled .select__trigger.opacity: platform web only",
+    ".select__option:hover: state selector not lowered",
+    ".select--sm .select__trigger.height: no Godot anatomy style mapping",
+    ".select--md .select__trigger.height: no Godot anatomy style mapping",
+    ".select--lg .select__trigger.height: no Godot anatomy style mapping",
+    "searchInput.padding: host control has no padded panel to inset its children",
+    "searchInput.border-style: platform web only",
+    "searchInput.border-width: host control paints no panel",
+    "searchInput.border-radius: host control paints no panel",
+    "searchInput.border-color: host control paints no panel",
+    "searchInput.background-color: host control paints no panel",
+    "searchInput.width: platform web only",
+    "searchInput.min-width: platform web only",
+    "searchInput.box-sizing: platform web only",
+    "searchInput.font-family: platform web only",
+    "searchInput.line-height: no Godot anatomy style mapping",
+    ".select__searchInput:focus-visible: state selector not lowered",
+    ".select__option[aria-selected=\"true\"]: selector outside normalized native grammar",
+    "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
+    "root accessibility role and labeling: native projection unverified",
+    "a11y.keyboard: 10 declared keyboard interaction(s) have no native mapping",
+    "channel selection: native string | string[] flow not lowered (value/onChange)",
+    "channel open: native boolean flow not lowered (open/onOpenChange)",
+    "composite control (collection-selection): native collection state and update flow not lowered",
+    "transition open: native animation not lowered",
+    "transition close: native animation not lowered",
+    "reduced motion: native preference handling unverified",
+    "messages: 3 translatable message(s) render as contract defaults; no native message catalog",
+    "part trigger: declared interactive/focusable; native activation and focus unlowered",
+    "part searchInput: declared interactive/focusable; native activation and focus unlowered",
+    "part option: declared interactive/focusable; native activation and focus unlowered",
+    "options: bound to node content; native text projection unverified",
+    "value: no executable native projection",
+    "defaultValue: declared default is not projected into the generated scene",
+    "onChange: callback surface has no native signal projection",
+    "defaultOpen: declared default is not projected into the generated scene",
+    "onOpenChange: callback surface has no native signal projection",
+    "multiple: bound to the click event; no native signal projection",
+    "triggerLabel: bound to the aria-label attribute; native attribute projection unverified",
+    "size: variant axis has no projected native style predicate",
+    "filterFn: callback surface has no native signal projection",
+    "searchable: no executable native projection",
+    "empty: no executable native projection",
+    "placeholder: bound to node content; native text projection unverified",
+    "searchLabel: bound to the aria-label attribute; native attribute projection unverified"
+  ],
+  "theme": "source-bearing anatomy style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

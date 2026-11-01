@@ -665,7 +665,10 @@
     "--destructive.button.color.background.default: platform web,ios,android only",
     "--ghost.button.color.background.default: platform web,ios,android only",
     "--ghost.button.color.border.default: platform web,ios,android only",
-    "--outline.button.color.background.default: platform web,ios,android only"
+    "--outline.button.color.background.default: platform web,ios,android only",
+    "type: declined by the action shape; no native realization on this target",
+    "ariaExpanded: declined by the action shape; no native realization on this target",
+    "ariaPressed: declined by the action shape; no native realization on this target"
   ],
   "loadingAffordance": "indeterminate-progress",
   "contentProjection": "string",

@@ -15,6 +15,16 @@ export function godotCompositePlan(ir: ComponentIR) {
   const compound = isCompoundPartComposer(ir);
   const decorated = isIconDecoratedContent(ir);
   if (!compound && !decorated) return undefined;
+  // A compound-part dictionary is a complete anatomy only when every non-root
+  // part is one of the compound parts. A stray plain part has no host in the
+  // generated part layout, and a referenced subcomponent part is an instance
+  // this shape cannot compose, so both decline to the generic anatomy planner
+  // (which hosts every named region and names the unrealized facts).
+  if (compound) {
+    const compoundNames = new Set(ir.compoundParts.map(part => part.name));
+    if (ir.parts.some(part => part.name !== "root" && !compoundNames.has(part.name))) return undefined;
+    if (ir.compoundParts.some(part => part.componentRef)) return undefined;
+  }
   const parts = compound
     ? ir.compoundParts.map(part => part.name)
     : ir.dom!.children.filter(node => node.part).map(node => node.part!);
@@ -26,9 +36,15 @@ export function godotCompositePlan(ir: ComponentIR) {
     const root = ir.dom!;
     const icon = root.children.find(node => node.part === "icon");
     const content = root.children.find(node => node.part === "content");
-    if (root.children.length !== 2 || !icon || isContentTransform(icon.content) || icon.content?.kind !== "prop" ||
+    // Only the bounded two-region icon+content anatomy is this composite. A
+    // decorated anatomy that additionally carries named regions — or whose
+    // regions are nested elsewhere (Alert/AlertNotice carry the icon plus a
+    // consumer children leaf plus a dismiss control) — has no place in the
+    // fixed part layout, so it declines to the generic anatomy planner.
+    if (root.children.length !== 2 || !icon || !content) return undefined;
+    if (isContentTransform(icon.content) || icon.content?.kind !== "prop" ||
         icon.ifProp !== icon.content.prop ||
-        !content || content.children.length !== 1 || content.children[0]?.tag !== "children") {
+        content.children.length !== 1 || content.children[0]?.tag !== "children") {
       throw new Error(`GODOT_UNSUPPORTED_COMPOSITE_ANATOMY: ${ir.name}`);
     }
     projectedProp = icon.content.prop;

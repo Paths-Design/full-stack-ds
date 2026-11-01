@@ -277,18 +277,20 @@ describe("cli main — emitter admitContract seam", () => {
   });
 
   it("passes admitted=false for an explicit request outside the target's allowlist", async () => {
+    // godot now admits the whole corpus (GODOT-UNITY-COMPONENT-PARITY-01), so an
+    // engine target with a narrow allowlist is the one that can be outside it.
     const { events } = prepareWithAdmissionRecorder([
       "--dry-run",
-      "--target=godot",
+      "--target=gpui",
       "Command",
     ]);
     vi.spyOn(console, "error").mockImplementation(() => {});
-    // Unity's own emitter may reject Calendar after admission; this case pins
-    // only the admission context, which is recorded before any emit.
+    // The emitter may reject Command; this case pins only the admission context,
+    // which is recorded before any emit.
     await import("./cli.js").catch(() => undefined);
     expect(events[0]).toEqual({
       kind: "admit",
-      target: "godot",
+      target: "gpui",
       component: "Command",
       admitted: false,
     });

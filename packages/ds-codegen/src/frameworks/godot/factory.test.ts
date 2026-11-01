@@ -164,10 +164,19 @@ describe("Godot bounded lowering", () => {
     const c=fixture(name); c.name="Renamed";
     expect(godotPlan(buildComponentIR(c)).operation).toBe(op);
   });
-  it("rejects an unknown prop and unsupported surface instead of silent omission", () => {
+  it("rejects a prop family the support boundary has not adjudicated", () => {
+    // The boundary is a ratchet: an unclassified family fails generation rather
+    // than becoming a silent exclusion.
     const c=fixture("Switch"); c.props!.designed!.members!.push({name:"futureBehavior",propType:{kind:"boolean"}});
-    expect(()=>godotPlan(buildComponentIR(c))).toThrow("GODOT_UNSUPPORTED_PROP: Switch.futureBehavior");
-    expect(()=>godotPlan(buildComponentIR(fixture("Dialog")))).toThrow(/GODOT_UNSUPPORTED/);
+    expect(()=>godotPlan(buildComponentIR(c))).toThrow("GODOT_UNCLASSIFIED_PROP: Switch.futureBehavior");
+  });
+  it("plans a wider presence surface with named omissions instead of refusing", () => {
+    const plan = godotPlan(buildComponentIR(fixture("Dialog")));
+    expect(plan.operation).toBe("surface");
+    if (!("anchor" in plan)) throw new Error("Dialog did not plan as a wider surface");
+    expect(plan.anchor).toBe("none");
+    expect(plan.omissions.length).toBeGreaterThan(0);
+    expect(plan.excluded).toEqual(expect.arrayContaining(["modal", "initialFocus"]));
   });
   it("exposes known pilot exclusions", () => {
     expect(godotPlan(buildComponentIR(fixture("Switch"))).excluded).toEqual(expect.arrayContaining(["size","name","value","defaultChecked"]));
@@ -282,17 +291,29 @@ describe("Godot bounded lowering", () => {
     expect(rule.operation).toBe("rule");
     if (!("styles" in rule)) throw new Error("Rule plan lost its style projection");
     expect(rule.styles.find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "border-top-color")?.value).toBe("#123456");
+    // A prop outside the narrow static allowlist makes the static shape decline;
+    // the generic anatomy fallback then has to account for it, and an
+    // unadjudicated family is refused rather than silently excluded.
     prose.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
-    expect(() => godotPlan(buildComponentIR(prose))).toThrow("GODOT_UNSUPPORTED_PROP: Text.futureBehavior");
+    expect(() => godotPlan(buildComponentIR(prose))).toThrow("GODOT_UNCLASSIFIED_PROP: Text.futureBehavior");
   });
-  it("refuses unlowered anatomy and pseudo styling on a passive shape", () => {
+  it("routes unlowered passive anatomy through the generic shape with named omissions", () => {
+    // A fact the narrow static shape cannot carry is no longer a refusal: the
+    // generic anatomy shape emits the component and names the gap. Refusing here
+    // would keep the corpus out of the admitted set for a styling detail.
     const ir = buildComponentIR(styledFixture("Text"));
     ir.dom!.attrs["data-unhandled"] = "true";
-    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_STATIC_ANATOMY: Text");
+    const anatomy = godotPlan(ir);
+    expect(anatomy.operation).toBe("anatomy");
+    if (!("omissions" in anatomy) || !anatomy.omissions) throw new Error("Anatomy plan lost its omission receipt");
+    expect(anatomy.omissions.length).toBeGreaterThan(0);
     delete ir.dom!.attrs["data-unhandled"];
     const rootRule = ir.nativeStyleRules!.rules.find(rule => rule.sourceKey === "root")!;
     ir.nativeStyleRules!.rules.push({ ...rootRule, sourceKey: "root::before", pseudo: "before" });
-    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_STATIC_SELECTOR: Text");
+    const styled = godotPlan(ir);
+    expect(styled.operation).toBe("anatomy");
+    if (!("omissions" in styled) || !styled.omissions) throw new Error("Anatomy plan lost its omission receipt");
+    expect(styled.omissions.some(line => line.includes("root::before") || line.includes("::before"))).toBe(true);
   });
   it("does not project another platform's style declaration into Godot", () => {
     const c = styledFixture("Text");

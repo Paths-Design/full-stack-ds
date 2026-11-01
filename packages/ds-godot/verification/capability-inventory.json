@@ -1,0 +1,2500 @@
+{
+  "schema": "godot-capability-inventory.v1",
+  "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
+  "boundary": {
+    "schema": "godot-support-boundary.v1",
+    "rules": 140,
+    "corpusComponents": 55,
+    "counts": {
+      "lowered": 8142,
+      "pending": 3416,
+      "refused": 5943
+    },
+    "deadRules": []
+  },
+  "variances": 154,
+  "components": [
+    {
+      "component": "Accordion",
+      "admitted": true,
+      "emitted": true,
+      "operation": "toggle-item",
+      "diagnostic": null,
+      "contractSha256": "ba64a3dcad3f1c84f5a3db5ef3a35f86121e73dc1f467a0962009de49d6af5da",
+      "sidecarSha256": {
+        "tokens": "e6230f43d49a43f7fa0a68fd2fdb4b8f105d6ec4816426399d1d59dbdeb29427",
+        "styles": "7baa7c4c95bbb69f6b649ac76dd34027b355be2cebee56a053b1594abd4bc8c8"
+      },
+      "receipt": {
+        "operation": "toggle-item",
+        "excluded": [
+          "type",
+          "defaultValue"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 2
+      },
+      "variance": [
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 178,
+          "pending": 102,
+          "refused": 157
+        },
+        "digest": "fb0f9c14d1759d95555c3d8d844f268d0c1dfd1cf2c3ddd58ffa7f7fc070a4f2"
+      }
+    },
+    {
+      "component": "Alert",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "cb0bc163f2eedb4b3ccc5b3c47abd72c306cd49962eb6ddd823616326932c88a",
+      "sidecarSha256": {
+        "tokens": "029a9e15d7620f2cb90bd1f2613421857e71e891f24847af2a7ee3aa30054b08",
+        "styles": "588a440971285c69cdcdaeeaecf9a95600e3e3ed94b7cdf2a817d1896b116289"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "dismissible",
+          "onDismiss",
+          "dismissLabel",
+          "icon"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 52
+      },
+      "variance": [
+        {
+          "prop": "icon",
+          "rule": "prop-glyph-name"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 168,
+          "pending": 39,
+          "refused": 111
+        },
+        "digest": "32675a2c35b4b1ad086d9b1d6bc5b591a3409564a537cc3a0e732ca4544be37a"
+      }
+    },
+    {
+      "component": "AlertNotice",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "de95dde32f7a8cc65ff93fd493c1789a858f53d73317e3ef837a131b8a7a2da0",
+      "sidecarSha256": {
+        "tokens": "7e72a82cf2c9d01f01ea8858c2807d85823d92dab695739cc5621e3f6117bf2c",
+        "styles": "e2e708cfab1b4da37b3d59d3c6814fba4dafd44d37ad8f35916e2378525d4384"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "dismissible",
+          "onDismiss",
+          "dismissLabel",
+          "icon"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 51
+      },
+      "variance": [
+        {
+          "prop": "icon",
+          "rule": "prop-glyph-name"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 206,
+          "pending": 37,
+          "refused": 137
+        },
+        "digest": "ebbcb72be34164bda8a26fa686d5ed2c4747f80084b89ee90b6aecece54eee6f"
+      }
+    },
+    {
+      "component": "Avatar",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "ad2bce5b24d0ba1e629f0796e9ca90ad46d3bc7e458c658eb24b604ecf1f46f3",
+      "sidecarSha256": {
+        "tokens": "0bf9f5bb878acb31206ecd68100206943ed11ef9f5886da9a7aa44ca0018fc03",
+        "styles": "299aa0c9c129c70234683a7246596b54bf34bcabf1da5db4129577b530c28e33"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "src",
+          "name",
+          "initials",
+          "priority"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 43
+      },
+      "variance": [
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "initials",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 85,
+          "pending": 24,
+          "refused": 95
+        },
+        "digest": "3d7fa1d7a6288d5b7ffd384718959016c05f50d969fbfac91a9d84df50b0530e"
+      }
+    },
+    {
+      "component": "Badge",
+      "admitted": true,
+      "emitted": true,
+      "operation": "composite",
+      "diagnostic": null,
+      "contractSha256": "0dc294c28bd1eccd3753620104fd8c0852555836aed0cb6041a6bdaf9389b2fa",
+      "sidecarSha256": {
+        "tokens": "579f7a55e23de91cc3f99495dea305e2e2222e5d47d07f712fcb8aec40dc2cdc",
+        "styles": "b7a49cc40a0e917f7206fd783b20558ef0c8dcb7173427c321788acb039ca252"
+      },
+      "receipt": {
+        "operation": "composite",
+        "excluded": [
+          "showStatusIcon"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 24
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 191,
+          "pending": 16,
+          "refused": 76
+        },
+        "digest": "3632420e841feaec026f11f5766c40f71fea9eafc5c93f18e4212d826cd46701"
+      }
+    },
+    {
+      "component": "Blockquote",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "ea59d256f8b646c2384fdebe9b7be90c8820ea3bea1365ef1e2f4e6c8b998c53",
+      "sidecarSha256": {
+        "tokens": "010f7f8b2cc8260244e25c41e858f77ab43f9a8aec2738c02bcca03b751f3fd6",
+        "styles": "36eb3c70073de8a72b46be0ad1ccbc7c0eabdd8a428eb24f3a6a3a031b222ca7"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "cite"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 21
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 144,
+          "pending": 6,
+          "refused": 67
+        },
+        "digest": "514375616403687db2a96144dc2e32638544b030f6f64da2b7f9d10afc6ce1c7"
+      }
+    },
+    {
+      "component": "Breadcrumbs",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "272b238f1a5faf5f21a640729057fc05ec784976bb59358bec3d1f9941528697",
+      "sidecarSha256": {
+        "tokens": "70e9876dc7658d8fec28c120409dc48b68f24703b5c1dd1a284bf8ca89ef259d",
+        "styles": "e7016c7ba170b6a64d54a4f67ad501ccf3402cae0827dbd16f64aa593d40fe07"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "ariaLabel",
+          "separator"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 22
+      },
+      "variance": [
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        },
+        {
+          "prop": "separator",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 78,
+          "pending": 32,
+          "refused": 52
+        },
+        "digest": "9987377e4d8577c6ad7b83ec99f987f577488ca5fc11eb8dd215f7155d20d673"
+      }
+    },
+    {
+      "component": "Button",
+      "admitted": true,
+      "emitted": true,
+      "operation": "action",
+      "diagnostic": null,
+      "contractSha256": "3a77b03d5b3547aa03718f6166751131e17716fae7b6865abc3f221a89a1e340",
+      "sidecarSha256": {
+        "tokens": "868360b351d363e2df0d72e3e5a95b946544a73160ba5d9b98cc2962fd63943f",
+        "styles": "46c217089db9b3ac17c7373d748590f7c2773a2c92941475e249684bfd00c557"
+      },
+      "receipt": {
+        "operation": "action",
+        "excluded": [
+          "type",
+          "ariaExpanded",
+          "ariaPressed"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 15
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 267,
+          "pending": 36,
+          "refused": 117
+        },
+        "digest": "7af177a937f2c318017eff33f998d84a8356cd13e7cba2cc8cf6d1fc3d91beea"
+      }
+    },
+    {
+      "component": "Calendar",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "566803bfc48ccacf1d63016f6af1622ada5103dba7cd448a9c8281a67bf28064",
+      "sidecarSha256": {
+        "tokens": "51532280a8b8b5a5da1952dc0174f49eb08aa8f21fc08b3bb75ad05d06b909f5",
+        "styles": "b4ea922ccdc8e0cca691b3d6d7a07867dfc1b61d4759258bbcc7cd16a3dc36b6"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "caption",
+          "ariaLabel",
+          "ariaLabelledby",
+          "month",
+          "defaultMonth",
+          "onMonthChange",
+          "value",
+          "defaultValue",
+          "onChange",
+          "mode",
+          "disabled",
+          "minDate",
+          "maxDate",
+          "locale",
+          "shouldCloseOnSelect"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 95
+      },
+      "variance": [
+        {
+          "prop": "caption",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        },
+        {
+          "prop": "month",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultMonth",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onMonthChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 255,
+          "pending": 157,
+          "refused": 196
+        },
+        "digest": "e921c7a26ce909bd6fddf3b8478043fb714df966e0787c52b1bfd71b4e6d1555"
+      }
+    },
+    {
+      "component": "Card",
+      "admitted": true,
+      "emitted": true,
+      "operation": "composite",
+      "diagnostic": null,
+      "contractSha256": "cf2b7a18748a906b20941672f1caa6e9481a174d1ce0a3b233f9b6bede51d3ba",
+      "sidecarSha256": {
+        "tokens": "e5b12dc149d93c90a381c4fb7db84028fff4e75ed8ab411433c7685e341b984d",
+        "styles": "a55e0f4cb27145396e8d288e56af0dc254f27ef04c6af081456526334d1e44a2"
+      },
+      "receipt": {
+        "operation": "composite",
+        "excluded": [],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 49
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 141,
+          "pending": 72,
+          "refused": 151
+        },
+        "digest": "ed010c4ddacdee222966b7f3784c1a8f5a5ddd82a254a2fdf8083c3e31de7310"
+      }
+    },
+    {
+      "component": "Carousel",
+      "admitted": true,
+      "emitted": true,
+      "operation": "sequence",
+      "diagnostic": null,
+      "contractSha256": "1fc74eecca295d6a81829e982c7755769245ced4a85e4489e3fc0e9a18df8a57",
+      "sidecarSha256": {
+        "tokens": "c6c3185b8cf37d3ee7dd9506e3fb515cc058df38db2e8c421b35644741808428",
+        "styles": "1123d199f268cbcf836cad73cf83faee4f36db1576e2129b697df4572a020eda"
+      },
+      "receipt": {
+        "operation": "sequence",
+        "excluded": [],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 0
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 144,
+          "pending": 105,
+          "refused": 162
+        },
+        "digest": "96ab67cde95e3a3e63b76e3c1800f5ca646112490ef5ea194f4a00275130f29f"
+      }
+    },
+    {
+      "component": "Checkbox",
+      "admitted": true,
+      "emitted": true,
+      "operation": "boolean",
+      "diagnostic": null,
+      "contractSha256": "a04dbff95cd938c198174e33e568e3475c8424b16c9be3ac6d7c2611de8233e2",
+      "sidecarSha256": {
+        "tokens": "1c995e3f08a9692ef1cf40e2337559046eb179b346c4950c7efcce1968fcb7cd",
+        "styles": "64b98e43a65c5fca5c4a792f502252ba5222fcf433f93be14c3f4d632ad9c6db"
+      },
+      "receipt": {
+        "operation": "boolean",
+        "excluded": [
+          "size",
+          "defaultChecked",
+          "indeterminate",
+          "name",
+          "value",
+          "ariaLabel",
+          "ariaLabelledby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 7
+      },
+      "variance": [
+        {
+          "prop": "size",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "defaultChecked",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 140,
+          "pending": 98,
+          "refused": 107
+        },
+        "digest": "2c96aafda55f5ff9214b6d49e8ea120721393aff6a73293df8a44bb164771e3a"
+      }
+    },
+    {
+      "component": "Chip",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "98ef87ac5486d60acb0a563801eaf97014114a46bb8ef4292defb2e157ceac6f",
+      "sidecarSha256": {
+        "tokens": "9880b9da1d5e46ac9bd6f8f5a1f7f1c51a80535c953948fb09ad882526d8680c",
+        "styles": "202e4e2f969ca2e4bb46c900a3254a9cd3a9bb0ebdef2f72fa35ff077a1768d8"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "type",
+          "disabled",
+          "icon",
+          "title",
+          "ariaLabel",
+          "ariaExpanded",
+          "ariaPressed",
+          "onClick",
+          "dismissible",
+          "onDismiss",
+          "dismissLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 59
+      },
+      "variance": [
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "icon",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "title",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        },
+        {
+          "prop": "onClick",
+          "rule": "prop-action-callback"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 229,
+          "pending": 55,
+          "refused": 112
+        },
+        "digest": "93e8b327999b492702171b90b54f4df14a2aa8ed550528c8426eefeb2c96ef24"
+      }
+    },
+    {
+      "component": "CodeBlock",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "b99be67b8595263c88e4762424393dffe37192bb5902a9c998902671527a755a",
+      "sidecarSha256": {
+        "tokens": "fa4a73f8b4342001277139ed5ed7aaab648a4522b5c177ae34a86d4d34f0b9fe",
+        "styles": "ed6d969f83ec2f87c7f9f483be25d13743dfc572044085bae34f94dcdcb7822c"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "code",
+          "language",
+          "highlight",
+          "tokens",
+          "showLineNumbers"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 44
+      },
+      "variance": [
+        {
+          "prop": "code",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 173,
+          "pending": 44,
+          "refused": 99
+        },
+        "digest": "388f4669eb14e144cb879c2d0edc5b30a813167d4e6de0fa6b60f4585edd110d"
+      }
+    },
+    {
+      "component": "CodeSnippet",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "30f60f86da40d000217ceefa996f800bb61e8058dc3175961e1371706e1426ff",
+      "sidecarSha256": {
+        "tokens": "0b3de0d6b8213086d73626aaa224f9bc1af6b164078a12e6623fc60ba1ca7ce6",
+        "styles": "f6308f04775d35ee2dd63b567ee6f7c1e221184a0de3896535b36508402c0f45"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "text"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 25
+      },
+      "variance": [
+        {
+          "prop": "text",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 86,
+          "pending": 11,
+          "refused": 61
+        },
+        "digest": "d0bad788facbefc411dc108c315010bf8272467168d035e4229e6c49df8a3c5d"
+      }
+    },
+    {
+      "component": "Command",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "f48ce2654c12be2dad1a44118f70aae12dc5da648b0ea97cbe53f9120ad29666",
+      "sidecarSha256": {
+        "tokens": "cb02a4ccf6875924a4afd3a62e3446128a5a802e55f6c093e97f25615597f372",
+        "styles": "2a062e441ac3651419bf9085295d4bfaed3c6c6d28dc4bced091634729dcf1e0"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "defaultOpen",
+          "search",
+          "defaultSearch",
+          "onSearchChange",
+          "placeholder",
+          "searchLabel",
+          "emptyMessage",
+          "label",
+          "shouldFilter",
+          "filter"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 26
+      },
+      "variance": [
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "search",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultSearch",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onSearchChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "placeholder",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "searchLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "emptyMessage",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 244,
+          "pending": 169,
+          "refused": 283
+        },
+        "digest": "322a7302ffe23fe1b191049eac42ba2b419c40e222528d9306a7df632b0224c7"
+      }
+    },
+    {
+      "component": "Details",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "706c8225918894ad24cc83c71af6bf35322c0341057bc50dece3796a185a25a4",
+      "sidecarSha256": {
+        "tokens": "787595e9d3c9703d0651a641b233a44dc42e5e240f1c2414b662ceb2c6513dd0",
+        "styles": "65dbec4551ae7430ce9d2d10ff204dbb5c22ecefba22d5b587ee140370f41965"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "summary",
+          "open",
+          "defaultOpen",
+          "onOpenChange",
+          "disabled",
+          "icon"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 58
+      },
+      "variance": [
+        {
+          "prop": "summary",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "open",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onOpenChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "icon",
+          "rule": "prop-glyph-name"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 189,
+          "pending": 55,
+          "refused": 127
+        },
+        "digest": "1ab4aef74ea0a001cc5a41bc5dbea279a2887fd94f324eebe5b18defa3fe221d"
+      }
+    },
+    {
+      "component": "Dialog",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "3ba087451c4730f007f77cf56d09120b011c69b7f84903c694cb08eeba353ba8",
+      "sidecarSha256": {
+        "tokens": "0fb3f5913378510c1418715fbd876503b4e9b26c7de394c27bba2215aa4282c9",
+        "styles": "8aca0ad5d8d49b2f7831d68e69d96b8b352f536c2625d5f0b3611ec612831705"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "defaultOpen",
+          "modal",
+          "size",
+          "dismissible",
+          "closeOnEscape",
+          "closeOnBackdropClick",
+          "initialFocus",
+          "returnFocus",
+          "ariaLabel",
+          "ariaLabelledby",
+          "ariaDescribedby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 31
+      },
+      "variance": [
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "size",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 237,
+          "pending": 153,
+          "refused": 229
+        },
+        "digest": "ad352d27b24803ff89b16bf6fc7de189cfe168a16fbe7bac845e03fef4cf3d54"
+      }
+    },
+    {
+      "component": "Divider",
+      "admitted": true,
+      "emitted": true,
+      "operation": "rule",
+      "diagnostic": null,
+      "contractSha256": "b2f4b505e435b089d2ba611cd4156e714d4277645ba646c8a20d478c0cda4f36",
+      "sidecarSha256": {
+        "tokens": "1c7ceabfe95189a3f914ba9f05eade6ffedde5147e2539bb5d5c1246dcf7cc98",
+        "styles": "88afbea17e3c82da3c21fc9dbf455abe56c2a4f673751b1e6a181efe7387279e"
+      },
+      "receipt": {
+        "operation": "rule",
+        "excluded": [
+          "decorative"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 3
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 41,
+          "pending": 7,
+          "refused": 60
+        },
+        "digest": "1bde0c75a3238af56618a5939ffbf8eefc6d48d43652c6f00b022ad81d847bba"
+      }
+    },
+    {
+      "component": "Field",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "1b6b04b2bc172e9646a09e83c6d56c65f82e8c90937e5c14aada26c6b67ddaae",
+      "sidecarSha256": {
+        "tokens": "558e22bd76fdb9733c0aa053ba356a9b926796055246a7e093cba480bf3da5c6",
+        "styles": "719a41688429886db2389412911511006db7f0ccccf2dfad8341d8686fa10d5c"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "name",
+          "id",
+          "required",
+          "disabled",
+          "readOnly",
+          "value",
+          "defaultValue",
+          "onChange",
+          "validate",
+          "validating"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 55
+      },
+      "variance": [
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 139,
+          "pending": 48,
+          "refused": 104
+        },
+        "digest": "ed1f170d4262ab14acfe1c5b63d22b3d108b11433ec2901a726915d116bd4996"
+      }
+    },
+    {
+      "component": "Icon",
+      "admitted": true,
+      "emitted": true,
+      "operation": "glyph",
+      "diagnostic": null,
+      "contractSha256": "76e04bbbcbeea8a1d7effa911db9089f60718e85af123ae43b4c4868530b67e3",
+      "sidecarSha256": {
+        "tokens": "04e5c53fb06d7fca6b6af14e191567cd855453c6c4b81cf3153cf38f4d17d70d",
+        "styles": "cdd8d1e3c3a388d265709170a8738f574cf9823d181e3b0916f78d14ba415e6c"
+      },
+      "receipt": {
+        "operation": "glyph",
+        "excluded": [],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 0
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 51,
+          "pending": 12,
+          "refused": 56
+        },
+        "digest": "338abff7f1ebd04d72eba978e62ba439e5daebbe034e669b3e8cf3404cf87281"
+      }
+    },
+    {
+      "component": "Image",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "5bd4cd84abacf5e3a4226d4fcae893bbb8a195c6a397906f00f3d0d8ff96c818",
+      "sidecarSha256": {
+        "tokens": "4f74aeb6a22f64c9c9aa4b8cb12e591ab6fa8e1aeb65e9765dc85e30acccd9ed",
+        "styles": "001d7785579f1ea0c756106f8392425ad7d5c4c45b67850d111d775a58e8818a"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "src",
+          "alt",
+          "width",
+          "height",
+          "aspectRatio",
+          "objectFit",
+          "objectPosition",
+          "loading",
+          "sizes",
+          "radius",
+          "showPlaceholder",
+          "fallbackSrc"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 48
+      },
+      "variance": [
+        {
+          "prop": "loading",
+          "rule": "prop-boolean-state"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 105,
+          "pending": 54,
+          "refused": 103
+        },
+        "digest": "4f310803387270857c4393b8e1e1c1965c0f49dfd2bec88bdd0d595c7a44cd9e"
+      }
+    },
+    {
+      "component": "Input",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "00fe5055c6d312cff2884e38dfb0528ff7ea67b8d30045766b725dd208c68227",
+      "sidecarSha256": {
+        "tokens": "97f38e4250a577188225f2f362c4791fb8a45b2b7e9105b4cea4f0ff8f6d2e3c",
+        "styles": "ec374be2386462f276ac46b67ebfde688d7bd19ac079a8318520459d383512a9"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "type",
+          "value",
+          "defaultValue",
+          "onChange",
+          "placeholder",
+          "disabled",
+          "invalid",
+          "required",
+          "name",
+          "ariaLabel",
+          "ariaLabelledby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 43
+      },
+      "variance": [
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "placeholder",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 178,
+          "pending": 46,
+          "refused": 108
+        },
+        "digest": "105e701223f196a2934609fc6bc5f411cdaedb5106d38fc4d23285e203fe127e"
+      }
+    },
+    {
+      "component": "Label",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "cf5df84deb724f5172ad45afcfb880ec4702b835bff8d3e846987e6c8cfe78d3",
+      "sidecarSha256": {
+        "tokens": "05d8b612316296dec5b7c2c4005015174b82310cad3d163a7822e87a9cedecd6",
+        "styles": "994f5e00ee30d60c7e473c81b8b28327912fabdb08ee62a4a14c643effa237aa"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "htmlFor",
+          "form"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 6
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 22,
+          "pending": 12,
+          "refused": 19
+        },
+        "digest": "65c557e87b6ccaee9946a4060edd137bd31c2e34988b743d2ebd5f58ed4837f9"
+      }
+    },
+    {
+      "component": "Links",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "9f852bf43e9218d3d23aff06b5e0a379d44f61169917507f5670c12e23d3d0f0",
+      "sidecarSha256": {
+        "tokens": "8c2f580fdd7c895a51cd55743fcb1cade05033804500a03532368a5d26f5f057",
+        "styles": "dd9b8d3dc3852285579ca468cfa21c7f2af02e4fbb80f3739e0ee62d4b68a541"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "href",
+          "target",
+          "rel",
+          "disabled"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 18
+      },
+      "variance": [
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 116,
+          "pending": 37,
+          "refused": 57
+        },
+        "digest": "2f36a55c62fbbd5fd12f12a3ef0664dfb87f9f5b7720229703527392d6d8bc75"
+      }
+    },
+    {
+      "component": "List",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "043087cb00b39cf7925e1f08e34e37eea928d552ec4822f03a85b4a53e9db9e3",
+      "sidecarSha256": {
+        "tokens": "169fb9ca14803961525e35d48b44378291da206cea313f8098b5ee5a5db04195",
+        "styles": "4b519aaa8281de1d1661a7b51c24168323e1b1e2864152c3d89ed77af4ee936c"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "as",
+          "marker",
+          "spacing"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 27
+      },
+      "variance": [
+        {
+          "prop": "marker",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "spacing",
+          "rule": "prop-variant-axis"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 127,
+          "pending": 16,
+          "refused": 73
+        },
+        "digest": "616f4c58df51edd51b1b28ec9693ce33cbd4fa5bdb5aaca5bb3fa8613bb517a3"
+      }
+    },
+    {
+      "component": "Markdown",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "86f4a4d0e4a2c9753ad4fb3c00945352679e1eb1b5c42e96cad553899ff031b2",
+      "sidecarSha256": {
+        "tokens": "396ad5c8084dcc80b44002b73de57acf1226079e2d5886f993e7bf0292bb4241",
+        "styles": "fd9457bb0f40a430e46bff322d7944752ece1d0da539f3bf21a89525f5a9d040"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "content"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 17
+      },
+      "variance": [
+        {
+          "prop": "content",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 55,
+          "pending": 15,
+          "refused": 25
+        },
+        "digest": "7dc77a9510a57e020e276ea19af830d05ee664c8598f698a93a1c32ec4844fb1"
+      }
+    },
+    {
+      "component": "NavList",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "cb9e0ea1af5c5c8d6210e00cece2839e244d2d1f17dbb3bf9136165143877e27",
+      "sidecarSha256": {
+        "tokens": "031ff620ef00189dd96beceb7b7896005c195e888012c77a46259f3a009678c9",
+        "styles": "c56f83445f239f25fb63e9dfdd41ef721f21b94e7007dc5ae2f4cd2f60037187"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "orientation",
+          "ariaLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 17
+      },
+      "variance": [
+        {
+          "prop": "orientation",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 89,
+          "pending": 20,
+          "refused": 70
+        },
+        "digest": "8135047ec6cb8be37a13b68b8a8196ca49b3daa4a325c89f1ce7334f05e5e23f"
+      }
+    },
+    {
+      "component": "NavTree",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "fcf3c6893a0a6f7182a0701cf3e9d3584e2d3b4c321eb7328498ee4ebbd8288c",
+      "sidecarSha256": {
+        "tokens": "27c324f09194c7f08d1886676adef3a86d3a9325e2891d22789b4e1aaa395fc8",
+        "styles": "1b31e29d23fe54e9532d4fcd92b70fec0938fc49c8adf2ece544a9b1bfaea926"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "label",
+          "href",
+          "icon",
+          "iconSize"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 56
+      },
+      "variance": [
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "icon",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "iconSize",
+          "rule": "prop-glyph-mount"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 169,
+          "pending": 81,
+          "refused": 161
+        },
+        "digest": "7e7572e0322c70afd3b27136a17bb1820964f4956d7bfe079be5e77a642af587"
+      }
+    },
+    {
+      "component": "OTP",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "c68b1827bf01cebfdc6472f868d447b0684a0648060ea53e253322ccc70a6d13",
+      "sidecarSha256": {
+        "tokens": "1e78d70fbfdcb9740d67ec9d05d4fb568f5399c53e654d61610ecbb688422dd7",
+        "styles": "a1f26237f0b002d203bfb4dae056ddfcc5eca027032bc50ef0e5290aea4fad58"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "length",
+          "value",
+          "defaultValue",
+          "onChange",
+          "onComplete",
+          "mode",
+          "disabled",
+          "readOnly",
+          "label",
+          "fieldLabel",
+          "ariaDescribedby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 47
+      },
+      "variance": [
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "fieldLabel",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 124,
+          "pending": 72,
+          "refused": 98
+        },
+        "digest": "47dacd4d71cb5c640e6848e4317d82b542ee05c042622abb6694b9926984d79b"
+      }
+    },
+    {
+      "component": "PageNavigator",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "0c954b3e9c8d39668d12bdc8373c3c30332fc9176052d167d9f192591c78e375",
+      "sidecarSha256": {
+        "styles": "be54159f806cc5d6d41bd827215052474657acccedf24c751d82c43ab2dbd4e9"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "pages",
+          "index",
+          "defaultIndex",
+          "onIndexChange",
+          "presentation",
+          "label",
+          "disabled",
+          "pageCount",
+          "pageLabel",
+          "previousLabel",
+          "nextLabel",
+          "commitLabel",
+          "showChoices"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 60
+      },
+      "variance": [
+        {
+          "prop": "index",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultIndex",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onIndexChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "pageLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "previousLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "nextLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "commitLabel",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 89,
+          "pending": 86,
+          "refused": 45
+        },
+        "digest": "6ef4ed099678713ceb7dbc2f367d45601d8d73dbf7ecdb4099d7147b33d46830"
+      }
+    },
+    {
+      "component": "Pagination",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "c971aa0002013ca31d0e1dbd03da1b4dfb714b97eb723beb1307882ef03d8190",
+      "sidecarSha256": {
+        "tokens": "e7aa724cf75301d3d41d4332b6946cc571495229a0d8d3165022125141c53083",
+        "styles": "abec728849de1641e19e0d3d9777445d7f7284ee10437895a063dbe78acd34f2"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "pages",
+          "index",
+          "defaultIndex",
+          "onIndexChange",
+          "presentation",
+          "label",
+          "disabled",
+          "progress"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 66
+      },
+      "variance": [
+        {
+          "prop": "index",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultIndex",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onIndexChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 99,
+          "pending": 52,
+          "refused": 125
+        },
+        "digest": "850d3b21e3300d4132ce3c533fe2da580a8d0805f49fb7095280e0c2966e1339"
+      }
+    },
+    {
+      "component": "Popover",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "8ba0eff534229b100bd7df16e94c5d8c1f278b1d367714c11365f9e497920e07",
+      "sidecarSha256": {
+        "tokens": "aab3fa63b6e18d5bf4b4a8b276ffe576dbae4f990d88e71f62d1ab1aecaf6364",
+        "styles": "de048372cda254ad14481e2121ce94ef226ec5e3a63148c0f851722e8f8f3b7c"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "defaultOpen",
+          "placement",
+          "closeOnEscape",
+          "closeOnOutsideClick",
+          "closeOnBlur"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 5
+      },
+      "variance": [
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 102,
+          "pending": 108,
+          "refused": 63
+        },
+        "digest": "42bd056baae7befdc1cf04d124c0d9960de86b67e4cd9da56a3c56a61de6b7c0"
+      }
+    },
+    {
+      "component": "Postcard",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "241c34f946f28e5c70b8c13860b68753adab31c3a085e8082dc84409ef07843a",
+      "sidecarSha256": {
+        "tokens": "b7e1571e337e707e58449697852926f981c7978e7a21da2aa12c5a82a9e0c4cb",
+        "styles": "929618f45830265bac718d0fa943c462a15b25b6bbfc4d476f4337d0075a7474"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "postId",
+          "author",
+          "timestamp",
+          "stats",
+          "embed"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 50
+      },
+      "variance": [
+        {
+          "prop": "timestamp",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 190,
+          "pending": 53,
+          "refused": 127
+        },
+        "digest": "d0bdd40a6563fa2d8035237b0078d881319be4d667fc8d70db8ae4cd852b39d2"
+      }
+    },
+    {
+      "component": "ProfileFlag",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "70ebebe39281f9ecdeaa2cf94535e36756115c5fb5b27d0b9d2810c6364dd671",
+      "sidecarSha256": {
+        "tokens": "0814027ae566ad960206b3eddaa7c051144256bdb5cd69e0c9fd5c180f7dade5",
+        "styles": "f87ff4a699d54f879cef97d3191ea9c4498dc260a4464e478f0a8976cb59363d"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "profile"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 13
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 51,
+          "pending": 7,
+          "refused": 27
+        },
+        "digest": "49075e6e091b72303267b7d1a4ba76fdcacfc134ca88430799b1330c41e84c85"
+      }
+    },
+    {
+      "component": "Progress",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "ca7823b6d1676709e07bd1fb6dde6c9e73aaa58c3730289dfc62b2486f982937",
+      "sidecarSha256": {
+        "tokens": "f37902f05189d9f00354d3d8bd298b6483cee4d4ba1fbc2a692832f599429e4d",
+        "styles": "64f9f162b8255f07e507f493af78972351da45570124623abdbb121e2b3723ca"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "value",
+          "variant",
+          "size",
+          "label",
+          "showValue",
+          "formatValue"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 30
+      },
+      "variance": [
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "variant",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "size",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 105,
+          "pending": 37,
+          "refused": 64
+        },
+        "digest": "f621d2e27f93f8594038de950ad59ef5e34882b851ca7d68568e66acd8407cb6"
+      }
+    },
+    {
+      "component": "RadioGroup",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "5006f7880ad10e1a42b662260d2d2a17a63052dcb76aee44e569f3a1795a5d9a",
+      "sidecarSha256": {
+        "tokens": "fd3bc5bd7b670fd3d701046c13dfcdb63822aabc83a52180bb7c43ef8b13266b",
+        "styles": "4d2a88d481f37de9135412d90a02f84b0ed6b32c21119ba1a82844cbb5e2efc6"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "options",
+          "name",
+          "value",
+          "defaultValue",
+          "onChange",
+          "ariaLabel",
+          "orientation"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 44
+      },
+      "variance": [
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        },
+        {
+          "prop": "orientation",
+          "rule": "prop-variant-axis"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 77,
+          "pending": 51,
+          "refused": 76
+        },
+        "digest": "7be7003c6f618066e055fbb08f356e7dd81bbf6e0f37c0843dec9faf1008188b"
+      }
+    },
+    {
+      "component": "Select",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "192ed18edc57dfcb5f8f90a9240a5994146d8967858b6841c47043e86388d995",
+      "sidecarSha256": {
+        "tokens": "bcae149a84495df7f2891030423bb2e13f2e533543205f9e893527d7771b0775",
+        "styles": "7ac3dba59413a74e72bcd978c529b19f77c43a38a2ee42c5f1530b58e6d40668"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "options",
+          "value",
+          "defaultValue",
+          "onChange",
+          "defaultOpen",
+          "onOpenChange",
+          "multiple",
+          "triggerLabel",
+          "size",
+          "filterFn",
+          "searchable",
+          "empty",
+          "placeholder",
+          "searchLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 127
+      },
+      "variance": [
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onOpenChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "triggerLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "size",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "placeholder",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "searchLabel",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 285,
+          "pending": 204,
+          "refused": 224
+        },
+        "digest": "4eada8e64f764938931558e69808577a0c08a8b7af98dd3921afb6b2048f304b"
+      }
+    },
+    {
+      "component": "Sheet",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "8d3cfb9346ba310f9d6be7d228e806b3f24e1bd112b9a12790a00c33a0f366e3",
+      "sidecarSha256": {
+        "tokens": "d2f481459ae44f40e0789118db193146a01847707c054f37aa87c8367d8d7950",
+        "styles": "b452252e4b7f3a73a07387d6df2bcd01ba5d71323d8b0d71dda03f124cf84532"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "defaultOpen",
+          "side",
+          "modal",
+          "ariaLabel",
+          "ariaLabelledby",
+          "ariaDescribedby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 25
+      },
+      "variance": [
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 227,
+          "pending": 175,
+          "refused": 213
+        },
+        "digest": "9115aa9234c83f2d931a8c3e13c01b1dfa60efb1338b5ac9243491e359478251"
+      }
+    },
+    {
+      "component": "ShowMore",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "0c83455e7b69e57f2c3f882a2048176bd72c7b321d52f64e0cbd9cd0be9c75d4",
+      "sidecarSha256": {
+        "tokens": "10992d208697b16b5112c237f38c9a7e6f369b488313b12bc6b67773f81e790c",
+        "styles": "becbed3c3cce24a694e014a7f894f4305b3ffb5ae0a23c69b72f1e9c08ffe550"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "expanded",
+          "defaultExpanded",
+          "onExpandedChange",
+          "maxLines",
+          "showMoreLabel",
+          "showLessLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 43
+      },
+      "variance": [
+        {
+          "prop": "expanded",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultExpanded",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onExpandedChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "showMoreLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "showLessLabel",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 100,
+          "pending": 37,
+          "refused": 67
+        },
+        "digest": "44405061cc97862a6aa1b5d4479326978ff20180aa80c92bfed235aec5638925"
+      }
+    },
+    {
+      "component": "Shuttle",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "38a2e7b75002cf50ca0002a524a5924c8667120924be63a4b94cd1c583bed216",
+      "sidecarSha256": {
+        "tokens": "d37d49b5674a9193441d900798f3fb93de13f70b2af345327d10759c367b995a",
+        "styles": "3bcd5e86b2ef9fcf106f305e82b06c5e708990f391668187b8581ac10f088fe3"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "ariaLabel",
+          "options",
+          "value",
+          "defaultValue",
+          "onValueChange"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 69
+      },
+      "variance": [
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        },
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onValueChange",
+          "rule": "prop-channel-change"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 160,
+          "pending": 91,
+          "refused": 141
+        },
+        "digest": "e5e3ee9d2f5649f638e3d1f4bbbcb84605449146312034208ca304a322f79c18"
+      }
+    },
+    {
+      "component": "Skeleton",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "1d55e08d32dc648b42c59ab8de64b7ff30e762ca1286157cd701529077992133",
+      "sidecarSha256": {
+        "tokens": "2658a6d32b3b8a3c07df966b1e62c0f3016b340141dab0831e6c9aae03c6b479",
+        "styles": "c30f0ad6865e422ec98fb54ad92a2946f9f81492fed6aff140be52675fc7ce6b"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "aspectRatio",
+          "lines",
+          "radius",
+          "decorative",
+          "ariaLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 40
+      },
+      "variance": [
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 144,
+          "pending": 84,
+          "refused": 92
+        },
+        "digest": "b9e4e7c85b9b2756f21b73f425142c7bf67379079cd31e76e2aa569096ca30f4"
+      }
+    },
+    {
+      "component": "Spinner",
+      "admitted": true,
+      "emitted": true,
+      "operation": "loop-visual",
+      "diagnostic": null,
+      "contractSha256": "5c706790bd51a8f464f5cf579567e6b46353d5473025793fe0196aa8db42a272",
+      "sidecarSha256": {
+        "tokens": "0fe3cb69f049502248b5c1cbcb50a9c8dd8b6ec66605db596f39b290a19d9083",
+        "styles": "651c682f4566332d6563a843b298f969dbc811b468febcfafa2ad58a52996529"
+      },
+      "receipt": {
+        "operation": "loop-visual",
+        "excluded": [
+          "inline",
+          "showAfterMs"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 2
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 83,
+          "pending": 35,
+          "refused": 57
+        },
+        "digest": "5fcb660fc2141a794c983c7efc0eedaccdc188d822898474c1a1179a8bacd160"
+      }
+    },
+    {
+      "component": "Stat",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "28bd98f8d4590f32f90191db56945fdb0875ef5e6917df656e12fa9340bafdc2",
+      "sidecarSha256": {
+        "tokens": "5b72f1d79d69f4a893e5c8975d871d9e6be218e444182cf5c75e81c6d2f75fb9",
+        "styles": "151c1ddfdd8eed75f47dfbd187a6af42cd7bc6a27caceef7812332823409b0dd"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 5
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 76,
+          "pending": 6,
+          "refused": 43
+        },
+        "digest": "6f654a1460124a8369d7115500cd9115e940d0997160db6648b3bb9ec999a897"
+      }
+    },
+    {
+      "component": "Status",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "a1210de3aeb6ac2e711a7126501f736441dc51499273b156d8621adf7a71940d",
+      "sidecarSha256": {
+        "tokens": "89a2ce40ad190b27117ada6b9806dd4c91c5db2f34b840b5619320d0f585e8c4",
+        "styles": "7ca9b327dde23c210b7cf99a345c47f4f20077bc5f376ae7d9d755170a05188f"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 25
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 127,
+          "pending": 18,
+          "refused": 62
+        },
+        "digest": "14216faaa64da9d3283927f07688d76d9ba982c3a7c9dabd85a4097ef7d809db"
+      }
+    },
+    {
+      "component": "Switch",
+      "admitted": true,
+      "emitted": true,
+      "operation": "boolean",
+      "diagnostic": null,
+      "contractSha256": "e1f90775f9224e333d633cf880ab8fcbc31d40a33eff76c788ee5f0ab1c37973",
+      "sidecarSha256": {
+        "tokens": "69630f8530135f4cddac9ee8951e796c61f82398cb113f01702fa8cfcbb17394",
+        "styles": "a73e34f85b3d00d41fa2bf579d1ace45eedb94853f122031591b6393734a4c3f"
+      },
+      "receipt": {
+        "operation": "boolean",
+        "excluded": [
+          "defaultChecked",
+          "size",
+          "name",
+          "value"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 4
+      },
+      "variance": [
+        {
+          "prop": "defaultChecked",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "size",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        },
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 256,
+          "pending": 70,
+          "refused": 173
+        },
+        "digest": "c44d94f42a0b65d74f3f174cb7902df5f66e25e9a26335d78be21332c4dd1dd0"
+      }
+    },
+    {
+      "component": "Table",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "213c7dd4ae003dfefaff43c364fdcc63592578681f3f99a099afa353ed479833",
+      "sidecarSha256": {
+        "tokens": "a29ec4fe479bff29db03fd30627d2ef8369e778d17d433e644285f4adefc5d4c",
+        "styles": "343f0dafc3ff822e927e247d9b886b61c32491eb8d794ac6c47019564cc55e2a"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "responsive",
+          "ariaLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 30
+      },
+      "variance": [
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 153,
+          "pending": 40,
+          "refused": 86
+        },
+        "digest": "933a32512183bfdafe3ccc0e91d8917815e1b5498300e7ad778abf7e0957f7f9"
+      }
+    },
+    {
+      "component": "Tabs",
+      "admitted": true,
+      "emitted": true,
+      "operation": "select",
+      "diagnostic": null,
+      "contractSha256": "876e8110ff989fa5ec39b0d44c340cc1352521bb1407748ac285c5d73eb6ffc7",
+      "sidecarSha256": {
+        "tokens": "6b262f2f3d0297668a004e4f6b4b022797f1e8dba8dd6dc3482a38b2a5571a17",
+        "styles": "1dd3e3700770984b676a2f50cd1632d5b11340f07faee477144863bfdc9917b9"
+      },
+      "receipt": {
+        "operation": "select",
+        "excluded": [
+          "defaultValue",
+          "orientation",
+          "appearance",
+          "activationMode",
+          "loop",
+          "unmountInactive",
+          "idBase"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 7
+      },
+      "variance": [
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "orientation",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "appearance",
+          "rule": "prop-variant-axis"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 181,
+          "pending": 132,
+          "refused": 164
+        },
+        "digest": "c17708ced5e1636d6d16f3afdeb1465dbf088775f5f055492d8a6e364c50b1a3"
+      }
+    },
+    {
+      "component": "Text",
+      "admitted": true,
+      "emitted": true,
+      "operation": "static-text",
+      "diagnostic": null,
+      "contractSha256": "4d4908e1c7e96b0ddd5e89b30b21c800c19dc05a53ec18eac081d7af8ea396f5",
+      "sidecarSha256": {
+        "tokens": "eed4b1f099d3fc1aa6a88d2e0837ad0f4f9a7cdbde421f7a5d7ae865defff0f9",
+        "styles": "4bcec9487ea787a625c492c0bcb16190213739b08082fb13b211a6b38920e423"
+      },
+      "receipt": {
+        "operation": "static-text",
+        "excluded": [
+          "as"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 7
+      },
+      "variance": [],
+      "boundary": {
+        "counts": {
+          "lowered": 262,
+          "pending": 40,
+          "refused": 127
+        },
+        "digest": "5c9f4d29d64428c092095d697a6ebd2025882ae42a2906de61422c8c8b2d3d34"
+      }
+    },
+    {
+      "component": "TextField",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "eb905a6e3592bf26cc2225c7268d5edfab29a5598c90b6a79aa2335b845f75a4",
+      "sidecarSha256": {
+        "tokens": "b84e949867a14533b2ae5a95b4e676d3a87a7d5b9f9859741889794ac08b3cd0",
+        "styles": "a2631dad2ae7d942ec0a251045818205d180044e64ea8cfd984e046d63e244ce"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "type",
+          "value",
+          "defaultValue",
+          "onChange",
+          "invalid",
+          "disabled",
+          "required",
+          "name",
+          "ariaDescribedby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 66
+      },
+      "variance": [
+        {
+          "prop": "value",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultValue",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "name",
+          "rule": "prop-glyph-name"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 233,
+          "pending": 72,
+          "refused": 151
+        },
+        "digest": "3bd9d60989a701f25e5b3f16f5e238bc09a9052450faac2f1e7e1832767d8843"
+      }
+    },
+    {
+      "component": "Toast",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "511e3e5ff4b1d94b877197e445e7166ec3fbd0d089d34ecdcc7506e2f0475061",
+      "sidecarSha256": {
+        "tokens": "5ef9f3d1d7b745bcda5f0eba8230f6449b4fa696313d79c658d2580ef8ecb44f",
+        "styles": "be952401c87a0d247a16b99f417758f0c5a35fd4848fb3e2d7c3ed4be8951018"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "title",
+          "variant",
+          "politeness",
+          "duration"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 16
+      },
+      "variance": [
+        {
+          "prop": "title",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "variant",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "duration",
+          "rule": "prop-boolean-state"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 217,
+          "pending": 100,
+          "refused": 152
+        },
+        "digest": "fff2404b00629ed966856b5dee39ee57ec3631fd0cb77798da643a87f3a53277"
+      }
+    },
+    {
+      "component": "ToggleSwitch",
+      "admitted": true,
+      "emitted": true,
+      "operation": "boolean",
+      "diagnostic": null,
+      "contractSha256": "310bacc6e86d13528057574741f125aa3ba1b165eb3c6f2138662c4e55c9cc65",
+      "sidecarSha256": {
+        "tokens": "bcbca00b3722f4c6be6c1d4d4531df82e7d47ebb21c347321e728d9a6daac5d5",
+        "styles": "91d4c97892998242db8204a7741a8270bbe188c596a42dfa69531ca0a0cac7b0"
+      },
+      "receipt": {
+        "operation": "boolean",
+        "excluded": [
+          "defaultChecked",
+          "size",
+          "ariaLabel",
+          "ariaDescribedby"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 4
+      },
+      "variance": [
+        {
+          "prop": "defaultChecked",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "size",
+          "rule": "prop-variant-axis"
+        },
+        {
+          "prop": "ariaLabel",
+          "rule": "prop-aria-label"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 140,
+          "pending": 39,
+          "refused": 65
+        },
+        "digest": "bb353b1f9f5bc80f8cb2a89f28a20102f6b151dd9f181022261edbe5376420ae"
+      }
+    },
+    {
+      "component": "Tooltip",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "d361783ffa296d0a14c5651dfab0f27d042889ac709dcc1d2ef714225dc38525",
+      "sidecarSha256": {
+        "tokens": "33c94bacd8095fd0bb2971093f4708852279bbc0f8473d0689ef3ec396298bb7",
+        "styles": "08f766cabd53c8e7052231d89f29892dda531d7bc048f11133e5e07b0aaae6bb"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "defaultOpen",
+          "placement",
+          "disabled",
+          "closeOnEscape",
+          "closeOnBlur"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 22
+      },
+      "variance": [
+        {
+          "prop": "defaultOpen",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "disabled",
+          "rule": "prop-boolean-state"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 92,
+          "pending": 76,
+          "refused": 55
+        },
+        "digest": "891efe8c1d440ed6020dc989db1b1b20c2f807fc94c9705e452a0d59ed2a6f02"
+      }
+    },
+    {
+      "component": "Truncate",
+      "admitted": true,
+      "emitted": true,
+      "operation": "anatomy",
+      "diagnostic": null,
+      "contractSha256": "660eadc55ace32b2ffe2394430ef360f20b290300522dbde8ceb904d18811908",
+      "sidecarSha256": {
+        "tokens": "d7f37db5446dd9a1201c3dd4cb9f6476e165bb92944f6d0b33bb817d1b9ceb80",
+        "styles": "4ad562a6c34520e65e8fcea54a5e0abb3308a3ece4296d2f4b510c738b13f60e"
+      },
+      "receipt": {
+        "operation": "anatomy",
+        "excluded": [
+          "lines",
+          "expandable",
+          "expanded",
+          "defaultExpanded",
+          "onExpandedChange",
+          "expandText",
+          "collapseText"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 36
+      },
+      "variance": [
+        {
+          "prop": "expanded",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultExpanded",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onExpandedChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "expandText",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "collapseText",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 71,
+          "pending": 35,
+          "refused": 59
+        },
+        "digest": "9f86d2d44122cfeafe3fe206b2a963f0cf1724ee4b5fce4b85d970d452746817"
+      }
+    },
+    {
+      "component": "Walkthrough",
+      "admitted": true,
+      "emitted": true,
+      "operation": "surface",
+      "diagnostic": null,
+      "contractSha256": "792a419c6c907dbf8dd52531ee295dd47daa57d0cede10e3031c22afc3d7b6ab",
+      "sidecarSha256": {
+        "tokens": "76d501bb97bf1dd6d94dfd732d9361d2111c0299e502692c91c7efde44f5951c",
+        "styles": "56bd4d5da817b77c732e2bddf9a4cf88264fcb24a09881dbe94669772e708952"
+      },
+      "receipt": {
+        "operation": "surface",
+        "excluded": [
+          "steps",
+          "index",
+          "defaultIndex",
+          "onStepChange",
+          "onComplete",
+          "onSkip",
+          "label",
+          "storageKey",
+          "autoStart",
+          "closeOnOutsideClick",
+          "placement",
+          "onPrevious",
+          "onNext",
+          "previousDisabled",
+          "nextLabel",
+          "progressLabel"
+        ],
+        "proof": "requires-runtime-witness",
+        "nonClaimCount": 28
+      },
+      "variance": [
+        {
+          "prop": "index",
+          "rule": "prop-channel-value"
+        },
+        {
+          "prop": "defaultIndex",
+          "rule": "prop-channel-default"
+        },
+        {
+          "prop": "onStepChange",
+          "rule": "prop-channel-change"
+        },
+        {
+          "prop": "label",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "autoStart",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "previousDisabled",
+          "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "nextLabel",
+          "rule": "prop-content-string"
+        },
+        {
+          "prop": "progressLabel",
+          "rule": "prop-content-string"
+        }
+      ],
+      "boundary": {
+        "counts": {
+          "lowered": 251,
+          "pending": 137,
+          "refused": 212
+        },
+        "digest": "0aa6f513e3f208b9f8c10a8588e27eeb27518bd531fe8c2076747b4956652f1c"
+      }
+    }
+  ]
+}

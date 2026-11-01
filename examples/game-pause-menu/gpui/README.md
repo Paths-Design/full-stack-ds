@@ -12,7 +12,7 @@ The lane consumes ONLY the public API of the bounded GPUI package
 Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
 marked `// NOT FSDS: <reason>`.
 
-> Status: **`cargo build` clean (0 warnings), 69 tests pass (default) / 72 with
+> Status: **`cargo build` clean (0 warnings), 70 tests pass (default) / 73 with
 > `--features capture`; all I1–I15 interactions are real code paths; the eight
 > parity capture states are produced at exactly 1280 × 800; all 26 shared
 > colour probes and all measured parity region boxes pass on this lane's
@@ -40,7 +40,7 @@ failure. Any lane source reaching into package internals is a boundary failure.
 ```bash
 # From the lane directory (rust-toolchain.toml pins 1.94.1):
 cargo +1.94.1 build --locked          # clean build, 0 warnings
-cargo +1.94.1 test  --locked          # 69 tests (3 lib + 2 palette + 15 parity + 49 seam)
+cargo +1.94.1 test  --locked          # 70 tests (3 lib + 2 palette + 16 parity + 49 seam)
 cargo +1.94.1 build --features capture
 cargo run                             # opens the 1280x800 pause menu on MAP
 cargo run -- --tab settings           # open a specific tab
@@ -268,7 +268,7 @@ not an interaction recording.
 
 ## Tests
 
-- `cargo +1.94.1 test --locked` → **69 tests**: 3 lib (`Switch` resolved-style + token resolver)
+- `cargo +1.94.1 test --locked` → **70 tests**: 3 lib (`Switch` resolved-style + token resolver)
   token cascade), 2 colour helpers, 15 parity-layout contract tests (incl. the
   icon-art code language), 49 seam tests (fixture parsing/validation and every
   I1–I15 domain rule).

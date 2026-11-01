@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Truncate/Truncate.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Truncate/theme.tres" id="2"]
+
+[node name="Truncate" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="content" type="VBoxContainer" parent="."]
+[node name="toggle" type="Button" parent="."]

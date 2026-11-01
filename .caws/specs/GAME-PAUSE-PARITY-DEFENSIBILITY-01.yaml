@@ -1,0 +1,82 @@
+id: GAME-PAUSE-PARITY-DEFENSIBILITY-01
+title: 'Pause-menu parity defensibility: goldens, oracle, consumption gates and bounded claims'
+mode: feature
+lifecycle_state: active
+created_at: '2026-11-01T06:52:37.699Z'
+updated_at: '2026-11-01T07:34:29.575Z'
+created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
+blast_radius:
+  modules:
+    - 'pause-menu evidence, parity oracle and token-consumption gates'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/game-pause-menu'
+    - 'scripts'
+    - 'package.json'
+    - 'packages/ds-unity'
+    - 'examples/README.md'
+    - 'docs/architecture/unity-target.md'
+  out: []
+  support:
+    - docs/specifications/governed-ci.md
+invariants:
+  - 'Existing 195-probe/117-bbox parity and lane test baselines remain green'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the game-pause-menu lanes; when parity is claimed; then committed golden captures, a source-design oracle and a documented human review bound the claim'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given main after the token-adoption merge; when gates run; then root tests, lane tests, captures and parity are re-run on an idle machine and receipted'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given token-backed lane rendering; when audit runs; then resolved-style consumption is asserted and a bypass gate fails a lane that does not read token values'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the Unity inline-style inventory; when parity is described; then the ledgered-migration claim is explicit and the 318-assignment reduction is not overstated'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the parity matrix; when coverage is described; then tested states, DPI/backend/OS boundaries, input realism and a11y/usability non-claims are recorded'
+  - id: A6
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the docs and checker output; when parity language is read; then no unbounded full-parity claim remains'
+non_functional: {}
+contracts:
+  - name: 'pause-menu-parity-spec'
+    type: behavior
+    path: 'examples/game-pause-menu/parity.md'
+evidence:
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node scripts/game-pause-token-consumption.mjs: 11 lane contract checks pass; GPUI tests/parity.rs loaded_palette_consumes_every_authority_colour_token; Godot 209/209 includes all-role provenance checks; Unity EditMode 37/37 includes TokenConsumptionTests.PanelSurfaceResolvesThroughTheOrionBrandTokenChannel (dark/light brand-scope resolved style)"
+    recorded_at: "2026-11-01T07:57:49.943Z"
+    command: node scripts/game-pause-token-consumption.mjs
+    exit_code: 0
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/game-pause-menu/unity/README.md + token-channel-ledger.md now state 'ledgered migration started, not a completed token-channel migration': 318 -> 315 direct inline assignments, Card token channel only, badge/button/design-slot consumers unsupported"
+    recorded_at: "2026-11-01T07:57:54.243Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "examples/game-pause-menu/evidence/parity-matrix.md records claimed states/lanes/host viewport and non-coverage: full state matrix, DPI/backends/OS, physical input, accessibility, usability, source-design composition; checker now covers all eight states"
+    recorded_at: "2026-11-01T07:57:57.931Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "grep -rni 'full parity' examples/game-pause-menu docs/architecture/unity-target.md returns only negated/non-claim contexts; parity-check.mjs emits a bounded claim; parity.md/README/matrix state the bounded claim"
+    recorded_at: "2026-11-01T07:58:01.148Z"
+  - criterion_id: A1
+    status: unchecked
+    evidence_ref: "Goldens + oracle committed and agent visual review recorded; human sign-off pending in examples/game-pause-menu/evidence/visual-review.md. Oracle audit records 90 composition-band violations (not met)."
+    recorded_at: "2026-11-01T07:58:08.826Z"
+  - criterion_id: A2
+    status: unchecked
+    evidence_ref: "Merged main 5ae968ac6: GPUI 70/70, Godot 209/209, Unity 37/37, 24 captures + checker 0 failures + 24/24 goldens exact; root vitest 5427/5433 with 6 load-induced timeouts and 2 worker RPC errors; isolated re-run of all five affected files 164/164 tests pass. Full idle-machine rerun pending (machine load ~280 from another project)."
+    recorded_at: "2026-11-01T07:58:11.629Z"

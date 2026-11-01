@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Toast/Toast.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Toast/theme.tres" id="2"]
+
+[node name="Toast" type="PanelContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")

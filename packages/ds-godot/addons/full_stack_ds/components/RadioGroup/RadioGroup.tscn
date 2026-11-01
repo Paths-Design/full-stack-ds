@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/RadioGroup/RadioGroup.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/RadioGroup/theme.tres" id="2"]
+
+[node name="RadioGroup" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="item" type="VBoxContainer" parent="."]
+[node name="option" type="CheckBox" parent="item"]
+[node name="label" type="Label" parent="item"]

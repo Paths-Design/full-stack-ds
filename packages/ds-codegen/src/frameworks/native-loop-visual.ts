@@ -36,6 +36,12 @@ const visible = (rule: NativeStyleRuleIR) => rule.declarations.filter(decl =>
  * normalized facts, so renaming the component leaves the plan unchanged. */
 export function nativeLoopVisualPlan(ir: ComponentIR): NativeLoopVisualPlan | undefined {
   if (!ir.motion.loops.length) return undefined;
+  // A separate motion family may carry a loop but no painted border. Leave it
+  // to that target's other shape planner, which receipts any unlowered motion.
+  const candidateTarget = ir.motion.loops[0]?.target.name;
+  const ringCandidate = ir.nativeStyleRules?.rules.some(rule => rule.part === candidateTarget &&
+    rule.declarations.some(decl => decl.property === "border-top-color" || decl.property === "border-color" || decl.property === "border-style"));
+  if (!ringCandidate) return undefined;
   function fail(reason: string): never { throw new Error(`NATIVE_UNSUPPORTED_LOOP_VISUAL: ${ir.name}: ${reason}`); }
   if (ir.motion.loops.length !== 1 || ir.motion.sequence || ir.interaction || ir.formControl || ir.surface || ir.compoundParts.length || ir.behavior.normalizedChannels.length)
     fail("loop host must be a passive single-loop visual");

@@ -38,5 +38,9 @@
     "inline",
     "showAfterMs"
   ],
+  "omissions": [
+    "inline: declined by the loop-visual shape; no native realization on this target",
+    "showAfterMs: declined by the loop-visual shape; no native realization on this target"
+  ],
   "proof": "requires-runtime-witness"
 }

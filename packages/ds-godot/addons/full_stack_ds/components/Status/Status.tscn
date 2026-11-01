@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Status/Status.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Status/theme.tres" id="2"]
+
+[node name="Status" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="icon" type="PanelContainer" parent="."]
+[node name="label" type="VBoxContainer" parent="."]

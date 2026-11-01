@@ -7,8 +7,8 @@ import { nativeLoopVisualPlan } from "./native-loop-visual.js";
 import { createGodotEmitter } from "./godot/factory.js";
 
 const root = path.resolve(__dirname, "../../../..");
-function fixture() {
-  const base = path.join(root, "packages/ds-contracts/components/Spinner/Spinner");
+function fixture(name = "Spinner") {
+  const base = path.join(root, `packages/ds-contracts/components/${name}/${name}`);
   const contract = JSON.parse(fs.readFileSync(`${base}.contract.json`, "utf8")) as ComponentContract & { styles?: unknown; tokens?: unknown };
   contract.styles = JSON.parse(fs.readFileSync(`${base}.styles.json`, "utf8"));
   contract.tokens = JSON.parse(fs.readFileSync(`${base}.tokens.json`, "utf8"));
@@ -62,5 +62,9 @@ describe("native loop visual plan", () => {
     expect(capabilities).toMatchObject({ operation: "loop-visual", targetPart: "visual", durationMs: 800,
       sizePixels: { xs: 12, lg: 24 }, thicknessPixels: { hairline: 2, bold: 4 },
       trackColor: "#d0d0d0", accentColor: "#d92d2e", excludedProps: ["inline", "showAfterMs"] });
+  });
+
+  it("leaves a different loop family to its admitted shape planner", () => {
+    expect(nativeLoopVisualPlan(fixture("Skeleton"))).toBeUndefined();
   });
 });
