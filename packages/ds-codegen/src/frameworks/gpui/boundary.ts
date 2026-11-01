@@ -9,6 +9,9 @@
  *             vocabulary (`via` names the mechanism);
  *   pending — semantically meaningful, but the shared GPUI substrate does not
  *             realise it yet (`reason` says what is missing);
+ *   substrate — the capability has no channel in the pinned GPUI revision at
+ *             all (`reason` names the missing capability and its evidence, so
+ *             the gap is a stated non-claim rather than pending work);
  *   refused — the fact has no native meaning for an engine target, or is
  *             authoring/CSS-only metadata (`reason` says why).
  *
@@ -46,7 +49,7 @@ import type { ComponentContract } from "../../contract.js";
 import { findComponentStyles, findComponentTokens, listComponentContracts } from "../../contracts-fs.js";
 import boundaryJson from "./support-boundary.json" with { type: "json" };
 
-export type GpuiDisposition = "lowered" | "pending" | "refused";
+export type GpuiDisposition = "lowered" | "pending" | "substrate" | "refused";
 export type GpuiLeafSource = "contract" | "tokens" | "styles";
 
 export interface GpuiBoundaryRule {
@@ -252,10 +255,10 @@ export function validateBoundary(doc: unknown): GpuiBoundary {
     }
     if (rule.disposition === "lowered") {
       if (typeof rule.via !== "string" || !rule.via.trim()) throw new Error(`GPUI_BOUNDARY_INVALID: ${where}: lowered rules name their mechanism in via`);
-    } else if (rule.disposition === "pending" || rule.disposition === "refused") {
+    } else if (rule.disposition === "pending" || rule.disposition === "substrate" || rule.disposition === "refused") {
       if (typeof rule.reason !== "string" || !rule.reason.trim()) throw new Error(`GPUI_BOUNDARY_INVALID: ${where}: ${rule.disposition} rules carry a reason`);
     } else {
-      throw new Error(`GPUI_BOUNDARY_INVALID: ${where}: disposition must be lowered, pending or refused`);
+      throw new Error(`GPUI_BOUNDARY_INVALID: ${where}: disposition must be lowered, pending, substrate or refused`);
     }
   }
   if (catchAlls.length > 1) throw new Error(`GPUI_BOUNDARY_INVALID: at most one catch-all rule is allowed, found ${catchAlls.length}`);

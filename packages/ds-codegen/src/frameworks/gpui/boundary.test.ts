@@ -54,3 +54,21 @@ describe("GPUI support boundary", () => {
     expect(boundary.rules.filter(rule => rule.catchAll)).toHaveLength(1);
   });
 });
+
+describe('accessibility substrate non-claim', () => {
+  it('records every accessibility family as substrate with the missing capability named', () => {
+    const accessibility = validateBoundary(boundaryJson).rules.filter(rule => /(^|-)(aria|role)(-|$)|^a11y$/.test(rule.id));
+    expect(accessibility.length).toBeGreaterThan(0);
+    for (const rule of accessibility) {
+      expect(rule.disposition).toBe('substrate');
+      expect(rule.reason).toContain('a38fc8c8de6e4010fadcfde7dd111d90dfd66845');
+      expect(rule.reason).toContain('accessibility');
+    }
+  });
+
+  it('keeps unadjudicated families refused rather than substrate', () => {
+    const catchAll = validateBoundary(boundaryJson).rules[validateBoundary(boundaryJson).rules.length - 1];
+    expect(catchAll.catchAll).toBe(true);
+    expect(catchAll.disposition).toBe('refused');
+  });
+});
