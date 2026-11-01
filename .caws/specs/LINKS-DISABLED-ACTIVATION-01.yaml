@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: links-disabled-activation
 created_at: '2026-11-01T16:17:38.248Z'
-updated_at: '2026-11-01T16:48:26.002Z'
+updated_at: '2026-11-01T16:50:37.726Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -89,6 +89,8 @@ scope:
     - packages/ds-angular/src/components/index.ts
     - packages/ds-lit/src/components/index.ts
     - packages/ds-react-native/src/components/index.ts
+    - packages/ds-codegen/src/frameworks/godot/boundary.ts
+    - packages/ds-codegen/src/frameworks/gpui/boundary.ts
   out: []
 invariants:
   - 'Enabled web links preserve native navigation, target/rel and modified activation; no component-name special cases or audit allowances'
