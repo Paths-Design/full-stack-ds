@@ -46,7 +46,7 @@ Aggregates over the 55-component corpus (214 declared parts, 379 declared props,
 | React | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
 | Vue | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
 | Svelte | 213/214 | 379/379 | 30/30 | 40/44 | 20/20 |
-| GPUI | 180/214 | 249/379 | 7/30 | 0/44 | 18/20 |
+| GPUI | 180/214 | 249/379 | 7/30 | 0/44 | 20/20 |
 
 All five dimensions are measured from the committed generated source; the audit
 does not read the regenerated, gitignored `capabilities.json` receipts, so a
@@ -80,11 +80,10 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
   text input (Input/TextField/Field) and truncation (Truncate).
 - **A11y**: 0 of 44. This is the documented GPUI non-claim, not an accident of
   this measurement.
-- **References**: 18 of 20 declared `componentRef` nodes are realized as retained
-  children. The two gaps are PageNavigator's `previousIcon`/`nextIcon`, which are
-  *nested inside* the previous/next Button references and would need the child
-  component's content API; the projection names them as `ref-children` omissions
-  rather than dropping them silently.
+- **References**: all 20 declared `componentRef` nodes are realized. Nested
+  references (PageNavigator's previous/next icons inside the retained buttons)
+  are projected through the child component's content API; a non-reference child
+  nested inside a reference would still be named as a `ref-children` omission.
 - **Styles**: the GPUI receipts name 481 omitted style declarations across the
   corpus, each adjudicated by the support-boundary ledger.
 
