@@ -1,9 +1,11 @@
 id: GPUI-CONSISTENCY-REF-RATCHET-01
 title: 'Ratchet reference projection: declared componentRef nodes vs realized retained children'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Reference projection is now measured and ratcheted (web 20/20, GPUI 18/20 with both gaps receipted); audit reads only committed source.'
 created_at: '2026-11-01T10:52:57.919Z'
-updated_at: '2026-11-01T10:55:57.790Z'
+updated_at: '2026-11-01T10:56:14.131Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
