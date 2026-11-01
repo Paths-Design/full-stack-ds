@@ -53,3 +53,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/src/components/Accordion/Accordion.rs
     commit_sha: "172d1e806"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_accordion_collection_open_toggles_trigger_and_gated_panel passes: collapsed by default with no content bounds, click opens (is_open true, panel laid out), second click collapses, Space opens and Enter collapses with the trigger focused, and a controlled value(Some(item)) renders the panel without a click; the pilot requires it and reports GPUI_NATIVE_PASS"
+    recorded_at: "2026-11-01T12:17:59.187Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: "172d1e806"
