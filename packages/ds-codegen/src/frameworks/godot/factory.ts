@@ -280,11 +280,21 @@ export function createGodotEmitter(): FrameworkEmitter {
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
       const compositeNodes = compositePlan ? `\n[node name="Chrome" type="PanelContainer" parent="."]\nlayout_mode=2\n\n[node name="Body" type="${compositePlan.layout === "inline" ? "HBoxContainer" : "VBoxContainer"}" parent="Chrome"]\nlayout_mode=2\n${compositePlan.parts.map(part => `\n[node name="Part_${part}" type="PanelContainer" parent="Chrome/Body"]\nlayout_mode=2\n\n[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_${part}"]\nlayout_mode=2\n`).join("")}` : "";
+      // Receipt totality: every prop the shape declines is named in the receipt,
+      // not only listed in `excludedProps`. The bounded shapes predate the
+      // boundary, so their omissions are derived here; the newer shapes already
+      // carry a curated list and this only appends what they missed.
+      const excludedNames = Array.isArray((plan as { excluded?: string[] }).excluded) ? (plan as { excluded?: string[] }).excluded! : [];
+      const namedOmissions = Array.isArray((plan as { omissions?: string[] }).omissions) ? [...(plan as { omissions?: string[] }).omissions!] : [];
+      for (const prop of excludedNames) {
+        if (namedOmissions.some(line => line === prop || line.startsWith(`${prop}:`) || line.startsWith(`${prop} `))) continue;
+        namedOmissions.push(`${prop}: declined by the ${plan.operation} shape; no native realization on this target`);
+      }
       return [
         { relativePath: `${ir.name}/${ir.name}.gd`, contents: script },
         { relativePath: `${ir.name}/${ir.name}.tscn`, contents: `[gd_scene load_steps=${isGlyph ? 2 : 3} format=3]\n\n[ext_resource type="Script" path="res://addons/full_stack_ds/components/${ir.name}/${ir.name}.gd" id="1"]\n${isGlyph ? "" : `[ext_resource type="Theme" path="res://addons/full_stack_ds/components/${ir.name}/theme.tres" id="2"]\n`}\n[node name="${ir.name}" type="VBoxContainer"]\nscript = ExtResource("1")\n${isGlyph ? "" : `theme = ExtResource("2")\n`}${compositeNodes}` },
         { relativePath: `${ir.name}/theme.tres`, contents: `[gd_resource type="Theme" format=3]\n\n[resource]\ndefault_font_size = 16\nButton/colors/font_color = Color(${rgb}, 1)\nLabel/colors/font_color = Color(${rgb}, 1)\n` },
-        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isGlyph ? "inherited Label font_color at render time" : isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : isComposite ? "source-bearing native composite style subset" : "unconditional foreground fallback only", otherStyling: isGlyph ? "contract size tokens and authored iconography SVG; screen-reader exposure requires separate proof" : isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : isComposite ? "omissions list unsupported selectors and declarations; part text inheritance and motion are unproven" : "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
+        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isGlyph ? "inherited Label font_color at render time" : isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : isComposite ? "source-bearing native composite style subset" : "unconditional foreground fallback only", otherStyling: isGlyph ? "contract size tokens and authored iconography SVG; screen-reader exposure requires separate proof" : isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : isComposite ? "omissions list unsupported selectors and declarations; part text inheritance and motion are unproven" : "unsupported", excludedProps: plan.excluded, ...(namedOmissions.length ? { omissions: namedOmissions } : {}), proof: "requires-runtime-witness" },null,2)+"\n" },
       ];
     },
     emitTests: () => [],

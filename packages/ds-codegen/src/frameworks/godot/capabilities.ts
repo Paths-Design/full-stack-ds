@@ -53,6 +53,15 @@ export interface GodotReceipt {
   proof: string | null;
 }
 
+/** The receipt as the committed inventory stores it: the prop-axis facts, not the prose. */
+export interface GodotStoredReceipt {
+  operation: string | null;
+  excluded: string[];
+  proof: string | null;
+  /** Number of named non-claims; the text is audit-time input, not inventory state. */
+  nonClaimCount: number;
+}
+
 /** Compact per-component boundary account: counts plus a classification digest. */
 export interface GodotBoundaryAccount {
   counts: Record<GodotDisposition, number>;
@@ -68,7 +77,7 @@ export interface GodotCapabilityRecord {
   diagnostic: string | null;
   contractSha256: string;
   sidecarSha256: Record<string, string>;
-  receipt: GodotReceipt | null;
+  receipt: GodotStoredReceipt | null;
   /** Planner/shape variance: boundary `lowered`, receipt excludes it. */
   variance: { prop: string; rule: string }[];
   boundary: GodotBoundaryAccount;
@@ -121,14 +130,14 @@ function findReceipt(files: { relativePath: string; contents: string }[]): strin
  * refuses is reported as `emitted: false` with the typed diagnostic; the audit
  * turns that into a violation instead of crashing.
  */
-export function accountComponent(
+function accountDetailed(
   root: string,
   name: string,
-  boundary: GodotBoundary = loadBoundary(),
-  emitter: GodotEmitter = createGodotEmitter(),
-  corpus: Map<string, ComponentContract> = corpusContracts(root),
-  allowlist: Set<string> = new Set(godotAllowlist(root)),
-): GodotCapabilityRecord {
+  boundary: GodotBoundary,
+  emitter: GodotEmitter,
+  corpus: Map<string, ComponentContract>,
+  allowlist: Set<string>,
+): { record: GodotCapabilityRecord; receipt: GodotReceipt | null } {
   const contract = loadContractWithSidecars(root, name);
   const ir = buildComponentIR(contract, { allContracts: corpus });
   let diagnostic: string | null = null;
@@ -168,7 +177,7 @@ export function accountComponent(
       proof: typeof parsed.proof === "string" ? parsed.proof : null,
     };
   }
-  return {
+  const record: GodotCapabilityRecord = {
     component: name,
     admitted: allowlist.has(name),
     emitted: diagnostic === null && receipt !== null,
@@ -176,13 +185,63 @@ export function accountComponent(
     diagnostic: diagnostic ?? (receipt === null ? "no capability receipt emitted" : null),
     contractSha256: sha256(fs.readFileSync(entry.absPath)),
     sidecarSha256: sidecarHashes,
-    receipt,
+    receipt: receipt && {
+      operation: receipt.operation,
+      excluded: receipt.excluded,
+      proof: receipt.proof,
+      nonClaimCount: receipt.nonClaims.length,
+    },
     variance: receipt ? receiptAccount(name, receipt, boundary).variance.map(({ prop, rule }) => ({ prop, rule })) : [],
     boundary: {
       counts,
       digest: stable(classified.map(leaf => [leaf.keyed, leaf.disposition, leaf.rule ?? "", leaf.source])),
     },
   };
+  return { record, receipt };
+}
+
+/** Emit one contract in memory and return its compact inventory record. */
+export function accountComponent(
+  root: string,
+  name: string,
+  boundary: GodotBoundary = loadBoundary(),
+  emitter: GodotEmitter = createGodotEmitter(),
+  corpus: Map<string, ComponentContract> = corpusContracts(root),
+  allowlist: Set<string> = new Set(godotAllowlist(root)),
+): GodotCapabilityRecord {
+  return accountDetailed(root, name, boundary, emitter, corpus, allowlist).record;
+}
+
+/** One accounting pass: the inventory document plus the full receipts the audit needs. */
+function accountAll(root: string, boundary: GodotBoundary, emitter: GodotEmitter) {
+  const allowlist = godotAllowlist(root);
+  const entries = listComponentContracts(path.join(root, "packages/ds-contracts"));
+  if (!entries.length) throw new Error("GODOT_INVENTORY_EMPTY_CORPUS");
+  for (const name of allowlist) if (!entries.some(entry => entry.name === name)) throw new Error(`GODOT_INVENTORY_UNKNOWN_COMPONENT: ${name}`);
+  const audit = corpusAudit(root, boundary);
+  const corpus = corpusContracts(root);
+  const admitted = new Set(allowlist);
+  const receipts = new Map<string, GodotReceipt | null>();
+  const components = [...allowlist].sort().map(name => {
+    const detailed = accountDetailed(root, name, boundary, emitter, corpus, admitted);
+    receipts.set(name, detailed.receipt);
+    return detailed.record;
+  });
+  const document: GodotCapabilityInventory = {
+    schema: "godot-capability-inventory.v1",
+    limitations:
+      "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
+    boundary: {
+      schema: boundary.schema,
+      rules: boundary.rules.length,
+      corpusComponents: audit.entries.length,
+      counts: audit.counts,
+      deadRules: audit.deadRules,
+    },
+    variances: components.reduce((total, record) => total + record.variance.length, 0),
+    components,
+  };
+  return { document, receipts };
 }
 
 /** A named non-claim line mentions a prop as a word (e.g. `size: ...`). */
@@ -247,28 +306,7 @@ const corpusAudit = (root: string, boundary: GodotBoundary) => {
 };
 
 export function inventory(root: string, boundary: GodotBoundary = loadBoundary(), emitter: GodotEmitter = createGodotEmitter()): GodotCapabilityInventory {
-  const allowlist = godotAllowlist(root);
-  const entries = listComponentContracts(path.join(root, "packages/ds-contracts"));
-  if (!entries.length) throw new Error("GODOT_INVENTORY_EMPTY_CORPUS");
-  for (const name of allowlist) if (!entries.some(entry => entry.name === name)) throw new Error(`GODOT_INVENTORY_UNKNOWN_COMPONENT: ${name}`);
-  const audit = corpusAudit(root, boundary);
-  const corpus = corpusContracts(root);
-  const admitted = new Set(allowlist);
-  const components = [...allowlist].sort().map(name => accountComponent(root, name, boundary, emitter, corpus, admitted));
-  return {
-    schema: "godot-capability-inventory.v1",
-    limitations:
-      "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
-    boundary: {
-      schema: boundary.schema,
-      rules: boundary.rules.length,
-      corpusComponents: audit.entries.length,
-      counts: audit.counts,
-      deadRules: audit.deadRules,
-    },
-    variances: components.reduce((total, record) => total + record.variance.length, 0),
-    components,
-  };
+  return accountAll(root, boundary, emitter).document;
 }
 
 // --------------------------------------------------------------- audit ------
@@ -361,15 +399,17 @@ export function auditGodotTarget(root: string, options: { boundary?: GodotBounda
   for (const id of audit.deadRules) result.violations.push(`dead rule ${id} matches no live leaf`);
   // One accounting pass feeds both the receipt obligations and the inventory
   // comparison; a component must not be emitted twice per audit.
-  const fresh = inventory(root, boundary, emitter);
+  const accounting = accountAll(root, boundary, emitter);
+  const fresh = accounting.document;
   for (const record of fresh.components) {
-    if (!record.emitted || !record.receipt) {
+    const receipt = accounting.receipts.get(record.component) ?? null;
+    if (!record.emitted || !receipt) {
       const message = record.diagnostic ?? "no capability receipt emitted";
       result.unemitted.push({ component: record.component, message });
       result.violations.push(`unemitted ${record.component}: ${message}`);
       continue;
     }
-    const account = receiptAccount(record.component, record.receipt, boundary);
+    const account = receiptAccount(record.component, receipt, boundary);
     result.receiptViolations.push(...account.violations);
     result.violations.push(...account.violations);
     result.variance.push(...account.variance);

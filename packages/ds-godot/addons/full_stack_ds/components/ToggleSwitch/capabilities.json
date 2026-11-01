@@ -8,7 +8,9 @@
   ],
   "omissions": [
     "ariaLabel: lowered (boundary prop-aria-label)",
-    "ariaDescribedby: ARIA state/relationship exposure is not realised by the shared runtime yet (boundary prop-aria)"
+    "ariaDescribedby: ARIA state/relationship exposure is not realised by the shared runtime yet (boundary prop-aria)",
+    "defaultChecked: declined by the boolean shape; no native realization on this target",
+    "size: declined by the boolean shape; no native realization on this target"
   ],
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",

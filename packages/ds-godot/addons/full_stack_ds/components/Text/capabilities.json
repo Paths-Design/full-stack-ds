@@ -442,5 +442,8 @@
   "excludedProps": [
     "as"
   ],
+  "omissions": [
+    "as: declined by the static-text shape; no native realization on this target"
+  ],
   "proof": "requires-runtime-witness"
 }

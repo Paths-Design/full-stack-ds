@@ -14,5 +14,11 @@
     "name",
     "value"
   ],
+  "omissions": [
+    "defaultChecked: declined by the boolean shape; no native realization on this target",
+    "size: declined by the boolean shape; no native realization on this target",
+    "name: declined by the boolean shape; no native realization on this target",
+    "value: declined by the boolean shape; no native realization on this target"
+  ],
   "proof": "requires-runtime-witness"
 }

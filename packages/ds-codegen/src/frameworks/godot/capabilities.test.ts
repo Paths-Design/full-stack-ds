@@ -84,7 +84,7 @@ describe("Godot capability inventory", () => {
       expect(record.receipt).not.toBeNull();
       expect(typeof record.receipt!.operation).toBe("string");
       expect(Array.isArray(record.receipt!.excluded)).toBe(true);
-      expect(Array.isArray(record.receipt!.nonClaims)).toBe(true);
+      expect(typeof record.receipt!.nonClaimCount).toBe("number");
     }
   }, CORPUS_TIMEOUT_MS);
 

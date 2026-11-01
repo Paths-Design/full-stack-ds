@@ -16,5 +16,12 @@
     "closeOnOutsideClick",
     "closeOnBlur"
   ],
+  "omissions": [
+    "defaultOpen: declined by the surface shape; no native realization on this target",
+    "placement: declined by the surface shape; no native realization on this target",
+    "closeOnEscape: declined by the surface shape; no native realization on this target",
+    "closeOnOutsideClick: declined by the surface shape; no native realization on this target",
+    "closeOnBlur: declined by the surface shape; no native realization on this target"
+  ],
   "proof": "requires-runtime-witness"
 }

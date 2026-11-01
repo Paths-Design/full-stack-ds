@@ -20,5 +20,9 @@
     "type",
     "defaultValue"
   ],
+  "omissions": [
+    "type: declined by the toggle-item shape; no native realization on this target",
+    "defaultValue: declined by the toggle-item shape; no native realization on this target"
+  ],
   "proof": "requires-runtime-witness"
 }
