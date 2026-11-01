@@ -70,6 +70,9 @@ describe("Unity token source CSS", () => {
     `@layer theme { ${light} { --fsds-x: 1px; } ${dark} { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { :root { --fsds-x: 2px; } } }`,
     `@layer brand { [data-brand="probe"] { --fsds-x: 1px; } ${branded("dark")} { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { [data-brand="probe"] { --fsds-x: 2px; } } }`,
     `@layer brand { :where(:root) { --fsds-x: 1px; } :where(${dark}) { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { :where(:root) { --fsds-x: 2px; } } }`,
+    `@layer theme { ${light} { --fsds-x: 1px; } ${dark} { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { ${light} { --fsds-x: 1px; } :root { --fsds-x: 2px; } } }`,
+    `@layer theme { ${light} { --fsds-x: 1px; } ${dark} { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { :root { --fsds-x: 2px; } ${light} { --fsds-x: 1px; } :root { --fsds-x: 2px; } } }`,
+    `@layer brand { :where(:root) { --fsds-x: 1px; } :where(${dark}) { --fsds-x: 2px; } @media (prefers-color-scheme: dark) { :where(${light}) { --fsds-x: 1px; } :where(:root) { --fsds-x: 2px; } } }`,
     '@layer brand { :where(:root) { --fsds-x: 1px; } } @layer core { :root { --fsds-x: 2px; } }',
   ])("refuses source grammar or precedence it cannot preserve: %s", css => {
     expect(() => parseTokenCss(css)).toThrow(/UNITY_USS_TOKEN_CSS_UNSUPPORTED/);
@@ -94,7 +97,7 @@ describe("Unity token scalar resolution", () => {
     expect(resolveTokenScalar("var(--absent)", lookup, scalar)).toEqual({ kind: "missing" });
   });
 
-  it.each(["var(--fsds-shadow, 2px)", "var(--fsds-structured, 2px)", "var(--fsds-cycle-a, 2px)", "var(--fsds-literal))", "var(--fsds-literal", "var()", "var(--absent, var(", "var(--fsds-literal) 2px"])("refuses unsupported or malformed values without false fallback: %s", value => {
+  it.each(["var(--fsds-shadow, 2px)", "var(--fsds-structured, 2px)", "var(--fsds-cycle-a, 2px)", "var(--fsds-literal))", "var(--fsds-literal", "var()", "var(--absent, var(", "var(--fsds-literal) 2px", "var(--fsds-literal) var(--fsds-literal)", "var(--fsds-literal)(anything)"])("refuses unsupported or malformed values without false fallback: %s", value => {
     expect(resolveTokenScalar(value, lookup, scalar)).toEqual({ kind: "unsupported" });
   });
 });

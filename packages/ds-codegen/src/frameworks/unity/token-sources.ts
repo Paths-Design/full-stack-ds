@@ -108,6 +108,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
   const checks: { actual: Map<string, string>; expected: () => Map<string, string>; selector: string; subset?: boolean }[] = [];
   const mediaModes = new Map<string, ThemeDeclarations>();
   const lightGuards = new Set<string>();
+  const darkPositions = new Map<string, number>(), lightPositions = new Map<string, number>();
+  let position = 0;
   const seenLayers: string[] = [];
   for (const layer of rules(withoutComments(css))) {
     if (layer.body === undefined) {
@@ -120,6 +122,7 @@ export function parseTokenCss(css: string): TokenCssScopes {
     if (name === "density") continue; // This API selects no data-density scope.
     const visit = (body: string, media = false): void => {
       for (const rule of rules(body)) {
+        const currentPosition = position++;
         if (rule.body === undefined) fail(rule.selector);
         if (rule.selector.startsWith("@")) {
           if (media || rule.selector !== "@media (prefers-color-scheme: dark)" || !["theme", "brand"].includes(name)) fail(rule.selector);
@@ -135,8 +138,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
           const mode: TokenTheme | undefined = rule.selector === themeSelector("light") ? "light"
             : rule.selector === themeSelector("dark") || (media && rule.selector === ":root") ? "dark" : undefined;
           if (!mode) fail(rule.selector);
-          if (media && rule.selector === ":root" && values.size) mediaModes.set("theme", theme);
-          if (media && mode === "light") lightGuards.add("theme");
+          if (media && rule.selector === ":root" && values.size) { mediaModes.set("theme", theme); darkPositions.set("theme", currentPosition); }
+          if (media && mode === "light") { lightGuards.add("theme"); lightPositions.set("theme", currentPosition); }
           if (media) checks.push({ actual: values, expected: () => theme[mode], selector: rule.selector });
           else for (const [key, value] of values) theme[mode].set(key, value);
           continue;
@@ -166,8 +169,8 @@ export function parseTokenCss(css: string): TokenCssScopes {
           : descendant && rootSelector === ':where(:root:not([data-brand]):is(.light,[data-theme="light"]))' ? "light"
           : descendant && rootSelector === ':where(:root:not([data-brand]):is(.dark,[data-theme="dark"]))' ? "dark" : undefined;
         if (!defaultMode) fail(rule.selector);
-        if (!descendant && media && rule.selector === ":where(:root)" && values.size) mediaModes.set("default", defaults);
-        if (!descendant && media && defaultMode === "light") lightGuards.add("default");
+        if (!descendant && media && rule.selector === ":where(:root)" && values.size) { mediaModes.set("default", defaults); darkPositions.set("default", currentPosition); }
+        if (!descendant && media && defaultMode === "light") { lightGuards.add("default"); lightPositions.set("default", currentPosition); }
         if (media || descendant) checks.push({ actual: values, expected: () => defaults[defaultMode], selector: rule.selector, subset: descendant });
         else for (const [key, value] of values) defaults[defaultMode].set(key, value);
       }
@@ -182,6 +185,7 @@ export function parseTokenCss(css: string): TokenCssScopes {
   }
   for (const [mode, definitions] of mediaModes) {
     if (!lightGuards.has(mode) || [...definitions.dark.keys()].some(name => !definitions.light.has(name))) fail(`missing explicit-light guard for ${mode}`);
+    if (darkPositions.has(mode) && (lightPositions.get(mode) ?? -1) <= darkPositions.get(mode)!) fail(`explicit-light guard precedes dark override for ${mode}`);
   }
   const common = [...core, ...semantic];
   return { base: { light: new Map([...common, ...theme.light]), dark: new Map([...common, ...theme.dark]) }, defaults, brands: [...brands.values()].sort((a, b) => a.id.localeCompare(b.id)) };
@@ -197,7 +201,7 @@ export function resolveTokenScalar(value: string, lookup: TokenLookup, scalar: (
     let end: number;
     try {
       end = delimiter(raw, 4, ",)");
-      if (delimiter(raw, 0, ";") !== raw.length) return { kind: "unsupported" };
+      if (delimiter(raw, 4, ")") !== raw.length - 1) return { kind: "unsupported" };
     }
     catch { return { kind: "unsupported" }; }
     const name = raw.slice(4, end).trim();

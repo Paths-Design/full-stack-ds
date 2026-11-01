@@ -592,11 +592,11 @@ function width(value: string): number {
 export const isComposite = (value: string): boolean => value.includes("var(") && width(value) > 1;
 
 /**
- * A graph custom property's value in every scope the token section emits
- * (light, dark, each brand in both themes), undefined in a scope the sheet
- * leaves it undefined; undefined as a whole when the name is not a graph
- * token. Without it (the walker's projection) a graph reference does not
- * resolve and is ledgered.
+ * A source token's scalar in each light/dark/brand scope. Undefined means
+ * the source scalar is unavailable, including a refused override even when
+ * USS retains an inherited base value. These facts justify source-faithful
+ * substitution, not that inherited fallback. An entirely unknown name (or
+ * the walker's projection without this input) cannot justify substitution.
  */
 export type ScopeValues = (name: string) => (string | undefined)[] | undefined;
 

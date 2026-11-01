@@ -608,6 +608,25 @@ describe("Unity USS projection: token section", () => {
     expect(ledger.entries).toEqual([]);
   });
 
+  it("records an unsupported scoped override without using native inheritance to justify a source composite", () => {
+    const cssScopes = parseTokenCss(`
+      @layer core { :root { --fsds-core-space: 2px; --fsds-core-shadow: 0 2px 4px #000; } }
+      @layer brand { [data-brand="probe"] { --fsds-core-space: var(--fsds-core-shadow); } }
+    `);
+    const ir = irOf(knobWith({ glow: {
+      "margin-top": { resolvesTo: "core.space", fallback: "2px" },
+      padding: web("var(--fsds-core-space, 2px) 1px"),
+    } }));
+    const { uss, ledger } = projectStylesheet([ir], {
+      graph: { core: { space: { $value: "2px" } } }, brands: cssScopes.brands, cssScopes,
+    });
+    expect(rule(uss, ".fsds-theme")).toContain("--fsds-core-space: 2px;");
+    expect(uss).not.toContain(".fsds-theme.fsds-brand-probe {");
+    expect(ledger.entries).toContainEqual({ component: "(theme)", sourceKey: "brand:probe", part: "", property: "--fsds-core-space", value: "var(--fsds-core-shadow)", reason: "uss-scalar" });
+    expect(ledger.entries).toContainEqual(expect.objectContaining({ component: "Knob", property: "padding", reason: "uss-var-composite" }));
+    expect(rule(uss, ".knob__glow")).toEqual(["margin-top: var(--fsds-core-space, 2px);"]);
+  });
+
   it("names tokens with the kebab-case slug and projects light, dark and brand scopes from the graph and brand layer", () => {
     const contract = knobWith(
       { glow: { color: { resolvesTo: "semantic.inkWell", fallback: "#222222" }, "border-width": { resolvesTo: "knob.glowSize", fallback: "1px" } } },
