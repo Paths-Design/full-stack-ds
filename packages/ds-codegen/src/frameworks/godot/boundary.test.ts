@@ -126,7 +126,9 @@ describe("Godot support boundary", () => {
     // Pending: semantics the shared runtime does not realise yet.
     expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "pending" });
     expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "pending" });
-    expect(classifyProp(boundary, "options")).toMatchObject({ disposition: "pending" });
+    // Data-driven children props are refused: the runtime does not iterate or
+    // persist consumer data.
+    expect(classifyProp(boundary, "options")).toMatchObject({ disposition: "refused" });
     // Activation mode is realised by the control runtime; initial focus is
     // refused because mount-time focus is the embedding scene's decision.
     expect(classifyProp(boundary, "activationMode")).toMatchObject({ disposition: "lowered" });

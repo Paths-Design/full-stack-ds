@@ -555,6 +555,29 @@ func _ready() -> void:
 	ringed_details.queue_free()
 	await get_tree().process_frame
 
+	# Surface labeling props: the declared ariaLabelledby / ariaDescribedby props
+	# are wired onto Godot's native accessibility relations. Structural projection
+	# only — the accessibility tree delivery is not verified here.
+	var aria_title := Label.new()
+	aria_title.text = "Dialog title"
+	add_child(aria_title)
+	var aria_description := Label.new()
+	aria_description.text = "Dialog description"
+	add_child(aria_description)
+	var aria_dialog = make_control("Dialog")
+	add_child(aria_dialog)
+	aria_dialog.set_contract_prop("ariaLabelledby", aria_title.get_path())
+	aria_dialog.set_contract_prop("ariaDescribedby", aria_description.get_path())
+	await get_tree().process_frame
+	check(aria_dialog.accessibility_labeled_by_nodes.has(aria_title.get_path()), "ariaLabelledby prop did not wire a labeled-by relation")
+	check(aria_dialog.accessibility_described_by_nodes.has(aria_description.get_path()), "ariaDescribedby prop did not wire a described-by relation")
+	check(aria_dialog.modality() == "blocking", "Dialog surface lost its declared modality fact")
+	rows.append({"id":"surface-aria-labeling","labelled":1,"described":1,"modality":"blocking"})
+	aria_dialog.queue_free()
+	aria_title.queue_free()
+	aria_description.queue_free()
+	await get_tree().process_frame
+
 	# Catalog load: every admitted component scene must exist, parse and
 	# instantiate. This is a structural admission witness only — it proves the
 	# generated scene tree is loadable, not that its behavior is realized.

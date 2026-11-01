@@ -221,8 +221,8 @@
       "match": [
         "contract:/anatomy/dom/**/iterate/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Iterated anatomy emits one host and names the repeats; the iteration source itself is not lowered into scene construction."
     },
     {
       "id": "anatomy-guards",
@@ -328,8 +328,8 @@
       "match": [
         "contract:/anatomy/dom/**/bindings"
       ],
-      "disposition": "pending",
-      "reason": "an empty authored binding object carries no native fact"
+      "disposition": "refused",
+      "reason": "A bindings block with no entry carries no fact a target can project."
     },
     {
       "id": "anatomy-aria-binding",
@@ -396,8 +396,8 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/data-*"
       ],
-      "disposition": "pending",
-      "reason": "data-attribute carriers drive CSS-only presentation and are not projected by the native style grammar"
+      "disposition": "refused",
+      "reason": "Authored data-* bindings have no native carrier; structural state is projected from channels/states instead."
     },
     {
       "id": "anatomy-focus-binding",
@@ -612,16 +612,16 @@
       "match": [
         "contract:/a11y/**"
       ],
-      "disposition": "pending",
-      "reason": "remaining accessibility declarations (descriptions, live regions) await a native carrier decision."
+      "disposition": "refused",
+      "reason": "Remaining accessibility declarations have no native carrier on this target: role lists, obligation-suppression bookkeeping and description/live-region facts are neither projected nor approximated; the realised labeling facts are split out above."
     },
     {
       "id": "messages",
       "match": [
         "contract:/messages/**"
       ],
-      "disposition": "pending",
-      "reason": "message formatting/localization is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Contract message defaults are consumer-facing copy; this target has no localization catalog and synthesizes no message-bound chrome, so the defaults are not emitted."
     },
     {
       "id": "portal-target",
@@ -645,8 +645,8 @@
       "match": [
         "contract:/portal/backdrop"
       ],
-      "disposition": "pending",
-      "reason": "a modal backdrop is not realized by the presence-only surface runtime; blocking surfaces still omit backdrop, focus containment and scroll lock."
+      "disposition": "refused",
+      "reason": "A modal backdrop is not realised: the presence surface mounts on an overlay layer without a backdrop, focus containment or scroll lock."
     },
     {
       "id": "portal",
@@ -850,8 +850,8 @@
       "match": [
         "contract:/dataModel/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "A data-model entity describes the shape of consumer data; no target emits a data schema, so the declaration is not lowered."
     },
     {
       "id": "prop-channel-value",
@@ -1186,8 +1186,8 @@
         "contract:/props/*/members/*:onSkip/**",
         "contract:/props/onSkip"
       ],
-      "disposition": "pending",
-      "reason": "per-step sequence callbacks are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Consumer callbacks are not bound by the anatomy runtime; the consumer wires its own controls and receives no generated callback property."
     },
     {
       "id": "prop-dismissal",
@@ -1416,8 +1416,8 @@
         "contract:/props/*/members/*:shouldCloseOnSelect/**",
         "contract:/props/shouldCloseOnSelect"
       ],
-      "disposition": "pending",
-      "reason": "data-driven children and their selection/filter behaviour are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Data-driven children (steps, options, filters, storage keys) are consumer-composed; the runtime does not iterate or persist them."
     },
     {
       "id": "prop-structured-data",
@@ -1492,6 +1492,17 @@
       "reason": "web navigation semantics are not realised by the shared runtime yet"
     },
     {
+      "id": "prop-aria-labeling",
+      "match": [
+        "contract:/props/*/members/*:ariaLabelledby",
+        "contract:/props/*/members/*:ariaLabelledby/**",
+        "contract:/props/*/members/*:ariaDescribedby",
+        "contract:/props/*/members/*:ariaDescribedby/**"
+      ],
+      "disposition": "lowered",
+      "via": "the surface runtime wires the declared ariaLabelledby/ariaDescribedby values onto accessibility_labeled_by_nodes / accessibility_described_by_nodes"
+    },
+    {
       "id": "prop-aria",
       "match": [
         "contract:/props/*/members/*:ariaLabelledby",
@@ -1510,8 +1521,8 @@
         "contract:/props/*/members/*:ariaHidden/**",
         "contract:/props/ariaHidden"
       ],
-      "disposition": "pending",
-      "reason": "ARIA state/relationship exposure is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above."
     },
     {
       "id": "prop-field-association",
