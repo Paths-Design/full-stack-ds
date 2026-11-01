@@ -27,6 +27,12 @@ pnpm run write:godot-boundary   # regenerate packages/ds-godot/verification/capa
 
 A planner/ledger disagreement (a shape declining a fact the target lowers elsewhere) is recorded as a shape variance, not swallowed and not fatal. An unadjudicated contract family, a receipt that drops an excluded prop, or a drifted inventory exits non-zero.
 
+## Disclosure family behaviour
+
+Accordion, Tabs, Popover and Details reach their behaviour through `runtime/control.gd`, which acts on disclosure facts the emitter projects from the contracts (focus strategy, dismissal triggers with their gating props, portal layering, structural aria bindings). `roving`/`manual` focus rotates across triggers by keyboard direction and honours orientation/wrap; escape, outside click and focus leave dismiss surfaces when the contract's `closeOn*` props allow it; the trigger reports `aria_expanded`/`aria_controls` and items report `aria_selected`/`aria_expanded` as structural state.
+
+Godot's accessibility tree is not populated by this project, so that aria state is a structural projection rather than assistive-technology delivery. Initial-focus targeting, scroll locking, CSS motion/typography/focus-ring projection and blocking modality (backdrop, focus containment) are not realized yet and stay `pending` in `support-boundary.json`.
+
 ## Generate and verify
 
 From the repository root:

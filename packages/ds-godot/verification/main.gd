@@ -375,6 +375,93 @@ func _ready() -> void:
 	var saved_pixel: Color = frame.get_pixelv(Vector2i(saved_card.chrome.global_position + Vector2(5, 5)))
 	check(saved_pixel.is_equal_approx(Color("#334455")), "Reloaded Card token override did not paint expected viewport pixel")
 	rows.append({"id":"saved-composed-pixel","color":saved_pixel.to_html(false)})
+	# Disclosure family: structural ARIA projection, roving/manual focus and the
+	# declared dismissal triggers. Each row exercises one realized behaviour on a
+	# generated disclosure scene. Structural projection only — Godot's
+	# accessibility tree is not populated, so these are not AT-delivery proofs.
+	var disclosure_tabs = make_control("Tabs")
+	add_child(disclosure_tabs)
+	for key in ["a", "b", "c"]:
+		var tab_body := Label.new()
+		tab_body.text = "Tab " + key
+		disclosure_tabs.add_item(key, key, tab_body)
+	await get_tree().process_frame
+	disclosure_tabs.activate("b")
+	await get_tree().process_frame
+	check(disclosure_tabs.items[1].button.get_meta("aria_selected", false), "Selected tab did not project aria-selected")
+	check(not disclosure_tabs.items[0].button.get_meta("aria_selected", true), "Unselected tab kept aria-selected")
+	disclosure_tabs.items[0].button.grab_focus()
+	var next_key := InputEventKey.new()
+	next_key.keycode = KEY_RIGHT
+	next_key.physical_keycode = KEY_RIGHT
+	next_key.pressed = true
+	Input.parse_input_event(next_key)
+	await get_tree().process_frame
+	check(get_viewport().gui_get_focus_owner() == disclosure_tabs.items[1].button, "Roving focus did not advance horizontally")
+	disclosure_tabs.items[2].button.grab_focus()
+	Input.parse_input_event(next_key)
+	await get_tree().process_frame
+	check(get_viewport().gui_get_focus_owner() == disclosure_tabs.items[0].button, "Roving focus did not wrap")
+	check(disclosure_tabs.value == "b", "Focus movement changed the selected tab")
+	rows.append({"id":"disclosure-roving-focus","advanced":"b","wrapped":"a"})
+	disclosure_tabs.queue_free()
+	await get_tree().process_frame
+
+	var disclosure_accordion = make_control("Accordion")
+	add_child(disclosure_accordion)
+	for key in ["one", "two"]:
+		var panel_body := Label.new()
+		panel_body.text = "Panel " + key
+		disclosure_accordion.add_item(key, key, panel_body)
+	await get_tree().process_frame
+	disclosure_accordion.activate("one")
+	await get_tree().process_frame
+	check(disclosure_accordion.items[0].button.get_meta("aria_expanded", false), "Expanded accordion item did not project aria-expanded")
+	check(not disclosure_accordion.items[1].button.get_meta("aria_expanded", true), "Collapsed accordion item kept aria-expanded")
+	disclosure_accordion.items[0].button.grab_focus()
+	var down_key := InputEventKey.new()
+	down_key.keycode = KEY_DOWN
+	down_key.physical_keycode = KEY_DOWN
+	down_key.pressed = true
+	Input.parse_input_event(down_key)
+	await get_tree().process_frame
+	check(get_viewport().gui_get_focus_owner() == disclosure_accordion.items[1].button, "Manual focus did not advance vertically")
+	rows.append({"id":"disclosure-aria-expanded","expanded":"one"})
+	disclosure_accordion.queue_free()
+	await get_tree().process_frame
+
+	var disclosure_popover = make_control("Popover")
+	add_child(disclosure_popover)
+	await get_tree().process_frame
+	disclosure_popover.value = "true"
+	await get_tree().process_frame
+	check(disclosure_popover.aria_expanded, "Open surface did not project aria-expanded")
+	var outside := InputEventMouseButton.new()
+	outside.button_index = MOUSE_BUTTON_LEFT
+	outside.pressed = true
+	outside.position = Vector2(4, 4)
+	get_viewport().push_input(outside)
+	await get_tree().process_frame
+	check(disclosure_popover.value == "false", "Outside click did not dismiss the surface")
+	check(not disclosure_popover.aria_expanded, "Dismissed surface kept aria-expanded")
+	disclosure_popover.close_on_outside_click = false
+	disclosure_popover.value = "true"
+	await get_tree().process_frame
+	get_viewport().push_input(outside)
+	await get_tree().process_frame
+	check(disclosure_popover.value == "true", "closeOnOutsideClick=false was not honoured")
+	disclosure_popover.close_on_outside_click = true
+	var cancel_key := InputEventKey.new()
+	cancel_key.keycode = KEY_ESCAPE
+	cancel_key.physical_keycode = KEY_ESCAPE
+	cancel_key.pressed = true
+	Input.parse_input_event(cancel_key)
+	await get_tree().process_frame
+	check(disclosure_popover.value == "false", "Escape did not dismiss the surface")
+	rows.append({"id":"disclosure-dismissal","outsideClick":true,"gated":true,"escape":true})
+	disclosure_popover.queue_free()
+	await get_tree().process_frame
+
 	# Catalog load: every admitted component scene must exist, parse and
 	# instantiate. This is a structural admission witness only — it proves the
 	# generated scene tree is loadable, not that its behavior is realized.

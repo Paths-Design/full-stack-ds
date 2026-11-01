@@ -18,6 +18,17 @@ var configuration: Dictionary = {}
 		value = next
 		_refresh()
 		value_changed.emit(value)
+## Structural ARIA state: the DOM binding the anatomy declares for this control
+## (`aria-expanded`), projected onto the native control. The Godot accessibility
+## tree is not populated by this project, so this is a structural projection, not
+## assistive-technology delivery.
+@export var aria_expanded: bool = false
+## Dismissal gates, initialized from the contract's declared default expressions
+## (`closeOnEscape` / `closeOnOutsideClick` / `closeOnBlur`) and overridable by the
+## consumer. Only surface-shaped controls consult them.
+@export var close_on_escape: bool = true
+@export var close_on_outside_click: bool = true
+@export var close_on_blur: bool = true
 var trigger: Button
 var items: Array[Dictionary] = []
 var strip: BoxContainer
@@ -26,10 +37,19 @@ var surface: PanelContainer
 var overlay: CanvasLayer
 var operation: String
 var collapsible := true
+var disclosure: Dictionary = {}
+## Whether focus has entered the revealed surface since it opened; blur dismissal
+## only fires after that, so opening a surface from an unrelated focus owner does
+## not close it on the first frame.
+var _surface_focused := false
 
 func _ready() -> void:
 	operation = configuration.get("operation", "boolean")
 	collapsible = JSON.parse_string(configuration.get("defaults", {}).get("collapsible", "false"))
+	disclosure = configuration.get("disclosure", {})
+	close_on_escape = _default_bool("closeOnEscape", close_on_escape)
+	close_on_outside_click = _default_bool("closeOnOutsideClick", close_on_outside_click)
+	close_on_blur = _default_bool("closeOnBlur", close_on_blur)
 	add_theme_constant_override("separation", 8)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("#f7f7f7")
@@ -53,6 +73,14 @@ func _ready() -> void:
 	if operation == "surface": content.hide()
 	_refresh()
 
+## Read a declared default expression as a boolean, falling back when the
+## component does not declare the prop at all.
+func _default_bool(prop: String, fallback: bool) -> bool:
+	var raw = configuration.get("defaults", {}).get(prop, null)
+	if raw == null: return fallback
+	var parsed = JSON.parse_string(raw)
+	return parsed if parsed is bool else fallback
+
 func _refresh() -> void:
 	if not is_instance_valid(trigger): return
 	trigger.text = label
@@ -71,6 +99,21 @@ func _refresh() -> void:
 			content.hide()
 			overlay.queue_free()
 			overlay = null
+	aria_expanded = operation == "surface" and value == "true"
+	_refresh_disclosure_state()
+
+## Structural disclosure state on the native controls: an overlay trigger reports
+## aria-expanded/aria-controls, a select reports aria-selected per item and a
+## toggle-item reports aria-expanded per item — the states the DOM bindings carry.
+## The Godot accessibility tree is not populated by this project, so these are
+## structural projections, not assistive-technology delivery.
+func _refresh_disclosure_state() -> void:
+	if not is_instance_valid(trigger): return
+	trigger.set_meta("aria_expanded", aria_expanded)
+	trigger.set_meta("aria_controls", operation == "surface")
+	for item in items:
+		item.button.set_meta("aria_selected", operation == "select" and value == item.key)
+		item.button.set_meta("aria_expanded", operation == "toggle-item" and value == item.key)
 
 func activate(key: String = "") -> void:
 	if disabled: return
@@ -119,6 +162,7 @@ func add_item(key: String, text: String, body: Control, locked := false) -> void
 func _show_surface() -> void:
 	if is_instance_valid(overlay): return
 	overlay = CanvasLayer.new()
+	overlay.name = "SurfaceLayer"
 	add_child(overlay)
 	surface = PanelContainer.new()
 	surface.theme = theme
@@ -128,13 +172,104 @@ func _show_surface() -> void:
 	surface.size = Vector2(280, 90)
 	var viewport_size := get_viewport_rect().size
 	surface.position = Vector2(clampf(global_position.x, 0, maxf(0, viewport_size.x - 280)), clampf(global_position.y + size.y + 4, 0, maxf(0, viewport_size.y - 90)))
+	_focus_initial()
 
-func _unhandled_key_input(event: InputEvent) -> void:
-	if operation == "surface" and value == "true" and event.is_action_pressed("ui_cancel"):
-		if not controlled: value = "false"
-		value_requested.emit("false")
-		trigger.grab_focus()
+## Focus facts: `initialFocus` names the part that receives focus when the
+## component opens. `trigger`/`tab` focus the invoking control; anything else is
+## deferred to the platform so the runtime does not invent a target.
+func _focus_initial() -> void:
+	var target = disclosure.get("focus", {}).get("initialFocus", "")
+	if target in ["trigger", "tab", "summary"]:
+		if is_instance_valid(trigger): trigger.grab_focus()
+	elif target != "" and not items.is_empty():
+		items[0].button.grab_focus()
+
+## Focusable controls the roving/manual strategy moves between.
+func _focus_targets() -> Array:
+	var targets: Array = []
+	if operation in ["select", "toggle-item"]:
+		for item in items:
+			if not item.button.disabled: targets.append(item.button)
+	elif is_instance_valid(trigger):
+		targets.append(trigger)
+	return targets
+
+## Roving/manual focus: move the focus ring by one control in `direction`,
+## honouring the declared orientation and wrap behaviour. Focus only moves; it
+## never activates the control, so activation stays with the native input path.
+func _move_focus(direction: int) -> bool:
+	var targets := _focus_targets()
+	if targets.is_empty(): return false
+	var owner := get_viewport().gui_get_focus_owner()
+	var index := targets.find(owner)
+	var wrap: bool = disclosure.get("focus", {}).get("wrap", false)
+	if index == -1:
+		index = 0 if direction > 0 else targets.size() - 1
+	else:
+		index += direction
+		if index >= targets.size(): index = 0 if wrap else targets.size() - 1
+		elif index < 0: index = targets.size() - 1 if wrap else 0
+	targets[index].grab_focus()
+	return true
+
+func dismiss() -> void:
+	if operation != "surface" or value != "true": return
+	_surface_focused = false
+	if not controlled: value = "false"
+	value_requested.emit("false")
+	if is_instance_valid(trigger): trigger.grab_focus()
+
+## Disclosure keyboard handling runs in `_input`, ahead of Godot's built-in
+## directional focus navigation, so the contract's own focus strategy decides
+## where the focus ring goes. Escape dismissal and arrow navigation both live here.
+func _handle_disclosure_key(event: InputEventKey) -> void:
+	if operation == "surface" and value == "true" and event.keycode == KEY_ESCAPE and close_on_escape:
+		dismiss()
 		get_viewport().set_input_as_handled()
+		return
+	var focus_facts: Dictionary = disclosure.get("focus", {})
+	var strategy: String = focus_facts.get("strategy", "auto")
+	if not strategy in ["roving", "manual"]: return
+	var targets := _focus_targets()
+	if not targets.has(get_viewport().gui_get_focus_owner()): return
+	var orientation: String = focus_facts.get("orientation", "both")
+	var direction := 0
+	match event.keycode:
+		KEY_RIGHT: direction = 1 if orientation in ["horizontal", "both"] else 0
+		KEY_LEFT: direction = -1 if orientation in ["horizontal", "both"] else 0
+		KEY_DOWN: direction = 1 if orientation in ["vertical", "both"] else 0
+		KEY_UP: direction = -1 if orientation in ["vertical", "both"] else 0
+	if direction == 0: return
+	if _move_focus(direction): get_viewport().set_input_as_handled()
+
+## Outside-click dismissal for anchored surfaces. The dismissal triggers and
+## their gating props come from the contract; this runtime only honours the
+## trigger events the contract declares.
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		_handle_disclosure_key(event)
+		return
+	if operation != "surface" or value != "true": return
+	if not event is InputEventMouseButton: return
+	if not event.pressed: return
+	if not close_on_outside_click: return
+	if not is_instance_valid(surface): return
+	if surface.get_global_rect().has_point(event.position): return
+	dismiss()
+	get_viewport().set_input_as_handled()
+
+## Focus-leave dismissal for surfaces whose contract declares it: focus moving to
+## a control outside the trigger and the revealed content closes the surface.
+func _process(_delta: float) -> void:
+	if operation != "surface" or value != "true" or not close_on_blur: return
+	if not is_instance_valid(overlay) or not is_instance_valid(surface): return
+	var owner := get_viewport().gui_get_focus_owner()
+	if owner == null: return
+	if surface.is_ancestor_of(owner):
+		_surface_focused = true
+		return
+	if owner == trigger: return
+	if _surface_focused: dismiss()
 
 func _exit_tree() -> void:
 	if is_instance_valid(overlay): overlay.queue_free()

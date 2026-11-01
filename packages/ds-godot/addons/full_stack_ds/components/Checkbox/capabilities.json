@@ -18,6 +18,17 @@
     "name: declined by the boolean shape; no native realization on this target",
     "value: declined by the boolean shape; no native realization on this target"
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "auto",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": [],
+    "portal": {
+      "enabled": false
+    }
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

@@ -3,16 +3,16 @@
   "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
   "boundary": {
     "schema": "godot-support-boundary.v1",
-    "rules": 140,
+    "rules": 144,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8142,
-      "pending": 3416,
-      "refused": 5943
+      "lowered": 8330,
+      "pending": 2504,
+      "refused": 6667
     },
     "deadRules": []
   },
-  "variances": 155,
+  "variances": 173,
   "components": [
     {
       "component": "Accordion",
@@ -42,11 +42,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 178,
-          "pending": 102,
-          "refused": 157
+          "lowered": 183,
+          "pending": 77,
+          "refused": 177
         },
-        "digest": "fb0f9c14d1759d95555c3d8d844f268d0c1dfd1cf2c3ddd58ffa7f7fc070a4f2"
+        "digest": "13c460fd56181a5ddf91859136bd22919841ab43db605916256c9df7f2695709"
       }
     },
     {
@@ -73,17 +73,29 @@
       },
       "variance": [
         {
+          "prop": "dismissible",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "onDismiss",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "dismissLabel",
+          "rule": "prop-dismissal"
+        },
+        {
           "prop": "icon",
           "rule": "prop-glyph-name"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 168,
-          "pending": 39,
-          "refused": 111
+          "lowered": 177,
+          "pending": 16,
+          "refused": 125
         },
-        "digest": "32675a2c35b4b1ad086d9b1d6bc5b591a3409564a537cc3a0e732ca4544be37a"
+        "digest": "5aea5cc6c5ccea886e95186c465b741484e17c4c0a11258fdf625bb47ee1e540"
       }
     },
     {
@@ -110,17 +122,29 @@
       },
       "variance": [
         {
+          "prop": "dismissible",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "onDismiss",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "dismissLabel",
+          "rule": "prop-dismissal"
+        },
+        {
           "prop": "icon",
           "rule": "prop-glyph-name"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 206,
-          "pending": 37,
-          "refused": 137
+          "lowered": 215,
+          "pending": 14,
+          "refused": 151
         },
-        "digest": "ebbcb72be34164bda8a26fa686d5ed2c4747f80084b89ee90b6aecece54eee6f"
+        "digest": "82808e163f868e825c59a2798216f8b4622005554e21aa94b2199467c76d8ebb"
       }
     },
     {
@@ -158,10 +182,10 @@
       "boundary": {
         "counts": {
           "lowered": 85,
-          "pending": 24,
-          "refused": 95
+          "pending": 15,
+          "refused": 104
         },
-        "digest": "3d7fa1d7a6288d5b7ffd384718959016c05f50d969fbfac91a9d84df50b0530e"
+        "digest": "82e9e54a3c4c51a5db786e03966665c14741256da028af31590c848e87d1bc16"
       }
     },
     {
@@ -187,10 +211,10 @@
       "boundary": {
         "counts": {
           "lowered": 191,
-          "pending": 16,
-          "refused": 76
+          "pending": 10,
+          "refused": 82
         },
-        "digest": "3632420e841feaec026f11f5766c40f71fea9eafc5c93f18e4212d826cd46701"
+        "digest": "e362379ef5961ae9c93731e1f85f1e7d6fc941c9a0ce8f2bad4f0342a80629ce"
       }
     },
     {
@@ -216,10 +240,10 @@
       "boundary": {
         "counts": {
           "lowered": 144,
-          "pending": 6,
-          "refused": 67
+          "pending": 4,
+          "refused": 69
         },
-        "digest": "514375616403687db2a96144dc2e32638544b030f6f64da2b7f9d10afc6ce1c7"
+        "digest": "53328dd94ea2940666322588b637091d84fddf969474c23214cf5aafc02d28cc"
       }
     },
     {
@@ -255,10 +279,10 @@
       "boundary": {
         "counts": {
           "lowered": 78,
-          "pending": 32,
-          "refused": 52
+          "pending": 12,
+          "refused": 72
         },
-        "digest": "9987377e4d8577c6ad7b83ec99f987f577488ca5fc11eb8dd215f7155d20d673"
+        "digest": "d3ed5b3d70d86ba852645906477d78595c4dcbbe1127adc52fa5e0be54e11e30"
       }
     },
     {
@@ -286,10 +310,10 @@
       "boundary": {
         "counts": {
           "lowered": 267,
-          "pending": 36,
-          "refused": 117
+          "pending": 26,
+          "refused": 127
         },
-        "digest": "7af177a937f2c318017eff33f998d84a8356cd13e7cba2cc8cf6d1fc3d91beea"
+        "digest": "a202c10f522801e2a77013895d76caf709485d3cdad42f61b83ddcc47b5ad7ec"
       }
     },
     {
@@ -365,11 +389,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 255,
-          "pending": 157,
-          "refused": 196
+          "lowered": 265,
+          "pending": 123,
+          "refused": 220
         },
-        "digest": "e921c7a26ce909bd6fddf3b8478043fb714df966e0787c52b1bfd71b4e6d1555"
+        "digest": "d929c67bcf872afda987c496595698de2e36c19f103c6d5d3c546856939aa0e9"
       }
     },
     {
@@ -393,10 +417,10 @@
       "boundary": {
         "counts": {
           "lowered": 141,
-          "pending": 72,
-          "refused": 151
+          "pending": 37,
+          "refused": 186
         },
-        "digest": "ed010c4ddacdee222966b7f3784c1a8f5a5ddd82a254a2fdf8083c3e31de7310"
+        "digest": "9ab4c2ac431e473836f1088fcb15ab33e2d536c9d4067a524e3dae0280929115"
       }
     },
     {
@@ -419,11 +443,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 144,
-          "pending": 105,
-          "refused": 162
+          "lowered": 145,
+          "pending": 83,
+          "refused": 183
         },
-        "digest": "96ab67cde95e3a3e63b76e3c1800f5ca646112490ef5ea194f4a00275130f29f"
+        "digest": "af4354600380bc26adab50d345d121f149dbea8dd1bb837744707cda6d6fee4b"
       }
     },
     {
@@ -475,11 +499,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 140,
-          "pending": 98,
-          "refused": 107
+          "lowered": 142,
+          "pending": 85,
+          "refused": 118
         },
-        "digest": "2c96aafda55f5ff9214b6d49e8ea120721393aff6a73293df8a44bb164771e3a"
+        "digest": "053f4924bb0f1634437d02355a8164e231725ea6b2dcd62fa8cf1fef0afe3dfe"
       }
     },
     {
@@ -531,15 +555,27 @@
         {
           "prop": "onClick",
           "rule": "prop-action-callback"
+        },
+        {
+          "prop": "dismissible",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "onDismiss",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "dismissLabel",
+          "rule": "prop-dismissal"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 229,
-          "pending": 55,
-          "refused": 112
+          "lowered": 238,
+          "pending": 28,
+          "refused": 130
         },
-        "digest": "93e8b327999b492702171b90b54f4df14a2aa8ed550528c8426eefeb2c96ef24"
+        "digest": "effc06c6d4ed7a65be6ad641e814dfb9e60282d119e759254e13653fee33954d"
       }
     },
     {
@@ -574,10 +610,10 @@
       "boundary": {
         "counts": {
           "lowered": 173,
-          "pending": 44,
-          "refused": 99
+          "pending": 36,
+          "refused": 107
         },
-        "digest": "388f4669eb14e144cb879c2d0edc5b30a813167d4e6de0fa6b60f4585edd110d"
+        "digest": "010e1408d745eaa57d9f5f43cd38ab5c0248da85b884228abc95c032491ebf1f"
       }
     },
     {
@@ -608,10 +644,10 @@
       "boundary": {
         "counts": {
           "lowered": 86,
-          "pending": 11,
-          "refused": 61
+          "pending": 9,
+          "refused": 63
         },
-        "digest": "d0bad788facbefc411dc108c315010bf8272467168d035e4229e6c49df8a3c5d"
+        "digest": "b0abaa9ef5659386bea19391bc0bea710c1d69559442b6c90f35b726b9b71339"
       }
     },
     {
@@ -678,11 +714,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 244,
-          "pending": 169,
-          "refused": 283
+          "lowered": 254,
+          "pending": 112,
+          "refused": 330
         },
-        "digest": "322a7302ffe23fe1b191049eac42ba2b419c40e222528d9306a7df632b0224c7"
+        "digest": "e33767062ab6941ba29fa5d09e08de86c3b11467df3a6bbb74359b8a4dff4055"
       }
     },
     {
@@ -737,11 +773,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 189,
-          "pending": 55,
-          "refused": 127
+          "lowered": 192,
+          "pending": 38,
+          "refused": 141
         },
-        "digest": "1ab4aef74ea0a001cc5a41bc5dbea279a2887fd94f324eebe5b18defa3fe221d"
+        "digest": "b669399861f492fffb7c035ca2b681b9bb4aeb2e791909c905aa01db5e0fa36a"
       }
     },
     {
@@ -783,17 +819,29 @@
           "rule": "prop-variant-axis"
         },
         {
+          "prop": "dismissible",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "closeOnEscape",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "closeOnBackdropClick",
+          "rule": "prop-dismissal"
+        },
+        {
           "prop": "ariaLabel",
           "rule": "prop-aria-label"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 237,
-          "pending": 153,
-          "refused": 229
+          "lowered": 259,
+          "pending": 110,
+          "refused": 250
         },
-        "digest": "ad352d27b24803ff89b16bf6fc7de189cfe168a16fbe7bac845e03fef4cf3d54"
+        "digest": "b1664fc32d868beb081aa220777f561eae71b09d39f0e1d47bd6faaed92f9831"
       }
     },
     {
@@ -819,10 +867,10 @@
       "boundary": {
         "counts": {
           "lowered": 41,
-          "pending": 7,
-          "refused": 60
+          "pending": 3,
+          "refused": 64
         },
-        "digest": "1bde0c75a3238af56618a5939ffbf8eefc6d48d43652c6f00b022ad81d847bba"
+        "digest": "ba80a6050fe1a18c80d9a7a61d3f3112eb94f9700b77f6d7fc11a587e079a066"
       }
     },
     {
@@ -877,11 +925,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 139,
-          "pending": 48,
-          "refused": 104
+          "lowered": 141,
+          "pending": 33,
+          "refused": 117
         },
-        "digest": "ed1f170d4262ab14acfe1c5b63d22b3d108b11433ec2901a726915d116bd4996"
+        "digest": "2c4a31923af837a4e430c419e95d3083e1421c6823ff5cb7427c38f50f9d7598"
       }
     },
     {
@@ -904,11 +952,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 51,
-          "pending": 12,
-          "refused": 56
+          "lowered": 53,
+          "pending": 6,
+          "refused": 60
         },
-        "digest": "338abff7f1ebd04d72eba978e62ba439e5daebbe034e669b3e8cf3404cf87281"
+        "digest": "2dffac059dad3691d4d2f301dfebc2ebf5d1a41024bdc6436ae5f16c1beedf1d"
       }
     },
     {
@@ -950,10 +998,10 @@
       "boundary": {
         "counts": {
           "lowered": 105,
-          "pending": 54,
-          "refused": 103
+          "pending": 48,
+          "refused": 109
         },
-        "digest": "4f310803387270857c4393b8e1e1c1965c0f49dfd2bec88bdd0d595c7a44cd9e"
+        "digest": "f96a358e37330078f60b8ef363239666ec695050c923d9b75b0aeec8096f8b7a"
       }
     },
     {
@@ -1017,11 +1065,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 178,
-          "pending": 46,
-          "refused": 108
+          "lowered": 180,
+          "pending": 37,
+          "refused": 115
         },
-        "digest": "105e701223f196a2934609fc6bc5f411cdaedb5106d38fc4d23285e203fe127e"
+        "digest": "c492f12f27027bb24a44680df3c237be91a4cd42e3cff765f7aae7487041481f"
       }
     },
     {
@@ -1048,10 +1096,10 @@
       "boundary": {
         "counts": {
           "lowered": 22,
-          "pending": 12,
-          "refused": 19
+          "pending": 10,
+          "refused": 21
         },
-        "digest": "65c557e87b6ccaee9946a4060edd137bd31c2e34988b743d2ebd5f58ed4837f9"
+        "digest": "46b5c50a144b59ce8138327a510eb8c8e95326aff849e1eeb006f68d7d8bb121"
       }
     },
     {
@@ -1085,10 +1133,10 @@
       "boundary": {
         "counts": {
           "lowered": 116,
-          "pending": 37,
-          "refused": 57
+          "pending": 33,
+          "refused": 61
         },
-        "digest": "2f36a55c62fbbd5fd12f12a3ef0664dfb87f9f5b7720229703527392d6d8bc75"
+        "digest": "35b80a42198981cbcf11a8629370d12e0c4973c82d07b6a1b4cd49a92c98457a"
       }
     },
     {
@@ -1124,11 +1172,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 127,
-          "pending": 16,
-          "refused": 73
+          "lowered": 129,
+          "pending": 12,
+          "refused": 75
         },
-        "digest": "616f4c58df51edd51b1b28ec9693ce33cbd4fa5bdb5aaca5bb3fa8613bb517a3"
+        "digest": "26f58ce2ad28670cf168313b922b559412e85f22e74f33d76b9418c96e5aaefc"
       }
     },
     {
@@ -1198,10 +1246,10 @@
       "boundary": {
         "counts": {
           "lowered": 89,
-          "pending": 20,
-          "refused": 70
+          "pending": 13,
+          "refused": 77
         },
-        "digest": "8135047ec6cb8be37a13b68b8a8196ca49b3daa4a325c89f1ce7334f05e5e23f"
+        "digest": "b66b3cd5805b92cd3a1831253ab4b0464e05b0bf8bc9c7629b9fe02683e3d3ce"
       }
     },
     {
@@ -1242,11 +1290,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 169,
-          "pending": 81,
-          "refused": 161
+          "lowered": 171,
+          "pending": 64,
+          "refused": 176
         },
-        "digest": "7e7572e0322c70afd3b27136a17bb1820964f4956d7bfe079be5e77a642af587"
+        "digest": "f0409d4b469fadbf48e16b2da5019a0dfd7c836ad9d6c95d36b1c53011029503"
       }
     },
     {
@@ -1306,11 +1354,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 124,
-          "pending": 72,
-          "refused": 98
+          "lowered": 127,
+          "pending": 56,
+          "refused": 111
         },
-        "digest": "47dacd4d71cb5c640e6848e4317d82b542ee05c042622abb6694b9926984d79b"
+        "digest": "e1b60ff68ce362cc3f878dcdb8eb4a3b127889215019bde4f5e34473b116314d"
       }
     },
     {
@@ -1383,11 +1431,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 89,
-          "pending": 86,
-          "refused": 45
+          "lowered": 90,
+          "pending": 57,
+          "refused": 73
         },
-        "digest": "6ef4ed099678713ceb7dbc2f367d45601d8d73dbf7ecdb4099d7147b33d46830"
+        "digest": "f0a925c4dae7d99936b89670a30d85b06e5452967ce3543f5cb1780a468a8b93"
       }
     },
     {
@@ -1440,11 +1488,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 99,
-          "pending": 52,
-          "refused": 125
+          "lowered": 100,
+          "pending": 39,
+          "refused": 137
         },
-        "digest": "850d3b21e3300d4132ce3c533fe2da580a8d0805f49fb7095280e0c2966e1339"
+        "digest": "813813391cbdea03bb4127465189700fc5224500896420663fa3ad947253e1fa"
       }
     },
     {
@@ -1474,15 +1522,27 @@
         {
           "prop": "defaultOpen",
           "rule": "prop-channel-default"
+        },
+        {
+          "prop": "closeOnEscape",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "closeOnOutsideClick",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "closeOnBlur",
+          "rule": "prop-dismissal"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 102,
-          "pending": 108,
-          "refused": 63
+          "lowered": 123,
+          "pending": 76,
+          "refused": 74
         },
-        "digest": "42bd056baae7befdc1cf04d124c0d9960de86b67e4cd9da56a3c56a61de6b7c0"
+        "digest": "6054cf771aac67b812772ddc8d39ca399bc964284fc9d631bf2ee7ea6fde886a"
       }
     },
     {
@@ -1516,11 +1576,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 190,
-          "pending": 53,
-          "refused": 127
+          "lowered": 191,
+          "pending": 32,
+          "refused": 147
         },
-        "digest": "d0bdd40a6563fa2d8035237b0078d881319be4d667fc8d70db8ae4cd852b39d2"
+        "digest": "e5446f612e8f180251849f885d9bd7a12175d84399c82665f0f4002257fb7fdf"
       }
     },
     {
@@ -1546,10 +1606,10 @@
       "boundary": {
         "counts": {
           "lowered": 51,
-          "pending": 7,
-          "refused": 27
+          "pending": 5,
+          "refused": 29
         },
-        "digest": "49075e6e091b72303267b7d1a4ba76fdcacfc134ca88430799b1330c41e84c85"
+        "digest": "cd8cb6db2772c1bede7f7de84da0a6fa3f837e47be1ff1c3e5ef752bda145f82"
       }
     },
     {
@@ -1597,10 +1657,10 @@
       "boundary": {
         "counts": {
           "lowered": 105,
-          "pending": 37,
-          "refused": 64
+          "pending": 24,
+          "refused": 77
         },
-        "digest": "f621d2e27f93f8594038de950ad59ef5e34882b851ca7d68568e66acd8407cb6"
+        "digest": "059d493f7b02cd97627a04d27115d3459de5304b1a69485bb90e7ab936134936"
       }
     },
     {
@@ -1656,11 +1716,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 77,
-          "pending": 51,
-          "refused": 76
+          "lowered": 78,
+          "pending": 38,
+          "refused": 88
         },
-        "digest": "7be7003c6f618066e055fbb08f356e7dd81bbf6e0f37c0843dec9faf1008188b"
+        "digest": "a9bb12d5d02aa7875a8289fcd0c29b27aa31fe126bc5d596aaf57858e35066c9"
       }
     },
     {
@@ -1735,11 +1795,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 285,
-          "pending": 204,
-          "refused": 224
+          "lowered": 294,
+          "pending": 165,
+          "refused": 254
         },
-        "digest": "4eada8e64f764938931558e69808577a0c08a8b7af98dd3921afb6b2048f304b"
+        "digest": "1cb12670c85b00eaa2a2834e379ef396290e9299585638271a4c7a27a9e73958"
       }
     },
     {
@@ -1778,11 +1838,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 227,
-          "pending": 175,
-          "refused": 213
+          "lowered": 237,
+          "pending": 137,
+          "refused": 241
         },
-        "digest": "9115aa9234c83f2d931a8c3e13c01b1dfa60efb1338b5ac9243491e359478251"
+        "digest": "c7032d00be892be3a0466f9900e3d8e1ec6f29f63637d38246b51a2c9e927872"
       }
     },
     {
@@ -1833,11 +1893,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 100,
-          "pending": 37,
-          "refused": 67
+          "lowered": 101,
+          "pending": 28,
+          "refused": 75
         },
-        "digest": "44405061cc97862a6aa1b5d4479326978ff20180aa80c92bfed235aec5638925"
+        "digest": "d72f4cf05723ff4fe4e360de7c1ffbc2ab56230bd076d1419eb56e4f30a21d13"
       }
     },
     {
@@ -1883,11 +1943,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 160,
-          "pending": 91,
-          "refused": 141
+          "lowered": 164,
+          "pending": 67,
+          "refused": 161
         },
-        "digest": "e5e3ee9d2f5649f638e3d1f4bbbcb84605449146312034208ca304a322f79c18"
+        "digest": "64a614c1007d75efb43cf6a39c4209b2e31a0658fabf3f8aadde6e1862528881"
       }
     },
     {
@@ -1922,10 +1982,10 @@
       "boundary": {
         "counts": {
           "lowered": 144,
-          "pending": 84,
-          "refused": 92
+          "pending": 77,
+          "refused": 99
         },
-        "digest": "b9e4e7c85b9b2756f21b73f425142c7bf67379079cd31e76e2aa569096ca30f4"
+        "digest": "0f22c600bbacc343c977669f7fd7af5d818e9e27ba4402df11eb70356a63c5fc"
       }
     },
     {
@@ -1959,10 +2019,10 @@
       "boundary": {
         "counts": {
           "lowered": 83,
-          "pending": 35,
-          "refused": 57
+          "pending": 29,
+          "refused": 63
         },
-        "digest": "5fcb660fc2141a794c983c7efc0eedaccdc188d822898474c1a1179a8bacd160"
+        "digest": "40fecf9222424f2212bb6a6791fe1ef6306aa42fb441b6d91e75890e6d8b6504"
       }
     },
     {
@@ -1986,10 +2046,10 @@
       "boundary": {
         "counts": {
           "lowered": 76,
-          "pending": 6,
-          "refused": 43
+          "pending": 4,
+          "refused": 45
         },
-        "digest": "6f654a1460124a8369d7115500cd9115e940d0997160db6648b3bb9ec999a897"
+        "digest": "302387c9f1b689c74c400f4755d4afa73e38869b0c32cb70ff83387cb35e4afb"
       }
     },
     {
@@ -2013,10 +2073,10 @@
       "boundary": {
         "counts": {
           "lowered": 127,
-          "pending": 18,
-          "refused": 62
+          "pending": 12,
+          "refused": 68
         },
-        "digest": "14216faaa64da9d3283927f07688d76d9ba982c3a7c9dabd85a4097ef7d809db"
+        "digest": "bd37ee3095a20d4c945e199da2410c7374a620ddf63bd3dc678bbc614bd37218"
       }
     },
     {
@@ -2061,11 +2121,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 256,
-          "pending": 70,
-          "refused": 173
+          "lowered": 257,
+          "pending": 58,
+          "refused": 184
         },
-        "digest": "c44d94f42a0b65d74f3f174cb7902df5f66e25e9a26335d78be21332c4dd1dd0"
+        "digest": "833ef7dc77df08d23d36c4205b4c7a2993908e2ce33188446df1d670a2ee0ecf"
       }
     },
     {
@@ -2096,11 +2156,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 153,
-          "pending": 40,
-          "refused": 86
+          "lowered": 155,
+          "pending": 28,
+          "refused": 96
         },
-        "digest": "933a32512183bfdafe3ccc0e91d8917815e1b5498300e7ad778abf7e0957f7f9"
+        "digest": "aa7cce97ac04bbe28148956dc4de57bc327bdac926279208294ecedf4c324c83"
       }
     },
     {
@@ -2144,11 +2204,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 181,
-          "pending": 132,
-          "refused": 164
+          "lowered": 186,
+          "pending": 106,
+          "refused": 185
         },
-        "digest": "c17708ced5e1636d6d16f3afdeb1465dbf088775f5f055492d8a6e364c50b1a3"
+        "digest": "921a9fba4705589477fe0024ee50541aa5e0e7b3af92ab93749e27d05de5c4c7"
       }
     },
     {
@@ -2174,10 +2234,10 @@
       "boundary": {
         "counts": {
           "lowered": 262,
-          "pending": 40,
-          "refused": 127
+          "pending": 38,
+          "refused": 129
         },
-        "digest": "5c9f4d29d64428c092095d697a6ebd2025882ae42a2906de61422c8c8b2d3d34"
+        "digest": "b4c8cc9723a958b7cfdbde7825ea92934d191e33b306901b4acfa73ef485dd6b"
       }
     },
     {
@@ -2231,11 +2291,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 233,
-          "pending": 72,
-          "refused": 151
+          "lowered": 235,
+          "pending": 56,
+          "refused": 165
         },
-        "digest": "3bd9d60989a701f25e5b3f16f5e238bc09a9052450faac2f1e7e1832767d8843"
+        "digest": "e7e68ce2eccf55bfba6a3c82f8d4efde7455c53fed4e2b18bfe092f4a148d81f"
       }
     },
     {
@@ -2276,11 +2336,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 217,
-          "pending": 100,
-          "refused": 152
+          "lowered": 225,
+          "pending": 67,
+          "refused": 177
         },
-        "digest": "fff2404b00629ed966856b5dee39ee57ec3631fd0cb77798da643a87f3a53277"
+        "digest": "2ba101b149230bedd1c48c70925c2238fdd9f186d45caa0945f71bd620021e49"
       }
     },
     {
@@ -2321,11 +2381,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 140,
-          "pending": 39,
-          "refused": 65
+          "lowered": 141,
+          "pending": 25,
+          "refused": 78
         },
-        "digest": "bb353b1f9f5bc80f8cb2a89f28a20102f6b151dd9f181022261edbe5376420ae"
+        "digest": "755404ad3bec7a1b99d48a28d7f096f13b812370b9d9dbb2dac8b7eaa56dd346"
       }
     },
     {
@@ -2359,15 +2419,23 @@
         {
           "prop": "disabled",
           "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "closeOnEscape",
+          "rule": "prop-dismissal"
+        },
+        {
+          "prop": "closeOnBlur",
+          "rule": "prop-dismissal"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 92,
-          "pending": 76,
-          "refused": 55
+          "lowered": 108,
+          "pending": 52,
+          "refused": 63
         },
-        "digest": "891efe8c1d440ed6020dc989db1b1b20c2f807fc94c9705e452a0d59ed2a6f02"
+        "digest": "a65b287428971326c46ec311bfd7746731b64e6879c912cd89ae55b30a2e29be"
       }
     },
     {
@@ -2420,10 +2488,10 @@
       "boundary": {
         "counts": {
           "lowered": 71,
-          "pending": 35,
-          "refused": 59
+          "pending": 26,
+          "refused": 68
         },
-        "digest": "9f86d2d44122cfeafe3fe206b2a963f0cf1724ee4b5fce4b85d970d452746817"
+        "digest": "279607af6cd77f4e928737ad458e87d5da80dad1ea0374390983c5539b98f123"
       }
     },
     {
@@ -2482,6 +2550,10 @@
           "rule": "prop-boolean-state"
         },
         {
+          "prop": "closeOnOutsideClick",
+          "rule": "prop-dismissal"
+        },
+        {
           "prop": "previousDisabled",
           "rule": "prop-boolean-state"
         },
@@ -2496,11 +2568,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 251,
-          "pending": 137,
-          "refused": 212
+          "lowered": 262,
+          "pending": 93,
+          "refused": 245
         },
-        "digest": "0aa6f513e3f208b9f8c10a8588e27eeb27518bd531fe8c2076747b4956652f1c"
+        "digest": "988697f8ec52a0f6b2bf50ada9ffe9b7560d651034d5818e10cc3e227a9dde61"
       }
     }
   ]

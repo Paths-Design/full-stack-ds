@@ -87,8 +87,8 @@
       "match": [
         "contract:/anatomy/details/*/role"
       ],
-      "disposition": "pending",
-      "reason": "accessibility roles are a semantic mapping the shared runtime does not expose yet"
+      "disposition": "refused",
+      "reason": "The web element role an authored anatomy describes; native targets lower parts and channels, not the authored element descriptor."
     },
     {
       "id": "anatomy-details-focusable",
@@ -96,8 +96,8 @@
         "contract:/anatomy/details/*/focusable",
         "contract:/anatomy/details/*/interactive"
       ],
-      "disposition": "pending",
-      "reason": "focus and interaction behaviour is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored focusability/interactivity descriptors of the web element; native focus is realized from focus/channel facts, not from this descriptor."
     },
     {
       "id": "anatomy-details-multiple",
@@ -112,24 +112,24 @@
       "match": [
         "contract:/anatomy/details/*/subcomponent"
       ],
-      "disposition": "pending",
-      "reason": "relationships between parts are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Documents that the authored anatomy hosts a subcomponent; the target composes emitted instances instead."
     },
     {
       "id": "anatomy-details-aria",
       "match": [
         "contract:/anatomy/details/*/aria/**"
       ],
-      "disposition": "pending",
-      "reason": "ARIA attribute semantics are not exposed by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored ARIA descriptors of the web element; structural projection is emitted from bindings and states."
     },
     {
       "id": "anatomy-details-collapse-intent",
       "match": [
         "contract:/anatomy/details/*/collapsibleTo"
       ],
-      "disposition": "pending",
-      "reason": "the authored disclosure/collapse intent is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authoring intent for a collapsible container; the target lowers the declared channels and parts instead."
     },
     {
       "id": "anatomy-details-component-ref",
@@ -499,8 +499,8 @@
       "match": [
         "contract:/surface/dismissal/**"
       ],
-      "disposition": "pending",
-      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "surface dismissal modes map onto the same realised trigger wiring"
     },
     {
       "id": "surface-layer",
@@ -545,8 +545,8 @@
       "match": [
         "contract:/dismissal/**"
       ],
-      "disposition": "pending",
-      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "shared control runtime closes the surface on escape, outside click and focus leave, honouring the declared enabledBy gates"
     },
     {
       "id": "relationships",
@@ -590,20 +590,59 @@
       "reason": "message formatting/localization is not realised by the shared runtime yet"
     },
     {
-      "id": "portal",
+      "id": "portal-target",
       "match": [
-        "contract:/portal/**"
+        "contract:/portal/defaultTarget"
+      ],
+      "disposition": "refused",
+      "reason": "A DOM mount target has no native meaning; the surface hosts on the target's own overlay layer."
+    },
+    {
+      "id": "portal-positioning",
+      "match": [
+        "contract:/portal/positioning",
+        "contract:/portal/collision"
       ],
       "disposition": "pending",
-      "reason": "portaling/host layers are not realised by the shared runtime yet"
+      "reason": "flip/shift collision handling and selector-sourced positioning are not realized; anchored placement is runtime-owned."
+    },
+    {
+      "id": "portal-backdrop",
+      "match": [
+        "contract:/portal/backdrop"
+      ],
+      "disposition": "pending",
+      "reason": "a modal backdrop is not realized by the presence-only surface runtime; blocking surfaces still omit backdrop, focus containment and scroll lock."
+    },
+    {
+      "id": "portal",
+      "match": [
+        "contract:/portal/enabled",
+        "contract:/portal/layering"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime mounts revealed content on a dedicated overlay layer"
+    },
+    {
+      "id": "focus-targets",
+      "match": [
+        "contract:/focus/initialFocus",
+        "contract:/focus/returnFocus",
+        "contract:/focus/scrollLock",
+        "contract:/focus/description"
+      ],
+      "disposition": "pending",
+      "reason": "initial-focus targeting, focus restoration beyond the surface trigger, and body scroll locking are not realized yet; focus description is authoring prose."
     },
     {
       "id": "focus",
       "match": [
-        "contract:/focus/**"
+        "contract:/focus/strategy",
+        "contract:/focus/orientation",
+        "contract:/focus/wrap"
       ],
-      "disposition": "pending",
-      "reason": "focus management is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "shared control runtime rotates the focus ring across triggers by keyboard direction and honours the declared wrap"
     },
     {
       "id": "interaction",
@@ -667,8 +706,8 @@
         "contract:/slots/**/required",
         "contract:/slots/required"
       ],
-      "disposition": "pending",
-      "reason": "required slot content is not enforced by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "A slot requirement documents what the consumer must supply; it is composition guidance, not a fact any rendering target emits."
     },
     {
       "id": "slots",
@@ -1119,8 +1158,8 @@
         "contract:/props/*/members/*:closeOnBackdropClick/**",
         "contract:/props/closeOnBackdropClick"
       ],
-      "disposition": "pending",
-      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "closeOnEscape / closeOnOutsideClick / closeOnBlur are read as dismissal gates by the runtime"
     },
     {
       "id": "prop-focus-management",
@@ -1472,8 +1511,8 @@
       "match": [
         "styles:/@starting-style/**"
       ],
-      "disposition": "pending",
-      "reason": "CSS entry animation (@starting-style) has no native mapping"
+      "disposition": "refused",
+      "reason": "CSS @starting-style entry animation has no native equivalent and is not approximated."
     },
     {
       "id": "styles-platform-metadata",

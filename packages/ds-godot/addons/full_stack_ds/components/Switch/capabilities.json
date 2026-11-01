@@ -6,6 +6,14 @@
     "name",
     "value"
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "auto",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": []
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

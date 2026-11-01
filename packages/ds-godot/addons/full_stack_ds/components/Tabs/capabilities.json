@@ -9,6 +9,18 @@
     "unmountInactive",
     "idBase"
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "roving",
+      "orientation": "horizontal",
+      "wrap": true,
+      "initialFocus": "tab"
+    },
+    "dismissal": [],
+    "portal": {
+      "enabled": false
+    }
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

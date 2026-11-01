@@ -12,6 +12,14 @@
     "defaultChecked: declined by the boolean shape; no native realization on this target",
     "size: declined by the boolean shape; no native realization on this target"
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "auto",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": []
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

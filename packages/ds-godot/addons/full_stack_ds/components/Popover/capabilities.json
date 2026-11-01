@@ -7,6 +7,36 @@
     "closeOnOutsideClick",
     "closeOnBlur"
   ],
+  "disclosure": {
+    "focus": {
+      "strategy": "none",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": [
+      {
+        "event": "escape",
+        "enabledByProp": "closeOnEscape",
+        "defaultEnabled": true
+      },
+      {
+        "event": "outsideClick",
+        "enabledByProp": "closeOnOutsideClick",
+        "defaultEnabled": true
+      },
+      {
+        "event": "blur",
+        "enabledByProp": "closeOnBlur",
+        "defaultEnabled": true
+      }
+    ],
+    "portal": {
+      "enabled": true,
+      "layering": "popover"
+    },
+    "modality": "non-blocking",
+    "surfaceKind": "popover"
+  },
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [
