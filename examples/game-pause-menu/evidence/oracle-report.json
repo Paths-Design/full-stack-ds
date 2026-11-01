@@ -2608,7 +2608,7 @@
   "claimBoundary": {
     "claimed": "The three lanes are compared against each other for the eight captured 1280x800 states, with committed image goldens and a token-consumption gate, and are compared against the reference palette anchors.",
     "notClaimed": [
-      "full or pixel-identical visual parity",
+      "unbounded or pixel-identical visual parity",
       "fidelity to the reference composition, display typography or industrial graphic language",
       "DPI/backend/OS coverage beyond the pinned macOS host",
       "physical-input, accessibility or usability parity"

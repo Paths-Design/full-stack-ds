@@ -1,6 +1,6 @@
 {
   "schema": "game-pause-menu.goldens.v1",
-  "claim": "Lossless image goldens for the eight captured 1280x800 states; a regression baseline, not proof of pixel identity or full parity.",
+  "claim": "Lossless image goldens for the eight captured 1280x800 states; a regression baseline, not proof of pixel identity or unbounded parity.",
   "captures": "/tmp/token-evidence",
   "authority": {
     "path": "examples/game-pause-menu/fixtures/parity-layout.json",

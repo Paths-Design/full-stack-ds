@@ -78,7 +78,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 node ../parity-check.mjs --root /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu
 ```
 
-Measured on this machine: headless suite 207 checks / 207 passed, 4.1 s,
+Measured on this machine: headless suite 209 checks / 209 passed, 4.1 s,
 `input_dispatch=viewport_push_input`; capture 4.8 s for eight 1280×800 PNGs.
 
 ## Parity geometry consumed
@@ -161,7 +161,7 @@ Every fallback carries `# NOT FSDS: <reason>` in source.
 
 ## Interaction coverage (shared I1–I15)
 
-All 15 are implemented and covered by the headless suite (207 checks, including parity geometry, pinned corrections and icon-art probes). Full
+All 15 are implemented and covered by the headless suite (209 checks, including parity geometry, pinned corrections and icon-art probes). Full
 screenshot evidence is the eight capture states; the four required states are
 `map`, `progress`, `abilities`, `settings`.
 

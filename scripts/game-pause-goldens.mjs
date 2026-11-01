@@ -82,7 +82,7 @@ function writeGoldens() {
   const manifest = {
     schema: "game-pause-menu.goldens.v1",
     claim:
-      "Lossless image goldens for the eight captured 1280x800 states; a regression baseline, not proof of pixel identity or full parity.",
+      "Lossless image goldens for the eight captured 1280x800 states; a regression baseline, not proof of pixel identity or unbounded parity.",
     captures: captureRoot,
     authority: { path: "examples/game-pause-menu/fixtures/parity-layout.json", sha256: sha256(readFileSync(authorityPath)) },
     resolvedTokens: { path: "packages/ds-tokens/generated/resolved.tokens.json", sha256: sha256(readFileSync(resolvedPath)) },
