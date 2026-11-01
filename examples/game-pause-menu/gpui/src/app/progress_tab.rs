@@ -491,7 +491,7 @@ impl Menu {
         body.push(caption);
         Some(
             widgets::rect_box(rect)
-                .bg(colors::paint(&layout.colors.paper))
+                .bg(colors::paint(&layout.color(&layout.progress.drawer.background)))
                 .border_1()
                 .border_color(colors::paint(&layout.colors.rule_strong))
                 .children(body)

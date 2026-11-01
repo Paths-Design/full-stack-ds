@@ -126,7 +126,7 @@ fn per_tab_rects_match_the_parity_authority() {
     assert_eq!((progress.list_panel.x, progress.list_panel.y, progress.list_panel.w, progress.list_panel.h), (24.0, 176.0, 1232.0, 552.0));
     let drawer = progress.drawer.rect;
     assert_eq!((drawer.x, drawer.y, drawer.w, drawer.h), (24.0, 176.0, 560.0, 552.0));
-    assert_eq!(progress.drawer.background, "paper");
+    assert_eq!(progress.drawer.background, "sage");
     assert_eq!(progress.drawer.text, "ink");
     assert_eq!(progress.rows.row_h, 88.0);
     assert_eq!(progress.rows.rep_bar_w, 200.0);

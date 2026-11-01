@@ -10,15 +10,17 @@ implementation comparison, not a shipping game and not a usability study. The
 framework-neutral authority is
 [`spec.md`](spec.md); every lane is a realization of it, not its own design.
 
-The menu uses the **Orion N5 palette and HUD grammar**: hard-edged charcoal/ink
-panels, a signal-orange action strip, mint map/telemetry surfaces, hairline
-rules, uppercase Inter micro-labels and square corners. The style is registered
-as the `orion` brand in
+The menu uses the **Orion N5 palette and HUD grammar**: hard-edged charcoal
+panels, a full-width signal-orange tab band, mint map/dossier fields, a steel
+shell/footer, hairline rules, uppercase Inter micro-labels and square corners.
+The style is registered as the `orion` brand in
 [`packages/ds-tokens/src/brands/orion.tokens.json`](../../packages/ds-tokens/src/brands/orion.tokens.json)
-(`data-brand="orion"`). The source reference's full composition — oversized grey
-display typography, large mint/grey fields, orange data plates and industrial
-housing graphics — is **not claimed**; the committed oracle audit and
-[`evidence/visual-review.md`](evidence/visual-review.md) record the gap.
+(`data-brand="orion"`). A first restyle pass (orange tab band, mint dossier,
+steel shell/footer, GPUI modal scrim) reduced source-design oracle violations
+from 90 to 36 and brought map/map-popover/progress into the reference bands; the
+remaining gaps — oversized grey display typography, industrial framing, and the
+still-dark abilities/settings fields — are **not claimed** and are recorded in
+[`evidence/visual-review.md`](evidence/visual-review.md).
 
 ## Portfolio entry
 
@@ -58,9 +60,13 @@ all three lanes to it:
   1280 × 800 states on the pinned macOS host, within the documented tolerances,
   with committed image goldens and a token-consumption gate. It does **not**
   support pixel identity, a full state/transition matrix, other DPI/backends/
-  OSes, physical-input parity, accessibility or usability parity, or
-  source-design composition fidelity. The coverage matrix and conditions for a
-  stronger claim are in [`evidence/parity-matrix.md`](evidence/parity-matrix.md).
+  OSes, physical-input parity, accessibility or usability parity, or full
+  source-design composition fidelity. The restyle pass is recorded in
+  [`evidence/visual-review.md`](evidence/visual-review.md); the oracle audit now
+  records 36 composition violations across 24 lane/state observations (9 clean)
+  and still flags the abilities/settings ink/mint balance. The coverage matrix
+  and conditions for a stronger claim are in
+  [`evidence/parity-matrix.md`](evidence/parity-matrix.md).
 
 ### Why the switches looked like pinched ovals — and the fix
 

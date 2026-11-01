@@ -22,6 +22,11 @@ pub(crate) fn paint(hex: &str) -> Rgba {
     rgb(packed(hex))
 }
 
+/// Translucent paint for parity overlays: `alpha` is 0-255.
+pub(crate) fn paint_alpha(hex: &str, alpha: u8) -> Rgba {
+    gpui::rgba((packed(hex) << 8) | u32::from(alpha))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

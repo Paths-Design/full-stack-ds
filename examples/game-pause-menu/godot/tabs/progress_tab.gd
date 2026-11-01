@@ -154,7 +154,7 @@ func _build_drawer() -> void:
 	drawer.visible = false
 	drawer.set_meta("base_x", rect.position.x)
 	add_child(drawer)
-	var frame := UI.frame("paper", "ruleStrong")
+	var frame := UI.frame(str(app.parity.progress["drawer"]["background"]), "ruleStrong")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size
