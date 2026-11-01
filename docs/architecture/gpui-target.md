@@ -82,11 +82,20 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
-What the projection does **not** claim: a mounted, interactive, accessible or
-pixel-equivalent realization of the pending families. The seven bounded
-control/static components carry mounted engine witnesses; the other 48 are emitted,
-style-resolved and compile with no mounted interaction witness. Emitted bytes
-prove projection, not behaviour.
+What the projection does **not** claim: an interactive, accessible or
+pixel-equivalent realization of the pending families.
+
+The witness boundary is two-tier and stated per tier. **Every** admitted component
+carries a generated mount witness (`<Name>/<Name>.test.rs`, declared behind
+`#[cfg(test)]` by the generated barrel): it constructs the default view with every
+realized boolean set true, renders it in GPUI's test window, and asserts the root
+part reached layout — or, where the contract guards the root on consumer-supplied
+content, that the default view renders without panicking. That proves the
+component mounts and renders; it does not prove interaction, styling correctness or
+pixels. The **seven** bounded control/static components additionally carry the
+hand-written interaction witnesses (owner requests, focus, disabled suppression,
+variants, retained content, slots). The other 48 are mount-witnessed only, with
+their unrealized semantics named in the receipt.
 
 ## Input and owner updates
 
@@ -195,9 +204,13 @@ The [native check script](../../scripts/gpui-pilot.mjs) runs
 Its `fsds.gpui-native-checks.v2` receipt records command logs, toolchain/platform,
 revision, resolved renderer sources/features, required named engine tests and
 source hashes before/after execution.
-Changed inputs or missing required engine witnesses fail the lane. Receipts live
-under ignored `tmp/gpui-pilot/<timestamp>/`; their hashes do not confer the
-admission rail's four-rung binding.
+Changed inputs or missing required engine witnesses fail the lane. The lane also
+enforces the [mount-witness ratchet](../../scripts/gpui-pilot.mjs): for every
+allowlisted component it requires the generated `<Name>/<Name>.test.rs` and its
+executed `components::<module>_mount::mounts` test, so an allowlist change without a
+witness (or a swallowed witness) fails the run. Receipts live under ignored
+`tmp/gpui-pilot/<timestamp>/`; their hashes do not confer the admission rail's
+four-rung binding.
 
 [Mounted tests](../../packages/ds-gpui/tests/native_runtime.rs) dispatch pointer
 and keyboard events through GPUI's test engine and inspect generated entities,
