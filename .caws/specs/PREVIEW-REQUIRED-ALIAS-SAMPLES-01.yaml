@@ -1,9 +1,11 @@
 id: PREVIEW-REQUIRED-ALIAS-SAMPLES-01
 title: 'Derive valid required alias samples for component previews'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Landed build-side required alias fixtures with isolated JSON samples, twenty five-framework preview observations, AX and passing build/checks; global release and newly audited passive-component blockers remain open.'
 created_at: '2026-11-01T21:15:04.284Z'
-updated_at: '2026-11-01T21:15:21.642Z'
+updated_at: '2026-11-01T21:54:20.136Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
