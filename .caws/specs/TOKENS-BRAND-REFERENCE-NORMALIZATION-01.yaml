@@ -49,9 +49,8 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "At candidate 508b68c1, the 61 executed tests cover exact/core/semantic ambiguity in both semantic and component walkers, reject missing paths through the validator, and preserve composite leaf boundaries. Parent-reference-before.log demonstrates four expected implicit-reference failures before the repair."
-    recorded_at: "2026-11-01T13:09:54.332Z"
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/parent-reference-composition.log"
+    evidence_ref: "Raw evidence inspected in .caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/parent-reference-composition.log: 61 executed cases establish exact/core/semantic preference, missing-reference rejection, semantic/component emission and composite leaves. parent-reference-before.log retains four expected pre-fix failures. The commit citation verifies source identity only; ignored raw logs are not represented as tracked artifacts."
+    recorded_at: "2026-11-01T13:12:54.907Z"
     commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"
   - criterion_id: A2
     status: pass
