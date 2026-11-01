@@ -89,11 +89,11 @@ evidence:
     commit_sha: "083d81833"
   - criterion_id: A3
     status: pass
-    evidence_ref: "the 45 components that previously refused now emit; generation exits 0 with no GPUI_UNSUPPORTED_ failure, and each previously refusing fact is a named omission (Select: compositeControl/iteration/keyboard; Calendar: dateGrid/iteration; Button: componentRef; Markdown: contentTransform; Icon: iconGlyph; Tabs: interaction)"
-    recorded_at: "2026-11-01T08:17:09.611Z"
+    evidence_ref: "the 45 components that previously refused now emit (generation exit 0, no GPUI_UNSUPPORTED_ failure). Each previously refusing fact is a named omission in the component's regenerated receipt: Select compositeControl/iteration/keyboard, Calendar dateGrid/iteration, Button componentRef, Markdown contentTransform, Icon iconGlyph, Tabs interaction. Receipts are regenerated artifacts, gitignored at .gitignore:125; the committed projection is the generated source cited here."
+    recorded_at: "2026-11-01T08:17:44.116Z"
     command: "pnpm run generate:gpui"
     exit_code: 0
-    artifact_path: packages/ds-gpui/src/components/Select/capabilities.json
+    artifact_path: packages/ds-gpui/src/components/Select/Select.rs
     commit_sha: "083d81833"
   - criterion_id: A4
     status: pass
