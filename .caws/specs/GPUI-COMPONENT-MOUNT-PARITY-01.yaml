@@ -2,7 +2,6 @@ id: GPUI-COMPONENT-MOUNT-PARITY-01
 title: 'GPUI mount parity: every admitted component carries an executed mount witness'
 mode: feature
 lifecycle_state: active
-worktree: gpui-mount-parity
 created_at: '2026-11-01T08:24:37.941Z'
 updated_at: '2026-11-01T08:24:43.302Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
