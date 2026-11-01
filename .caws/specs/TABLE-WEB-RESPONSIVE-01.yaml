@@ -12,6 +12,7 @@ blast_radius:
     - 'Generic React numeric conditional attribute lowering'
     - 'Preserve structural Unity Table with explicit refusal of web-only keyboard and content-label metadata'
     - 'Generic Svelte numeric conditional attribute lowering'
+    - 'Native runtime usage excludes omitted DOM tab-order bindings'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
