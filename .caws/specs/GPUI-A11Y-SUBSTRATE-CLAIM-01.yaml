@@ -1,9 +1,11 @@
 id: GPUI-A11Y-SUBSTRATE-CLAIM-01
 title: 'Record accessibility as a substrate-bound non-claim'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Accessibility is recorded as a substrate non-claim backed by the pinned GPUI revision and a re-probe, with zero generated-byte change.'
 created_at: '2026-11-01T11:58:14.175Z'
-updated_at: '2026-11-01T11:58:36.295Z'
+updated_at: '2026-11-01T12:04:33.560Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
