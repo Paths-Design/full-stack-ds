@@ -49,9 +49,17 @@ impl Render for PageNavigator{fn render(&mut self,window:&mut Window,cx:&mut Con
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let ref_previous=self.ref_previous.get_or_insert_with(||cx.new(|_|crate::components::Button::default())).clone();
+ let ref_previous__set_aria_label=self.previous_label.clone();
+ ref_previous.update(cx,|child,cx|{child.set_aria_label(ref_previous__set_aria_label,cx);});
  let ref_input=self.ref_input.get_or_insert_with(||cx.new(|_|crate::components::Input::default())).clone();
+ let ref_input__set_aria_label=self.page_label.clone();
+ ref_input.update(cx,|child,cx|{child.set_aria_label(ref_input__set_aria_label,cx);});
  let ref_commit=self.ref_commit.get_or_insert_with(||cx.new(|_|crate::components::Button::default())).clone();
+ let ref_commit__set_aria_label=self.commit_label.clone();
+ ref_commit.update(cx,|child,cx|{child.set_aria_label(ref_commit__set_aria_label,cx);});
  let ref_next=self.ref_next.get_or_insert_with(||cx.new(|_|crate::components::Button::default())).clone();
+ let ref_next__set_aria_label=self.next_label.clone();
+ ref_next.update(cx,|child,cx|{child.set_aria_label(ref_next__set_aria_label,cx);});
  let ref_choices=self.ref_choices.get_or_insert_with(||cx.new(|_|crate::components::Pagination::default())).clone();
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-root".to_string()).child(apply_part_style(div(),"previous",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-previous".to_string()).child(ref_previous.clone())).child(apply_part_style(div(),"field",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-field".to_string()).child(apply_part_style(div(),"input",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-input".to_string()).child(ref_input.clone()))).child(apply_part_style(div(),"context",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-context".to_string())).child(apply_part_style(div(),"commit",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-commit".to_string()).child(ref_commit.clone())).child(apply_part_style(div(),"next",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-next".to_string()).child(ref_next.clone())).when(self.show_choices,|node|node.child(apply_part_style(div(),"choices",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"page-navigator-choices".to_string()).child(ref_choices.clone()))).id("page-navigator");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);

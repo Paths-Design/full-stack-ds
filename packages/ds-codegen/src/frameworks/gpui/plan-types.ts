@@ -38,6 +38,8 @@ export interface GpuiRefPlan {
   refType: string;
   /** Static literal props projected onto the child's generated builders. */
   attrs: Array<{ prop: string; literal: string }>;
+  /** Parent-state-driven props updated through the child's generated setters each render. */
+  dynamic: Array<{ prop: string; setter: string; expr: string }>;
   /** Facts of the reference that the projection does not realize. */
   omissions: GpuiOmission[];
 }

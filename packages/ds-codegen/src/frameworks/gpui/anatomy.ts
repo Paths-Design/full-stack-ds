@@ -109,7 +109,7 @@ function projectedRefAttrs(instance: NonNullable<DomNodeIR['componentInstance']>
 }
 
 /** Retained ref plans in anatomy pre-order (the Rust tree walk consumes them in the same order). */
-function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[]): GpuiRefPlan[] {
+function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomyState): GpuiRefPlan[] {
   const refs: GpuiRefPlan[] = [];
   const used = new Set<string>();
   const visit = (node: DomNodeIR): void => {
@@ -121,9 +121,27 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[]): GpuiRefPlan[] {
       while (used.has(field)) field = `ref_${base}_${suffix++}`;
       used.add(field);
       const attrs = instance ? projectedRefAttrs(instance) : [];
+      const dynamic: GpuiRefPlan['dynamic'] = [];
       const refOmissions: GpuiOmission[] = [];
       for (const binding of instance?.bindings ?? []) {
-        refOmissions.push({ kind: 'ref-binding', source: `${field}.${binding.targetProp}`, reason: 'dynamic child prop binding is not projected: the retained child is constructed once with static props', boundary: 'anatomy-component-ref-props', disposition: 'pending' });
+        const setter = typeof binding.targetProp === 'string' ? identifier(binding.targetProp) : undefined;
+        const expression = binding.expr;
+        const omitted = (reason: string) => refOmissions.push({ kind: 'ref-binding', source: `${field}.${binding.targetProp}`, reason, boundary: 'anatomy-component-ref-props', disposition: 'pending' });
+        if (!setter) { omitted('child prop has no projected setter (reserved or missing target prop)'); continue; }
+        const targetProp = binding.targetProp as string;
+        if (expression.kind === 'prop' && typeof expression.prop === 'string' && !expression.path?.length) {
+          const prop = expression.prop;
+          if (state.realizedBoolean.has(prop)) dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: `self.${identifier(prop) ?? prop}` });
+          else if (state.realizedText.has(prop)) dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: `self.${identifier(prop) ?? prop}.clone()` });
+          else if (state.realizedAxes.has(prop)) dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: `self.variant_values.get(${q(prop)}).cloned().unwrap_or_default()` });
+          else omitted(`parent prop ${prop} is not realized by this projection`);
+          continue;
+        }
+        if (expression.kind === 'literal' && typeof expression.value === 'string') {
+          dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: q(expression.value) });
+          continue;
+        }
+        omitted(`binding expression '${expression.kind}' has no parent-state lowering in this projection`);
       }
       for (const event of instance?.events ?? []) {
         refOmissions.push({ kind: 'ref-event', source: `${field}.${event.targetHandlerProp}`, reason: 'child event wiring is not projected (behaviour parity is a later class)', boundary: 'anatomy-component-ref-dynamic', disposition: 'pending' });
@@ -136,7 +154,7 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[]): GpuiRefPlan[] {
       }
       if (!instance) refOmissions.push({ kind: 'ref-instance', source: field, reason: 'component instance facts were unavailable at IR build time', boundary: 'anatomy-component-ref', disposition: 'pending' });
       omissions.push(...refOmissions);
-      refs.push({ field, refType: node.componentRef, attrs, omissions: refOmissions });
+      refs.push({ field, refType: node.componentRef, attrs, dynamic, omissions: refOmissions });
       return;
     }
     for (const child of node.children) visit(child);
@@ -425,7 +443,7 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
 
   const dom = transformNode(ir.dom ?? emptyRoot(), state);
   if (!dom) throw new Error(`GPUI_ANATOMY_ROOT_OMITTED: ${ir.name}`);
-  const refs = collectRefs(dom, state.omissions);
+  const refs = collectRefs(dom, state.omissions, state);
   const transformed: ComponentIR = { ...ir, dom };
   const childContent = hasChildrenPlaceholder(transformed) || nodesOf(dom).some(node => node.tag === 'children' || node.tag === 'slot' && !node.slotName);
 
