@@ -91,10 +91,15 @@ Anatomy nodes that render another contract (`componentRef`) are realized as
 `Option<Entity<Child>>` per reference (created lazily on first render, so child
 state survives parent redraws), projects the reference's static literal props onto
 the child's generated builders, and renders the child entity in the parent tree.
-Dynamic child prop bindings and child event wiring are constructed-once facts this
-projection does not update, so they are named as `ref-binding`/`ref-event`
-omissions in the component receipt; a child prop with no projected builder (a
-reserved name such as `type`, or a non-literal value) is named as `ref-attr`.
+**Dynamic child props** are projected too: a reference binding whose expression is
+a realized parent prop (bool, retained text, or variant axis) or a literal is
+applied every render through the child's generated setter, so the child tracks
+the parent's state (`Alert.dismiss` receives `set_aria_label(self.dismiss_label)`,
+`Button.spinner` receives `set_inline(self.loading)`). Expressions with no
+parent-state lowering in this projection — `paged`, `channel`, `valueMap` and
+`message` — remain named `ref-binding` omissions, as do child event wiring
+(`ref-event`) and props with no projected builder (a reserved name such as `type`,
+or a non-literal value — `ref-attr`).
 ```
 parent parts: root, previous, previousIcon, input, commit, next, nextIcon, choices
 refs:        ref_previous: Option<Entity<Button>>, ref_previousIcon: Option<Entity<Icon>>, …
