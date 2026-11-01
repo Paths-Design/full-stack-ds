@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "a componentRef instance event whose expression is a realized parent callback now emits a closure into the child's callback setter (generated Alert shows alert-dismiss child updated with set_on_click(move |window,cx| ... forwarding self.on_dismiss)); events with non-parent-callback expressions (paged/selection) remain named ref-event omissions; only Alert and Chip regenerate"
+    recorded_at: "2026-11-01T11:16:05.462Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Alert/Alert.rs
+    commit_sha: f6492f8e0
