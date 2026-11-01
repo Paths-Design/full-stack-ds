@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: postcard-engagement-i18n
 created_at: '2026-11-01T19:07:23.492Z'
-updated_at: '2026-11-01T19:16:27.617Z'
+updated_at: '2026-11-01T19:31:26.206Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -36,6 +36,8 @@ scope:
     - packages/ds-codegen/src/frameworks/unity/walker.ts
     - packages/ds-codegen/src/frameworks/unity/walker.test.ts
     - packages/ds-codegen/src/frameworks/unity/factory.test.ts
+    - packages/ds-unity/Tests/Editor/InteractionTests.cs
+    - docs/architecture/unity-target.md
   out: []
 invariants:
   - 'Keep required author and stats inputs and existing public media/avatar props; this slice does not close omitted media/avatar or preview-fixture obligations'
