@@ -54,3 +54,10 @@ evidence:
     command: "pnpm run test:react-native"
     exit_code: 0
     commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Prepared structural scopes preserve one-pass iterables, nested arrays, fragments, empty values, exact supplied element identity and keyed state/ref reorder; collision regression and scalar flow cap tests inspected. 311 native cases pass; helper host counts and themed Field label color prove scalar flow and existing Text host preservation. Before/after logs peer-regressions-before.log and peer-native-final.log; full final checks/224646866-VpCSHe/frameworks.log. Async nodes, mixed consumer element global clipping and native OS/AT unqualified."
+    recorded_at: "2026-11-01T23:09:04.611Z"
+    command: "pnpm run test:react-native"
+    exit_code: 0
+    commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
