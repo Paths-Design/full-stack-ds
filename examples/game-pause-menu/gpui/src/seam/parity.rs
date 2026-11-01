@@ -16,6 +16,7 @@ use std::fmt;
 
 use serde::Deserialize;
 
+use super::tokens::{TokenProvenance, resolve_palette, resolve_type_scale};
 use super::types::hex_rgb;
 
 pub const PARITY_LAYOUT_JSON: &str =
@@ -104,6 +105,49 @@ impl Colors {
     }
 }
 
+impl Colors {
+    /// Overwrite the palette with token-resolved values (the authority stores
+    /// value literals plus provenance; rendering uses the token resolution).
+    pub(crate) fn apply_tokens(&mut self, palette: &BTreeMap<String, String>) -> Result<(), ParityError> {
+        for name in [
+            "signal", "signalDeep", "signalHot", "onSignal", "ink", "charcoal", "graphite",
+            "boneBright", "bone", "paper", "paperMuted", "sage", "moss", "alert", "clear",
+            "rule", "ruleStrong", "muted", "textSecondary",
+        ] {
+            let value = palette.get(name).ok_or_else(|| {
+                invalid(format!("authority colours are missing token provenance for '{name}'"))
+            })?;
+            *self.slot_mut(name).expect("known colour role") = value.clone();
+        }
+        Ok(())
+    }
+
+    fn slot_mut(&mut self, name: &str) -> Option<&mut String> {
+        Some(match name {
+            "signal" => &mut self.signal,
+            "signalDeep" => &mut self.signal_deep,
+            "signalHot" => &mut self.signal_hot,
+            "onSignal" => &mut self.on_signal,
+            "ink" => &mut self.ink,
+            "charcoal" => &mut self.charcoal,
+            "graphite" => &mut self.graphite,
+            "boneBright" => &mut self.bone_bright,
+            "bone" => &mut self.bone,
+            "paper" => &mut self.paper,
+            "paperMuted" => &mut self.paper_muted,
+            "sage" => &mut self.sage,
+            "moss" => &mut self.moss,
+            "alert" => &mut self.alert,
+            "clear" => &mut self.clear,
+            "rule" => &mut self.rule,
+            "ruleStrong" => &mut self.rule_strong,
+            "muted" => &mut self.muted,
+            "textSecondary" => &mut self.text_secondary,
+            _ => return None,
+        })
+    }
+}
+
 /// The JSON `type` map. Field name is `type` in the fixture, `type_scale` here.
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -125,8 +169,51 @@ pub struct TypeScale {
     pub body: f32,
     pub micro: f32,
     pub footer: f32,
+    pub drawer_title: f32,
     pub letter_spacing_micro: f32,
     pub letter_spacing_tab: f32,
+}
+
+impl TypeScale {
+    pub(crate) fn apply_tokens(&mut self, sizes: &BTreeMap<String, f32>) -> Result<(), ParityError> {
+        for name in [
+            "wordmark", "mission", "statLabel", "statValue", "statSub", "chip", "tab",
+            "panelTitle", "panelMeta", "rowLabel", "rowSub", "value", "bigValue", "title",
+            "body", "micro", "footer", "drawerTitle", "letterSpacingMicro", "letterSpacingTab",
+        ] {
+            let value = *sizes.get(name).ok_or_else(|| {
+                invalid(format!("authority type sizes are missing token provenance for '{name}'"))
+            })?;
+            *self.slot_mut(name).expect("known type role") = value;
+        }
+        Ok(())
+    }
+
+    fn slot_mut(&mut self, name: &str) -> Option<&mut f32> {
+        Some(match name {
+            "wordmark" => &mut self.wordmark,
+            "mission" => &mut self.mission,
+            "statLabel" => &mut self.stat_label,
+            "statValue" => &mut self.stat_value,
+            "statSub" => &mut self.stat_sub,
+            "chip" => &mut self.chip,
+            "tab" => &mut self.tab,
+            "panelTitle" => &mut self.panel_title,
+            "panelMeta" => &mut self.panel_meta,
+            "rowLabel" => &mut self.row_label,
+            "rowSub" => &mut self.row_sub,
+            "value" => &mut self.value,
+            "bigValue" => &mut self.big_value,
+            "title" => &mut self.title,
+            "body" => &mut self.body,
+            "micro" => &mut self.micro,
+            "footer" => &mut self.footer,
+            "drawerTitle" => &mut self.drawer_title,
+            "letterSpacingMicro" => &mut self.letter_spacing_micro,
+            "letterSpacingTab" => &mut self.letter_spacing_tab,
+            _ => return None,
+        })
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -662,6 +749,10 @@ pub struct ParityLayout {
     pub status_chip: StatusChip,
     pub captures: BTreeMap<String, CaptureSpec>,
     pub icon_art: IconArt,
+    #[serde(rename = "colorTokens", default)]
+    pub color_tokens: BTreeMap<String, TokenProvenance>,
+    #[serde(rename = "typeTokens", default)]
+    pub type_tokens: BTreeMap<String, TokenProvenance>,
 }
 
 /// The portable icon code for a catalog name (`parity.md` → "Icon art").
@@ -807,7 +898,26 @@ pub fn expect_parity_layout(result: Result<ParityLayout, ParityError>) -> Parity
 }
 
 pub fn try_load_parity_layout() -> Result<ParityLayout, ParityError> {
-    parse_parity_layout(PARITY_LAYOUT_JSON)
+    let mut layout = parse_parity_layout(PARITY_LAYOUT_JSON)?;
+    apply_token_authority(&mut layout)?;
+    Ok(layout)
+}
+
+/// Resolve the authority's `colorTokens` / `typeTokens` provenance through the
+/// embedded token graph + Orion brand layer and write the values the views
+/// render. The literal values in the fixture are the checked fallback, not the
+/// rendering source.
+fn apply_token_authority(layout: &mut ParityLayout) -> Result<(), ParityError> {
+    if layout.color_tokens.is_empty() || layout.type_tokens.is_empty() {
+        return Err(invalid("authority must declare colorTokens and typeTokens provenance"));
+    }
+    let palette = resolve_palette(&layout.color_tokens)
+        .map_err(|error| invalid(format!("colour token resolution failed: {error}")))?;
+    layout.colors.apply_tokens(&palette)?;
+    let sizes = resolve_type_scale(&layout.type_tokens)
+        .map_err(|error| invalid(format!("type token resolution failed: {error}")))?;
+    layout.type_scale.apply_tokens(&sizes)?;
+    Ok(())
 }
 
 /// Parse and validate a parity layout document.

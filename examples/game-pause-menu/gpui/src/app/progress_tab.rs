@@ -254,7 +254,7 @@ impl Menu {
         let title = self.text_at(
             cx,
             "drawer:title",
-            style::drawer_title(),
+            style::drawer_title(&layout.type_scale),
             &layout.colors.ink,
             faction.name.clone(),
             padding,

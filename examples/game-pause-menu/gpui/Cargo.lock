@@ -1900,6 +1900,7 @@ dependencies = [
 name = "game-pause-menu-gpui"
 version = "0.1.0"
 dependencies = [
+ "core-foundation-sys",
  "full-stack-ds-gpui",
  "gpui",
  "gpui_platform",

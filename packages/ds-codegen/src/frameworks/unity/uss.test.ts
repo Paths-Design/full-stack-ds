@@ -339,7 +339,7 @@ describe("Unity USS projection: fixed-root rem typography", () => {
       shell: { "font-size": web("1em"), "letter-spacing": web("calc(1rem + 1px)"), margin: web("1rem") },
       "--sm": { "font-size": web("2em"), "knob.tracking": web("0.1em") },
     }, {}, sized));
-    expect(consumers(uss)).toEqual([]);
+    expect(consumers(uss).filter(([property]) => !property.startsWith("--"))).toEqual([]);
     expect([...components[0]!.carrierAxes]).toEqual([]);
     expect(ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([
       ["--sm", "font-size", "uss-scalar"], ["--sm", "knob.tracking", "uss-scalar"],
@@ -564,10 +564,12 @@ describe("Unity USS projection: token section", () => {
     expect(rule(uss, ".fsds-theme.fsds-theme--dark")).toEqual(["--fsds-semantic-ink-well: #dddddd;"]);
     // A brand alias resolves through the graph; the light brand block also governs
     // dark mode, so a theme-aware alias restates its dark value in the brand dark block.
-    expect(rule(uss, ".fsds-theme.fsds-brand-bold")).toEqual(["--fsds-semantic-ink-well: #aa0000;", "--fsds-semantic-line: 2px;"]);
+    // Every brand-layer variable that resolves to a USS scalar is projected,
+    // including brand-only variables a contract does not read yet.
+    expect(rule(uss, ".fsds-theme.fsds-brand-bold")).toEqual(["--fsds-core-hue: #00ff00;", "--fsds-semantic-ink-well: #aa0000;", "--fsds-semantic-line: 2px;"]);
     expect(rule(uss, ".fsds-theme.fsds-brand-bold.fsds-theme--dark")).toEqual(["--fsds-semantic-ink-well: #ff5555;"]);
     expect(uss).toContain("/* Brands: bold */");
-    expect(uss).not.toContain("--fsds-core-hue");
+    expect(uss).toContain("--fsds-core-hue: #00ff00;");
     // Equal specificity, source order: the brand blocks follow the theme blocks.
     expect(uss.indexOf(".fsds-theme.fsds-brand-bold {")).toBeGreaterThan(uss.indexOf(".fsds-theme.fsds-theme--dark {"));
   });

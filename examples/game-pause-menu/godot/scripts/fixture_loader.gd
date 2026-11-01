@@ -17,7 +17,6 @@ const FIXTURE_PATHS := {
 	"abilities": "res://fixtures/abilities.json",
 	"vehicle": "res://fixtures/vehicle.json",
 	"settings": "res://fixtures/settings.json",
-	"appearance": "res://fixtures/orion-appearance.json",
 	"parity_layout": "res://fixtures/parity-layout.json",
 }
 const GLYPH_CATALOG_PATH := "res://addons/full_stack_ds/runtime/glyph_catalog.json"
@@ -32,7 +31,6 @@ var factions: Dictionary = {}
 var abilities: Dictionary = {}
 var vehicle: Dictionary = {}
 var settings: Dictionary = {}
-var appearance: Dictionary = {}
 var parity_layout: Dictionary = {}
 var glyph_names: Dictionary = {}
 
@@ -96,9 +94,21 @@ func _load() -> void:
 		_validate(fixture_name, value)
 		var property_name: String = "map_icons" if fixture_name == "map_icons" else fixture_name
 		set(property_name, value)
+	_resolve_token_palette()
 	ok = errors.is_empty()
 	if not ok:
 		push_error("FIXTURE_CORPUS_MALFORMED: %d error(s); first: %s" % [errors.size(), errors[0]])
+
+
+func _resolve_token_palette() -> void:
+	var resolver := TokenResolver.load_from_project()
+	if resolver.resolved.is_empty() or resolver.brand.is_empty():
+		for error in resolver.errors:
+			_fail("tokens: " + error)
+		return
+	resolver.apply_to_authority(parity_layout)
+	for error in resolver.errors:
+		_fail("tokens: " + error)
 
 
 func _load_glyph_catalog() -> void:
@@ -142,8 +152,6 @@ func _validate(fixture_name: String, data: Dictionary) -> void:
 			_validate_vehicle(data)
 		"settings":
 			_validate_settings(data)
-		"appearance":
-			_validate_appearance(data)
 		"parity_layout":
 			_validate_parity_layout(data)
 		_:
@@ -537,22 +545,6 @@ func _validate_settings(data: Dictionary) -> void:
 	if not swatch_ids.has(str(background.get("value", ""))):
 		_fail("settings.audio.subtitleBackground.value: '%s' is not one of the swatch ids" % background.get("value", ""))
 	_string(audio, "previewLine", "settings.audio")
-
-
-func _validate_appearance(data: Dictionary) -> void:
-	var palette := _dictionary(data, "palette", "orion-appearance")
-	for key in ["signal", "signalDeep", "signalHot", "onSignal", "ink", "charcoal", "graphite", "boneBright", "bone", "sage", "moss", "alert", "clear"]:
-		_color_hex(palette, key, "orion-appearance.palette")
-	var surface := _dictionary(data, "surface", "orion-appearance")
-	for key in ["app", "panel", "raised", "rule", "ruleStrong", "muted", "telemetry"]:
-		_color_hex(surface, key, "orion-appearance.surface")
-	var style := _dictionary(data, "style", "orion-appearance")
-	_number(style, "radius", "orion-appearance.style")
-	_number(style, "borderWidth", "orion-appearance.style")
-	_number(style, "microLabelLetterSpacing", "orion-appearance.style")
-	_bool_field(style, "uppercaseLabels", "orion-appearance.style")
-	_string(style, "watermark", "orion-appearance.style")
-	_string(style, "fontNote", "orion-appearance.style")
 
 
 func _validate_parity_layout(data: Dictionary) -> void:
