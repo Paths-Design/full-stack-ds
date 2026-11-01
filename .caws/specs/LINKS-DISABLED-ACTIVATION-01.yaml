@@ -143,3 +143,10 @@ evidence:
     command: "pnpm run test:react-native"
     exit_code: 0
     commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected contract named pointer suppression, shared IR/CSS/design/Figma projections and tests at 2d742ff53. Final root5642 and state-suppression gate pass: named/category unions and unknown referents, hover/visited guards with focus preserved, selector-subject/native-carrier checks and conditional/layer/importance/order reset falsifiers. Original false-media reset was independently reproduced as red disabled hover in Chrome; repaired audit reports its reachable leak. Raw checks and conditional-reset artifacts are under .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01. Static audit assumes valid CSS values; it is not a general cascade or Figma visual proof."
+    recorded_at: "2026-11-01T18:58:31.001Z"
+    command: "pnpm run audit:state-suppression"
+    exit_code: 0
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
