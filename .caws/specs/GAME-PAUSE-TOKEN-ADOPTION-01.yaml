@@ -59,3 +59,7 @@ evidence:
     status: pass
     evidence_ref: "cargo +1.94.1 test --locked in examples/game-pause-menu/gpui: 69 passed; node examples/game-pause-menu/parity-check.mjs: 117 typography bbox+ink measurements, 0 failures"
     recorded_at: "2026-11-01T05:44:56.160Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node scripts/game-pause-token-provenance.mjs: 19/19 colours and 20/20 type values resolve; packages/ds-tokens/src/brands/orion.tokens.json adds color.surface.moss, color.status.alert/clear and typography.graphic.size.compact/label/display; pnpm tokens:check-brand-refs + check-contrast pass"
+    recorded_at: "2026-11-01T05:45:14.192Z"
