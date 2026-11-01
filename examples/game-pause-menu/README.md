@@ -15,9 +15,9 @@ panels, a full-width signal-orange tab band, mint map/dossier fields, a steel
 shell/footer, hairline rules, uppercase Inter micro-labels and square corners.
 The style is registered as the `orion` brand in
 [`packages/ds-tokens/src/brands/orion.tokens.json`](../../packages/ds-tokens/src/brands/orion.tokens.json)
-(`data-brand="orion"`). Two restyle passes now give the menu the reference's orange tab band, mint
+(`data-brand="orion"`). Three restyle passes now give the menu the reference's orange tab band, mint
 header/footer and map/dossier fields, a 160 px grey ghost `N5` display layer,
-steel shell gaps and the GPUI modal scrim. The source-design oracle audit moved
+steel shell gaps, 2 px industrial panel frames and the GPUI modal scrim. The source-design oracle audit moved
 from 90 violations / 0 clean observations to **30 / 6**: settings meets the
 bands, abilities misses the ink ceiling by ~1.7 points, map/progress carry more
 mint than the reference collage band, and the full-screen remap modal is

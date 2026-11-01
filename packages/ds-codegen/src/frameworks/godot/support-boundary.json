@@ -186,8 +186,8 @@
         "contract:/anatomy/dom/content/transform",
         "contract:/anatomy/dom/**/children/*/content/transform"
       ],
-      "disposition": "pending",
-      "reason": "the static-content runtime approximates CSS text-transform; exact transform parity is not realised"
+      "disposition": "refused",
+      "reason": "Content transforms (markdown rendering, syntax highlighting) have no transformer on this target; the source text is rendered as given."
     },
     {
       "id": "anatomy-content",
@@ -213,8 +213,8 @@
       "match": [
         "contract:/anatomy/dom/**/cssVariableBindings/**"
       ],
-      "disposition": "pending",
-      "reason": "prop-driven value fills are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "CSS custom-property bindings are authoring mechanism; the native runtimes resolve projected style rules directly and do not evaluate these bindings."
     },
     {
       "id": "anatomy-iteration",
@@ -304,16 +304,16 @@
         "contract:/anatomy/dom/**/bindings/loading",
         "contract:/anatomy/dom/**/bindings/sizes"
       ],
-      "disposition": "pending",
-      "reason": "media presentation and its intrinsic geometry are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored width/height/loading/sizes bindings are not evaluated; the consumer sizes the native host and supplies the texture."
     },
     {
       "id": "anatomy-dom-binding-datetime",
       "match": [
         "contract:/anatomy/dom/**/bindings/datetime"
       ],
-      "disposition": "pending",
-      "reason": "date/time formatting and normalisation are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored datetime bindings are not projected; the consumer formats machine timestamps."
     },
     {
       "id": "anatomy-dom-binding-title",
@@ -369,8 +369,8 @@
         "contract:/anatomy/dom/**/bindings/htmlFor",
         "contract:/anatomy/dom/**/bindings/form"
       ],
-      "disposition": "pending",
-      "reason": "relationships between parts are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored form-association bindings are not projected; association is consumer-owned."
     },
     {
       "id": "anatomy-navigation-binding",
@@ -388,8 +388,8 @@
         "contract:/anatomy/dom/**/bindings/src",
         "contract:/anatomy/dom/**/bindings/alt"
       ],
-      "disposition": "pending",
-      "reason": "media presentation is not realised by the shared runtime yet"
+      "disposition": "lowered",
+      "via": "the DOM src/alt bindings are replaced by the declared prop projection onto the native media host witnessed by the media row"
     },
     {
       "id": "anatomy-data-binding",
@@ -809,8 +809,8 @@
       "match": [
         "contract:/textOverflow/**"
       ],
-      "disposition": "pending",
-      "reason": "native text clamping is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Declared line clamping/overflow behaviour is not projected onto the native label; the consumer applies its own truncation."
     },
     {
       "id": "motion-sequence-facts",
@@ -1475,42 +1475,62 @@
         "contract:/props/*/members/*:profile/**",
         "contract:/props/profile"
       ],
-      "disposition": "pending",
-      "reason": "structured data model facts are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Structured object data (post/profile entities) is not modelled by any target runtime; consumers render their own fields."
     },
     {
-      "id": "prop-media",
+      "id": "prop-media-source",
       "match": [
         "contract:/props/*/members/*:src",
         "contract:/props/*/members/*:src/**",
         "contract:/props/src",
         "contract:/props/*/members/*:alt",
         "contract:/props/*/members/*:alt/**",
-        "contract:/props/alt",
-        "contract:/props/*/members/*:fallbackSrc",
-        "contract:/props/*/members/*:fallbackSrc/**",
-        "contract:/props/fallbackSrc",
+        "contract:/props/alt"
+      ],
+      "disposition": "lowered",
+      "via": "the anatomy runtime sets a Texture or res:// source on the native media host and projects alt onto the accessibility description"
+    },
+    {
+      "id": "prop-media-layout",
+      "match": [
         "contract:/props/*/members/*:priority",
         "contract:/props/*/members/*:priority/**",
         "contract:/props/priority",
+        "contract:/props/*/members/*:width",
+        "contract:/props/*/members/*:width/**",
+        "contract:/props/width",
+        "contract:/props/*/members/*:height",
+        "contract:/props/*/members/*:height/**",
+        "contract:/props/height",
         "contract:/props/*/members/*:objectFit",
         "contract:/props/*/members/*:objectFit/**",
         "contract:/props/objectFit",
         "contract:/props/*/members/*:objectPosition",
         "contract:/props/*/members/*:objectPosition/**",
-        "contract:/props/objectPosition",
-        "contract:/props/*/members/*:height",
-        "contract:/props/*/members/*:height/**",
-        "contract:/props/height",
-        "contract:/props/*/members/*:width",
-        "contract:/props/*/members/*:width/**",
-        "contract:/props/width",
+        "contract:/props/objectPosition"
+      ],
+      "disposition": "refused",
+      "reason": "Media layout and load-priority props are not projected: the native host keeps its own size and stretch behaviour and no loader priority is negotiated."
+    },
+    {
+      "id": "prop-media",
+      "match": [
+        "contract:/props/*/members/*:fallbackSrc",
+        "contract:/props/*/members/*:fallbackSrc/**",
+        "contract:/props/fallbackSrc",
         "contract:/props/*/members/*:sizes",
         "contract:/props/*/members/*:sizes/**",
-        "contract:/props/sizes"
+        "contract:/props/sizes",
+        "contract:/props/*/members/*:loading",
+        "contract:/props/*/members/*:loading/**",
+        "contract:/props/loading",
+        "contract:/props/*/members/*:placeholderSrc",
+        "contract:/props/*/members/*:placeholderSrc/**",
+        "contract:/props/placeholderSrc"
       ],
-      "disposition": "pending",
-      "reason": "media presentation and its intrinsic geometry are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Fallback sources, responsive sizes and lazy-loading have no native carrier: the runtime sets the texture it is given and performs no fetching, sizing negotiation or placeholder swap."
     },
     {
       "id": "prop-navigation",
@@ -1571,8 +1591,8 @@
         "contract:/props/*/members/*:form/**",
         "contract:/props/form"
       ],
-      "disposition": "pending",
-      "reason": "relationships between parts are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Form association props have no native meaning on this target: the runtime does not register controls with a form or submit anything."
     },
     {
       "id": "prop-runtime-behaviour",
@@ -1810,8 +1830,8 @@
         "styles:/**/object-fit/**",
         "styles:/**/object-position/**"
       ],
-      "disposition": "pending",
-      "reason": "media fitting is not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "object-fit/object-position have no TextureRect mapping in this projection; the host keeps its native stretch behaviour rather than an approximation."
     },
     {
       "id": "styles-painted-color",

@@ -55,6 +55,8 @@ func set_contract_prop(prop: String, value: Variant) -> void:
 		"ariaDescribedby": _wire_accessibility_relation(value, "described")
 		"required": _set_structural_state("aria_required", bool(value))
 		"invalid": _set_structural_state("aria_invalid", bool(value))
+		"src": _apply_media_source(value)
+		"alt": _apply_media_alt(value)
 	prop_changed.emit(prop, value)
 	refresh()
 
@@ -176,6 +178,32 @@ func _draw() -> void:
 ## Make each projected focus part focusable and remember its outline. The ring is
 ## painted in this runtime's own coordinates, so a host of any Control subclass
 ## can show focus without being a Button.
+
+
+## Media projection: a `src` value that is already a Texture, or a `res://` path
+## the engine can load, is set on the media host. Remote URL fetching is out of
+## scope (the receipt names it), so an unsupported value leaves the host empty.
+## `alt` becomes the native accessibility description.
+func _media_host() -> TextureRect:
+	# `self` is typed by this script, so downcast through Control before the
+	# TextureRect check; the same pattern is used elsewhere in this runtime.
+	var root_control: Control = self
+	if root_control is TextureRect: return root_control as TextureRect
+	for child in get_children():
+		if child is TextureRect: return child as TextureRect
+	return null
+
+func _apply_media_source(value: Variant) -> void:
+	var host := _media_host()
+	if host == null: return
+	if value is Texture:
+		host.texture = value
+	elif value is String and value.begins_with("res://") and ResourceLoader.exists(value):
+		var resource = load(value)
+		if resource is Texture: host.texture = resource
+
+func _apply_media_alt(value: Variant) -> void:
+	accessibility_description = str(value)
 
 ## Accessibility projection: labeling attributes, part relations and the declared
 ## state-to-ARIA mapping. Godot exposes no accessible-role property, so the

@@ -1,7 +1,7 @@
 {
   "claim": "Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.",
-  "root": "/tmp/restyle2-evidence",
-  "out": "/tmp/restyle2-evidence/report",
+  "root": "/tmp/restyle3-evidence",
+  "out": "/tmp/restyle3-evidence/report",
   "states": [
     "map",
     "map-popover",
@@ -976,7 +976,7 @@
       "probe": "tab-inactive",
       "text": "PROGRESS",
       "bbox": {
-        "x": 354,
+        "x": 355,
         "y": 127,
         "w": 69,
         "h": 10,
@@ -990,11 +990,11 @@
       "probe": "panel-title",
       "text": "ARES BASIN // SECTOR 07",
       "bbox": {
-        "x": 42,
-        "y": 193,
+        "x": 43,
+        "y": 194,
         "w": 139,
-        "h": 7,
-        "ink": 0.361768
+        "h": 6,
+        "ink": 0.366906
       }
     },
     {
@@ -1004,11 +1004,11 @@
       "probe": "panel-meta",
       "text": "SCALE 1:40K",
       "bbox": {
-        "x": 817,
-        "y": 193,
+        "x": 816,
+        "y": 194,
         "w": 61,
-        "h": 7,
-        "ink": 0.395785
+        "h": 6,
+        "ink": 0.398907
       }
     },
     {
@@ -1061,10 +1061,10 @@
       "text": "ESC BACK · TAB FOCUS · CLICK SELECT · 1–4 TABS",
       "bbox": {
         "x": 25,
-        "y": 774,
+        "y": 775,
         "w": 306,
-        "h": 6,
-        "ink": 0.162854
+        "h": 5,
+        "ink": 0.167974
       }
     },
     {
@@ -1075,10 +1075,10 @@
       "text": "NAV TARGET",
       "bbox": {
         "x": 1097,
-        "y": 762,
+        "y": 763,
         "w": 63,
-        "h": 4,
-        "ink": 0.404762
+        "h": 3,
+        "ink": 0.386243
       }
     },
     {
@@ -1089,7 +1089,7 @@
       "text": "SUPPLY CACHE 02",
       "bbox": {
         "x": 1137,
-        "y": 770,
+        "y": 771,
         "w": 118,
         "h": 10,
         "ink": 0.507627
@@ -1102,11 +1102,11 @@
       "probe": "icon-title",
       "text": "ICON VISIBILITY",
       "bbox": {
-        "x": 930,
-        "y": 193,
+        "x": 931,
+        "y": 194,
         "w": 86,
-        "h": 7,
-        "ink": 0.340532
+        "h": 6,
+        "ink": 0.343023
       }
     },
     {
@@ -1116,11 +1116,11 @@
       "probe": "icon-meta",
       "text": "7/8 PLOTTED",
       "bbox": {
-        "x": 1175,
-        "y": 193,
+        "x": 1174,
+        "y": 194,
         "w": 63,
-        "h": 5,
-        "ink": 0.415873
+        "h": 4,
+        "ink": 0.412698
       }
     },
     {
@@ -1364,17 +1364,17 @@
     {
       "state": "map",
       "compare": "gpui/unity",
-      "rmse": 0.0605777
+      "rmse": 0.0673298
     },
     {
       "state": "map",
       "compare": "unity/godot",
-      "rmse": 0.0545913
+      "rmse": 0.0616847
     },
     {
       "state": "map",
       "compare": "gpui/godot",
-      "rmse": 0.067963
+      "rmse": 0.0728899
     },
     {
       "state": "map",
@@ -1400,17 +1400,17 @@
     {
       "state": "map-popover",
       "compare": "gpui/unity",
-      "rmse": 0.124894
+      "rmse": 0.128119
     },
     {
       "state": "map-popover",
       "compare": "unity/godot",
-      "rmse": 0.122121
+      "rmse": 0.125061
     },
     {
       "state": "map-popover",
       "compare": "gpui/godot",
-      "rmse": 0.0928377
+      "rmse": 0.0965045
     },
     {
       "state": "map-popover",
@@ -2222,17 +2222,17 @@
     {
       "state": "progress",
       "compare": "gpui/unity",
-      "rmse": 0.0859605
+      "rmse": 0.0904177
     },
     {
       "state": "progress",
       "compare": "unity/godot",
-      "rmse": 0.0724079
+      "rmse": 0.0786984
     },
     {
       "state": "progress",
       "compare": "gpui/godot",
-      "rmse": 0.079178
+      "rmse": 0.0825252
     },
     {
       "state": "progress",
@@ -2338,7 +2338,7 @@
     {
       "state": "abilities",
       "lane": "gpui",
-      "x": 1254,
+      "x": 1248,
       "y": 200,
       "expected": "#232320",
       "actual": "rgb(35,35,32)",
@@ -2448,7 +2448,7 @@
     {
       "state": "abilities",
       "lane": "unity",
-      "x": 1254,
+      "x": 1248,
       "y": 200,
       "expected": "#232320",
       "actual": "rgb(35,35,32)",
@@ -2558,7 +2558,7 @@
     {
       "state": "abilities",
       "lane": "godot",
-      "x": 1254,
+      "x": 1248,
       "y": 200,
       "expected": "#232320",
       "actual": "rgb(35,35,32)",
@@ -2676,11 +2676,11 @@
       "probe": "grid-title",
       "text": "ABILITY CATALOG",
       "bbox": {
-        "x": 42,
-        "y": 193,
+        "x": 43,
+        "y": 194,
         "w": 97,
-        "h": 7,
-        "ink": 0.33137
+        "h": 6,
+        "ink": 0.331615
       }
     },
     {
@@ -2690,11 +2690,11 @@
       "probe": "grid-meta",
       "text": "10 MODULES · SELECT ONE, THEN A SLOT",
       "bbox": {
-        "x": 610,
-        "y": 193,
+        "x": 609,
+        "y": 194,
         "w": 204,
-        "h": 5,
-        "ink": 0.394118
+        "h": 4,
+        "ink": 0.387255
       }
     },
     {
@@ -2718,11 +2718,11 @@
       "probe": "detail-title",
       "text": "ABILITY DETAIL",
       "bbox": {
-        "x": 866,
-        "y": 193,
+        "x": 867,
+        "y": 194,
         "w": 80,
-        "h": 7,
-        "ink": 0.344643
+        "h": 6,
+        "ink": 0.35625
       }
     },
     {
@@ -2840,17 +2840,17 @@
     {
       "state": "abilities",
       "compare": "gpui/unity",
-      "rmse": 0.0764533
+      "rmse": 0.0816271
     },
     {
       "state": "abilities",
       "compare": "unity/godot",
-      "rmse": 0.0790394
+      "rmse": 0.0841628
     },
     {
       "state": "abilities",
       "compare": "gpui/godot",
-      "rmse": 0.0803948
+      "rmse": 0.0844156
     },
     {
       "state": "abilities",
@@ -2876,17 +2876,17 @@
     {
       "state": "abilities-hover",
       "compare": "gpui/unity",
-      "rmse": 0.0879655
+      "rmse": 0.0924976
     },
     {
       "state": "abilities-hover",
       "compare": "unity/godot",
-      "rmse": 0.0960747
+      "rmse": 0.100308
     },
     {
       "state": "abilities-hover",
       "compare": "gpui/godot",
-      "rmse": 0.0962091
+      "rmse": 0.0996226
     },
     {
       "state": "abilities-hover",
@@ -3568,11 +3568,11 @@
       "probe": "general-title",
       "text": "GENERAL",
       "bbox": {
-        "x": 42,
-        "y": 191,
+        "x": 43,
+        "y": 192,
         "w": 47,
-        "h": 7,
-        "ink": 0.446809
+        "h": 6,
+        "ink": 0.453901
       }
     },
     {
@@ -3582,11 +3582,11 @@
       "probe": "general-meta",
       "text": "PERSONAL PREFERENCES",
       "bbox": {
-        "x": 489,
-        "y": 191,
+        "x": 488,
+        "y": 192,
         "w": 125,
-        "h": 5,
-        "ink": 0.48
+        "h": 4,
+        "ink": 0.458
       }
     },
     {
@@ -3788,17 +3788,17 @@
     {
       "state": "settings",
       "compare": "gpui/unity",
-      "rmse": 0.0943921
+      "rmse": 0.0998059
     },
     {
       "state": "settings",
       "compare": "unity/godot",
-      "rmse": 0.0859575
+      "rmse": 0.0915589
     },
     {
       "state": "settings",
       "compare": "gpui/godot",
-      "rmse": 0.0938354
+      "rmse": 0.0980308
     },
     {
       "state": "settings",
@@ -3824,17 +3824,17 @@
     {
       "state": "settings-remap-modal",
       "compare": "gpui/unity",
-      "rmse": 0.0463433
+      "rmse": 0.0468511
     },
     {
       "state": "settings-remap-modal",
       "compare": "unity/godot",
-      "rmse": 0.047123
+      "rmse": 0.0476059
     },
     {
       "state": "settings-remap-modal",
       "compare": "gpui/godot",
-      "rmse": 0.0462947
+      "rmse": 0.0467007
     },
     {
       "state": "settings-remap-modal",
@@ -3860,17 +3860,17 @@
     {
       "state": "settings-subtitle",
       "compare": "gpui/unity",
-      "rmse": 0.0929625
+      "rmse": 0.098455
     },
     {
       "state": "settings-subtitle",
       "compare": "unity/godot",
-      "rmse": 0.0850347
+      "rmse": 0.0906932
     },
     {
       "state": "settings-subtitle",
       "compare": "gpui/godot",
-      "rmse": 0.0913997
+      "rmse": 0.0957019
     },
     {
       "state": "settings-subtitle",

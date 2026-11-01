@@ -194,7 +194,10 @@ describe("Godot support boundary", () => {
     expect(total).toBeGreaterThan(10_000);
     expect(counts.unclassified).toBe(0);
     expect(unadjudicated).toEqual([]);
-    for (const disposition of ["lowered", "pending", "refused"] as const) expect(counts[disposition]).toBeGreaterThan(0);
+    // The corpus boundary is closed: every leaf is lowered or refused, and the
+    // pending bucket is empty — a regression would show up as a non-zero count.
+    for (const disposition of ["lowered", "refused"] as const) expect(counts[disposition]).toBeGreaterThan(0);
+    expect(counts.pending).toBe(0);
     const dead = boundary.rules.filter(entry => !used.has(entry.id) && entry.catchAll !== true).map(entry => entry.id);
     expect(dead).toEqual([]);
     // The terminal catch-all is exercised only by direct classification of an
@@ -215,11 +218,11 @@ describe("Godot support boundary", () => {
       expect(leaf.catchAll).toBe(false);
       expect(leaf.pointer.startsWith("/")).toBe(true);
     }
-    // A non-lowered leaf is still named by a rule (never silently dropped).
-    // Button has no pending leaves any more, so the check uses a component that
-    // still carries one.
-    const pendingLeaf = classifyContract(load("Avatar"), boundary).find(leaf => leaf.disposition === "pending");
-    expect(pendingLeaf?.rule).toBeTruthy();
+    // No leaf is silently dropped: every reported leaf carries a rule id, which
+    // the loop above already asserts for Button. The corpus is at zero pending, so
+    // the historical "pending leaf is named" example now checks the refused bucket.
+    const refusedLeaf = classifyContract(load("Avatar"), boundary).find(leaf => leaf.disposition === "refused");
+    expect(refusedLeaf?.rule).toBeTruthy();
     // contractLeaves merges the identity-keyed sidecar leaves.
     expect(contractLeaves(load("Button")).some(leaf => leaf.source === "styles")).toBe(true);
   });

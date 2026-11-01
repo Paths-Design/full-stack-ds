@@ -79,11 +79,11 @@
       "state": "map",
       "shares": {
         "ink": 0.241,
-        "mint": 0.554,
+        "mint": 0.555,
         "grey": 0.095,
-        "orange": 0.059,
+        "orange": 0.056,
         "cream": 0.001,
-        "other": 0.049
+        "other": 0.052
       },
       "referenceShares": {
         "styleBoard": {
@@ -113,7 +113,7 @@
         },
         {
           "family": "mint",
-          "observed": 0.554,
+          "observed": 0.555,
           "band": [
             0.15,
             0.4
@@ -128,10 +128,10 @@
       "shares": {
         "ink": 0.304,
         "mint": 0.475,
-        "grey": 0.102,
-        "orange": 0.067,
+        "grey": 0.103,
+        "orange": 0.064,
         "cream": 0.001,
-        "other": 0.051
+        "other": 0.054
       },
       "referenceShares": {
         "styleBoard": {
@@ -165,12 +165,12 @@
       "lane": "gpui",
       "state": "progress",
       "shares": {
-        "ink": 0.356,
+        "ink": 0.354,
         "mint": 0.422,
         "grey": 0.09,
-        "orange": 0.062,
+        "orange": 0.058,
         "cream": 0.001,
-        "other": 0.07
+        "other": 0.075
       },
       "referenceShares": {
         "styleBoard": {
@@ -207,9 +207,9 @@
         "ink": 0.617,
         "mint": 0.17,
         "grey": 0.104,
-        "orange": 0.057,
+        "orange": 0.052,
         "cream": 0,
-        "other": 0.052
+        "other": 0.056
       },
       "referenceShares": {
         "styleBoard": {
@@ -246,9 +246,9 @@
         "ink": 0.615,
         "mint": 0.17,
         "grey": 0.107,
-        "orange": 0.057,
+        "orange": 0.053,
         "cream": 0,
-        "other": 0.051
+        "other": 0.055
       },
       "referenceShares": {
         "styleBoard": {
@@ -283,11 +283,11 @@
       "state": "settings",
       "shares": {
         "ink": 0.586,
-        "mint": 0.169,
+        "mint": 0.17,
         "grey": 0.135,
-        "orange": 0.062,
+        "orange": 0.057,
         "cream": 0.002,
-        "other": 0.046
+        "other": 0.05
       },
       "referenceShares": {
         "styleBoard": {
@@ -379,10 +379,10 @@
       "shares": {
         "ink": 0.574,
         "mint": 0.17,
-        "grey": 0.133,
-        "orange": 0.072,
+        "grey": 0.132,
+        "orange": 0.068,
         "cream": 0.002,
-        "other": 0.05
+        "other": 0.054
       },
       "referenceShares": {
         "styleBoard": {
@@ -406,12 +406,12 @@
       "lane": "unity",
       "state": "map",
       "shares": {
-        "ink": 0.241,
-        "mint": 0.554,
-        "grey": 0.097,
+        "ink": 0.244,
+        "mint": 0.555,
+        "grey": 0.103,
         "orange": 0.06,
-        "cream": 0.002,
-        "other": 0.046
+        "cream": 0.001,
+        "other": 0.037
       },
       "referenceShares": {
         "styleBoard": {
@@ -432,7 +432,7 @@
       "violations": [
         {
           "family": "ink",
-          "observed": 0.241,
+          "observed": 0.244,
           "band": [
             0.3,
             0.6
@@ -441,7 +441,7 @@
         },
         {
           "family": "mint",
-          "observed": 0.554,
+          "observed": 0.555,
           "band": [
             0.15,
             0.4
@@ -454,12 +454,12 @@
       "lane": "unity",
       "state": "map-popover",
       "shares": {
-        "ink": 0.306,
+        "ink": 0.309,
         "mint": 0.474,
-        "grey": 0.103,
+        "grey": 0.11,
         "orange": 0.063,
-        "cream": 0.001,
-        "other": 0.052
+        "cream": 0.002,
+        "other": 0.042
       },
       "referenceShares": {
         "styleBoard": {
@@ -493,12 +493,12 @@
       "lane": "unity",
       "state": "progress",
       "shares": {
-        "ink": 0.356,
+        "ink": 0.36,
         "mint": 0.429,
-        "grey": 0.087,
+        "grey": 0.094,
         "orange": 0.064,
         "cream": 0.001,
-        "other": 0.063
+        "other": 0.052
       },
       "referenceShares": {
         "styleBoard": {
@@ -532,12 +532,12 @@
       "lane": "unity",
       "state": "abilities",
       "shares": {
-        "ink": 0.617,
+        "ink": 0.62,
         "mint": 0.17,
-        "grey": 0.105,
+        "grey": 0.112,
         "orange": 0.058,
-        "cream": 0.001,
-        "other": 0.05
+        "cream": 0,
+        "other": 0.04
       },
       "referenceShares": {
         "styleBoard": {
@@ -558,7 +558,7 @@
       "violations": [
         {
           "family": "ink",
-          "observed": 0.617,
+          "observed": 0.62,
           "band": [
             0.3,
             0.6
@@ -571,12 +571,12 @@
       "lane": "unity",
       "state": "abilities-hover",
       "shares": {
-        "ink": 0.615,
+        "ink": 0.618,
         "mint": 0.17,
-        "grey": 0.107,
-        "orange": 0.058,
-        "cream": 0.001,
-        "other": 0.05
+        "grey": 0.114,
+        "orange": 0.057,
+        "cream": 0,
+        "other": 0.041
       },
       "referenceShares": {
         "styleBoard": {
@@ -597,7 +597,7 @@
       "violations": [
         {
           "family": "ink",
-          "observed": 0.615,
+          "observed": 0.618,
           "band": [
             0.3,
             0.6
@@ -610,12 +610,12 @@
       "lane": "unity",
       "state": "settings",
       "shares": {
-        "ink": 0.583,
+        "ink": 0.587,
         "mint": 0.17,
-        "grey": 0.138,
+        "grey": 0.145,
         "orange": 0.063,
         "cream": 0.002,
-        "other": 0.045
+        "other": 0.034
       },
       "referenceShares": {
         "styleBoard": {
@@ -705,12 +705,12 @@
       "lane": "unity",
       "state": "settings-subtitle",
       "shares": {
-        "ink": 0.57,
+        "ink": 0.574,
         "mint": 0.17,
-        "grey": 0.135,
+        "grey": 0.142,
         "orange": 0.073,
         "cream": 0.002,
-        "other": 0.05
+        "other": 0.04
       },
       "referenceShares": {
         "styleBoard": {
@@ -822,11 +822,11 @@
       "state": "progress",
       "shares": {
         "ink": 0.356,
-        "mint": 0.427,
+        "mint": 0.423,
         "grey": 0.088,
         "orange": 0.063,
         "cream": 0,
-        "other": 0.065
+        "other": 0.069
       },
       "referenceShares": {
         "styleBoard": {
@@ -847,7 +847,7 @@
       "violations": [
         {
           "family": "mint",
-          "observed": 0.427,
+          "observed": 0.423,
           "band": [
             0.15,
             0.4
@@ -860,7 +860,7 @@
       "lane": "godot",
       "state": "abilities",
       "shares": {
-        "ink": 0.618,
+        "ink": 0.617,
         "mint": 0.171,
         "grey": 0.104,
         "orange": 0.058,
@@ -886,7 +886,7 @@
       "violations": [
         {
           "family": "ink",
-          "observed": 0.618,
+          "observed": 0.617,
           "band": [
             0.3,
             0.6
@@ -1083,7 +1083,7 @@
       "lane": "gpui",
       "state": "map",
       "family": "mint",
-      "observed": 0.554,
+      "observed": 0.555,
       "band": [
         0.15,
         0.4
@@ -1182,7 +1182,7 @@
       "lane": "unity",
       "state": "map",
       "family": "ink",
-      "observed": 0.241,
+      "observed": 0.244,
       "band": [
         0.3,
         0.6
@@ -1193,7 +1193,7 @@
       "lane": "unity",
       "state": "map",
       "family": "mint",
-      "observed": 0.554,
+      "observed": 0.555,
       "band": [
         0.15,
         0.4
@@ -1226,7 +1226,7 @@
       "lane": "unity",
       "state": "abilities",
       "family": "ink",
-      "observed": 0.617,
+      "observed": 0.62,
       "band": [
         0.3,
         0.6
@@ -1237,7 +1237,7 @@
       "lane": "unity",
       "state": "abilities-hover",
       "family": "ink",
-      "observed": 0.615,
+      "observed": 0.618,
       "band": [
         0.3,
         0.6
@@ -1325,7 +1325,7 @@
       "lane": "godot",
       "state": "progress",
       "family": "mint",
-      "observed": 0.427,
+      "observed": 0.423,
       "band": [
         0.15,
         0.4
@@ -1336,7 +1336,7 @@
       "lane": "godot",
       "state": "abilities",
       "family": "ink",
-      "observed": 0.618,
+      "observed": 0.617,
       "band": [
         0.3,
         0.6

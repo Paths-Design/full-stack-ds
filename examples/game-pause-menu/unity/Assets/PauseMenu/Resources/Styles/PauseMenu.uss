@@ -141,3 +141,8 @@
 .pause-app .parity-panel-header {
     border-bottom-color: var(--fsds-semantic-color-border-subtle);
 }
+
+/* Industrial pass 3: thicker parity panel frames. */
+.pause-app .parity-panel.parity-panel {
+    border-width: 2px;
+}

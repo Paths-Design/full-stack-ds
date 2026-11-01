@@ -81,7 +81,9 @@ accepting a bounded claim. The first restyle pass is authority-driven:
 The source-design oracle audit dropped from 90 composition violations / 0 clean
 observations to **30 violations / 6 clean**. Pass 2 adds a 160 px grey ghost
 `N5` display layer and turns the header and footer into mint fields (the orange
-tab band now sits between them); settings meets the oracle bands, abilities is
+tab band now sits between them). Pass 3 thickens the panel housings to 2 px
+industrial frames (Unity lane class, GPUI panel widget, Godot panel-frame
+width); settings meets the oracle bands, abilities is
 ~1.7 points over the ink ceiling, and map/progress now hold more mint than the
 reference collage band. The full-screen remap modal is scrim-dominated and is a
 documented exception rather than a composition sample. Industrial framing and a

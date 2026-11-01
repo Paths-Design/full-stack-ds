@@ -45,6 +45,12 @@ The form-control family (Select, Checkbox, ToggleSwitch, Input, TextField, Field
 
 The collections/date family (Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel) is closed by **refusal**: the target has no date-grid, paged-set or collection runtime and no formatter, so the date-grid/paged-set models, dynamic component-ref facts, formatting/highlighting, navigation targets and authored bindings are refused with written reasons rather than claimed. Building those runtimes is a feature slice, not a ledger adjudication.
 
+## Boundary state
+
+The corpus boundary is closed: every contract and sidecar leaf of the 55 admitted components is either **lowered** (with a runtime realisation and a headless witness) or **refused with a written reason** — zero pending, zero unclassified, 163 rules, 183 recorded shape variances. `pnpm run audit:godot-boundary` fails if any leaf becomes unadjudicated, if a receipt drops an excluded prop, or if the committed inventory drifts.
+
+The last family (Image, Postcard, Label, Avatar, ProfileFlag, ShowMore, Truncate, CodeBlock, Markdown, Progress) added media projection: a `Texture` or `res://` `src` reaches the native `TextureRect` and `alt` becomes the accessibility description. Fallback sources, responsive sizes, lazy loading, object-fit, structured data, form association, content transforms, text clamping and CSS-variable bindings are refused with reasons.
+
 ## Generate and verify
 
 From the repository root:

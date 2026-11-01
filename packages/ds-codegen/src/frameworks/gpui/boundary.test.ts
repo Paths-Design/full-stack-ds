@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { listComponentContracts } from "../../contracts-fs.js";
 import { auditContract, gpuiAllowlist, loadContractWithSidecars, validateBoundary } from "./boundary.js";
 import boundaryJson from "./support-boundary.json" with { type: "json" };
@@ -10,26 +10,28 @@ const contractsRoot = path.join(root, "packages/ds-contracts");
 
 describe("GPUI support boundary", () => {
   const boundary = validateBoundary(boundaryJson);
-
-  it("is a total ledger for every admitted component", () => {
-    const admitted = gpuiAllowlist(root);
-    const violations: string[] = [];
-    for (const name of admitted) {
-      for (const violation of auditContract(loadContractWithSidecars(root, name), boundary)) {
-        violations.push(`${name}: ${violation.kind} ${violation.source}:${violation.pointer}`);
+  // Building IR for the whole corpus is the expensive part; classify once and
+  // assert from the cached results so both directions stay inside the timeout.
+  let admittedViolations: string[] = [];
+  let corpusViolations: string[] = [];
+  beforeAll(() => {
+    const admitted = new Set(gpuiAllowlist(root));
+    for (const entry of listComponentContracts(contractsRoot)) {
+      const contract = loadContractWithSidecars(root, entry.name);
+      for (const violation of auditContract(contract, boundary)) {
+        const line = `${entry.name}: ${violation.kind} ${violation.source}:${violation.pointer}`;
+        corpusViolations.push(line);
+        if (admitted.has(entry.name)) admittedViolations.push(line);
       }
     }
-    expect(violations).toEqual([]);
+  }, 120000);
+
+  it("is a total ledger for every admitted component", () => {
+    expect(admittedViolations).toEqual([]);
   });
 
   it("adjudicates every corpus contract, admitted or not", () => {
-    const violations: string[] = [];
-    for (const entry of listComponentContracts(contractsRoot)) {
-      for (const violation of auditContract(loadContractWithSidecars(root, entry.name), boundary)) {
-        violations.push(`${entry.name}: ${violation.kind} ${violation.source}:${violation.pointer}`);
-      }
-    }
-    expect(violations).toEqual([]);
+    expect(corpusViolations).toEqual([]);
   });
 
   it("refuses to classify a leaf family the ledger does not adjudicate", () => {

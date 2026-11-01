@@ -61,9 +61,11 @@ The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/s
 classifies every contract and sidecar leaf the target can see as `lowered`,
 `pending` or `refused`, by pointer FAMILY and never by component identity: identity,
 anatomy structure, token bindings, variant axes and the admitted style vocabulary
-are lowered; DOM bindings/events/attrs, iteration, component references, content
-transforms, glyph rendering, surface behaviour, motion, accessibility, forms and
-cross-component semantics are `pending`; authoring/CSS-only metadata is `refused`.
+are lowered; DOM bindings/events/attrs, iteration, content transforms, glyph
+rendering, surface behaviour, motion, accessibility, forms and cross-component
+semantics are `pending`; authoring/CSS-only metadata is `refused`. By-reference
+composition is lowered for the static facts (see below) and pending for dynamic
+child bindings and child event wiring.
 The ledger is ordered and terminal, so an unadjudicated family is refused rather
 than silently supported. The [boundary audit](../../packages/ds-codegen/src/frameworks/gpui/boundary.test.ts)
 fails an admitted component that relies on that catch-all, which is what forces an
@@ -81,6 +83,42 @@ its reason. Two rules keep the projection honest:
   admitted scalar still fails generation instead of becoming an omission.
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
+
+### Action controls
+
+A part whose click event is bound to a callback prop is an **action**, not a
+value channel: the generated component stores the consumer handler
+(`crate::callback::ActionHandler`, narrowed from the contract's event parameter
+to window/app access) and invokes it when the part is activated. Root actions
+(`Button`) add a persistent focus handle, tab stop and Space/Enter activation;
+part actions (`AlertNotice.dismiss`, Walkthrough's skip/previous/next) are
+pointer-activated. The handler props are stored for every callback-typed prop, so
+an unwired handler is inert rather than lost, and the receipt lists the
+realized callbacks and activations. The event payload itself is not projected —
+that narrowing is the documented non-claim.
+
+### By-reference composition
+
+Anatomy nodes that render another contract (`componentRef`) are realized as
+**retained child components** rather than dropped: the generated parent holds one
+`Option<Entity<Child>>` per reference (created lazily on first render, so child
+state survives parent redraws), projects the reference's static literal props onto
+the child's generated builders, and renders the child entity in the parent tree.
+**Dynamic child props** are projected too: a reference binding whose expression is
+a realized parent prop (bool, retained text, or variant axis) or a literal is
+applied every render through the child's generated setter, so the child tracks
+the parent's state (`Alert.dismiss` receives `set_aria_label(self.dismiss_label)`,
+`Button.spinner` receives `set_inline(self.loading)`). Expressions with no
+parent-state lowering in this projection — `paged`, `channel`, `valueMap` and
+`message` — remain named `ref-binding` omissions, as do child event wiring
+(`ref-event`) and props with no projected builder (a reserved name such as `type`,
+or a non-literal value — `ref-attr`). Consumer children nested inside a
+reference are named as `ref-children`: they would need the referenced
+component's content API, so they are receipted rather than dropped.
+```
+parent parts: root, previous, previousIcon, input, commit, next, nextIcon, choices
+refs:        ref_previous: Option<Entity<Button>>, ref_previousIcon: Option<Entity<Icon>>, …
+```
 
 What the projection does **not** claim: an interactive, accessible or
 pixel-equivalent realization of the pending families.
@@ -279,7 +317,7 @@ claims. The earlier `GPUI-TARGET-PILOT-01` records the initial Boolean pilot.
 | Text | Letter spacing, text transformation, justify alignment and the `truncate` prop are omitted. A transform/justify variant builder can select an authored axis while its unsupported styling remains a recorded no-op. |
 | Badge | `icon` is narrowed to `SharedString` content; arbitrary native icon children and `showStatusIcon` are not realized. |
 | Divider | `thickness`, `title` and `decorative` props are omitted. Supported token/design-slot overrides still control admitted border geometry. |
-| All admitted components | Accessibility semantics, screen-reader behavior, form submission, field association, motion, compound composition and arbitrary native children are not established. |
+| All admitted components | Accessibility semantics, screen-reader behavior, form submission, field association, motion and compound subcomponent dispatch are not established. By-reference composition renders retained child components with static props only; dynamic child bindings and child event wiring are receipted omissions, and arbitrary native children are not established. |
 | Target breadth | The allowlist does not establish full-corpus semantics, cross-platform behavior, upstream-main compatibility or visual parity. |
 
 Further promotion requires admitting normalized capabilities and independent

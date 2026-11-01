@@ -30,6 +30,34 @@ export interface GpuiOmission {
   disposition?: string;
 }
 
+/** One by-reference child component the projection renders and retains. */
+export interface GpuiRefPlan {
+  /** Generated struct field that retains the child entity. */
+  field: string;
+  /** Referenced generated component type name. */
+  refType: string;
+  /** Static literal props projected onto the child's generated builders. */
+  attrs: Array<{ prop: string; literal: string }>;
+  /** Parent-state-driven props updated through the child's generated setters each render. */
+  dynamic: Array<{ prop: string; setter: string; expr: string }>;
+  /** Facts of the reference that the projection does not realize. */
+  omissions: GpuiOmission[];
+}
+
+/** A consumer-supplied callback realized as a stored handler field. */
+export interface GpuiCallbackPlan {
+  prop: string;
+  field: string;
+}
+
+/** A native part that invokes one stored callback on activation. */
+export interface GpuiActivationPlan {
+  part: string;
+  handler: string;
+  /** Root hosts also take focus and keyboard activation. */
+  keyboard: boolean;
+}
+
 export interface GpuiPlan {
   channel: GpuiChannel | undefined;
   part: string | undefined;
@@ -47,6 +75,12 @@ export interface GpuiPlan {
   disabledDefault: string;
   keys: readonly string[];
   excludedProps: string[];
+  /** Retained by-reference children, in anatomy pre-order. */
+  refs: GpuiRefPlan[];
+  /** Realized callback props (stored handlers). */
+  callbacks: GpuiCallbackPlan[];
+  /** Anatomy parts that invoke a stored callback. */
+  activations: GpuiActivationPlan[];
   omissions: GpuiOmission[];
 }
 

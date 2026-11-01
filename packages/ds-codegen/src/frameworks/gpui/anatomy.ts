@@ -20,7 +20,7 @@ import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import { classifyProp, loadBoundary, type GpuiBoundary } from './boundary.js';
 import { supported, validScalar } from './style-vocabulary.js';
-import type { GpuiOmission, GpuiPlan, GpuiStyleOmission, GpuiStylePlan } from './plan-types.js';
+import type { GpuiActivationPlan, GpuiCallbackPlan, GpuiOmission, GpuiPlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan } from './plan-types.js';
 
 const RESERVED = new Set(['self','super','crate','type','mod','fn','match','default','new','request_change','theme','variants','label','focus_handle','request_key','content','set_content','clear_content','has_content','render_content','slot','slots','slot_key','set_slot','clear_slot','has_slot','render_slot']);
 
@@ -77,6 +77,12 @@ function channelPropNames(ir: ComponentIR): Set<string> {
   return names;
 }
 
+/** Rust string literal with control characters encoded (matches the emitter). */
+function q(value: string): string {
+  const escapes: Record<string, string> = { '\\': '\\\\', '"': '\\"', '\n': '\\n', '\r': '\\r', '\t': '\\t' };
+  return '"' + Array.from(value).map(character => escapes[character] ?? ((character.codePointAt(0)! < 32 || character.codePointAt(0) === 127) ? `\\u{${character.codePointAt(0)!.toString(16)}}` : character)).join('') + '"';
+}
+
 /** A contract with no authored anatomy still emits a mountable root. */
 function emptyRoot(): DomNodeIR {
   return {
@@ -88,8 +94,79 @@ function emptyRoot(): DomNodeIR {
   } as DomNodeIR;
 }
 
+/** Static literal attrs a ref projects onto the child's generated builders. */
+function projectedRefAttrs(instance: NonNullable<DomNodeIR['componentInstance']>): Array<{ prop: string; literal: string }> {
+  const projected: Array<{ prop: string; literal: string }> = [];
+  for (const entry of instance.attrs ?? []) {
+    if (entry.kind !== 'prop' || typeof entry.value !== 'string' || typeof entry.targetProp !== 'string') continue;
+    if (!identifier(entry.targetProp)) continue;
+    const literal = entry.propType?.kind === 'boolean'
+      ? (entry.value === 'true' ? 'true' : 'false')
+      : q(entry.value);
+    projected.push({ prop: entry.targetProp, literal });
+  }
+  return projected;
+}
+
+/** Retained ref plans in anatomy pre-order (the Rust tree walk consumes them in the same order). */
+function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomyState): GpuiRefPlan[] {
+  const refs: GpuiRefPlan[] = [];
+  const used = new Set<string>();
+  const visit = (node: DomNodeIR): void => {
+    if (node.componentRef) {
+      const instance = node.componentInstance;
+      const base = identifier(node.part ?? node.componentRef) ?? identifier(node.componentRef) ?? 'child';
+      let field = `ref_${base}`;
+      let suffix = 2;
+      while (used.has(field)) field = `ref_${base}_${suffix++}`;
+      used.add(field);
+      const attrs = instance ? projectedRefAttrs(instance) : [];
+      const dynamic: GpuiRefPlan['dynamic'] = [];
+      const refOmissions: GpuiOmission[] = [];
+      for (const binding of instance?.bindings ?? []) {
+        const setter = typeof binding.targetProp === 'string' ? identifier(binding.targetProp) : undefined;
+        const expression = binding.expr;
+        const omitted = (reason: string) => refOmissions.push({ kind: 'ref-binding', source: `${field}.${binding.targetProp}`, reason, boundary: 'anatomy-component-ref-props', disposition: 'pending' });
+        if (!setter) { omitted('child prop has no projected setter (reserved or missing target prop)'); continue; }
+        const targetProp = binding.targetProp as string;
+        if (expression.kind === 'prop' && typeof expression.prop === 'string' && !expression.path?.length) {
+          const prop = expression.prop;
+          if (state.realizedBoolean.has(prop)) dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: `self.${identifier(prop) ?? prop}` });
+          else if (state.realizedText.has(prop)) dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: `self.${identifier(prop) ?? prop}.clone()` });
+          else if (state.realizedAxes.has(prop)) dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: `self.variant_values.get(${q(prop)}).cloned().unwrap_or_default()` });
+          else omitted(`parent prop ${prop} is not realized by this projection`);
+          continue;
+        }
+        if (expression.kind === 'literal' && typeof expression.value === 'string') {
+          dynamic.push({ prop: targetProp, setter: `set_${setter}`, expr: q(expression.value) });
+          continue;
+        }
+        omitted(`binding expression '${expression.kind}' has no parent-state lowering in this projection`);
+      }
+      for (const event of instance?.events ?? []) {
+        refOmissions.push({ kind: 'ref-event', source: `${field}.${event.targetHandlerProp}`, reason: 'child event wiring is not projected (behaviour parity is a later class)', boundary: 'anatomy-component-ref-dynamic', disposition: 'pending' });
+      }
+      for (const entry of instance?.attrs ?? []) {
+        const projected = entry.kind === 'prop' && typeof entry.value === 'string' && typeof entry.targetProp === 'string' && Boolean(identifier(entry.targetProp));
+        if (!projected) {
+          refOmissions.push({ kind: 'ref-attr', source: `${field}.${entry.targetProp ?? entry.sourceAttr ?? 'attr'}`, reason: 'child prop has no projected builder (reserved or non-literal)', boundary: 'anatomy-component-ref-props', disposition: 'pending' });
+        }
+      }
+      if (!instance) refOmissions.push({ kind: 'ref-instance', source: field, reason: 'component instance facts were unavailable at IR build time', boundary: 'anatomy-component-ref', disposition: 'pending' });
+      omissions.push(...refOmissions);
+      refs.push({ field, refType: node.componentRef, attrs, dynamic, omissions: refOmissions });
+      return;
+    }
+    for (const child of node.children) visit(child);
+  };
+  visit(dom);
+  return refs;
+}
+
 interface AnatomyState {
   boundary: GpuiBoundary;
+  /** Callback props realized as stored handlers; their click events are wired. */
+  wiredCallbacks: Set<string>;
   omissions: GpuiOmission[];
   realizedText: Set<string>;
   realizedBoolean: Set<string>;
@@ -104,8 +181,26 @@ function omit(state: AnatomyState, omission: GpuiOmission): void {
 /** Strip facts the anatomy projection cannot carry, recording each one. */
 function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   if (node.componentRef) {
-    omit(state, { kind: 'componentRef', source: node.part ?? 'root', ...boundaryReason(state.boundary, 'anatomy-component-ref', 'component references are not composed by the GPUI projection') });
-    return null;
+    // By-reference composition: the node renders a retained child component.
+    // Consumer children nested in the reference would need the child's content
+    // API; they are named here instead of being dropped silently.
+    const copy: DomNodeIR = structuredClone(node);
+    if (copy.children.length) {
+      omit(state, {
+        kind: 'ref-children',
+        source: `${node.componentRef}${node.part ? `.${node.part}` : ''}`,
+        reason: 'children nested inside a by-reference node need the referenced component content API; they are not projected',
+        boundary: 'anatomy-component-ref-dynamic',
+        disposition: 'pending',
+      });
+    }
+    copy.children = [];
+    copy.bindings = {};
+    copy.events = {};
+    copy.attrs = {};
+    copy.cssVarBindings = [];
+    copy.iteration = undefined;
+    return copy;
   }
   if (node.iteration) {
     omit(state, { kind: 'iteration', source: node.part ?? 'root', ...boundaryReason(state.boundary, 'anatomy-iteration', 'iteration over data collections has no GPUI render loop') });
@@ -164,6 +259,8 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   }
   copy.propertyBindings = {};
   for (const key of Object.keys(copy.events)) {
+    const binding = copy.events[key];
+    if (key === 'click' && binding?.kind === 'prop' && state.wiredCallbacks.has(binding.prop)) continue;
     const rule = key === 'click' ? 'anatomy-click-event' : ['keydown','keyup','keypress'].includes(key) ? 'anatomy-keyboard-event' : 'anatomy-focus-event';
     omit(state, { kind: 'event', source: `${copy.part ?? 'root'}/${key}`, ...boundaryReason(state.boundary, rule, `${key} event is not consumed by the GPUI projection`) });
   }
@@ -234,7 +331,7 @@ function nodesOf(node: DomNodeIR | undefined): DomNodeIR[] {
  * consumes, and every fact the projection dropped with its boundary rule.
  */
 export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBoundary()): { ir: ComponentIR; plan: GpuiPlan; omissions: GpuiOmission[] } {
-  const state: AnatomyState = { boundary, omissions: [], realizedText: new Set(), realizedBoolean: new Set(), realizedAxes: new Set(), realizedSlots: [] };
+  const state: AnatomyState = { boundary, wiredCallbacks: new Set(), omissions: [], realizedText: new Set(), realizedBoolean: new Set(), realizedAxes: new Set(), realizedSlots: [] };
 
   // Realize variant axes first: guards and styles both depend on them.
   const usedMethods = new Set<string>();
@@ -329,6 +426,25 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     omit(state, omissionFor(prop.name, 'prop type has no GPUI field projection'));
   }
 
+  // Callback props are consumer handlers: stored, and invoked by wired events.
+  // The contract's event payload is narrowed to window/app access.
+  const callbacks: GpuiCallbackPlan[] = [];
+  for (const prop of ir.styledProps) {
+    if (prop.propType.kind !== 'callback') continue;
+    const method = identifier(prop.name);
+    if (!method) {
+      omit(state, omissionFor(prop.name, 'callback prop name cannot be projected onto a Rust identifier'));
+      continue;
+    }
+    if (usedMethods.has(method)) {
+      omit(state, omissionFor(prop.name, 'callback prop identifier collides with another realized method'));
+      continue;
+    }
+    usedMethods.add(method);
+    callbacks.push({ prop: prop.name, field: method });
+    state.wiredCallbacks.add(prop.name);
+  }
+
   // Content-bound props must be realized text fields; add any the prop walk missed.
   for (const node of nodesOf(ir.dom)) {
     if (node.content && 'kind' in node.content && node.content.kind === 'prop' && !state.realizedText.has(node.content.prop)) {
@@ -360,6 +476,19 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
 
   const dom = transformNode(ir.dom ?? emptyRoot(), state);
   if (!dom) throw new Error(`GPUI_ANATOMY_ROOT_OMITTED: ${ir.name}`);
+  const refs = collectRefs(dom, state.omissions, state);
+  // A native part's click event bound to a realized callback prop invokes it.
+  // Read from the original anatomy: the projection clears event maps.
+  const activations: GpuiActivationPlan[] = [];
+  const visitActivations = (node: DomNodeIR, isRoot: boolean): void => {
+    const click = node.events?.click;
+    if (click?.kind === 'prop' && state.wiredCallbacks.has(click.prop)) {
+      const handler = identifier(click.prop);
+      if (handler) activations.push({ part: node.part ?? 'root', handler, keyboard: isRoot });
+    }
+    node.children.forEach(child => visitActivations(child, false));
+  };
+  if (ir.dom && !ir.dom.componentRef) visitActivations(ir.dom, true);
   const transformed: ComponentIR = { ...ir, dom };
   const childContent = hasChildrenPlaceholder(transformed) || nodesOf(dom).some(node => node.tag === 'children' || node.tag === 'slot' && !node.slotName);
 
@@ -395,6 +524,9 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     boolProps,
     textProps,
     childContent,
+    refs,
+    callbacks,
+    activations,
     slots: realizedSlots,
     slotVariants,
     defaultValue: 'false',

@@ -72,6 +72,17 @@ const names = fs
   .readdirSync(componentsDir)
   .filter(name => fs.existsSync(path.join(componentsDir, name, `${name}.contract.json`)))
   .sort();
+const corpus = new Map(
+  names.map(name => {
+    const contract = JSON.parse(fs.readFileSync(path.join(componentsDir, name, `${name}.contract.json`), 'utf8'));
+    for (const sidecar of ['tokens', 'styles']) {
+      const file = path.join(componentsDir, name, `${name}.${sidecar}.json`);
+      if (fs.existsSync(file)) contract[sidecar] = JSON.parse(fs.readFileSync(file, 'utf8'));
+    }
+    contract.tokens = mergeBoxModelDefaults(contract.tokens, boxModel, contract.morphology);
+    return [name, contract];
+  }),
+);
 
 const TARGET_CONFIG = {
   react: { dir: 'packages/ds-react/src/components', handler: /\bon[A-Z][A-Za-z]*\s*=/ },
@@ -114,6 +125,11 @@ function behaviorFacts(ir) {
   return wires + channels + (ir.compositeControl ? 1 : 0) + (ir.surface ? 1 : 0) + (ir.interaction ? 1 : 0);
 }
 
+/** Declared by-reference children, in anatomy pre-order. */
+function declaredRefs(ir) {
+  return walkNodes(ir).filter(node => node.componentRef).map(node => node.componentRef);
+}
+
 function authoredA11y(contract, ir) {
   const nodes = walkNodes(ir);
   const attrs = nodes.reduce((sum, node) => {
@@ -149,15 +165,16 @@ const snake = name => name.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
 /** Measure one component across the four targets against its declared facts. */
 function measureComponent(name) {
   const contract = loadContract(name);
-  const ir = buildComponentIR(contract);
+  const ir = buildComponentIR(contract, { allContracts: corpus });
   const prefix = ir.cssPrefix;
   const parts = declaredParts(ir);
   const props = declaredProps(ir);
   const behavior = behaviorFacts(ir);
   const a11y = authoredA11y(contract, ir);
 
+  const refs = declaredRefs(ir);
   const row = {
-    declared: { parts: parts.length, props: props.length, behavior, a11y },
+    declared: { parts: parts.length, props: props.length, behavior, a11y, refs: refs.length },
     targets: {},
   };
 
@@ -168,11 +185,13 @@ function measureComponent(name) {
       continue;
     }
     const propsText = generatedPropsBlock(source);
+    const renderedRefs = refs.reduce((sum, type) => sum + Math.min(1, (source.match(new RegExp(`<${type}[\\s/>]`, 'g')) ?? []).length), 0);
     row.targets[target] = {
       parts: parts.filter(part => source.includes(part === 'root' ? prefix : `${prefix}__${part}`)).length,
       props: props.filter(prop => new RegExp(`(^|[\\s,{])${prop}\\??\\s*:`).test(propsText)).length,
       behavior: behavior === 0 ? 1 : config.handler.test(source) || /use[A-Z][A-Za-z]*\(/.test(source) ? 1 : 0,
       a11y: a11y && /role=|aria-/.test(source) ? 1 : 0,
+      refs: renderedRefs,
     };
   }
 
@@ -189,18 +208,14 @@ function measureComponent(name) {
     ),
   ];
   const builders = new Set([...gpuiSource.matchAll(/pub fn ([a-z][a-z0-9_]*)\s*\(\s*mut self/g)].map(match => match[1]));
+  const setters = new Set([...gpuiSource.matchAll(/pub fn (set_[a-z0-9_]+)\s*\(/g)].map(match => match[1]));
   row.targets.gpui = {
     parts: gpuiParts.filter(part => parts.includes(part)).length,
-    props: props.filter(
-      prop =>
-        builders.has(snake(prop)) ||
-        (receipt?.realizedBooleanProps ?? []).includes(prop) ||
-        (receipt?.narrowedTextProps ?? []).includes(prop) ||
-        (receipt?.realizedVariants ?? []).includes(prop) ||
-        (receipt?.channel && [receipt.channel.valueProp, receipt.channel.defaultValueProp, receipt.channel.changeHandlerProp].includes(prop)),
-    ).length,
-    behavior: receipt?.channel ? 1 : 0,
+    props: props.filter(prop => builders.has(snake(prop)) || setters.has(`set_${snake(prop)}`)).length,
+    // Value controls emit ChangeRequest; action controls invoke a stored callback.
+    behavior: behavior === 0 ? 1 : /impl EventEmitter<ChangeRequest>|crate::callback::invoke\(/.test(gpuiSource) ? 1 : 0,
     a11y: a11y && /role=|aria-/.test(gpuiSource) ? 1 : 0,
+    refs: Math.min(refs.length, (gpuiSource.match(/Option<gpui::Entity<crate::components::/g) ?? []).length),
   };
   row.styleOmissions = receipt?.styleOmissions?.length ?? 0;
   row.omittedFacts = receipt?.omittedFacts?.length ?? 0;
@@ -209,15 +224,16 @@ function measureComponent(name) {
 }
 
 const components = Object.fromEntries(names.map(name => [name, measureComponent(name)]));
-const aggregates = { declared: { parts: 0, props: 0, behavior: 0, a11y: 0 }, targets: {} };
+const aggregates = { declared: { parts: 0, props: 0, behavior: 0, a11y: 0, refs: 0 }, targets: {} };
 for (const row of Object.values(components)) {
   aggregates.declared.parts += row.declared.parts;
   aggregates.declared.props += row.declared.props;
   aggregates.declared.behavior += row.declared.behavior > 0 ? 1 : 0;
   aggregates.declared.a11y += row.declared.a11y ? 1 : 0;
+  aggregates.declared.refs += row.declared.refs;
 }
 for (const target of [...TARGETS, 'gpui']) {
-  aggregates.targets[target] = { parts: 0, props: 0, behavior: 0, a11y: 0, present: 0 };
+  aggregates.targets[target] = { parts: 0, props: 0, behavior: 0, a11y: 0, refs: 0, present: 0 };
   for (const row of Object.values(components)) {
     const value = row.targets[target];
     if (!value) continue;
@@ -226,6 +242,7 @@ for (const target of [...TARGETS, 'gpui']) {
     aggregates.targets[target].props += value.props;
     aggregates.targets[target].behavior += row.declared.behavior > 0 && value.behavior ? 1 : 0;
     aggregates.targets[target].a11y += row.declared.a11y && value.a11y ? 1 : 0;
+    aggregates.targets[target].refs += value.refs;
   }
 }
 
@@ -241,7 +258,7 @@ const baselineDocument = {
   aggregates,
 };
 
-const DIMENSIONS = ['parts', 'props', 'behavior', 'a11y'];
+const DIMENSIONS = ['parts', 'props', 'behavior', 'a11y', 'refs'];
 
 function describe(list) {
   return list.length ? list.slice(0, 12).join(', ') + (list.length > 12 ? ` (+${list.length - 12})` : '') : '-';
@@ -284,16 +301,16 @@ function reportMarkdown(document) {
     '',
     'Generated by `scripts/gpui-web-consistency-audit.mjs`. Do not hand-edit.',
     '',
-    '| target | parts | props | behavior (components) | a11y (components) |',
-    '|---|---|---|---|---|',
+    '| target | parts | props | behavior (components) | a11y (components) | references |',
+    '|---|---|---|---|---|---|',
   ];
   for (const [target, value] of Object.entries(document.aggregates.targets)) {
     lines.push(
-      `| ${target} | ${value.parts}/${document.aggregates.declared.parts} | ${value.props}/${document.aggregates.declared.props} | ${value.behavior}/${document.aggregates.declared.behavior} | ${value.a11y}/${document.aggregates.declared.a11y} |`,
+      `| ${target} | ${value.parts}/${document.aggregates.declared.parts} | ${value.props}/${document.aggregates.declared.props} | ${value.behavior}/${document.aggregates.declared.behavior} | ${value.a11y}/${document.aggregates.declared.a11y} | ${value.refs}/${document.aggregates.declared.refs} |`,
     );
   }
-  lines.push('', '| component | gpui parts/props/beh/a11y | react | vue | svelte |', '|---|---|---|---|---|');
-  const format = value => (value ? `${value.parts}/${value.props}/${value.behavior}/${value.a11y}` : 'missing');
+  lines.push('', '| component | gpui parts/props/beh/a11y/refs | react | vue | svelte |', '|---|---|---|---|---|');
+  const format = value => (value ? `${value.parts}/${value.props}/${value.behavior}/${value.a11y}/${value.refs}` : 'missing');
   for (const [name, row] of Object.entries(document.components)) {
     lines.push(`| ${name} | ${format(row.targets.gpui)} | ${format(row.targets.react)} | ${format(row.targets.vue)} | ${format(row.targets.svelte)} |`);
   }
@@ -343,13 +360,13 @@ const { failures, improvements } = diffAgainstBaseline(baselineDocument, baselin
 
 for (const [target, value] of Object.entries(baselineDocument.aggregates.targets)) {
   console.log(
-    `${target.padEnd(7)} parts ${value.parts}/${baselineDocument.aggregates.declared.parts}  props ${value.props}/${baselineDocument.aggregates.declared.props}  behavior ${value.behavior}/${baselineDocument.aggregates.declared.behavior}  a11y ${value.a11y}/${baselineDocument.aggregates.declared.a11y}`,
+    `${target.padEnd(7)} parts ${value.parts}/${baselineDocument.aggregates.declared.parts}  props ${value.props}/${baselineDocument.aggregates.declared.props}  behavior ${value.behavior}/${baselineDocument.aggregates.declared.behavior}  a11y ${value.a11y}/${baselineDocument.aggregates.declared.a11y}  refs ${value.refs}/${baselineDocument.aggregates.declared.refs}`,
   );
 }
 if (VERBOSE) {
   for (const [name, row] of Object.entries(baselineDocument.components)) {
-    const format = value => (value ? `${value.parts}/${value.props}/${value.behavior}/${value.a11y}` : 'missing');
-    console.log(`${name.padEnd(14)} gpui ${format(row.targets.gpui).padEnd(9)} react ${format(row.targets.react).padEnd(9)} vue ${format(row.targets.vue).padEnd(9)} svelte ${format(row.targets.svelte)}`);
+    const format = value => (value ? `${value.parts}/${value.props}/${value.behavior}/${value.a11y}/${value.refs}` : 'missing');
+    console.log(`${name.padEnd(14)} gpui ${format(row.targets.gpui).padEnd(11)} react ${format(row.targets.react).padEnd(11)} vue ${format(row.targets.vue).padEnd(11)} svelte ${format(row.targets.svelte)}`);
   }
 }
 if (improvements.length) {

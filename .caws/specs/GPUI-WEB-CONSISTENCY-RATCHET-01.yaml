@@ -1,9 +1,11 @@
 id: GPUI-WEB-CONSISTENCY-RATCHET-01
 title: 'Committed GPUI-vs-web consistency audit and regression ratchet'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Cross-target consistency is now measured against contract facts and ratcheted by a committed baseline; governed-ci.md restamped for the package.json change.'
 created_at: '2026-11-01T10:16:23.168Z'
-updated_at: '2026-11-01T10:16:47.492Z'
+updated_at: '2026-11-01T10:24:29.695Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
@@ -18,6 +20,7 @@ scope:
     - 'docs/architecture/gpui-web-consistency.md'
     - 'docs/architecture/gpui-target.md'
     - 'docs/current-implementation-snapshot.md'
+    - docs/specifications/governed-ci.md
   out: []
 invariants:
   - 'The audit derives every number from contract/IR facts and generated artifacts; no number is hand-authored'
@@ -48,3 +51,34 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "scripts/gpui-web-consistency-audit.mjs derives, per component and target, anatomy-part, prop, behavior and a11y realization from contract/IR facts and generated artifacts; --check prints react/vue/svelte/gpui aggregates (web parts 213/214, props 379/379, behavior 30/30, a11y 41/41/40; gpui 166/214, 229/379, 3/30, 0/44) and writes the matrix under docs/internal/gpui-web-consistency/. Baseline committed at packages/ds-gpui/web-consistency-baseline.json"
+    recorded_at: "2026-11-01T10:24:15.436Z"
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: "8215ab6ad"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "--check fails on any per-component loss of a realized fact on GPUI or a web target, on a corpus component missing from the baseline, and on a baseline entry naming a removed component, naming the component and dimension; improvements are reported as 'ratchet can be tightened' rather than failing"
+    recorded_at: "2026-11-01T10:24:17.872Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: scripts/gpui-web-consistency-audit.mjs
+    commit_sha: "8215ab6ad"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "--self-test mutates a measured count in memory and asserts the regression, stale-entry and removed-entry detections fire, exiting 0 only when all three do; it touches no repository file"
+    recorded_at: "2026-11-01T10:24:20.198Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --self-test
+    exit_code: 0
+    artifact_path: scripts/gpui-web-consistency-audit.mjs
+    commit_sha: "8215ab6ad"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/gpui-web-consistency.md records the measured matrix, divergence classes and limits and is linked from the target doc and snapshot; docs:check-links resolves 276 relative links; this slice's package.json change was restamped in governed-ci.md (fresh on main). The only remaining stale stamp on main is docs/architecture/unity-target.md, staled at 95d422c3 outside this slice and scoped by the active ENGINE-FORM-FOUNDATION-01 and GAME-PAUSE-PARITY-DEFENSIBILITY-01 specs"
+    recorded_at: "2026-11-01T10:24:22.388Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-web-consistency.md
+    commit_sha: bc30a28e3
