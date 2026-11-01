@@ -93,3 +93,7 @@ evidence:
     status: pass
     evidence_ref: "docs/architecture/godot-target.md 'Corpus-wide admission and the support boundary' section + docs/current-implementation-snapshot.md Godot row + packages/ds-godot/README.md 'Admission set and boundary audit' state emission-parity-not-behaviour, the receipt omissions, and the catalog-load structural-only witness; pnpm run docs:check-claims and docs:check-links pass"
     recorded_at: "2026-11-01T07:59:06.225Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "git diff main-base -- packages/ds-godot/addons/full_stack_ds/components/{Switch,Accordion,Popover,Tabs,Text,Divider,Button,Badge,Card,Icon}: 7 files changed, +36 -1, all capabilities.json omissions additions; zero .gd/.tscn/theme.tres changes for the ten previously admitted components"
+    recorded_at: "2026-11-01T07:59:08.527Z"
