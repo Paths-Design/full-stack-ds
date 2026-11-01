@@ -78,11 +78,8 @@ evidence:
     commit_sha: "83269cc1f"
   - criterion_id: A3
     status: pass
-    evidence_ref: "Godot 4.7.2 clean source 8409c7094, pilot runtime and fresh macOS exported Player Spinner receipts both passed with 24px size, 4px thickness, 73/74 accent and 172 track pixels, no probe failures; source landed at 32416a7d7."
-    recorded_at: "2026-11-01T11:25:23.365Z"
-    command: node scripts/godot-pilot.mjs
-    exit_code: 0
-    artifact_path: "/private/tmp/fsds-spinner-final-escalated-20261101/spinner-exported.log"
+    evidence_ref: "Godot 4.7.2 clean source 8409c7094: docs/internal/engine-spinner-parity/godot/spinner-runtime.log and spinner-exported.log are inspected ignored local receipts; both pass with 24px size, 4px thickness, accent 73/74px, track 172px and no failures; provenance sourceDirty false. CAWS commit verification checks reachability, not test execution."
+    recorded_at: "2026-11-01T11:31:25.864Z"
     commit_sha: "8409c7094"
   - criterion_id: A4
     status: pass
