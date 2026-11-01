@@ -55,15 +55,40 @@ There is no automatic system-dark response or loader for the complete brand
 override graph. Generic native font aliases map to macOS fonts; this does not
 establish identical Web font metrics.
 
+## Accessibility is a substrate non-claim
+
+Accessibility facts (`a11y`, `props.*/ariaLabel`, `ariaLabelledby`,
+`ariaDescribedby`, part roles, `aria-*` bindings and attributes, state a11y) are
+recorded with the `substrate` disposition rather than `pending`. The pinned GPUI
+revision (`zed` @ `a38fc8c8de6e4010fadcfde7dd111d90dfd66845`) exposes no
+accessibility channel: `crates/gpui/src` contains no `accesskit` integration and
+no role/label/description API, so there is no engine-side surface to project an
+ARIA fact onto. That is a stated non-claim, not deferred work — the audit's
+0/44 a11y dimension measures the gap, and the ledger explains it. If a future
+pinned revision grows an accessibility API, the families move back to `pending`
+and the probe below re-runs.
+
+Mechanical witness for the claim:
+
+```bash
+grep -rli 'accessib' ~/.cargo/git/checkouts/*/a38fc8c/crates/gpui/src
+# crates/gpui/src/{window,app,geometry}.rs — comments only, no API
+grep -rn 'accesskit' <gpui-checkout>/crates/gpui/src
+# (no matches)
+```
+
 ## Support boundary and generic anatomy projection
 
 The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json)
 classifies every contract and sidecar leaf the target can see as `lowered`,
-`pending` or `refused`, by pointer FAMILY and never by component identity: identity,
-anatomy structure, token bindings, variant axes and the admitted style vocabulary
-are lowered; DOM bindings/events/attrs, iteration, component references, content
-transforms, glyph rendering, surface behaviour, motion, accessibility, forms and
-cross-component semantics are `pending`; authoring/CSS-only metadata is `refused`.
+`pending`, `substrate` or `refused`, by pointer FAMILY and never by component
+identity: identity, anatomy structure, token bindings, variant axes and the
+admitted style vocabulary are lowered; DOM bindings/events/attrs, iteration,
+content transforms, glyph rendering, surface behaviour, motion, forms and
+cross-component semantics are `pending`; accessibility families are `substrate`
+(see below); authoring/CSS-only metadata is `refused`. By-reference
+composition is lowered for the static facts (see below) and pending for dynamic
+child bindings and child event wiring.
 The ledger is ordered and terminal, so an unadjudicated family is refused rather
 than silently supported. The [boundary audit](../../packages/ds-codegen/src/frameworks/gpui/boundary.test.ts)
 fails an admitted component that relies on that catch-all, which is what forces an
@@ -82,6 +107,98 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
+### Expansion state
+
+A boolean channel with a **declared trigger** generalizes presence beyond
+surfaces: ShowMore's `expanded`/`defaultExpanded` on its trigger state realizes a
+prop-named expansion API (`expanded(..)`, `default_expanded(..)`,
+`set_expanded(..)`, `is_expanded()`), a generated `toggle_open` wired to the
+trigger part's pointer/Space/Enter activation, and a `ChangeRequest` emission so
+a controlled owner accepts the request. The receipt names what expansion does
+not carry: text-measurement clamping (the substrate has no text-shaping
+truncation channel), so collapsed content is rendered unmeasured rather than
+clamped.
+
+### Collection open value
+
+A contract that exposes a string-valued disclosure channel toggled by a declared
+trigger part (Accordion's `value`/`defaultValue`/`onValueChange` on `trigger`,
+gating the `content` part) realizes controlled or uncontrolled open value:
+`value(Option<SharedString>)`, `set_value(..)`, `default_value(..)`, `is_open()`,
+plus a generated `toggle_open` method wired to the trigger part's pointer, Space
+and Enter activation. The gated content part renders only while a value is set;
+the receipt names the opens that are **not** carried — multi-open array values,
+per-item identities (the anatomy projection renders one item template) and
+`collapsible` suppression. Contracts with a non-string channel keep the anatomy
+fallback.
+
+### Surface presence
+
+A surface contract whose boolean presence channel gates anatomy parts
+(`Dialog`, `Sheet`, `Toast`, `Command`) realizes the channel as controlled or
+uncontrolled open state: `open(Option<bool>)`, `default_open(bool)`,
+`set_open(..)` and `is_open()`, with the guarded backdrop and panel rendered only
+while open. The receipt names what presence does **not** carry: modality
+trapping, dismissal (backdrop click, Escape, outside-press), timing/auto-dismiss
+and layer ordering. Surfaces without a guarded boolean channel — anchored
+Tooltip/Popover and the selector-anchored Walkthrough — keep the generic anatomy
+projection and their interaction/surface facts stay pending.
+
+### Disclosure controls
+
+A contract that exposes an `interaction` boolean channel toggled by a click on a
+trigger part (Details' `open`/`defaultOpen`/`onOpenChange` on `summary`) reuses the
+bounded channel machinery through a synthetic control host whose part is the
+trigger. The generated component carries controlled/uncontrolled open state,
+`ChangeRequest` emission, checked-style predicates and a click-and-keyboard
+activated trigger part (focus handle, tab stop, Space/Enter); content guarded on
+the open channel renders only while open. The receipt's `controlPart` names the
+trigger. Contracts whose interaction is not a boolean disclosure channel keep the
+generic anatomy projection.
+
+### Action controls
+
+A part whose click event is bound to a callback prop is an **action**, not a
+value channel: the generated component stores the consumer handler
+(`crate::callback::ActionHandler`, narrowed from the contract's event parameter
+to window/app access) and invokes it when the part is activated. Root actions
+(`Button`) add a persistent focus handle, tab stop and Space/Enter activation;
+part actions (`AlertNotice.dismiss`, Walkthrough's skip/previous/next) are
+pointer-activated. The handler props are stored for every callback-typed prop, so
+an unwired handler is inert rather than lost, and the receipt lists the
+realized callbacks and activations. The event payload itself is not projected —
+that narrowing is the documented non-claim.
+
+### By-reference composition
+
+Anatomy nodes that render another contract (`componentRef`) are realized as
+**retained child components** rather than dropped: the generated parent holds one
+`Option<Entity<Child>>` per reference (created lazily on first render, so child
+state survives parent redraws), projects the reference's static literal props onto
+the child's generated builders, and renders the child entity in the parent tree.
+**Dynamic child props** are projected too: a reference binding whose expression is
+a realized parent prop (bool, retained text, or variant axis) or a literal is
+applied every render through the child's generated setter, so the child tracks
+the parent's state (`Alert.dismiss` receives `set_aria_label(self.dismiss_label)`,
+`Button.spinner` receives `set_inline(self.loading)`). Expressions with no
+parent-state lowering in this projection — `paged`, `channel`, `valueMap` and
+`message` — remain named `ref-binding` omissions, as do props with no projected
+builder (a reserved name such as `type`, or a non-literal value — `ref-attr`).
+Reference **events** are forwarded when their expression is a realized parent
+callback: the child's callback setter receives a closure that invokes the parent
+handler (`Alert.dismiss` → parent `onDismiss`, Chip's action/dismiss triggers), so
+a retained child action reaches the owning component. Events whose expression is
+not a parent callback (paged/selection actions) stay `ref-event` omissions. Consumer children nested inside a
+nested **references** are projected as that child's content
+(`NativeContent::view` per nested entity, set through the child's content API),
+so PageNavigator's previous/next buttons carry their icon references; a
+non-reference child nested inside a reference is named as `ref-children` and
+receipted rather than dropped.
+```
+parent parts: root, previous, previousIcon, input, commit, next, nextIcon, choices
+refs:        ref_previous: Option<Entity<Button>>, ref_previousIcon: Option<Entity<Icon>>, …
+```
+
 What the projection does **not** claim: an interactive, accessible or
 pixel-equivalent realization of the pending families.
 
@@ -92,10 +209,15 @@ realized boolean set true, renders it in GPUI's test window, and asserts the roo
 part reached layout — or, where the contract guards the root on consumer-supplied
 content, that the default view renders without panicking. That proves the
 component mounts and renders; it does not prove interaction, styling correctness or
-pixels. The **seven** bounded control/static components additionally carry the
-hand-written interaction witnesses (owner requests, focus, disabled suppression,
-variants, retained content, slots). The other 48 are mount-witnessed only, with
-their unrealized semantics named in the receipt.
+pixels. **Sixteen** capability witnesses are required by name by the pilot lane:
+the bounded controls (owner requests, focus, disabled suppression, variants,
+retained content, slots) plus disclosure, surface presence, collection open value,
+expansion, root/part action callbacks, reference-event forwarding, nested
+references, focus/tab order, fractional layout and style/token reach — the
+mapping from capability to witness is the inventory in
+[GPUI ↔ web consistency](gpui-web-consistency.md#mounted-witness-inventory). The
+other 39 components are mount-witnessed only, with their unrealized semantics
+named in the receipt.
 
 ## Input and owner updates
 
@@ -279,7 +401,7 @@ claims. The earlier `GPUI-TARGET-PILOT-01` records the initial Boolean pilot.
 | Text | Letter spacing, text transformation, justify alignment and the `truncate` prop are omitted. A transform/justify variant builder can select an authored axis while its unsupported styling remains a recorded no-op. |
 | Badge | `icon` is narrowed to `SharedString` content; arbitrary native icon children and `showStatusIcon` are not realized. |
 | Divider | `thickness`, `title` and `decorative` props are omitted. Supported token/design-slot overrides still control admitted border geometry. |
-| All admitted components | Accessibility semantics, screen-reader behavior, form submission, field association, motion, compound composition and arbitrary native children are not established. |
+| All admitted components | Accessibility semantics, screen-reader behavior, form submission, field association, motion and compound subcomponent dispatch are not established. By-reference composition renders retained child components with static props only; dynamic child bindings and child event wiring are receipted omissions, and arbitrary native children are not established. |
 | Target breadth | The allowlist does not establish full-corpus semantics, cross-platform behavior, upstream-main compatibility or visual parity. |
 
 Further promotion requires admitting normalized capabilities and independent

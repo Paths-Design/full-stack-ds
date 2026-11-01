@@ -31,7 +31,7 @@ evidence lives, and what is explicitly outside the claim.
 | Other engine versions | Not claimed | Only the pinned versions listed above |
 | Accessibility | Not evaluated | No screen-reader, keyboard-focus-order, contrast-at-runtime or reduced-motion audit across lanes |
 | Usability | Not evaluated | No user study, task timing or comprehension measure; the example is an engine-transfer comparison, not a usability experiment |
-| Source-design composition fidelity | Not met, recorded | The pass-2 oracle audit records 30 composition-band violations across 24 lane/state observations (6 clean: settings/settings-subtitle in all lanes); see [`visual-review.md`](visual-review.md) |
+| Source-design composition fidelity | Not met, recorded | The pass-4 oracle audit records 36 composition-band violations across 24 lane/state observations (6 clean: abilities/abilities-hover in all lanes); see [`visual-review.md`](visual-review.md) |
 | Unity token-channel completion | Ledgered migration started | 318 → 315 direct inline assignments; generated Card surface channel only; badge/button/design-slot consumers remain unsupported |
 | Brand design-slot overrides | Not projected | Remains ledgered as `uss-design-slot` in the Unity projection |
 | Elevation/motion consumers | Not projected | The Unity sheet carries the variables but has no generated shadow/transition consumer |

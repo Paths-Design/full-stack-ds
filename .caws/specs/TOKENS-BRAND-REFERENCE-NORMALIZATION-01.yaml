@@ -1,9 +1,10 @@
 id: TOKENS-BRAND-REFERENCE-NORMALIZATION-01
 title: 'Normalize brand references to declared graph paths before CSS emission'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: tokens-brand-reference-normalization
 created_at: '2026-11-01T10:33:10.418Z'
-updated_at: '2026-11-01T10:33:10.418Z'
+updated_at: '2026-11-01T12:25:37.572Z'
 created_by_session: '01a196a8-3dec-72b2-9d96-bd8b254a659b'
 blast_radius:
   modules:
@@ -20,6 +21,7 @@ scope:
     - 'packages/ds-tokens/build/lib/brand-reference.test.ts'
     - 'packages/ds-tokens/generated/tokens.css'
     - 'packages/ds-tokens/generated/resolved.tokens.json'
+    - packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
   out: []
 invariants:
   - 'Reference resolution preserves exact then core then semantic preference and rejects paths absent from the composed graph'

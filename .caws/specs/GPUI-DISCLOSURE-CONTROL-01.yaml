@@ -1,0 +1,73 @@
+id: GPUI-DISCLOSURE-CONTROL-01
+title: 'GPUI disclosure control: boolean open channel on a trigger part'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Details realizes its boolean open disclosure channel with trigger activation and guarded content; behavior 7->8, props 249->250, earlier controls byte-identical.'
+created_at: '2026-11-01T11:25:03.920Z'
+updated_at: '2026-11-01T11:44:37.531Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI disclosure: synthetic channel host, trigger-part activation, guarded content, witness, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only a boolean disclosure channel with a click-to-channel trigger is admitted; other interactions keep the anatomy fallback'
+  - 'Components without a disclosure channel regenerate byte-identically'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract with a boolean disclosure channel and a summary trigger click; when generate --target=gpui runs; then the component carries controlled/uncontrolled open state, trigger activation and guarded content'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when Details is clicked and keyed; then its open state toggles and the content renders only when open'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-disclosure-control'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/factory.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Details plans through a synthetic disclosure host (trigger part summary, open/defaultOpen/onOpenChange): generated source carries BooleanState, EventEmitter<ChangeRequest>, builders open/default_open, the focus/tab/keyboard chain on details-summary and content guarded by when(self.state.value()); the receipt's controlPart names the trigger; existing value controls are byte-identical (channel host rule keeps the root chain for skipped input hosts)"
+    recorded_at: "2026-11-01T11:44:29.270Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Details/Details.rs
+    commit_sha: d314cf175
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_details_disclosure_toggles_from_trigger_click_and_keyboard passes: closed by default with no content bounds, a summary click opens (state true, content renders) and focuses the trigger, Space closes and Enter opens; the pilot requires that witness by name alongside all prior witnesses (GPUI_NATIVE_PASS)"
+    recorded_at: "2026-11-01T11:44:31.309Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: d314cf175
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "ratchet rebaselined: GPUI props 249/379 -> 250/379 and behavior 7/30 -> 8/30 (Details realizes open); parts/a11y/refs unchanged; --check green on main after merge"
+    recorded_at: "2026-11-01T11:44:33.447Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: b52899de5

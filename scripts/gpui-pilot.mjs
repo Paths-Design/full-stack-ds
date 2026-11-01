@@ -29,6 +29,13 @@ const requiredEngineTests = [
   "mounted_named_slots_preserve_locations_and_do_not_invoke_hidden_factories",
   "mounted_stat_variants_and_retained_content_reach_layout",
   "mounted_nested_controls_own_pointer_focus_and_keyboard_requests",
+  "mounted_button_action_callback_pointer_and_keyboard",
+  "mounted_alert_reference_action_forwards_to_parent_callback",
+  "mounted_page_navigator_nested_reference_children_render",
+  "mounted_details_disclosure_toggles_from_trigger_click_and_keyboard",
+  "mounted_dialog_presence_gates_backdrop_and_panel",
+  "mounted_accordion_collection_open_toggles_trigger_and_gated_panel",
+  "mounted_show_more_expansion_toggles_from_trigger_click_and_keyboard",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 // Every admitted component carries one generated mount witness. This is a

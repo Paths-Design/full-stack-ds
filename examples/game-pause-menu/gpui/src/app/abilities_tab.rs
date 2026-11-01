@@ -34,7 +34,7 @@ impl Menu {
             cx,
             "abilities:grid-meta",
             style::panel_meta(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             layout.abilities.grid_meta.clone(),
             Rect {
                 x: grid_panel.right() - padding - 320.0,
@@ -70,7 +70,7 @@ impl Menu {
 
         // -- Detail panel ---------------------------------------------
         let detail_panel = layout.abilities.detail_panel;
-        children.push(widgets::panel(&layout, detail_panel).into_any_element());
+        children.push(widgets::panel_on(&layout, detail_panel, &layout.panels.elevated_background).into_any_element());
         children.push(self.text_at(
             cx,
             "abilities:detail-title",
@@ -85,7 +85,7 @@ impl Menu {
             cx,
             "abilities:detail-meta",
             style::panel_meta(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             format!("{compatible} COMPATIBLE SLOTS"),
             Rect {
                 x: detail_panel.right() - padding - 280.0,

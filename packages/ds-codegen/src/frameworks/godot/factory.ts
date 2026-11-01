@@ -18,6 +18,7 @@ import { godotCompositePlan } from "./composite-plan.js";
 import { godotGlyphPlan } from "./glyph-plan.js";
 import { godotGlyphCatalog } from "./glyph-catalog.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
+import { nativeLoopVisualPlan } from "../native-loop-visual.js";
 import { loadTargetRegistryConfigV1 } from "../../target-packs/config.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
@@ -185,6 +186,8 @@ function disclosureFacts(ir: ComponentIR) {
 
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
+  const loopVisual = nativeLoopVisualPlan(ir);
+  if (loopVisual) return loopVisual;
   const glyph = godotGlyphPlan(ir);
   if (glyph) return glyph;
   const composite = godotCompositePlan(ir);
@@ -330,6 +333,7 @@ export function createGodotEmitter(): FrameworkEmitter {
       const isAction = plan.operation === "action";
       const isComposite = plan.operation === "composite";
       const isGlyph = plan.operation === "glyph";
+      const isLoopVisual = plan.operation === "loop-visual";
       const compositePlan = isComposite ? plan as NonNullable<ReturnType<typeof godotCompositePlan>> : undefined;
       // The bounded control shape carries the facts its runtime acts on: the
       // operation, the item-trigger references and the disclosure facts (focus
@@ -345,8 +349,8 @@ export function createGodotEmitter(): FrameworkEmitter {
         ...("focusRing" in plan && plan.focusRing ? { focusRing: plan.focusRing } : {}),
         ...(controlStyles && controlStyles.length ? { styles: controlStyles } : {}),
       };
-      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : controlConfig), defaults, theme_color: themeColor(ir) };
-      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : isComposite ? "composite" : isGlyph ? "glyph" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction || isComposite || isGlyph ? "" : `\tlabel = ${q(ir.name)}\n`}`;
+      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph || isLoopVisual ? plan : controlConfig), defaults, theme_color: themeColor(ir) };
+      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : isComposite ? "composite" : isGlyph ? "glyph" : isLoopVisual ? "loop_visual" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction || isComposite || isGlyph || isLoopVisual ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
       const compositeNodes = compositePlan ? `\n[node name="Chrome" type="PanelContainer" parent="."]\nlayout_mode=2\n\n[node name="Body" type="${compositePlan.layout === "inline" ? "HBoxContainer" : "VBoxContainer"}" parent="Chrome"]\nlayout_mode=2\n${compositePlan.parts.map(part => `\n[node name="Part_${part}" type="PanelContainer" parent="Chrome/Body"]\nlayout_mode=2\n\n[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_${part}"]\nlayout_mode=2\n`).join("")}` : "";
@@ -364,7 +368,7 @@ export function createGodotEmitter(): FrameworkEmitter {
         { relativePath: `${ir.name}/${ir.name}.gd`, contents: script },
         { relativePath: `${ir.name}/${ir.name}.tscn`, contents: `[gd_scene load_steps=${isGlyph ? 2 : 3} format=3]\n\n[ext_resource type="Script" path="res://addons/full_stack_ds/components/${ir.name}/${ir.name}.gd" id="1"]\n${isGlyph ? "" : `[ext_resource type="Theme" path="res://addons/full_stack_ds/components/${ir.name}/theme.tres" id="2"]\n`}\n[node name="${ir.name}" type="VBoxContainer"]\nscript = ExtResource("1")\n${isGlyph ? "" : `theme = ExtResource("2")\n`}${compositeNodes}` },
         { relativePath: `${ir.name}/theme.tres`, contents: `[gd_resource type="Theme" format=3]\n\n[resource]\ndefault_font_size = 16\nButton/colors/font_color = Color(${rgb}, 1)\nLabel/colors/font_color = Color(${rgb}, 1)\n` },
-        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isGlyph ? "inherited Label font_color at render time" : isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : isComposite ? "source-bearing native composite style subset" : "unconditional foreground fallback only", otherStyling: isGlyph ? "contract size tokens and authored iconography SVG; screen-reader exposure requires separate proof" : isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : isComposite ? "omissions list unsupported selectors and declarations; part text inheritance and motion are unproven" : "unsupported", excludedProps: plan.excluded, ...(namedOmissions.length ? { omissions: namedOmissions } : {}), proof: "requires-runtime-witness" },null,2)+"\n" },
+        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isGlyph ? "inherited Label font_color at render time" : isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : isComposite ? "source-bearing native composite style subset" : isLoopVisual ? "authored ring colors and size/thickness carriers" : "unconditional foreground fallback only", otherStyling: isGlyph ? "contract size tokens and authored iconography SVG; screen-reader exposure requires separate proof" : isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : isComposite ? "omissions list unsupported selectors and declarations; part text inheritance and motion are unproven" : isLoopVisual ? "arc rasterization approximates CSS border-top geometry; inline, delay, accessibility and OS preference remain unproved" : "unsupported", excludedProps: plan.excluded, ...(namedOmissions.length ? { omissions: namedOmissions } : {}), proof: "requires-runtime-witness" },null,2)+"\n" },
       ];
     },
     emitTests: () => [],

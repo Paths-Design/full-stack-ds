@@ -83,6 +83,11 @@ CLAUDE.md
 
 # DeepSeek Harness runtime logs are local; adapter documentation stays tracked.
 .dsh/logs/
+# DSH hook state (danger-latch / strike sentinels, per-session state) is
+# machine-local, exactly like .claude/hooks/state/ above. Leaving it untracked
+# and un-ignored makes the pre-push pushed-tree check refuse every push from a
+# checkout where a DSH session has run.
+.dsh/hooks/
 
 # Codex agent runtime — per-machine agent tooling (hooks, worktrees,
 # claim oracle). Not repo source; eslint also ignores .codex/** (see

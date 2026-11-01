@@ -1,334 +1,46 @@
 {
-  "operation": "anatomy",
-  "parts": [
-    "visual"
+  "operation": "loop-visual",
+  "targetPart": "visual",
+  "durationMs": 800,
+  "multiplier": 1,
+  "easing": [
+    0,
+    0,
+    1,
+    1
   ],
-  "styles": [
-    {
-      "source": "tokens",
-      "part": "root",
-      "predicates": [],
-      "declarations": [
-        {
-          "property": "box-model.padding",
-          "value": "0"
-        },
-        {
-          "property": "box-model.padding-block",
-          "value": "0"
-        },
-        {
-          "property": "box-model.padding-block-start",
-          "value": "0"
-        },
-        {
-          "property": "box-model.padding-block-end",
-          "value": "0"
-        },
-        {
-          "property": "box-model.padding-inline",
-          "value": "0"
-        },
-        {
-          "property": "box-model.padding-inline-start",
-          "value": "0"
-        },
-        {
-          "property": "box-model.padding-inline-end",
-          "value": "0"
-        },
-        {
-          "property": "box-model.gap",
-          "value": "0"
-        },
-        {
-          "property": "box-model.width",
-          "value": "auto"
-        },
-        {
-          "property": "box-model.min-width",
-          "value": "0"
-        },
-        {
-          "property": "box-model.max-width",
-          "value": "none"
-        },
-        {
-          "property": "box-model.height",
-          "value": "auto"
-        },
-        {
-          "property": "box-model.min-height",
-          "value": "0"
-        },
-        {
-          "property": "box-model.max-height",
-          "value": "none"
-        },
-        {
-          "property": "spinner.size.xs",
-          "value": "12px",
-          "token": "semantic.glyph.size.small.extent"
-        },
-        {
-          "property": "spinner.size.sm",
-          "value": "16px",
-          "token": "core.icon.size.sm"
-        },
-        {
-          "property": "spinner.size.md",
-          "value": "20px",
-          "token": "core.icon.size.md"
-        },
-        {
-          "property": "spinner.size.lg",
-          "value": "24px",
-          "token": "core.icon.size.lg"
-        },
-        {
-          "property": "spinner.thickness.hairline",
-          "value": "2px"
-        },
-        {
-          "property": "spinner.thickness.regular",
-          "value": "3px"
-        },
-        {
-          "property": "spinner.thickness.bold",
-          "value": "4px"
-        },
-        {
-          "property": "spinner.color.accent",
-          "value": "#d92d2e",
-          "token": "semantic.color.background.accent"
-        },
-        {
-          "property": "spinner.color.track",
-          "value": "#d0d0d0",
-          "token": "semantic.color.border.subtle"
-        },
-        {
-          "property": "spinner.anim.duration",
-          "value": "800ms"
-        }
-      ]
-    },
-    {
-      "source": "structure",
-      "part": "root",
-      "predicates": [],
-      "declarations": [
-        {
-          "property": "gap",
-          "value": "0",
-          "token": "box-model.gap"
-        },
-        {
-          "property": "min-height",
-          "value": "0",
-          "token": "box-model.min-height"
-        }
-      ]
-    },
-    {
-      "source": "visual",
-      "part": "visual",
-      "predicates": [],
-      "declarations": [
-        {
-          "property": "border-width",
-          "value": "3px",
-          "token": "spinner.thickness.regular",
-          "designSlot": "spinner.design.visual.border.width"
-        },
-        {
-          "property": "border-color",
-          "value": "#d0d0d0",
-          "token": "spinner.color.track",
-          "designSlot": "spinner.design.visual.border.color"
-        }
-      ]
-    },
-    {
-      "source": "--xs",
-      "part": "root",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "size",
-          "value": "xs"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "font-size",
-          "value": "12px",
-          "token": "spinner.size.xs",
-          "designSlot": "spinner.design.condition-ac39d57baace.typography.size"
-        }
-      ]
-    },
-    {
-      "source": "--sm",
-      "part": "root",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "size",
-          "value": "sm"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "font-size",
-          "value": "16px",
-          "token": "spinner.size.sm",
-          "designSlot": "spinner.design.condition-24964d7ed3a7.typography.size"
-        }
-      ]
-    },
-    {
-      "source": "--md",
-      "part": "root",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "size",
-          "value": "md"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "font-size",
-          "value": "20px",
-          "token": "spinner.size.md",
-          "designSlot": "spinner.design.condition-dc35d39122c5.typography.size"
-        }
-      ]
-    },
-    {
-      "source": "--lg",
-      "part": "root",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "size",
-          "value": "lg"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "font-size",
-          "value": "24px",
-          "token": "spinner.size.lg",
-          "designSlot": "spinner.design.condition-72800fd5573d.typography.size"
-        }
-      ]
-    },
-    {
-      "source": ".spinner--hairline .spinner__visual",
-      "part": "visual",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "thickness",
-          "value": "hairline"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "border-width",
-          "value": "2px",
-          "token": "spinner.thickness.hairline",
-          "designSlot": "spinner.design.condition-ddd83ecdda11.border.width"
-        }
-      ]
-    },
-    {
-      "source": ".spinner--regular .spinner__visual",
-      "part": "visual",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "thickness",
-          "value": "regular"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "border-width",
-          "value": "3px",
-          "token": "spinner.thickness.regular",
-          "designSlot": "spinner.design.condition-5fe4ba5b6059.border.width"
-        }
-      ]
-    },
-    {
-      "source": ".spinner--bold .spinner__visual",
-      "part": "visual",
-      "predicates": [
-        {
-          "kind": "variant",
-          "axis": "thickness",
-          "value": "bold"
-        }
-      ],
-      "declarations": [
-        {
-          "property": "border-width",
-          "value": "4px",
-          "token": "spinner.thickness.bold",
-          "designSlot": "spinner.design.condition-f69ec4fadb37.border.width"
-        }
-      ]
-    }
-  ],
-  "accessibility": {
-    "labeling": [
-      "aria-label"
-    ],
-    "role": "status"
+  "reducedValue": 0,
+  "sizeAxis": "size",
+  "thicknessAxis": "thickness",
+  "sizePixels": {
+    "xs": 12,
+    "sm": 16,
+    "md": 20,
+    "lg": 24
   },
-  "projectedProps": [
-    "size",
-    "thickness"
+  "thicknessPixels": {
+    "hairline": 2,
+    "regular": 3,
+    "bold": 4
+  },
+  "baseThicknessPx": 3,
+  "trackColor": "#d0d0d0",
+  "accentColor": "#d92d2e",
+  "hiddenProp": "ariaHidden",
+  "labelProp": "label",
+  "excluded": [
+    "inline",
+    "showAfterMs"
   ],
-  "defaults": {},
+  "theme": "authored ring colors and size/thickness carriers",
+  "otherStyling": "arc rasterization approximates CSS border-top geometry; inline, delay, accessibility and OS preference remain unproved",
   "excludedProps": [
-    "ariaHidden",
-    "label",
     "inline",
     "showAfterMs"
   ],
   "omissions": [
-    "root: attribute bindings (aria-label, aria-hidden) not projected natively",
-    "visual: attributes (aria-hidden) not projected natively",
-    "structure.padding: host root has no padded panel to inset its children",
-    "structure.padding-block: host root has no padded panel to inset its children",
-    "structure.padding-block-start: no Godot anatomy style mapping",
-    "structure.padding-block-end: no Godot anatomy style mapping",
-    "structure.padding-inline: host root has no padded panel to inset its children",
-    "structure.padding-inline-start: no Godot anatomy style mapping",
-    "structure.padding-inline-end: no Godot anatomy style mapping",
-    "structure.min-width: no Godot anatomy style mapping",
-    "root.transition-duration: no Godot anatomy style mapping",
-    "visual.display: platform web only",
-    "visual.width: platform web only",
-    "visual.height: platform web only",
-    "visual.box-sizing: platform web only",
-    "visual.border-radius: platform web only",
-    "visual.border-style: platform web only",
-    "visual.border-top-color: no Godot anatomy style mapping",
-    "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
-    "root accessibility role and labeling: native projection unverified",
-    "motion.loop spin: native loop policy not lowered",
-    "reduced motion: native preference handling unverified",
-    "ariaHidden: bound to the aria-hidden attribute; native attribute projection unverified",
-    "label: bound to the aria-label attribute; native attribute projection unverified",
-    "inline: no executable native projection",
-    "showAfterMs: no executable native projection"
+    "inline: declined by the loop-visual shape; no native realization on this target",
+    "showAfterMs: declined by the loop-visual shape; no native realization on this target"
   ],
-  "theme": "source-bearing anatomy style subset",
-  "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",
   "proof": "requires-runtime-witness"
 }

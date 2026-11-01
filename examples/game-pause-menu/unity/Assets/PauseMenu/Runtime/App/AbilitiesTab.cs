@@ -78,7 +78,7 @@ namespace GamePauseMenu
                 Root.Add(BuildCard(fixtures.Abilities.Abilities[i], i).Root);
 
             Root.Add(Ui.MakePanel(layout, layout.Abilities.DetailPanel, layout.Abilities.DetailTitle,
-                layout.Abilities.DetailMeta, layout.Panels.HeaderHeight).Root);
+                layout.Abilities.DetailMeta, layout.Panels.HeaderHeight, "parity-panel--steel").Root);
             var detail = layout.Abilities.DetailPanel;
             var bodyX = detail.X + layout.PanelPadding;
             var bodyY = detail.Y + layout.Panels.HeaderHeight + 16;

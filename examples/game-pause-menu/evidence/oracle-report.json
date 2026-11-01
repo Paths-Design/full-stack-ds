@@ -167,7 +167,7 @@
       "shares": {
         "ink": 0.354,
         "mint": 0.422,
-        "grey": 0.09,
+        "grey": 0.091,
         "orange": 0.058,
         "cream": 0.001,
         "other": 0.075
@@ -204,90 +204,12 @@
       "lane": "gpui",
       "state": "abilities",
       "shares": {
-        "ink": 0.617,
+        "ink": 0.474,
         "mint": 0.17,
-        "grey": 0.104,
-        "orange": 0.052,
-        "cream": 0,
-        "other": 0.056
-      },
-      "referenceShares": {
-        "styleBoard": {
-          "ink": 0.4,
-          "mint": 0.279,
-          "grey": 0.179,
-          "orange": 0.108,
-          "cream": 0
-        },
-        "orbitalPanel": {
-          "ink": 0.426,
-          "mint": 0.217,
-          "grey": 0.275,
-          "orange": 0.066,
-          "cream": 0
-        }
-      },
-      "violations": [
-        {
-          "family": "ink",
-          "observed": 0.617,
-          "band": [
-            0.3,
-            0.6
-          ],
-          "direction": "above"
-        }
-      ]
-    },
-    {
-      "lane": "gpui",
-      "state": "abilities-hover",
-      "shares": {
-        "ink": 0.615,
-        "mint": 0.17,
-        "grey": 0.107,
+        "grey": 0.245,
         "orange": 0.053,
         "cream": 0,
-        "other": 0.055
-      },
-      "referenceShares": {
-        "styleBoard": {
-          "ink": 0.4,
-          "mint": 0.279,
-          "grey": 0.179,
-          "orange": 0.108,
-          "cream": 0
-        },
-        "orbitalPanel": {
-          "ink": 0.426,
-          "mint": 0.217,
-          "grey": 0.275,
-          "orange": 0.066,
-          "cream": 0
-        }
-      },
-      "violations": [
-        {
-          "family": "ink",
-          "observed": 0.615,
-          "band": [
-            0.3,
-            0.6
-          ],
-          "direction": "above"
-        }
-      ]
-    },
-    {
-      "lane": "gpui",
-      "state": "settings",
-      "shares": {
-        "ink": 0.586,
-        "mint": 0.17,
-        "grey": 0.135,
-        "orange": 0.057,
-        "cream": 0.002,
-        "other": 0.05
+        "other": 0.057
       },
       "referenceShares": {
         "styleBoard": {
@@ -309,9 +231,86 @@
     },
     {
       "lane": "gpui",
+      "state": "abilities-hover",
+      "shares": {
+        "ink": 0.472,
+        "mint": 0.17,
+        "grey": 0.248,
+        "orange": 0.053,
+        "cream": 0,
+        "other": 0.057
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "gpui",
+      "state": "settings",
+      "shares": {
+        "ink": 0.052,
+        "mint": 0.17,
+        "grey": 0.653,
+        "orange": 0.058,
+        "cream": 0.003,
+        "other": 0.065
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.052,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.653,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "gpui",
       "state": "settings-remap-modal",
       "shares": {
-        "ink": 0.987,
+        "ink": 0.988,
         "mint": 0,
         "grey": 0.006,
         "orange": 0,
@@ -337,7 +336,7 @@
       "violations": [
         {
           "family": "ink",
-          "observed": 0.987,
+          "observed": 0.988,
           "band": [
             0.3,
             0.6
@@ -377,12 +376,12 @@
       "lane": "gpui",
       "state": "settings-subtitle",
       "shares": {
-        "ink": 0.574,
+        "ink": 0.041,
         "mint": 0.17,
-        "grey": 0.132,
+        "grey": 0.64,
         "orange": 0.068,
-        "cream": 0.002,
-        "other": 0.054
+        "cream": 0.003,
+        "other": 0.079
       },
       "referenceShares": {
         "styleBoard": {
@@ -400,15 +399,34 @@
           "cream": 0
         }
       },
-      "violations": []
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.041,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.64,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
     },
     {
       "lane": "unity",
       "state": "map",
       "shares": {
-        "ink": 0.244,
+        "ink": 0.243,
         "mint": 0.555,
-        "grey": 0.103,
+        "grey": 0.104,
         "orange": 0.06,
         "cream": 0.001,
         "other": 0.037
@@ -432,7 +450,7 @@
       "violations": [
         {
           "family": "ink",
-          "observed": 0.244,
+          "observed": 0.243,
           "band": [
             0.3,
             0.6
@@ -532,49 +550,10 @@
       "lane": "unity",
       "state": "abilities",
       "shares": {
-        "ink": 0.62,
-        "mint": 0.17,
-        "grey": 0.112,
+        "ink": 0.476,
+        "mint": 0.171,
+        "grey": 0.254,
         "orange": 0.058,
-        "cream": 0,
-        "other": 0.04
-      },
-      "referenceShares": {
-        "styleBoard": {
-          "ink": 0.4,
-          "mint": 0.279,
-          "grey": 0.179,
-          "orange": 0.108,
-          "cream": 0
-        },
-        "orbitalPanel": {
-          "ink": 0.426,
-          "mint": 0.217,
-          "grey": 0.275,
-          "orange": 0.066,
-          "cream": 0
-        }
-      },
-      "violations": [
-        {
-          "family": "ink",
-          "observed": 0.62,
-          "band": [
-            0.3,
-            0.6
-          ],
-          "direction": "above"
-        }
-      ]
-    },
-    {
-      "lane": "unity",
-      "state": "abilities-hover",
-      "shares": {
-        "ink": 0.618,
-        "mint": 0.17,
-        "grey": 0.114,
-        "orange": 0.057,
         "cream": 0,
         "other": 0.041
       },
@@ -594,28 +573,18 @@
           "cream": 0
         }
       },
-      "violations": [
-        {
-          "family": "ink",
-          "observed": 0.618,
-          "band": [
-            0.3,
-            0.6
-          ],
-          "direction": "above"
-        }
-      ]
+      "violations": []
     },
     {
       "lane": "unity",
-      "state": "settings",
+      "state": "abilities-hover",
       "shares": {
-        "ink": 0.587,
-        "mint": 0.17,
-        "grey": 0.145,
-        "orange": 0.063,
-        "cream": 0.002,
-        "other": 0.034
+        "ink": 0.474,
+        "mint": 0.171,
+        "grey": 0.256,
+        "orange": 0.057,
+        "cream": 0,
+        "other": 0.042
       },
       "referenceShares": {
         "styleBoard": {
@@ -634,6 +603,54 @@
         }
       },
       "violations": []
+    },
+    {
+      "lane": "unity",
+      "state": "settings",
+      "shares": {
+        "ink": 0.059,
+        "mint": 0.17,
+        "grey": 0.657,
+        "orange": 0.062,
+        "cream": 0.002,
+        "other": 0.05
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.059,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.657,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
     },
     {
       "lane": "unity",
@@ -705,12 +722,12 @@
       "lane": "unity",
       "state": "settings-subtitle",
       "shares": {
-        "ink": 0.574,
+        "ink": 0.046,
         "mint": 0.17,
-        "grey": 0.142,
+        "grey": 0.655,
         "orange": 0.073,
         "cream": 0.002,
-        "other": 0.04
+        "other": 0.055
       },
       "referenceShares": {
         "styleBoard": {
@@ -728,7 +745,26 @@
           "cream": 0
         }
       },
-      "violations": []
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.046,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.655,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
     },
     {
       "lane": "godot",
@@ -782,7 +818,7 @@
       "lane": "godot",
       "state": "map-popover",
       "shares": {
-        "ink": 0.305,
+        "ink": 0.304,
         "mint": 0.467,
         "grey": 0.105,
         "orange": 0.065,
@@ -821,7 +857,7 @@
       "lane": "godot",
       "state": "progress",
       "shares": {
-        "ink": 0.356,
+        "ink": 0.355,
         "mint": 0.423,
         "grey": 0.088,
         "orange": 0.063,
@@ -860,12 +896,12 @@
       "lane": "godot",
       "state": "abilities",
       "shares": {
-        "ink": 0.617,
-        "mint": 0.171,
-        "grey": 0.104,
-        "orange": 0.058,
+        "ink": 0.474,
+        "mint": 0.172,
+        "grey": 0.246,
+        "orange": 0.059,
         "cream": 0.001,
-        "other": 0.048
+        "other": 0.049
       },
       "referenceShares": {
         "styleBoard": {
@@ -883,25 +919,15 @@
           "cream": 0
         }
       },
-      "violations": [
-        {
-          "family": "ink",
-          "observed": 0.617,
-          "band": [
-            0.3,
-            0.6
-          ],
-          "direction": "above"
-        }
-      ]
+      "violations": []
     },
     {
       "lane": "godot",
       "state": "abilities-hover",
       "shares": {
-        "ink": 0.619,
+        "ink": 0.477,
         "mint": 0.172,
-        "grey": 0.107,
+        "grey": 0.248,
         "orange": 0.057,
         "cream": 0,
         "other": 0.045
@@ -922,28 +948,18 @@
           "cream": 0
         }
       },
-      "violations": [
-        {
-          "family": "ink",
-          "observed": 0.619,
-          "band": [
-            0.3,
-            0.6
-          ],
-          "direction": "above"
-        }
-      ]
+      "violations": []
     },
     {
       "lane": "godot",
       "state": "settings",
       "shares": {
-        "ink": 0.588,
+        "ink": 0.051,
         "mint": 0.171,
-        "grey": 0.132,
+        "grey": 0.657,
         "orange": 0.062,
-        "cream": 0.002,
-        "other": 0.044
+        "cream": 0.003,
+        "other": 0.056
       },
       "referenceShares": {
         "styleBoard": {
@@ -961,7 +977,26 @@
           "cream": 0
         }
       },
-      "violations": []
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.051,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.657,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
     },
     {
       "lane": "godot",
@@ -1033,12 +1068,12 @@
       "lane": "godot",
       "state": "settings-subtitle",
       "shares": {
-        "ink": 0.575,
+        "ink": 0.039,
         "mint": 0.171,
-        "grey": 0.13,
+        "grey": 0.655,
         "orange": 0.073,
         "cream": 0.002,
-        "other": 0.048
+        "other": 0.059
       },
       "referenceShares": {
         "styleBoard": {
@@ -1056,14 +1091,33 @@
           "cream": 0
         }
       },
-      "violations": []
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.039,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.655,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
     }
   ],
   "summary": {
     "lanes": 3,
     "states": 8,
     "observations": 24,
-    "violationCount": 30,
+    "violationCount": 36,
     "cleanObservations": 6,
     "overall": "does-not-meet-composition-bands"
   },
@@ -1114,23 +1168,23 @@
     },
     {
       "lane": "gpui",
-      "state": "abilities",
+      "state": "settings",
       "family": "ink",
-      "observed": 0.617,
+      "observed": 0.052,
       "band": [
         0.3,
         0.6
       ],
-      "direction": "above"
+      "direction": "below"
     },
     {
       "lane": "gpui",
-      "state": "abilities-hover",
-      "family": "ink",
-      "observed": 0.615,
+      "state": "settings",
+      "family": "grey",
+      "observed": 0.653,
       "band": [
-        0.3,
-        0.6
+        0.08,
+        0.3
       ],
       "direction": "above"
     },
@@ -1138,7 +1192,7 @@
       "lane": "gpui",
       "state": "settings-remap-modal",
       "family": "ink",
-      "observed": 0.987,
+      "observed": 0.988,
       "band": [
         0.3,
         0.6
@@ -1179,10 +1233,32 @@
       "direction": "below"
     },
     {
+      "lane": "gpui",
+      "state": "settings-subtitle",
+      "family": "ink",
+      "observed": 0.041,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-subtitle",
+      "family": "grey",
+      "observed": 0.64,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
       "lane": "unity",
       "state": "map",
       "family": "ink",
-      "observed": 0.244,
+      "observed": 0.243,
       "band": [
         0.3,
         0.6
@@ -1224,23 +1300,23 @@
     },
     {
       "lane": "unity",
-      "state": "abilities",
+      "state": "settings",
       "family": "ink",
-      "observed": 0.62,
+      "observed": 0.059,
       "band": [
         0.3,
         0.6
       ],
-      "direction": "above"
+      "direction": "below"
     },
     {
       "lane": "unity",
-      "state": "abilities-hover",
-      "family": "ink",
-      "observed": 0.618,
+      "state": "settings",
+      "family": "grey",
+      "observed": 0.657,
       "band": [
-        0.3,
-        0.6
+        0.08,
+        0.3
       ],
       "direction": "above"
     },
@@ -1289,6 +1365,28 @@
       "direction": "below"
     },
     {
+      "lane": "unity",
+      "state": "settings-subtitle",
+      "family": "ink",
+      "observed": 0.046,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-subtitle",
+      "family": "grey",
+      "observed": 0.655,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
       "lane": "godot",
       "state": "map",
       "family": "ink",
@@ -1334,23 +1432,23 @@
     },
     {
       "lane": "godot",
-      "state": "abilities",
+      "state": "settings",
       "family": "ink",
-      "observed": 0.617,
+      "observed": 0.051,
       "band": [
         0.3,
         0.6
       ],
-      "direction": "above"
+      "direction": "below"
     },
     {
       "lane": "godot",
-      "state": "abilities-hover",
-      "family": "ink",
-      "observed": 0.619,
+      "state": "settings",
+      "family": "grey",
+      "observed": 0.657,
       "band": [
-        0.3,
-        0.6
+        0.08,
+        0.3
       ],
       "direction": "above"
     },
@@ -1397,6 +1495,28 @@
         0.15
       ],
       "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-subtitle",
+      "family": "ink",
+      "observed": 0.039,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-subtitle",
+      "family": "grey",
+      "observed": 0.655,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
     }
   ],
   "claimBoundary": {

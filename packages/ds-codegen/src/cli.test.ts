@@ -277,21 +277,21 @@ describe("cli main — emitter admitContract seam", () => {
   });
 
   it("passes admitted=false for an explicit request outside the target's allowlist", async () => {
-    // godot now admits the whole corpus (GODOT-UNITY-COMPONENT-PARITY-01), so an
-    // engine target with a narrow allowlist is the one that can be outside it.
+    // Choose a registered target whose current allowlist excludes Pagination;
+    // the engine targets admit the whole corpus.
     const { events } = prepareWithAdmissionRecorder([
       "--dry-run",
-      "--target=gpui",
-      "Command",
+      "--target=jetpack-compose",
+      "Pagination",
     ]);
     vi.spyOn(console, "error").mockImplementation(() => {});
-    // The emitter may reject Command; this case pins only the admission context,
+    // The emitter may reject Pagination; this case pins only the admission context,
     // which is recorded before any emit.
     await import("./cli.js").catch(() => undefined);
     expect(events[0]).toEqual({
       kind: "admit",
-      target: "gpui",
-      component: "Command",
+      target: "jetpack-compose",
+      component: "Pagination",
       admitted: false,
     });
   });

@@ -1,10 +1,11 @@
 id: GPUI-COMPONENT-REF-PARITY-01
 title: 'GPUI realizes by-reference composition as retained nested generated components'
 mode: feature
-lifecycle_state: active
-worktree: gpui-component-ref-parity
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'GPUI renders by-reference composition as retained child components with static props projected and dynamic facts receipted; parts 166->180, no regressions.'
 created_at: '2026-11-01T10:26:05.363Z'
-updated_at: '2026-11-01T10:26:09.392Z'
+updated_at: '2026-11-01T10:40:07.234Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
@@ -48,3 +49,36 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "all 11 ref-bearing components emit one retained Option<Entity<Child>> field per componentRef node and render it lazily in the tree; components without references regenerate byte-identically (git diff shows only the 11 ref-bearing .rs files plus codegen, baseline and docs)"
+    recorded_at: "2026-11-01T10:40:00.402Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/PageNavigator/PageNavigator.rs
+    commit_sha: "94652ada7"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "static literal attrs are projected onto the child builders (e.g. Icon.name/size, Button.variant, Pagination.presentation); dynamic bindings, child events and unprojectable attrs are receipted as ref-binding/ref-event/ref-attr; pinned by the new codegen test 'retains by-reference child components and receipts the facts it cannot project' (44/44 gpui codegen tests pass)"
+    recorded_at: "2026-11-01T10:40:01.373Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "94652ada7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "cargo test --lib passes 58 tests (55 mount witnesses including every ref-bearing component plus 3 control unit tests) and the native pilot reports GPUI_NATIVE_PASS with all required engine tests present; child entities are created once via get_or_insert_with and retained in the parent struct, so they are not reinstantiated per redraw"
+    recorded_at: "2026-11-01T10:40:02.904Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: "94652ada7"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "consistency audit rebaselined: GPUI anatomy parts 166/214 -> 180/214 and components with a part gap 24 -> 20, with no dimension regression (audit reports improvements only and check passes on main after merge)"
+    recorded_at: "2026-11-01T10:40:04.370Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: "68805d651"

@@ -7,32 +7,37 @@
         "parts": 7,
         "props": 6,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 7,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 7,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 7,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
-          "parts": 5,
-          "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "parts": 6,
+          "props": 4,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -41,32 +46,37 @@
         "parts": 3,
         "props": 6,
         "behavior": 1,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
-          "parts": 2,
-          "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "parts": 3,
+          "props": 5,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -75,32 +85,37 @@
         "parts": 3,
         "props": 6,
         "behavior": 1,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 3,
-          "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "props": 5,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -109,32 +124,37 @@
         "parts": 3,
         "props": 4,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 3,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 3,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
-          "parts": 2,
+          "parts": 3,
           "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -143,32 +163,37 @@
         "parts": 3,
         "props": 5,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 5,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 5,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 5,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 3,
           "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -177,32 +202,37 @@
         "parts": 1,
         "props": 3,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 3,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 3,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 3,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 3,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -211,32 +241,37 @@
         "parts": 2,
         "props": 2,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
           "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -245,32 +280,37 @@
         "parts": 3,
         "props": 10,
         "behavior": 1,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 10,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 3,
           "props": 10,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 3,
           "props": 10,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
-          "parts": 1,
-          "props": 8,
-          "behavior": 0,
-          "a11y": 0
+          "parts": 2,
+          "props": 9,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -279,32 +319,37 @@
         "parts": 7,
         "props": 15,
         "behavior": 6,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 7,
           "props": 15,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 7,
           "props": 15,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 7,
           "props": 15,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 5,
-          "props": 7,
+          "props": 9,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -313,32 +358,37 @@
         "parts": 0,
         "props": 2,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 0,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 0,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 0,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 0,
           "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -347,32 +397,37 @@
         "parts": 8,
         "props": 8,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 3
       },
       "targets": {
         "react": {
           "parts": 8,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 3
         },
         "vue": {
           "parts": 8,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 3
         },
         "svelte": {
           "parts": 8,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 3
         },
         "gpui": {
-          "parts": 7,
-          "props": 3,
+          "parts": 8,
+          "props": 4,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 3
         }
       }
     },
@@ -381,32 +436,37 @@
         "parts": 3,
         "props": 10,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 10,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 10,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 10,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
-          "props": 6,
+          "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -415,32 +475,37 @@
         "parts": 5,
         "props": 13,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 2
       },
       "targets": {
         "react": {
           "parts": 5,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 2
         },
         "vue": {
           "parts": 5,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 2
         },
         "svelte": {
           "parts": 5,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 2
         },
         "gpui": {
-          "parts": 1,
-          "props": 9,
-          "behavior": 0,
-          "a11y": 0
+          "parts": 3,
+          "props": 11,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 2
         }
       }
     },
@@ -449,32 +514,37 @@
         "parts": 3,
         "props": 5,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 3,
           "props": 3,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -483,32 +553,37 @@
         "parts": 1,
         "props": 2,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 1,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -517,32 +592,37 @@
         "parts": 9,
         "props": 12,
         "behavior": 4,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 9,
           "props": 12,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 9,
           "props": 12,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 9,
           "props": 12,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
           "parts": 7,
-          "props": 5,
-          "behavior": 0,
-          "a11y": 0
+          "props": 7,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -551,32 +631,37 @@
         "parts": 6,
         "props": 7,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 6,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 6,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 6,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
-          "parts": 3,
-          "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "parts": 4,
+          "props": 6,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -585,32 +670,37 @@
         "parts": 8,
         "props": 13,
         "behavior": 4,
-        "a11y": true
+        "a11y": true,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 8,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "vue": {
           "parts": 8,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "svelte": {
           "parts": 8,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 1
         },
         "gpui": {
           "parts": 7,
-          "props": 10,
-          "behavior": 0,
-          "a11y": 0
+          "props": 12,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -619,32 +709,37 @@
         "parts": 1,
         "props": 4,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 4,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 4,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 4,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 1,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -653,32 +748,37 @@
         "parts": 8,
         "props": 11,
         "behavior": 1,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 8,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 8,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 8,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 7,
           "props": 7,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -687,32 +787,37 @@
         "parts": 1,
         "props": 4,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -721,32 +826,37 @@
         "parts": 1,
         "props": 12,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 12,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 12,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 12,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 7,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -755,32 +865,37 @@
         "parts": 1,
         "props": 11,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
-          "props": 7,
+          "props": 8,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -789,32 +904,37 @@
         "parts": 1,
         "props": 2,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -823,32 +943,37 @@
         "parts": 1,
         "props": 5,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -857,32 +982,37 @@
         "parts": 1,
         "props": 5,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -891,32 +1021,37 @@
         "parts": 1,
         "props": 1,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 0,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -925,32 +1060,37 @@
         "parts": 2,
         "props": 2,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
           "props": 1,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -959,32 +1099,37 @@
         "parts": 6,
         "props": 4,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 6,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 6,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 6,
           "props": 4,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 4,
           "props": 4,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -993,32 +1138,37 @@
         "parts": 3,
         "props": 11,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 11,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
-          "props": 6,
+          "props": 8,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1027,32 +1177,37 @@
         "parts": 10,
         "props": 13,
         "behavior": 8,
-        "a11y": true
+        "a11y": true,
+        "refs": 7
       },
       "targets": {
         "react": {
           "parts": 10,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 7
         },
         "vue": {
           "parts": 10,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 7
         },
         "svelte": {
           "parts": 10,
           "props": 13,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 7
         },
         "gpui": {
-          "parts": 3,
-          "props": 7,
+          "parts": 8,
+          "props": 8,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 7
         }
       }
     },
@@ -1061,32 +1216,37 @@
         "parts": 5,
         "props": 8,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 5,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 5,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 5,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
-          "props": 4,
+          "props": 5,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1095,32 +1255,37 @@
         "parts": 0,
         "props": 8,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 0,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 0,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 0,
           "props": 8,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 0,
           "props": 5,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1129,32 +1294,37 @@
         "parts": 10,
         "props": 5,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 10,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 10,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 10,
           "props": 5,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 8,
           "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1163,32 +1333,37 @@
         "parts": 1,
         "props": 1,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 0,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1197,32 +1372,37 @@
         "parts": 4,
         "props": 7,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 4,
-          "props": 5,
-          "behavior": 0,
-          "a11y": 0
+          "props": 6,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1231,32 +1411,37 @@
         "parts": 4,
         "props": 7,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
-          "props": 3,
+          "props": 4,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1265,32 +1450,37 @@
         "parts": 9,
         "props": 16,
         "behavior": 5,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 9,
           "props": 16,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 9,
           "props": 16,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 9,
           "props": 16,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 6,
-          "props": 8,
+          "props": 11,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1299,32 +1489,37 @@
         "parts": 9,
         "props": 8,
         "behavior": 4,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 9,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 9,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 9,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 9,
-          "props": 5,
-          "behavior": 0,
-          "a11y": 0
+          "props": 7,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1333,32 +1528,37 @@
         "parts": 3,
         "props": 6,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 3,
-          "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "props": 4,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1367,32 +1567,37 @@
         "parts": 6,
         "props": 5,
         "behavior": 7,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 6,
           "props": 5,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 6,
           "props": 5,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 6,
           "props": 5,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 5,
-          "props": 1,
+          "props": 2,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1401,32 +1606,37 @@
         "parts": 4,
         "props": 8,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 4,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 4,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 4,
           "props": 8,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
           "props": 6,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1435,32 +1645,37 @@
         "parts": 2,
         "props": 6,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 2,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 2,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 2,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
           "props": 5,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1469,32 +1684,37 @@
         "parts": 1,
         "props": 2,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 2,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1503,32 +1723,37 @@
         "parts": 3,
         "props": 1,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 1
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 1
         },
         "vue": {
           "parts": 3,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 1
         },
         "svelte": {
           "parts": 3,
           "props": 1,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 1
         },
         "gpui": {
-          "parts": 2,
+          "parts": 3,
           "props": 1,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 1
         }
       }
     },
@@ -1537,32 +1762,37 @@
         "parts": 4,
         "props": 7,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 4,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 3,
-          "props": 5,
+          "props": 4,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1571,32 +1801,37 @@
         "parts": 2,
         "props": 2,
         "behavior": 0,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 2,
           "props": 2,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 2,
           "props": 2,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1605,32 +1840,37 @@
         "parts": 5,
         "props": 9,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 5,
           "props": 9,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 5,
           "props": 9,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 5,
           "props": 9,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 5,
           "props": 5,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1639,32 +1879,37 @@
         "parts": 1,
         "props": 7,
         "behavior": 0,
-        "a11y": false
+        "a11y": false,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 7,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 7,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 7,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
           "props": 5,
-          "behavior": 0,
-          "a11y": 0
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1673,32 +1918,37 @@
         "parts": 5,
         "props": 9,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 5,
           "props": 9,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 5,
           "props": 9,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 5,
           "props": 9,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 5,
-          "props": 5,
+          "props": 6,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1707,32 +1957,37 @@
         "parts": 9,
         "props": 6,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 8,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 8,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 8,
           "props": 6,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 8,
-          "props": 3,
-          "behavior": 0,
-          "a11y": 0
+          "props": 5,
+          "behavior": 1,
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1741,32 +1996,37 @@
         "parts": 1,
         "props": 7,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 1,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 1,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 1,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 1,
-          "props": 5,
+          "props": 4,
           "behavior": 1,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1775,32 +2035,37 @@
         "parts": 0,
         "props": 7,
         "behavior": 3,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 0,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 0,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 0,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 0,
           "props": 4,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1809,32 +2074,37 @@
         "parts": 3,
         "props": 7,
         "behavior": 2,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 3,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 3,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 3,
           "props": 7,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 3,
-          "props": 3,
+          "props": 4,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     },
@@ -1843,32 +2113,37 @@
         "parts": 11,
         "props": 16,
         "behavior": 6,
-        "a11y": true
+        "a11y": true,
+        "refs": 0
       },
       "targets": {
         "react": {
           "parts": 11,
           "props": 16,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "vue": {
           "parts": 11,
           "props": 16,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "svelte": {
           "parts": 11,
           "props": 16,
           "behavior": 1,
-          "a11y": 1
+          "a11y": 1,
+          "refs": 0
         },
         "gpui": {
           "parts": 10,
           "props": 8,
           "behavior": 0,
-          "a11y": 0
+          "a11y": 0,
+          "refs": 0
         }
       }
     }
@@ -1878,7 +2153,8 @@
       "parts": 214,
       "props": 379,
       "behavior": 30,
-      "a11y": 44
+      "a11y": 44,
+      "refs": 20
     },
     "targets": {
       "react": {
@@ -1886,6 +2162,7 @@
         "props": 379,
         "behavior": 30,
         "a11y": 41,
+        "refs": 20,
         "present": 55
       },
       "vue": {
@@ -1893,6 +2170,7 @@
         "props": 379,
         "behavior": 30,
         "a11y": 41,
+        "refs": 20,
         "present": 55
       },
       "svelte": {
@@ -1900,13 +2178,15 @@
         "props": 379,
         "behavior": 30,
         "a11y": 40,
+        "refs": 20,
         "present": 55
       },
       "gpui": {
-        "parts": 166,
-        "props": 229,
-        "behavior": 3,
+        "parts": 180,
+        "props": 261,
+        "behavior": 14,
         "a11y": 0,
+        "refs": 20,
         "present": 55
       }
     }

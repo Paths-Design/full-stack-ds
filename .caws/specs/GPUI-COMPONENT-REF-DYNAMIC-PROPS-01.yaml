@@ -1,0 +1,85 @@
+id: GPUI-COMPONENT-REF-DYNAMIC-PROPS-01
+title: 'GPUI projects dynamic child prop bindings onto retained reference children'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Retained reference children now track parent state through generated setters; unprojectable expressions stay receipted omissions; no metric regressed.'
+created_at: '2026-11-01T10:41:07.379Z'
+updated_at: '2026-11-01T10:52:02.674Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI reference dynamic props: parent-state-driven child setters, receipted unprojectable expressions, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only expressions whose parent state is realized and whose child setter exists are projected; every other binding stays a named omission'
+  - 'Static-props-only children keep their previous output except for the added update calls when a projectable binding exists'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a componentRef binding whose expression is a realized parent prop or a literal; when generate --target=gpui runs; then the retained child is updated through its generated setter each render'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given paged/channel/valueMap/message expressions; when the projection runs; then they remain named ref-binding omissions with their reason'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the generated crate; when the native lane runs; then compilation, the 55 mount witnesses and the interaction witnesses pass'
+  - id: A4
+    given: 'the consistency audit'
+    when: 'it runs after the slice'
+    then: >-
+      no dimension regresses and every projected reference binding is recorded as a
+      dynamicProps entry in that component's receipt
+non_functional: {}
+contracts:
+  - name: 'gpui-ref-dynamic-props'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "reference bindings whose expression is a realized parent prop or a literal are applied through the child's generated setter every render (e.g. Alert.dismiss receives set_aria_label(self.dismiss_label.clone()); Button.spinner receives set_inline/set_aria_hidden from self.loading; Chip.action receives set_disabled/set_aria_label); pinned by the composition codegen test"
+    recorded_at: "2026-11-01T10:51:56.446Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Chip/Chip.rs
+    commit_sha: "542de0370"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "paged/channel/valueMap/message expressions stay named ref-binding omissions with their reason; the codegen test asserts PageNavigator's refs carry a ref-binding omission whose reason names the 'paged' expression kind"
+    recorded_at: "2026-11-01T10:51:57.895Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "9e7091643"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "cargo build --locked compiles the regenerated crate; cargo test --lib passes 58 tests (55 mount witnesses + 3 control unit tests); the native pilot reports GPUI_NATIVE_PASS with all required engine witnesses, run against stable inputs after the test-timing fix"
+    recorded_at: "2026-11-01T10:51:59.152Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: "542de0370"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "no dimension regressed (audit --check passes on main; parts 180/214 and props 229/379 unchanged, as dynamic child props do not alter the parent prop surface the audit measures) and each projected binding is recorded in the component receipt as a dynamicProps entry (receipts regenerated; codegen test asserts dynamicProps contains disabled for Chip and the update call is emitted)"
+    recorded_at: "2026-11-01T10:52:00.031Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/anatomy.ts
+    commit_sha: "542de0370"

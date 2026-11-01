@@ -27,6 +27,7 @@ StyleRule {part:"root",conditions:&[StyleCondition::Variant {axis:"status",value
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
@@ -65,9 +66,11 @@ impl Render for Field{fn render(&mut self,window:&mut Window,cx:&mut Context<Sel
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
+
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-root".to_string()).child(apply_part_style(div(),"header",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-header".to_string()).child(apply_part_style(div(),"label",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-label".to_string()).children(self.render_slot(Self::slot_key("label"),window,cx)))).child(apply_part_style(div(),"control",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-control".to_string()).children(self.render_slot(Self::slot_key("control"),window,cx))).child(apply_part_style(div(),"meta",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-meta".to_string()).child(apply_part_style(div(),"help",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-help".to_string()).children(self.render_slot(Self::slot_key("help"),window,cx))).child(apply_part_style(div(),"error",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-error".to_string()).children(self.render_slot(Self::slot_key("error"),window,cx))).when(self.validating,|node|node.child(apply_part_style(div(),"validatingIndicator",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"field-validatingIndicator".to_string()).children(self.render_slot(Self::slot_key("validatingIndicator"),window,cx))))).id("field");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
+
 
  root.into_any_element()
 }}

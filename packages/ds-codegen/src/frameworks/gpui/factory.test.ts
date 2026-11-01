@@ -126,6 +126,45 @@ describe("GPUI native style and control lowering", () => {
       + '#[cfg(test)]\n#[path = "ToggleSwitch/ToggleSwitch.test.rs"]\nmod toggle_switch_mount;\n',
     );
   });
+  it('retains by-reference child components and receipts the facts it cannot project', () => {
+    // The corpus is required to resolve componentRef nodes into instances.
+    const corpus = new Map(
+      fs.readdirSync(path.join(contractsRoot, 'components'))
+        .filter(name => fs.existsSync(path.join(contractsRoot, 'components', name, `${name}.contract.json`)))
+        .map(name => [name, fixture(name)] as const),
+    );
+    const ir = buildComponentIR(fixture('Chip'), { allContracts: corpus });
+    const files = emitter.emitComponent(ir, options);
+    const source = files[0]!.contents;
+    const receipt = JSON.parse(files[1]!.contents) as { operation: string; refs: Array<{ field: string; refType: string; projectedAttrs: string[]; dynamicProps: string[]; omissions: Array<{ kind: string; reason: string }> }> };
+    // One retained entity per reference, created once and rendered in the tree.
+    expect(receipt.refs).toHaveLength(2);
+    expect(receipt.refs.map(ref => ref.refType)).toEqual(['Button', 'Button']);
+    for (const ref of receipt.refs) {
+      expect(source).toContain(`${ref.field}:Option<gpui::Entity<crate::components::Button>>`);
+      expect(source).toContain(`self.${ref.field}.get_or_insert_with(||cx.new(|_|crate::components::Button::default()`);
+      expect(source).toContain(`.child(${ref.field}.clone())`);
+    }
+    // Static literal attrs are projected; dynamic bindings are receipted while
+    // reference events are realized — the referenced child's handler forwards to
+    // the parent callback (GPUI reference event wiring), so no ref-event omission
+    // is expected any more.
+    expect(receipt.refs[0]!.projectedAttrs).toContain('variant');
+    expect(receipt.refs[0]!.omissions.some(omission => omission.kind === 'ref-binding')).toBe(true);
+    expect(receipt.refs.every(ref => !ref.omissions.some(omission => omission.kind === 'ref-event'))).toBe(true);
+    expect(source).toContain('let ref_action__set_on_click=self.on_click.clone();');
+    expect(source).toContain('ref_action.update(cx,|child,ctx|child.set_on_click(');
+    // Realized parent props update the child through its setters each render.
+    expect(receipt.refs[0]!.dynamicProps).toContain('disabled');
+    expect(source).toContain('.update(cx,|child,cx|{child.set_disabled(');
+    // Paged/channel expressions have no parent-state lowering and stay omissions.
+    const pageNavigator = emitter.emitComponent(buildComponentIR(fixture('PageNavigator'), { allContracts: corpus }), options);
+    const pageReceipt = JSON.parse(pageNavigator[1]!.contents) as { refs: Array<{ omissions: Array<{ kind: string; reason: string }> }> };
+    expect(pageReceipt.refs.some(ref => ref.omissions.some(omission => omission.kind === 'ref-binding' && omission.reason.includes("'paged'")))).toBe(true);
+    // A component without references keeps the pre-slice output shape.
+    const plain = emitter.emitComponent(buildComponentIR(fixture('Text')), options)[0]!.contents;
+    expect(plain).not.toContain('Entity<crate::components::');
+  });
   it('emits an executed mount witness for every admitted component', () => {
     for (const name of ["Switch", "Dialog", "Select", "Icon", "Markdown"]) {
       const ir = buildComponentIR(fixture(name));

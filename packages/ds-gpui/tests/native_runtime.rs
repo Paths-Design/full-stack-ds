@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Accordion, Alert, Badge, Button, Checkbox, Details, Dialog, Divider, PageNavigator, ShowMore, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -367,4 +367,116 @@ fn mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint(
         assert_eq!(painted[0].background, gpui::Background::from(gpui::rgb(color)));
         assert_eq!(painted[0].border_widths, gpui::Edges::all(px(0.)));
     }
+}
+
+#[gpui::test]
+fn mounted_button_action_callback_pointer_and_keyboard(cx: &mut TestAppContext) {
+    let calls = Rc::new(Cell::new(0usize));
+    let recorded = calls.clone();
+    let (view, cx) = cx.add_window_view(|_, _| {
+        Button::default().label("Run").on_click(move |_window, _cx| recorded.set(recorded.get() + 1))
+    });
+    let root = cx.debug_bounds("button-root").expect("generated Button root must render");
+    cx.simulate_click(root.center(), Modifiers::default());
+    assert_eq!(calls.get(), 1, "pointer activation invokes the action handler once");
+    let focused = view.read_with(cx, |button, _| button.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "pointer activation focuses the action root");
+    tap_key(cx, "space");
+    assert_eq!(calls.get(), 2, "Space activates the action");
+    tap_key(cx, "enter");
+    assert_eq!(calls.get(), 3, "Enter activates the action");
+}
+
+#[gpui::test]
+fn mounted_alert_reference_action_forwards_to_parent_callback(cx: &mut TestAppContext) {
+    let calls = Rc::new(Cell::new(0usize));
+    let recorded = calls.clone();
+    let (_view, cx) = cx.add_window_view(|_, _| {
+        Alert::default()
+            .label("Heads up")
+            .dismissible(true)
+            .on_dismiss(move |_window, _cx| recorded.set(recorded.get() + 1))
+    });
+    let dismiss = cx.debug_bounds("alert-dismiss").expect("generated Alert dismiss reference must render");
+    cx.simulate_click(dismiss.center(), Modifiers::default());
+    assert_eq!(calls.get(), 1, "clicking the retained child forwards to the parent callback once");
+    cx.simulate_click(dismiss.center(), Modifiers::default());
+    assert_eq!(calls.get(), 2, "each activation forwards once");
+}
+
+#[gpui::test]
+fn mounted_page_navigator_nested_reference_children_render(cx: &mut TestAppContext) {
+    let (_view, cx) = cx.add_window_view(|_, _| PageNavigator::default());
+    cx.debug_bounds("page-navigator-previous").expect("retained previous button must render");
+    cx.debug_bounds("icon-root").expect("nested icon reference must render inside the retained button");
+}
+
+#[gpui::test]
+fn mounted_details_disclosure_toggles_from_trigger_click_and_keyboard(cx: &mut TestAppContext) {
+    let (view, cx) = cx.add_window_view(|_, _| Details::default());
+    assert!(!view.read_with(cx, |details, _| details.state.value()), "closed by default");
+    assert!(cx.debug_bounds("details-content").is_none(), "closed disclosure renders no content");
+    let trigger = cx.debug_bounds("details-summary").expect("summary trigger must render");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(view.read_with(cx, |details, _| details.state.value()), "click opens the disclosure");
+    assert!(cx.debug_bounds("details-content").is_some(), "open disclosure renders content");
+    let focused = view.read_with(cx, |details, _| details.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "activation focuses the trigger");
+    tap_key(cx, "space");
+    assert!(!view.read_with(cx, |details, _| details.state.value()), "Space closes the disclosure");
+    tap_key(cx, "enter");
+    assert!(view.read_with(cx, |details, _| details.state.value()), "Enter opens the disclosure");
+}
+
+#[gpui::test]
+fn mounted_dialog_presence_gates_backdrop_and_panel(cx: &mut TestAppContext) {
+    let (_closed, cx) = cx.add_window_view(|_, _| Dialog::default());
+    assert!(cx.debug_bounds("dialog-backdrop").is_none(), "default dialog renders no backdrop");
+    assert!(cx.debug_bounds("dialog-modal").is_none(), "default dialog renders no panel");
+    let (view, cx) = cx.add_window_view(|_, _| Dialog::default().default_open(true));
+    assert!(cx.debug_bounds("dialog-backdrop").is_some(), "open dialog renders its backdrop");
+    assert!(cx.debug_bounds("dialog-modal").is_some(), "open dialog renders its panel");
+    view.update(cx, |dialog, cx| dialog.set_open(Some(false), cx));
+    cx.run_until_parked();
+    assert!(cx.debug_bounds("dialog-modal").is_none(), "closing the dialog removes the panel");
+    view.update(cx, |dialog, cx| dialog.set_open(Some(true), cx));
+    cx.run_until_parked();
+    assert!(cx.debug_bounds("dialog-backdrop").is_some(), "reopening restores the backdrop");
+}
+
+#[gpui::test]
+fn mounted_accordion_collection_open_toggles_trigger_and_gated_panel(cx: &mut TestAppContext) {
+    let (view, cx) = cx.add_window_view(|_, _| Accordion::default());
+    assert!(cx.debug_bounds("accordion-content").is_none(), "collapsed accordion renders no panel");
+    let trigger = cx.debug_bounds("accordion-trigger").expect("trigger part must render");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(view.read_with(cx, |accordion, _| accordion.is_open()), "click opens the panel");
+    assert!(cx.debug_bounds("accordion-content").is_some(), "open panel reaches layout");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(!view.read_with(cx, |accordion, _| accordion.is_open()), "second click collapses");
+    let focused = view.read_with(cx, |accordion, _| accordion.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "activation focuses the trigger");
+    tap_key(cx, "space");
+    assert!(view.read_with(cx, |accordion, _| accordion.is_open()), "Space opens");
+    tap_key(cx, "enter");
+    assert!(!view.read_with(cx, |accordion, _| accordion.is_open()), "Enter collapses");
+    let (_controlled, cx) = cx.add_window_view(|_, _| Accordion::default().value(Some("item".into())));
+    assert!(cx.debug_bounds("accordion-content").is_some(), "controlled value opens the panel");
+}
+
+#[gpui::test]
+fn mounted_show_more_expansion_toggles_from_trigger_click_and_keyboard(cx: &mut TestAppContext) {
+    let (view, cx) = cx.add_window_view(|_, _| ShowMore::default());
+    assert!(!view.read_with(cx, |show_more, _| show_more.is_expanded()), "collapsed by default");
+    let trigger = cx.debug_bounds("show-more-trigger").expect("trigger part must render");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(view.read_with(cx, |show_more, _| show_more.is_expanded()), "click expands");
+    let focused = view.read_with(cx, |show_more, _| show_more.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "activation focuses the trigger");
+    tap_key(cx, "space");
+    assert!(!view.read_with(cx, |show_more, _| show_more.is_expanded()), "Space collapses");
+    tap_key(cx, "enter");
+    assert!(view.read_with(cx, |show_more, _| show_more.is_expanded()), "Enter expands");
+    let (_controlled, cx) = cx.add_window_view(|_, _| ShowMore::default().expanded(Some(true)));
+    assert!(cx.debug_bounds("show-more-content").is_some(), "controlled expansion renders content");
 }

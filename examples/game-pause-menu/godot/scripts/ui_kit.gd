@@ -57,7 +57,7 @@ static func panel_title(text: String) -> Label:
 
 
 static func panel_meta(text: String) -> Label:
-	return label(text.to_upper(), type_size("panelMeta"), 400, "muted", orion.micro_spacing())
+	return label(text.to_upper(), type_size("panelMeta"), 400, "textSecondary", orion.micro_spacing())
 
 
 # --- layout ------------------------------------------------------------------
@@ -159,10 +159,10 @@ static func ignore_mouse(node: Control) -> void:
 
 ## Standard data-panel header: 40px strip with title left, meta right, and a 1px
 ## rule on the strip's bottom edge (parity.md "Component styling defaults").
-static func panel_header(parent: Control, panel_width: float, title_text: String, meta_text: String) -> Label:
+static func panel_header(parent: Control, panel_width: float, title_text: String, meta_text: String, background_key := "") -> Label:
 	var header_height := int(parity.panels.get("headerHeight", 40))
 	var padding := int(parity.panels.get("padding", 16))
-	var strip := rect_node("charcoal")
+	var strip := rect_node(background_key if not background_key.is_empty() else str(parity.panels["background"]))
 	place(strip, 0, 0, panel_width, header_height)
 	parent.add_child(strip)
 	var title_label := panel_title(title_text)
