@@ -46,7 +46,7 @@ Aggregates over the 55-component corpus (214 declared parts, 379 declared props,
 | React | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
 | Vue | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
 | Svelte | 213/214 | 379/379 | 30/30 | 40/44 | 20/20 |
-| GPUI | 180/214 | 257/379 | 12/30 | 0/44 | 20/20 |
+| GPUI | 180/214 | 259/379 | 13/30 | 0/44 | 20/20 |
 
 All five dimensions are measured from the committed generated source; the audit
 does not read the regenerated, gitignored `capabilities.json` receipts, so a
@@ -70,8 +70,10 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
   28 at 50–79%, 10 at 1–49%, 2 at 0%. The web targets project every declared prop.
 - **Behavior**: 7 of 30 behavior-bearing components realize an interaction —
   four value channels (Switch, ToggleSwitch, Checkbox and Details' disclosure
-  `open`), four surface-presence channels (Dialog, Sheet, Toast and Command gate
-  their backdrop/panel on open state), two action controls (Button's root click,
+  `open`), one collection open-value channel (Accordion's trigger toggles its
+  gated content part from controlled or uncontrolled value), four
+  surface-presence channels (Dialog, Sheet, Toast and Command gate their
+  backdrop/panel on open state), two action controls (Button's root click,
   AlertNotice's dismiss trigger) that invoke a stored callback from pointer and
   keyboard activation, and two reference-event forwarders (Alert and Chip forward
   their retained trigger's click to the parent's dismiss/action callback). The
