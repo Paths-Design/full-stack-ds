@@ -283,6 +283,65 @@ namespace FullStackDS.Tests
                 Directory.CreateDirectory(dir); File.WriteAllBytes(Path.Combine(dir, name + ".png"), pixels.EncodeToPNG());
             } finally { RenderTexture.active = previous; UnityEngine.Object.DestroyImmediate(pixels); }
         }
+        private int CountPixels(Rect world, Func<Color, bool> matches)
+        {
+            var previous = RenderTexture.active;
+            var pixels = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+            try {
+                RenderTexture.active = texture;
+                pixels.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0); pixels.Apply();
+                var count = 0;
+                var x0 = Mathf.Max(0, Mathf.FloorToInt(world.xMin));
+                var x1 = Mathf.Min(texture.width, Mathf.CeilToInt(world.xMax));
+                var y0 = Mathf.Max(0, texture.height - Mathf.CeilToInt(world.yMax));
+                var y1 = Mathf.Min(texture.height, texture.height - Mathf.FloorToInt(world.yMin));
+                for (var y = y0; y < y1; y++)
+                    for (var x = x0; x < x1; x++)
+                        if (matches(pixels.GetPixel(x, y))) count++;
+                return count;
+            } finally { RenderTexture.active = previous; UnityEngine.Object.DestroyImmediate(pixels); }
+        }
+        [UnityTest] public IEnumerator SpinnerPaintsSourceBoundGeometryAndThemeColors()
+        {
+            yield return new EnterPlayMode();
+            var document = Runtime(160, 160); yield return Settle();
+            var root = document.rootVisualElement;
+            root.Clear();
+            var scope = new VisualElement { style = { width = 160, height = 160 } };
+            Theme.Attach(scope); root.Add(scope);
+            var spinner = new Spinner { Size = "lg", Thickness = "bold", ReducedMotion = true };
+            spinner.style.position = Position.Absolute;
+            spinner.style.left = 64;
+            spinner.style.top = 64;
+            scope.Add(spinner); yield return Settle();
+            Assert.That(spinner.Visual.resolvedStyle.width, Is.EqualTo(24f).Within(.5f));
+            Assert.That(spinner.Visual.resolvedStyle.height, Is.EqualTo(24f).Within(.5f));
+            Assert.That(spinner.Visual.resolvedStyle.borderTopWidth, Is.EqualTo(4f).Within(.5f));
+            ColorIs(spinner.Visual.resolvedStyle.borderTopColor, "#d92d2e", "spinner accent");
+            ColorIs(spinner.Visual.resolvedStyle.borderBottomColor, "#d0d0d0", "spinner track");
+            Assert.That(CountPixels(spinner.Visual.worldBound, c => c.r > .55f && c.r > c.g * 1.8f && c.g < .35f), Is.GreaterThan(2), "accent border painted no red pixels");
+            Assert.That(CountPixels(spinner.Visual.worldBound, c => c.r > .55f && Mathf.Abs(c.r - c.g) < .08f && Mathf.Abs(c.g - c.b) < .08f), Is.GreaterThan(6), "track border painted no grey pixels");
+            var bounds = spinner.Visual.worldBound;
+            var topHalf = new Rect(bounds.xMin, bounds.yMin, bounds.width, bounds.height * .5f);
+            var staticTopRed = CountPixels(topHalf, c => c.r > .55f && c.r > c.g * 1.8f && c.g < .35f);
+            spinner.ReducedMotion = false;
+            var deadline = Time.realtimeSinceStartup + 2f;
+            while (Time.realtimeSinceStartup < deadline &&
+                   (spinner.Visual.style.rotate.value.angle.value < 70f || spinner.Visual.style.rotate.value.angle.value > 110f))
+                yield return null;
+            Assert.That(spinner.Visual.style.rotate.value.angle.value, Is.InRange(70f, 110f), "declared loop did not reach a quarter turn");
+            yield return null;
+            Assert.That(CountPixels(topHalf, c => c.r > .55f && c.r > c.g * 1.8f && c.g < .35f), Is.LessThan(staticTopRed), "painted accent did not move with the declared loop");
+            spinner.ReducedMotion = true;
+            Assert.That(spinner.Visual.style.rotate.value.angle.value, Is.EqualTo(0f).Within(.001f));
+            Theme.SetBrand(scope, "corporate"); yield return Settle();
+            ColorIs(spinner.Visual.resolvedStyle.borderTopColor, "#0566fe", "corporate spinner accent");
+            Assert.That(CountPixels(spinner.Visual.worldBound, c => c.b > .55f && c.b > c.r * 2f && c.b > c.g * 1.2f), Is.GreaterThan(2), "corporate accent did not change painted pixels");
+            spinner.Size = "xs"; spinner.Thickness = "hairline"; yield return Settle();
+            Assert.That(spinner.Visual.resolvedStyle.width, Is.EqualTo(12f).Within(.5f));
+            Assert.That(spinner.Visual.resolvedStyle.height, Is.EqualTo(12f).Within(.5f));
+            Assert.That(spinner.Visual.resolvedStyle.borderTopWidth, Is.EqualTo(2f).Within(.5f));
+        }
         [UnityTest] public IEnumerator PlayerThemeReachesControlsAndPortaledContent()
         {
             yield return new EnterPlayMode();

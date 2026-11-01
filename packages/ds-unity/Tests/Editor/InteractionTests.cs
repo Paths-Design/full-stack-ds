@@ -1461,7 +1461,13 @@ namespace FullStackDS.Tests
             spinner.ReducedMotion = true;
             var angle = spinner.Visual.style.rotate.value.angle.value;
             Assert.That(angle, Is.EqualTo(0f).Within(0.001f));
-            foreach (var prop in new[] { "Size", "Thickness", "ShowAfterMs", "Inline", "AriaHidden" })
+            spinner.Size = "lg";
+            spinner.Thickness = "bold";
+            Assert.That(spinner.Visual.style.width.value.value, Is.EqualTo(24f));
+            Assert.That(spinner.Visual.style.height.value.value, Is.EqualTo(24f));
+            Assert.That(spinner.ClassListContains("spinner--lg"), Is.True);
+            Assert.That(spinner.ClassListContains("spinner--bold"), Is.True);
+            foreach (var prop in new[] { "ShowAfterMs", "Inline", "AriaHidden" })
                 Assert.That(typeof(FullStackDS.Spinner).GetProperty(prop), Is.Null, prop);
         }
         [UnityTest] public System.Collections.IEnumerator SpinnerRotatesOnTheDeclaredLoop()
