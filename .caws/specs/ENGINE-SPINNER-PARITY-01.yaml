@@ -64,3 +64,11 @@ contracts:
   - name: 'native-loop-plan'
     type: contract-test
     path: 'packages/ds-codegen/src/frameworks/native-loop-visual.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At clean source 8409c7094, 88 focused Vitest assertions passed across native loop plan, Godot factory/boundary and Unity walker; source checks include renamed contract and unsupported conditional loop rejection. Landed at 32416a7d7."
+    recorded_at: "2026-11-01T11:24:54.209Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/native-loop-visual.test.ts packages/ds-codegen/src/frameworks/godot/factory.test.ts packages/ds-codegen/src/frameworks/godot/boundary.test.ts packages/ds-codegen/src/frameworks/unity/walker.test.ts --maxWorkers=1 --no-file-parallelism --reporter=dot"
+    exit_code: 0
+    commit_sha: "32416a7d7"
