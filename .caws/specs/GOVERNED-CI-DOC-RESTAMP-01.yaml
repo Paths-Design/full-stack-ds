@@ -1,0 +1,36 @@
+id: GOVERNED-CI-DOC-RESTAMP-01
+title: 'Restamp governed-ci.md after the Godot parity merge changed package.json'
+mode: chore
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Re-verified governed-ci.md against the current tree and moved its stamp past the Godot merge that changed package.json; docs:check-claims is green on main.'
+created_at: '2026-11-01T08:22:25.903Z'
+updated_at: '2026-11-01T08:23:41.096Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'governed CI operator doc freshness stamp'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/specifications/governed-ci.md'
+  out: []
+invariants:
+  - 'The doc''s prose is unchanged; only its verification stamp moves to the commit it was re-verified against'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the governed surface changed at merge 4e9b9e19e (package.json); when docs:check-claims runs after the restamp; then governed-ci.md is fresh and no stale stamp remains'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs:check-claims on main after the restamp: 81 marked claims match derived values and governed-ci.md is fresh (16 verified stamps fresh, 5 ledgered stale). The doc was re-verified against d3e66f3e8 before moving the stamp: governed:rail/governed:rail:changed/governed:rail:react-native compositions match package.json, validate-cli still accepts its three flags, and committed-tree-check is wired in pre-push and the CI gate + GPUI jobs."
+    recorded_at: "2026-11-01T08:23:25.491Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/specifications/governed-ci.md
+    commit_sha: "4164da43a"

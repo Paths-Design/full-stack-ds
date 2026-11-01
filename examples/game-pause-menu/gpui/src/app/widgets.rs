@@ -38,9 +38,13 @@ pub(crate) fn at(x: f32, y: f32, w: f32, h: f32) -> Div {
 
 /// A parity panel: JSON ground colour, 1 px rule border, square corners.
 pub(crate) fn panel(layout: &ParityLayout, rect: Rect) -> Div {
+    panel_on(layout, rect, &layout.panels.background)
+}
+
+pub(crate) fn panel_on(layout: &ParityLayout, rect: Rect, background: &str) -> Div {
     rect_box(rect)
-        .bg(colors::paint(layout.color(&layout.panels.background)))
-        .border_1()
+        .bg(colors::paint(layout.color(background)))
+        .border(px(layout.style.panel_border))
         .border_color(colors::paint(layout.color(&layout.panels.border)))
 }
 

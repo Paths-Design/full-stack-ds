@@ -38,7 +38,7 @@ func _build_list() -> void:
 	_list_panel.name = "RosterPanel"
 	UI.place_rect(_list_panel, rect)
 	add_child(_list_panel)
-	var frame := UI.frame("charcoal", "rule")
+	var frame := UI.frame(str(app.parity.panels["background"]), "rule")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size
@@ -74,7 +74,7 @@ func _add_faction_row(faction: Dictionary, row_x: float, row_y: float, width: fl
 	row.name = "FactionRow_" + faction_id
 	row.focus_mode = Control.FOCUS_ALL
 	UI.place(row, row_x, row_y, width, row_h)
-	row.add_theme_stylebox_override("normal", app.orion.flat(app.orion.color("charcoal"), Color.TRANSPARENT, 0, 0.0))
+	row.add_theme_stylebox_override("normal", app.orion.flat(app.orion.color(str(app.parity.panels["background"])), Color.TRANSPARENT, 0, 0.0))
 	row.add_theme_stylebox_override("hover", app.orion.flat(app.orion.color("graphite"), Color.TRANSPARENT, 0, 0.0))
 	row.add_theme_stylebox_override("pressed", app.orion.flat(app.orion.color("graphite"), Color.TRANSPARENT, 0, 0.0))
 	row.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
@@ -154,7 +154,7 @@ func _build_drawer() -> void:
 	drawer.visible = false
 	drawer.set_meta("base_x", rect.position.x)
 	add_child(drawer)
-	var frame := UI.frame("paper", "ruleStrong")
+	var frame := UI.frame(str(app.parity.progress["drawer"]["background"]), "ruleStrong")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size

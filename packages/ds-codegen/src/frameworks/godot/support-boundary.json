@@ -1,0 +1,2013 @@
+{
+  "schema": "godot-support-boundary.v1",
+  "phases": {
+    "runtime-semantics": "Focus, keyboard, dismissal, modality, validation, localization, layering and motion behaviour the shared Godot runtime does not implement yet."
+  },
+  "rules": [
+    {
+      "id": "authoring-metadata",
+      "match": [
+        "contract:/$schema",
+        "contract:/schemaVersion",
+        "contract:/codegen/**"
+      ],
+      "disposition": "refused",
+      "reason": "contract authoring/codegen metadata has no engine-target meaning"
+    },
+    {
+      "id": "identity",
+      "match": [
+        "contract:/name",
+        "contract:/cssPrefix"
+      ],
+      "disposition": "lowered",
+      "via": "the component identity projects onto the generated class_name and scene root node"
+    },
+    {
+      "id": "documentation",
+      "match": [
+        "contract:/description",
+        "contract:/category",
+        "contract:/layer",
+        "contract:/**/description"
+      ],
+      "disposition": "refused",
+      "reason": "documentation and catalogue text is authoring metadata with no engine-target meaning"
+    },
+    {
+      "id": "a2ui",
+      "match": [
+        "contract:/a2ui/**"
+      ],
+      "disposition": "refused",
+      "reason": "a2ui authoring metadata is out of scope for an engine target"
+    },
+    {
+      "id": "ssr",
+      "match": [
+        "contract:/ssr/**"
+      ],
+      "disposition": "refused",
+      "reason": "SSR hydration metadata has no meaning in a self-hosted engine scene"
+    },
+    {
+      "id": "rtl",
+      "match": [
+        "contract:/rtl/**"
+      ],
+      "disposition": "refused",
+      "reason": "RTL/logical-property metadata is a web layout concern with no native mapping"
+    },
+    {
+      "id": "morphology",
+      "match": [
+        "contract:/morphology/**"
+      ],
+      "disposition": "lowered",
+      "via": "box-model geometry facts are consumed as box-model token facts in the painted style vocabulary"
+    },
+    {
+      "id": "anatomy-parts",
+      "match": [
+        "contract:/anatomy/parts/**"
+      ],
+      "disposition": "lowered",
+      "via": "part identity projects onto named scene nodes and generated part hosts"
+    },
+    {
+      "id": "anatomy-details-tag",
+      "match": [
+        "contract:/anatomy/details/*/tag"
+      ],
+      "disposition": "lowered",
+      "via": "the authored element tag selects the native control class of the generated scene node"
+    },
+    {
+      "id": "anatomy-details-role",
+      "match": [
+        "contract:/anatomy/details/*/role"
+      ],
+      "disposition": "refused",
+      "reason": "The web element role an authored anatomy describes; native targets lower parts and channels, not the authored element descriptor."
+    },
+    {
+      "id": "anatomy-details-focusable",
+      "match": [
+        "contract:/anatomy/details/*/focusable",
+        "contract:/anatomy/details/*/interactive"
+      ],
+      "disposition": "refused",
+      "reason": "Authored focusability/interactivity descriptors of the web element; native focus is realized from focus/channel facts, not from this descriptor."
+    },
+    {
+      "id": "anatomy-details-multiple",
+      "match": [
+        "contract:/anatomy/details/*/multiple"
+      ],
+      "disposition": "refused",
+      "reason": "The control runtime tracks one open item per control; multi-open disclosure is not realised, so the descriptor is not claimed."
+    },
+    {
+      "id": "anatomy-details-subcomponent",
+      "match": [
+        "contract:/anatomy/details/*/subcomponent"
+      ],
+      "disposition": "refused",
+      "reason": "Documents that the authored anatomy hosts a subcomponent; the target composes emitted instances instead."
+    },
+    {
+      "id": "anatomy-details-aria",
+      "match": [
+        "contract:/anatomy/details/*/aria/**"
+      ],
+      "disposition": "refused",
+      "reason": "Authored ARIA descriptors of the web element; structural projection is emitted from bindings and states."
+    },
+    {
+      "id": "anatomy-details-collapse-intent",
+      "match": [
+        "contract:/anatomy/details/*/collapsibleTo"
+      ],
+      "disposition": "refused",
+      "reason": "Authoring intent for a collapsible container; the target lowers the declared channels and parts instead."
+    },
+    {
+      "id": "anatomy-details-component-ref",
+      "match": [
+        "contract:/anatomy/details/*/componentRef"
+      ],
+      "disposition": "lowered",
+      "via": "a static reference mounts the referenced admitted component as a native scene child"
+    },
+    {
+      "id": "anatomy-node-structure",
+      "match": [
+        "contract:/anatomy/dom/part",
+        "contract:/anatomy/dom/tag",
+        "contract:/anatomy/dom/name",
+        "contract:/anatomy/dom/**/children/*/part",
+        "contract:/anatomy/dom/**/children/*/tag",
+        "contract:/anatomy/dom/**/children/*/name"
+      ],
+      "disposition": "lowered",
+      "via": "element and part structure projects onto the generated scene tree and named part/content hosts"
+    },
+    {
+      "id": "anatomy-component-ref",
+      "match": [
+        "contract:/anatomy/dom/**/ref:*/componentRef",
+        "contract:/anatomy/dom/**/ref:*/part"
+      ],
+      "disposition": "lowered",
+      "via": "a static component reference mounts the referenced admitted component as a native scene child"
+    },
+    {
+      "id": "anatomy-component-ref-props",
+      "match": [
+        "contract:/anatomy/dom/**/ref:*/attrs/**"
+      ],
+      "disposition": "lowered",
+      "via": "static reference attributes forward through the referenced component's projected prop vocabulary"
+    },
+    {
+      "id": "anatomy-component-ref-dynamic",
+      "match": [
+        "contract:/anatomy/dom/**/ref:*/bindings/**",
+        "contract:/anatomy/dom/**/ref:*/events/**",
+        "contract:/anatomy/dom/**/ref:*/if",
+        "contract:/anatomy/dom/**/ref:*/children/**"
+      ],
+      "disposition": "refused",
+      "reason": "Dynamic component-ref facts (bindings, events, guards, children on a componentRef) are not lowered: the planner emits a static host for each admitted ref and the consumer binds its own behaviour."
+    },
+    {
+      "id": "anatomy-content-transform",
+      "match": [
+        "contract:/anatomy/dom/content/transform",
+        "contract:/anatomy/dom/**/children/*/content/transform"
+      ],
+      "disposition": "refused",
+      "reason": "Content transforms (markdown rendering, syntax highlighting) have no transformer on this target; the source text is rendered as given."
+    },
+    {
+      "id": "anatomy-content",
+      "match": [
+        "contract:/anatomy/dom/content",
+        "contract:/anatomy/dom/content/**",
+        "contract:/anatomy/dom/**/children/*/content",
+        "contract:/anatomy/dom/**/children/*/content/**"
+      ],
+      "disposition": "lowered",
+      "via": "content strings and their prop source project into the generated label/line text"
+    },
+    {
+      "id": "anatomy-icon-glyph",
+      "match": [
+        "contract:/anatomy/dom/**/iconGlyph/**"
+      ],
+      "disposition": "lowered",
+      "via": "glyph name and size facts project into the emitted glyph catalog mount"
+    },
+    {
+      "id": "anatomy-css-variable-bindings",
+      "match": [
+        "contract:/anatomy/dom/**/cssVariableBindings/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS custom-property bindings are authoring mechanism; the native runtimes resolve projected style rules directly and do not evaluate these bindings."
+    },
+    {
+      "id": "anatomy-iteration",
+      "match": [
+        "contract:/anatomy/dom/**/iterate/**"
+      ],
+      "disposition": "refused",
+      "reason": "Iterated anatomy emits one host and names the repeats; the iteration source itself is not lowered into scene construction."
+    },
+    {
+      "id": "anatomy-guards",
+      "match": [
+        "contract:/anatomy/dom/if",
+        "contract:/anatomy/dom/**/children/*/if",
+        "contract:/anatomy/dom/**/ref:*/if"
+      ],
+      "disposition": "refused",
+      "reason": "Conditional anatomy guards are not mounted: a guarded region is emitted structurally only when unguarded, and the condition itself has no native carrier here."
+    },
+    {
+      "id": "anatomy-dom-properties",
+      "match": [
+        "contract:/anatomy/dom/**/properties/**"
+      ],
+      "disposition": "refused",
+      "reason": "Authored DOM properties are not applied: the runtime projects declared props, not element properties."
+    },
+    {
+      "id": "anatomy-aria-label-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/aria-label"
+      ],
+      "disposition": "lowered",
+      "via": "aria-label projects onto the generated control's structural accessibility name"
+    },
+    {
+      "id": "anatomy-disabled-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/disabled"
+      ],
+      "disposition": "lowered",
+      "via": "disabled projects onto the generated control's disabled state"
+    },
+    {
+      "id": "anatomy-channel-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/checked",
+        "contract:/anatomy/dom/**/bindings/open",
+        "contract:/anatomy/dom/**/bindings/expanded",
+        "contract:/anatomy/dom/**/bindings/value",
+        "contract:/anatomy/dom/**/bindings/index",
+        "contract:/anatomy/dom/**/bindings/month",
+        "contract:/anatomy/dom/**/bindings/search"
+      ],
+      "disposition": "lowered",
+      "via": "channel state projects onto the generated control configuration"
+    },
+    {
+      "id": "anatomy-placeholder-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/placeholder"
+      ],
+      "disposition": "lowered",
+      "via": "a placeholder string projects into the generated text-field content"
+    },
+    {
+      "id": "anatomy-dom-binding-type",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/type"
+      ],
+      "disposition": "refused",
+      "reason": "DOM input type has no native meaning in the Godot target"
+    },
+    {
+      "id": "anatomy-dom-binding-role",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/role"
+      ],
+      "disposition": "refused",
+      "reason": "An authored role binding is DOM authoring; Godot exposes no accessible-role property to bind it to."
+    },
+    {
+      "id": "anatomy-dom-binding-media",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/width",
+        "contract:/anatomy/dom/**/bindings/height",
+        "contract:/anatomy/dom/**/bindings/loading",
+        "contract:/anatomy/dom/**/bindings/sizes"
+      ],
+      "disposition": "refused",
+      "reason": "Authored width/height/loading/sizes bindings are not evaluated; the consumer sizes the native host and supplies the texture."
+    },
+    {
+      "id": "anatomy-dom-binding-datetime",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/datetime"
+      ],
+      "disposition": "refused",
+      "reason": "Authored datetime bindings are not projected; the consumer formats machine timestamps."
+    },
+    {
+      "id": "anatomy-dom-binding-title",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/title"
+      ],
+      "disposition": "refused",
+      "reason": "Authored title bindings are not projected; the tooltip channel has no native carrier in this runtime."
+    },
+    {
+      "id": "anatomy-dom-binding-empty",
+      "match": [
+        "contract:/anatomy/dom/**/bindings"
+      ],
+      "disposition": "refused",
+      "reason": "A bindings block with no entry carries no fact a target can project."
+    },
+    {
+      "id": "anatomy-aria-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/aria-expanded",
+        "contract:/anatomy/dom/**/bindings/aria-checked",
+        "contract:/anatomy/dom/**/bindings/aria-selected",
+        "contract:/anatomy/dom/**/bindings/aria-pressed",
+        "contract:/anatomy/dom/**/bindings/aria-current",
+        "contract:/anatomy/dom/**/bindings/aria-busy",
+        "contract:/anatomy/dom/**/bindings/aria-hidden",
+        "contract:/anatomy/dom/**/bindings/aria-*"
+      ],
+      "disposition": "lowered",
+      "via": "structural state is projected from the anatomy aria bindings: expanded/selected/checked/disabled"
+    },
+    {
+      "id": "anatomy-form-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/name"
+      ],
+      "disposition": "refused",
+      "reason": "there is no native form serialization or submission surface in the Godot target"
+    },
+    {
+      "id": "anatomy-validation-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/required",
+        "contract:/anatomy/dom/**/bindings/aria-invalid"
+      ],
+      "disposition": "refused",
+      "reason": "Authored validation bindings are not evaluated; a consumer sets the projected required/invalid state instead."
+    },
+    {
+      "id": "anatomy-association-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/htmlFor",
+        "contract:/anatomy/dom/**/bindings/form"
+      ],
+      "disposition": "refused",
+      "reason": "Authored form-association bindings are not projected; association is consumer-owned."
+    },
+    {
+      "id": "anatomy-navigation-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/href",
+        "contract:/anatomy/dom/**/bindings/target",
+        "contract:/anatomy/dom/**/bindings/rel"
+      ],
+      "disposition": "refused",
+      "reason": "Authored href/target/rel bindings are not projected; navigation is consumer-owned."
+    },
+    {
+      "id": "anatomy-media-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/src",
+        "contract:/anatomy/dom/**/bindings/alt"
+      ],
+      "disposition": "lowered",
+      "via": "the DOM src/alt bindings are replaced by the declared prop projection onto the native media host witnessed by the media row"
+    },
+    {
+      "id": "anatomy-data-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/data-*"
+      ],
+      "disposition": "refused",
+      "reason": "Authored data-* bindings have no native carrier; structural state is projected from channels/states instead."
+    },
+    {
+      "id": "anatomy-focus-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/tabindex"
+      ],
+      "disposition": "refused",
+      "reason": "Authored tabindex bindings are not projected; focus order is decided by the scene tree and the projected focus strategy."
+    },
+    {
+      "id": "anatomy-dom-attrs-aria",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/aria-*"
+      ],
+      "disposition": "refused",
+      "reason": "Authored aria attributes are DOM authoring; structural ARIA state is projected from states/bindings, not from these literal attributes."
+    },
+    {
+      "id": "anatomy-dom-attrs-role",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/role"
+      ],
+      "disposition": "refused",
+      "reason": "Authored role attributes are DOM authoring; Godot exposes no accessible-role property, so they are neither projected nor approximated."
+    },
+    {
+      "id": "anatomy-dom-attrs-data",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/data-*"
+      ],
+      "disposition": "refused",
+      "reason": "Authored data-* attributes are not projected; structural state comes from channels and states."
+    },
+    {
+      "id": "anatomy-dom-attrs-dom",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/type",
+        "contract:/anatomy/dom/**/attrs/inputmode",
+        "contract:/anatomy/dom/**/attrs/autocomplete",
+        "contract:/anatomy/dom/**/attrs/spellcheck",
+        "contract:/anatomy/dom/**/attrs/scope",
+        "contract:/anatomy/dom/**/attrs/type/**",
+        "contract:/anatomy/dom/**/attrs/inputmode/**",
+        "contract:/anatomy/dom/**/attrs/autocomplete/**",
+        "contract:/anatomy/dom/**/attrs/spellcheck/**",
+        "contract:/anatomy/dom/**/attrs/scope/**"
+      ],
+      "disposition": "refused",
+      "reason": "DOM form/table attributes have no native meaning in the Godot target"
+    },
+    {
+      "id": "anatomy-dom-attrs-maxlength",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/maxlength"
+      ],
+      "disposition": "refused",
+      "reason": "Authored maxlength is not applied; an admitted field keeps its native length policy."
+    },
+    {
+      "id": "anatomy-glyph-svg-attrs",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/fill",
+        "contract:/anatomy/dom/**/attrs/xmlns"
+      ],
+      "disposition": "lowered",
+      "via": "glyph SVG paint attributes are carried by the emitted glyph catalog resource"
+    },
+    {
+      "id": "anatomy-click-event",
+      "match": [
+        "contract:/anatomy/dom/**/events/click"
+      ],
+      "disposition": "lowered",
+      "via": "pointer activation projects onto the generated control operation and activation signal"
+    },
+    {
+      "id": "anatomy-keyboard-event",
+      "match": [
+        "contract:/anatomy/dom/**/events/keydown",
+        "contract:/anatomy/dom/**/events/keyup",
+        "contract:/anatomy/dom/**/events/keypress"
+      ],
+      "disposition": "refused",
+      "reason": "Authored keyboard event handlers are not bound; the runtime handles the focus/dismissal keys the contracts declare."
+    },
+    {
+      "id": "anatomy-focus-event",
+      "match": [
+        "contract:/anatomy/dom/**/events/focus",
+        "contract:/anatomy/dom/**/events/blur",
+        "contract:/anatomy/dom/**/events/focusin",
+        "contract:/anatomy/dom/**/events/focusout"
+      ],
+      "disposition": "refused",
+      "reason": "Authored focus-event handlers are not bound; the runtime handles the focus keys the contracts declare."
+    },
+    {
+      "id": "surface-dismissal",
+      "match": [
+        "contract:/surface/dismissal/**"
+      ],
+      "disposition": "lowered",
+      "via": "surface dismissal modes map onto the same realised trigger wiring"
+    },
+    {
+      "id": "surface-layer",
+      "match": [
+        "contract:/surface/positioning/**",
+        "contract:/surface/anchor/**",
+        "contract:/surface/timing/**"
+      ],
+      "disposition": "refused",
+      "reason": "Anchor/positioning/timing policy is runtime-owned: collision flip-shift, placement props and entry/exit timing are not implemented, so the declared layer policy is not claimed."
+    },
+    {
+      "id": "surface-modality",
+      "match": [
+        "contract:/surface/modality",
+        "contract:/surface/modalityProp"
+      ],
+      "disposition": "refused",
+      "reason": "Blocking modality (backdrop, focus containment, modality gate) is not realised by the presence-only surface runtime."
+    },
+    {
+      "id": "surface-content",
+      "match": [
+        "contract:/surface/content/**"
+      ],
+      "disposition": "lowered",
+      "via": "surface content part identity projects onto the generated overlay host"
+    },
+    {
+      "id": "surface-core",
+      "match": [
+        "contract:/surface/kind",
+        "contract:/surface/presence",
+        "contract:/surface/attachment",
+        "contract:/surface/openTriggers/**"
+      ],
+      "disposition": "lowered",
+      "via": "surface kind/presence/attachment/open triggers project onto the generated overlay operation"
+    },
+    {
+      "id": "dismissal",
+      "match": [
+        "contract:/dismissal/**"
+      ],
+      "disposition": "lowered",
+      "via": "shared control runtime closes the surface on escape, outside click and focus leave, honouring the declared enabledBy gates"
+    },
+    {
+      "id": "relationships",
+      "match": [
+        "contract:/relationships/**"
+      ],
+      "disposition": "lowered",
+      "via": "part relations are wired onto accessibility_controls_nodes / labeled_by_nodes / described_by_nodes; unhosted parts are named omissions rather than claimed"
+    },
+    {
+      "id": "form",
+      "match": [
+        "contract:/form/**",
+        "contract:/fieldAssociation"
+      ],
+      "disposition": "refused",
+      "reason": "there is no native form serialization, submission or validation surface in the Godot target"
+    },
+    {
+      "id": "form-control",
+      "match": [
+        "contract:/formControl/**"
+      ],
+      "disposition": "lowered",
+      "via": "the declared value model/channel/part projects onto the generated control configuration"
+    },
+    {
+      "id": "a11y-labeling",
+      "match": [
+        "contract:/a11y/labeling/**",
+        "contract:/a11y/labeling"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime projects the accessible name from the visible label and wires the declared part relations onto the native accessibility node properties"
+    },
+    {
+      "id": "a11y-role",
+      "match": [
+        "contract:/a11y/role"
+      ],
+      "disposition": "refused",
+      "reason": "Godot exposes no accessible-role property on Control; a role cannot be projected, and inventing one would misreport the native tree."
+    },
+    {
+      "id": "a11y-apg",
+      "match": [
+        "contract:/a11y/apgPattern"
+      ],
+      "disposition": "refused",
+      "reason": "The APG pattern reference is authoring guidance naming the expected interaction model; the target realises behaviour from focus/dismissal/channel facts, not from this name."
+    },
+    {
+      "id": "a11y-keyboard",
+      "match": [
+        "contract:/a11y/keyboard/**",
+        "contract:/a11y/keyboard"
+      ],
+      "disposition": "refused",
+      "reason": "The keyboard table documents bindings; the runtime realises arrow navigation and escape dismissal from the focus and dismissal facts, so the table itself is not emitted."
+    },
+    {
+      "id": "a11y",
+      "match": [
+        "contract:/a11y/**"
+      ],
+      "disposition": "refused",
+      "reason": "Remaining accessibility declarations have no native carrier on this target: role lists, obligation-suppression bookkeeping and description/live-region facts are neither projected nor approximated; the realised labeling facts are split out above."
+    },
+    {
+      "id": "messages",
+      "match": [
+        "contract:/messages/**"
+      ],
+      "disposition": "refused",
+      "reason": "Contract message defaults are consumer-facing copy; this target has no localization catalog and synthesizes no message-bound chrome, so the defaults are not emitted."
+    },
+    {
+      "id": "portal-target",
+      "match": [
+        "contract:/portal/defaultTarget"
+      ],
+      "disposition": "refused",
+      "reason": "A DOM mount target has no native meaning; the surface hosts on the target's own overlay layer."
+    },
+    {
+      "id": "portal-positioning",
+      "match": [
+        "contract:/portal/positioning",
+        "contract:/portal/collision"
+      ],
+      "disposition": "refused",
+      "reason": "collision flip/shift and selector-sourced placement are not implemented; anchored placement is runtime-owned, so the declared positioning policy is not claimed."
+    },
+    {
+      "id": "portal-backdrop",
+      "match": [
+        "contract:/portal/backdrop"
+      ],
+      "disposition": "refused",
+      "reason": "A modal backdrop is not realised: the presence surface mounts on an overlay layer without a backdrop, focus containment or scroll lock."
+    },
+    {
+      "id": "portal",
+      "match": [
+        "contract:/portal/enabled",
+        "contract:/portal/layering"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime mounts revealed content on a dedicated overlay layer"
+    },
+    {
+      "id": "focus-return",
+      "match": [
+        "contract:/focus/returnFocus"
+      ],
+      "disposition": "lowered",
+      "via": "dismissing a surface returns focus to its trigger"
+    },
+    {
+      "id": "focus-initial",
+      "match": [
+        "contract:/focus/initialFocus"
+      ],
+      "disposition": "refused",
+      "reason": "mount-time initial focus is the embedding scene's decision; the control runtime does not steal focus when the component enters the tree."
+    },
+    {
+      "id": "focus-scroll-lock",
+      "match": [
+        "contract:/focus/scrollLock"
+      ],
+      "disposition": "refused",
+      "reason": "a native scene has no document scroll to lock; the runtime mounts overlays on its own layer instead."
+    },
+    {
+      "id": "focus",
+      "match": [
+        "contract:/focus/strategy",
+        "contract:/focus/orientation",
+        "contract:/focus/wrap"
+      ],
+      "disposition": "lowered",
+      "via": "shared control runtime rotates the focus ring across triggers by keyboard direction and honours the declared wrap"
+    },
+    {
+      "id": "interaction",
+      "match": [
+        "contract:/interaction/**"
+      ],
+      "disposition": "lowered",
+      "via": "declared interaction triggers and their parts project onto the generated control operation"
+    },
+    {
+      "id": "channels",
+      "match": [
+        "contract:/channels/**"
+      ],
+      "disposition": "lowered",
+      "via": "channel declarations project onto the generated control configuration"
+    },
+    {
+      "id": "types",
+      "match": [
+        "contract:/types/**"
+      ],
+      "disposition": "lowered",
+      "via": "the declared value vocabulary projects into generated enum/control configuration"
+    },
+    {
+      "id": "variants",
+      "match": [
+        "contract:/variants/**"
+      ],
+      "disposition": "lowered",
+      "via": "variant axes project as native style predicates"
+    },
+    {
+      "id": "states-accessibility",
+      "match": [
+        "contract:/states/*/*/a11y/**"
+      ],
+      "disposition": "lowered",
+      "via": "each declared state dimension maps its semantic value onto the authored ARIA attribute as structural native state (booleans preserved)"
+    },
+    {
+      "id": "states",
+      "match": [
+        "contract:/states/**"
+      ],
+      "disposition": "lowered",
+      "via": "declared interaction states project as native style predicates and control state"
+    },
+    {
+      "id": "events",
+      "match": [
+        "contract:/events/**"
+      ],
+      "disposition": "lowered",
+      "via": "declared callback events project onto the runtime's native activation/value signals"
+    },
+    {
+      "id": "slots-required",
+      "match": [
+        "contract:/slots/**/required",
+        "contract:/slots/required"
+      ],
+      "disposition": "refused",
+      "reason": "A slot requirement documents what the consumer must supply; it is composition guidance, not a fact any rendering target emits."
+    },
+    {
+      "id": "slots",
+      "match": [
+        "contract:/slots/**"
+      ],
+      "disposition": "lowered",
+      "via": "slot anchors project onto named part and content hosts of the generated scene"
+    },
+    {
+      "id": "sequence",
+      "match": [
+        "contract:/sequence/**"
+      ],
+      "disposition": "lowered",
+      "via": "sequence composition, timing and presentation project onto the generated sequence adapter configuration"
+    },
+    {
+      "id": "composite-control",
+      "match": [
+        "contract:/compositeControl/**"
+      ],
+      "disposition": "lowered",
+      "via": "composite part composition projects onto the generated composite adapter configuration"
+    },
+    {
+      "id": "paged-set",
+      "match": [
+        "contract:/pagedSet/**"
+      ],
+      "disposition": "refused",
+      "reason": "The paged-set model (channel, items, count, disabled) has no runtime: the target builds no page list or navigation chrome."
+    },
+    {
+      "id": "date-grid",
+      "match": [
+        "contract:/dateGrid/**"
+      ],
+      "disposition": "refused",
+      "reason": "The date-grid model (value/month channels, mode, min/max, caption, locale) has no runtime: the target renders no calendar grid, so the declared grid facts are not lowered."
+    },
+    {
+      "id": "transfer",
+      "match": [
+        "contract:/transfer/**"
+      ],
+      "disposition": "refused",
+      "reason": "The dual-list transfer model has no native runtime on this target; the declared array channel and partitioned lists are consumer-composed."
+    },
+    {
+      "id": "text-overflow",
+      "match": [
+        "contract:/textOverflow/**"
+      ],
+      "disposition": "refused",
+      "reason": "Declared line clamping/overflow behaviour is not projected onto the native label; the consumer applies its own truncation."
+    },
+    {
+      "id": "motion-sequence-facts",
+      "match": [
+        "contract:/motion/sequenceTransition/**",
+        "contract:/motion/progress/**"
+      ],
+      "disposition": "lowered",
+      "via": "the sequence runtime lowers the declared transition duration/easing tokens and the progress driver facts"
+    },
+    {
+      "id": "motion",
+      "match": [
+        "contract:/motion/**"
+      ],
+      "disposition": "refused",
+      "reason": "beyond the sequence transition/progress facts, the motion vocabulary has no target motion to lower: reduced-motion alternatives, pulse/shimmer/countdown loops and their keyframes are not replayed, and state changes apply immediately."
+    },
+    {
+      "id": "keyframes",
+      "match": [
+        "contract:/keyframes/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS keyframes have no native equivalent on this target; no keyframe timeline is authored or replayed."
+    },
+    {
+      "id": "state-machine",
+      "match": [
+        "contract:/stateMachine/**"
+      ],
+      "disposition": "refused",
+      "reason": "The declarative transition table documents the state changes the runtime already implements from channel and interaction facts; it is authoring guidance, not an emission fact."
+    },
+    {
+      "id": "data-model",
+      "match": [
+        "contract:/dataModel/**"
+      ],
+      "disposition": "refused",
+      "reason": "A data-model entity describes the shape of consumer data; no target emits a data schema, so the declaration is not lowered."
+    },
+    {
+      "id": "prop-channel-value",
+      "match": [
+        "contract:/props/*/members/channel-value:**",
+        "contract:/props/*/members/channel-value:**/**",
+        "contract:/props/checked",
+        "contract:/props/expanded",
+        "contract:/props/index",
+        "contract:/props/month",
+        "contract:/props/open",
+        "contract:/props/search",
+        "contract:/props/value"
+      ],
+      "disposition": "lowered",
+      "via": "the selection/boolean channel value projects into the generated control configuration"
+    },
+    {
+      "id": "prop-channel-default",
+      "match": [
+        "contract:/props/*/members/channel-default:**",
+        "contract:/props/*/members/channel-default:**/**",
+        "contract:/props/defaultChecked",
+        "contract:/props/defaultExpanded",
+        "contract:/props/defaultIndex",
+        "contract:/props/defaultMonth",
+        "contract:/props/defaultOpen",
+        "contract:/props/defaultSearch",
+        "contract:/props/defaultValue"
+      ],
+      "disposition": "lowered",
+      "via": "the channel default projects into the generated control configuration"
+    },
+    {
+      "id": "prop-channel-change",
+      "match": [
+        "contract:/props/*/members/channel-change:**",
+        "contract:/props/*/members/channel-change:**/**",
+        "contract:/props/onChange",
+        "contract:/props/onExpandedChange",
+        "contract:/props/onIndexChange",
+        "contract:/props/onMonthChange",
+        "contract:/props/onOpenChange",
+        "contract:/props/onSearchChange",
+        "contract:/props/onStepChange",
+        "contract:/props/onValueChange"
+      ],
+      "disposition": "lowered",
+      "via": "the channel change projects onto the runtime's native value/activation signal"
+    },
+    {
+      "id": "prop-form-field",
+      "match": [
+        "contract:/props/*/members/form-field:**",
+        "contract:/props/*/members/form-field:**/**"
+      ],
+      "disposition": "refused",
+      "reason": "there is no native form serialization or submission surface in the Godot target"
+    },
+    {
+      "id": "prop-glyph-name",
+      "match": [
+        "contract:/props/*/members/glyph-name:**",
+        "contract:/props/*/members/glyph-name:**/**",
+        "contract:/props/name",
+        "contract:/props/icon"
+      ],
+      "disposition": "lowered",
+      "via": "the glyph name selects the emitted glyph catalog mount"
+    },
+    {
+      "id": "prop-passthrough",
+      "match": [
+        "contract:/props/passthrough",
+        "contract:/props/passthrough/**"
+      ],
+      "disposition": "refused",
+      "reason": "React passthrough attributes (class/style) have no engine-target meaning"
+    },
+    {
+      "id": "prop-aria-label",
+      "match": [
+        "contract:/props/*/members/plain:ariaLabel/**",
+        "contract:/props/*/members/plain:ariaLabel",
+        "contract:/props/ariaLabel"
+      ],
+      "disposition": "lowered",
+      "via": "aria-label projects onto the generated control's structural accessibility name"
+    },
+    {
+      "id": "prop-polymorphic-tag",
+      "match": [
+        "contract:/props/*/members/plain:as/**",
+        "contract:/props/*/members/plain:as",
+        "contract:/props/as",
+        "contract:/props/*/members/plain:type/**",
+        "contract:/props/*/members/plain:type",
+        "contract:/props/type"
+      ],
+      "disposition": "refused",
+      "reason": "DOM element/input-type polymorphism has no native meaning in the Godot target"
+    },
+    {
+      "id": "prop-identity-metadata",
+      "match": [
+        "contract:/props/*/members/plain:id/**",
+        "contract:/props/*/members/plain:id",
+        "contract:/props/id",
+        "contract:/props/*/members/plain:idBase/**",
+        "contract:/props/*/members/plain:idBase",
+        "contract:/props/idBase"
+      ],
+      "disposition": "refused",
+      "reason": "authored DOM id generation is authoring metadata with no engine-target meaning"
+    },
+    {
+      "id": "prop-plain-value",
+      "match": [
+        "contract:/props/*/members/plain:value",
+        "contract:/props/*/members/plain:value/**"
+      ],
+      "disposition": "lowered",
+      "via": "the numeric/content value projects into the generated control configuration"
+    },
+    {
+      "id": "prop-content-string",
+      "match": [
+        "contract:/props/*/members/*:text",
+        "contract:/props/*/members/*:text/**",
+        "contract:/props/text",
+        "contract:/props/*/members/*:label",
+        "contract:/props/*/members/*:label/**",
+        "contract:/props/label",
+        "contract:/props/*/members/*:summary",
+        "contract:/props/*/members/*:summary/**",
+        "contract:/props/summary",
+        "contract:/props/*/members/*:title",
+        "contract:/props/*/members/*:title/**",
+        "contract:/props/title",
+        "contract:/props/*/members/*:placeholder",
+        "contract:/props/*/members/*:placeholder/**",
+        "contract:/props/placeholder",
+        "contract:/props/*/members/*:caption",
+        "contract:/props/*/members/*:caption/**",
+        "contract:/props/caption",
+        "contract:/props/*/members/*:content",
+        "contract:/props/*/members/*:content/**",
+        "contract:/props/content",
+        "contract:/props/*/members/*:code",
+        "contract:/props/*/members/*:code/**",
+        "contract:/props/code",
+        "contract:/props/*/members/*:timestamp",
+        "contract:/props/*/members/*:timestamp/**",
+        "contract:/props/timestamp",
+        "contract:/props/*/members/*:initials",
+        "contract:/props/*/members/*:initials/**",
+        "contract:/props/initials",
+        "contract:/props/*/members/*:emptyMessage",
+        "contract:/props/*/members/*:emptyMessage/**",
+        "contract:/props/emptyMessage",
+        "contract:/props/*/members/*:expandText",
+        "contract:/props/*/members/*:expandText/**",
+        "contract:/props/expandText",
+        "contract:/props/*/members/*:collapseText",
+        "contract:/props/*/members/*:collapseText/**",
+        "contract:/props/collapseText",
+        "contract:/props/*/members/*:showMoreLabel",
+        "contract:/props/*/members/*:showMoreLabel/**",
+        "contract:/props/showMoreLabel",
+        "contract:/props/*/members/*:showLessLabel",
+        "contract:/props/*/members/*:showLessLabel/**",
+        "contract:/props/showLessLabel",
+        "contract:/props/*/members/*:nextLabel",
+        "contract:/props/*/members/*:nextLabel/**",
+        "contract:/props/nextLabel",
+        "contract:/props/*/members/*:previousLabel",
+        "contract:/props/*/members/*:previousLabel/**",
+        "contract:/props/previousLabel",
+        "contract:/props/*/members/*:pageLabel",
+        "contract:/props/*/members/*:pageLabel/**",
+        "contract:/props/pageLabel",
+        "contract:/props/*/members/*:commitLabel",
+        "contract:/props/*/members/*:commitLabel/**",
+        "contract:/props/commitLabel",
+        "contract:/props/*/members/*:fieldLabel",
+        "contract:/props/*/members/*:fieldLabel/**",
+        "contract:/props/fieldLabel",
+        "contract:/props/*/members/*:triggerLabel",
+        "contract:/props/*/members/*:triggerLabel/**",
+        "contract:/props/triggerLabel",
+        "contract:/props/*/members/*:searchLabel",
+        "contract:/props/*/members/*:searchLabel/**",
+        "contract:/props/searchLabel",
+        "contract:/props/*/members/*:progressLabel",
+        "contract:/props/*/members/*:progressLabel/**",
+        "contract:/props/progressLabel",
+        "contract:/props/*/members/*:separator",
+        "contract:/props/*/members/*:separator/**",
+        "contract:/props/separator",
+        "contract:/props/*/members/*:name",
+        "contract:/props/*/members/*:name/**",
+        "contract:/props/name"
+      ],
+      "disposition": "lowered",
+      "via": "the content string projects into the generated label/line text"
+    },
+    {
+      "id": "prop-variant-axis",
+      "match": [
+        "contract:/props/*/members/*:variant",
+        "contract:/props/*/members/*:variant/**",
+        "contract:/props/variant",
+        "contract:/props/*/members/*:size",
+        "contract:/props/*/members/*:size/**",
+        "contract:/props/size",
+        "contract:/props/*/members/*:weight",
+        "contract:/props/*/members/*:weight/**",
+        "contract:/props/weight",
+        "contract:/props/*/members/*:status",
+        "contract:/props/*/members/*:status/**",
+        "contract:/props/status",
+        "contract:/props/*/members/*:intent",
+        "contract:/props/*/members/*:intent/**",
+        "contract:/props/intent",
+        "contract:/props/*/members/*:trend",
+        "contract:/props/*/members/*:trend/**",
+        "contract:/props/trend",
+        "contract:/props/*/members/*:level",
+        "contract:/props/*/members/*:level/**",
+        "contract:/props/level",
+        "contract:/props/*/members/*:density",
+        "contract:/props/*/members/*:density/**",
+        "contract:/props/density",
+        "contract:/props/*/members/*:marker",
+        "contract:/props/*/members/*:marker/**",
+        "contract:/props/marker",
+        "contract:/props/*/members/*:spacing",
+        "contract:/props/*/members/*:spacing/**",
+        "contract:/props/spacing",
+        "contract:/props/*/members/*:align",
+        "contract:/props/*/members/*:align/**",
+        "contract:/props/align",
+        "contract:/props/*/members/*:transform",
+        "contract:/props/*/members/*:transform/**",
+        "contract:/props/transform",
+        "contract:/props/*/members/*:animate",
+        "contract:/props/*/members/*:animate/**",
+        "contract:/props/animate",
+        "contract:/props/*/members/*:appearance",
+        "contract:/props/*/members/*:appearance/**",
+        "contract:/props/appearance",
+        "contract:/props/*/members/*:orientation",
+        "contract:/props/*/members/*:orientation/**",
+        "contract:/props/orientation",
+        "contract:/props/*/members/*:thickness",
+        "contract:/props/*/members/*:thickness/**",
+        "contract:/props/thickness"
+      ],
+      "disposition": "lowered",
+      "via": "the variant axis projects as a native style predicate"
+    },
+    {
+      "id": "prop-boolean-state",
+      "match": [
+        "contract:/props/*/members/*:disabled",
+        "contract:/props/*/members/*:disabled/**",
+        "contract:/props/disabled",
+        "contract:/props/*/members/*:collapsible",
+        "contract:/props/*/members/*:collapsible/**",
+        "contract:/props/collapsible",
+        "contract:/props/*/members/*:interactive",
+        "contract:/props/*/members/*:interactive/**",
+        "contract:/props/interactive",
+        "contract:/props/*/members/*:truncate",
+        "contract:/props/*/members/*:truncate/**",
+        "contract:/props/truncate",
+        "contract:/props/*/members/*:loading",
+        "contract:/props/*/members/*:loading/**",
+        "contract:/props/loading",
+        "contract:/props/*/members/*:autoPlay",
+        "contract:/props/*/members/*:autoPlay/**",
+        "contract:/props/autoPlay",
+        "contract:/props/*/members/*:autoStart",
+        "contract:/props/*/members/*:autoStart/**",
+        "contract:/props/autoStart",
+        "contract:/props/*/members/*:previousDisabled",
+        "contract:/props/*/members/*:previousDisabled/**",
+        "contract:/props/previousDisabled",
+        "contract:/props/*/members/*:duration",
+        "contract:/props/*/members/*:duration/**",
+        "contract:/props/duration"
+      ],
+      "disposition": "lowered",
+      "via": "the boolean/timing value projects into the generated control configuration"
+    },
+    {
+      "id": "prop-glyph-mount",
+      "match": [
+        "contract:/props/*/members/plain:icon/**",
+        "contract:/props/*/members/plain:icon",
+        "contract:/props/icon",
+        "contract:/props/*/members/plain:iconSize/**",
+        "contract:/props/*/members/plain:iconSize",
+        "contract:/props/iconSize"
+      ],
+      "disposition": "lowered",
+      "via": "the icon name/size selects and sizes the emitted glyph catalog mount"
+    },
+    {
+      "id": "prop-action-callback",
+      "match": [
+        "contract:/props/*/members/plain:onClick/**",
+        "contract:/props/*/members/plain:onClick",
+        "contract:/props/onClick"
+      ],
+      "disposition": "lowered",
+      "via": "the pointer activation callback projects onto the runtime's native activated signal"
+    },
+    {
+      "id": "prop-sequence-callback",
+      "match": [
+        "contract:/props/*/members/*:onComplete",
+        "contract:/props/*/members/*:onComplete/**",
+        "contract:/props/onComplete",
+        "contract:/props/*/members/*:onNext",
+        "contract:/props/*/members/*:onNext/**",
+        "contract:/props/onNext",
+        "contract:/props/*/members/*:onPrevious",
+        "contract:/props/*/members/*:onPrevious/**",
+        "contract:/props/onPrevious",
+        "contract:/props/*/members/*:onSkip",
+        "contract:/props/*/members/*:onSkip/**",
+        "contract:/props/onSkip"
+      ],
+      "disposition": "refused",
+      "reason": "Consumer callbacks are not bound by the anatomy runtime; the consumer wires its own controls and receives no generated callback property."
+    },
+    {
+      "id": "prop-dismissal",
+      "match": [
+        "contract:/props/*/members/*:dismissible",
+        "contract:/props/*/members/*:dismissible/**",
+        "contract:/props/dismissible",
+        "contract:/props/*/members/*:dismissLabel",
+        "contract:/props/*/members/*:dismissLabel/**",
+        "contract:/props/dismissLabel",
+        "contract:/props/*/members/*:onDismiss",
+        "contract:/props/*/members/*:onDismiss/**",
+        "contract:/props/onDismiss",
+        "contract:/props/*/members/*:closeOnEscape",
+        "contract:/props/*/members/*:closeOnEscape/**",
+        "contract:/props/closeOnEscape",
+        "contract:/props/*/members/*:closeOnOutsideClick",
+        "contract:/props/*/members/*:closeOnOutsideClick/**",
+        "contract:/props/closeOnOutsideClick",
+        "contract:/props/*/members/*:closeOnBlur",
+        "contract:/props/*/members/*:closeOnBlur/**",
+        "contract:/props/closeOnBlur",
+        "contract:/props/*/members/*:closeOnBackdropClick",
+        "contract:/props/*/members/*:closeOnBackdropClick/**",
+        "contract:/props/closeOnBackdropClick"
+      ],
+      "disposition": "lowered",
+      "via": "closeOnEscape / closeOnOutsideClick / closeOnBlur are read as dismissal gates by the runtime"
+    },
+    {
+      "id": "prop-activation-mode",
+      "match": [
+        "contract:/props/*/members/*:activationMode",
+        "contract:/props/*/members/*:activationMode/**",
+        "contract:/props/activationMode"
+      ],
+      "disposition": "lowered",
+      "via": "the control runtime selects the focused item under automatic activation and only moves focus under manual activation"
+    },
+    {
+      "id": "prop-return-focus",
+      "match": [
+        "contract:/props/*/members/*:returnFocus",
+        "contract:/props/*/members/*:returnFocus/**",
+        "contract:/props/returnFocus"
+      ],
+      "disposition": "lowered",
+      "via": "dismissing a surface returns focus to its trigger"
+    },
+    {
+      "id": "prop-focus-management",
+      "match": [
+        "contract:/props/*/members/*:initialFocus",
+        "contract:/props/*/members/*:initialFocus/**",
+        "contract:/props/initialFocus",
+        "contract:/props/*/members/*:returnFocus",
+        "contract:/props/*/members/*:returnFocus/**",
+        "contract:/props/returnFocus",
+        "contract:/props/*/members/*:activationMode",
+        "contract:/props/*/members/*:activationMode/**",
+        "contract:/props/activationMode",
+        "contract:/props/*/members/*:loop",
+        "contract:/props/*/members/*:loop/**",
+        "contract:/props/loop",
+        "contract:/props/*/members/*:unmountInactive",
+        "contract:/props/*/members/*:unmountInactive/**",
+        "contract:/props/unmountInactive",
+        "contract:/props/*/members/*:politeness",
+        "contract:/props/*/members/*:politeness/**",
+        "contract:/props/politeness"
+      ],
+      "disposition": "refused",
+      "reason": "initial-focus props are refused for the same reason as focus/initialFocus: mount-time focus is the embedding scene's decision; the realised activation-mode and return-focus props are split out above."
+    },
+    {
+      "id": "prop-modality-layer",
+      "match": [
+        "contract:/props/*/members/*:modal",
+        "contract:/props/*/members/*:modal/**",
+        "contract:/props/modal",
+        "contract:/props/*/members/*:side",
+        "contract:/props/*/members/*:side/**",
+        "contract:/props/side",
+        "contract:/props/*/members/*:placement",
+        "contract:/props/*/members/*:placement/**",
+        "contract:/props/placement"
+      ],
+      "disposition": "refused",
+      "reason": "modal/side placement props are not honoured by the presence-only surface runtime; the scene root stays a panel and placement is runtime-owned."
+    },
+    {
+      "id": "prop-validation-state",
+      "match": [
+        "contract:/props/*/members/*:required",
+        "contract:/props/*/members/*:required/**",
+        "contract:/props/required",
+        "contract:/props/*/members/*:invalid",
+        "contract:/props/*/members/*:invalid/**",
+        "contract:/props/invalid"
+      ],
+      "disposition": "lowered",
+      "via": "the control and anatomy runtimes project the declared required/invalid state onto structural aria_required/aria_invalid and expose it to consumers; validation itself stays the consumer's responsibility"
+    },
+    {
+      "id": "prop-form-validation",
+      "match": [
+        "contract:/props/*/members/*:required",
+        "contract:/props/*/members/*:required/**",
+        "contract:/props/required",
+        "contract:/props/*/members/*:invalid",
+        "contract:/props/*/members/*:invalid/**",
+        "contract:/props/invalid",
+        "contract:/props/*/members/*:validate",
+        "contract:/props/*/members/*:validate/**",
+        "contract:/props/validate",
+        "contract:/props/*/members/*:validating",
+        "contract:/props/*/members/*:validating/**",
+        "contract:/props/validating",
+        "contract:/props/*/members/*:readOnly",
+        "contract:/props/*/members/*:readOnly/**",
+        "contract:/props/readOnly"
+      ],
+      "disposition": "refused",
+      "reason": "The remaining validation props (validate callbacks, readOnly) are not honoured: the runtime executes no validation and exposes no read-only mode; the realised required/invalid state projection is split out above."
+    },
+    {
+      "id": "prop-variant-axes-extended",
+      "match": [
+        "contract:/props/*/members/*:presentation",
+        "contract:/props/*/members/*:presentation/**",
+        "contract:/props/presentation",
+        "contract:/props/*/members/*:progress",
+        "contract:/props/*/members/*:progress/**",
+        "contract:/props/progress",
+        "contract:/props/*/members/*:indicator",
+        "contract:/props/*/members/*:indicator/**",
+        "contract:/props/indicator",
+        "contract:/props/*/members/*:mode",
+        "contract:/props/*/members/*:mode/**",
+        "contract:/props/mode",
+        "contract:/props/*/members/*:radius",
+        "contract:/props/*/members/*:radius/**",
+        "contract:/props/radius"
+      ],
+      "disposition": "refused",
+      "reason": "These declared axes are inert on this target: the collection/date contracts declare no axis-conditioned style rule the runtime could switch, and the target does not synthesize variant chrome. The axis value is stored as a declared prop only."
+    },
+    {
+      "id": "prop-inert-display-flags",
+      "match": [
+        "contract:/props/*/members/*:showValue",
+        "contract:/props/*/members/*:showValue/**",
+        "contract:/props/showValue",
+        "contract:/props/*/members/*:showChoices",
+        "contract:/props/*/members/*:showChoices/**",
+        "contract:/props/showChoices",
+        "contract:/props/*/members/*:showPlaceholder",
+        "contract:/props/*/members/*:showPlaceholder/**",
+        "contract:/props/showPlaceholder",
+        "contract:/props/*/members/*:showStatusIcon",
+        "contract:/props/*/members/*:showStatusIcon/**",
+        "contract:/props/showStatusIcon",
+        "contract:/props/*/members/*:expandable",
+        "contract:/props/*/members/*:expandable/**",
+        "contract:/props/expandable",
+        "contract:/props/*/members/*:responsive",
+        "contract:/props/*/members/*:responsive/**",
+        "contract:/props/responsive",
+        "contract:/props/*/members/*:aspectRatio",
+        "contract:/props/*/members/*:aspectRatio/**",
+        "contract:/props/aspectRatio"
+      ],
+      "disposition": "refused",
+      "reason": "Display flags the runtimes store as inert declared props; the target does not synthesize the chrome they would switch on."
+    },
+    {
+      "id": "prop-delay-timer",
+      "match": [
+        "contract:/props/*/members/*:showAfterMs",
+        "contract:/props/*/members/*:showAfterMs/**",
+        "contract:/props/showAfterMs"
+      ],
+      "disposition": "refused",
+      "reason": "Delayed-appearance timers are consumer scheduling on this target; the runtime mounts content immediately and honours no delay."
+    },
+    {
+      "id": "prop-formatting",
+      "match": [
+        "contract:/props/*/members/*:formatValue",
+        "contract:/props/*/members/*:formatValue/**",
+        "contract:/props/formatValue",
+        "contract:/props/*/members/*:locale",
+        "contract:/props/*/members/*:locale/**",
+        "contract:/props/locale",
+        "contract:/props/*/members/*:minDate",
+        "contract:/props/*/members/*:minDate/**",
+        "contract:/props/minDate",
+        "contract:/props/*/members/*:maxDate",
+        "contract:/props/*/members/*:maxDate/**",
+        "contract:/props/maxDate",
+        "contract:/props/*/members/*:language",
+        "contract:/props/*/members/*:language/**",
+        "contract:/props/language",
+        "contract:/props/*/members/*:highlight",
+        "contract:/props/*/members/*:highlight/**",
+        "contract:/props/highlight",
+        "contract:/props/*/members/*:showLineNumbers",
+        "contract:/props/*/members/*:showLineNumbers/**",
+        "contract:/props/showLineNumbers",
+        "contract:/props/*/members/*:tokens",
+        "contract:/props/*/members/*:tokens/**",
+        "contract:/props/tokens",
+        "contract:/props/*/members/*:lines",
+        "contract:/props/*/members/*:lines/**",
+        "contract:/props/lines",
+        "contract:/props/*/members/*:maxLines",
+        "contract:/props/*/members/*:maxLines/**",
+        "contract:/props/maxLines"
+      ],
+      "disposition": "refused",
+      "reason": "Value formatting and syntax highlighting have no runtime on this target: there is no locale/number/date formatter and no tokenizer, so consumers format and tokenize before passing values."
+    },
+    {
+      "id": "prop-data-children",
+      "match": [
+        "contract:/props/*/members/*:options",
+        "contract:/props/*/members/*:options/**",
+        "contract:/props/options",
+        "contract:/props/*/members/*:slides",
+        "contract:/props/*/members/*:slides/**",
+        "contract:/props/slides",
+        "contract:/props/*/members/*:steps",
+        "contract:/props/*/members/*:steps/**",
+        "contract:/props/steps",
+        "contract:/props/*/members/*:pages",
+        "contract:/props/*/members/*:pages/**",
+        "contract:/props/pages",
+        "contract:/props/*/members/*:pageCount",
+        "contract:/props/*/members/*:pageCount/**",
+        "contract:/props/pageCount",
+        "contract:/props/*/members/*:empty",
+        "contract:/props/*/members/*:empty/**",
+        "contract:/props/empty",
+        "contract:/props/*/members/*:filter",
+        "contract:/props/*/members/*:filter/**",
+        "contract:/props/filter",
+        "contract:/props/*/members/*:filterFn",
+        "contract:/props/*/members/*:filterFn/**",
+        "contract:/props/filterFn",
+        "contract:/props/*/members/*:shouldFilter",
+        "contract:/props/*/members/*:shouldFilter/**",
+        "contract:/props/shouldFilter",
+        "contract:/props/*/members/*:searchable",
+        "contract:/props/*/members/*:searchable/**",
+        "contract:/props/searchable",
+        "contract:/props/*/members/*:storageKey",
+        "contract:/props/*/members/*:storageKey/**",
+        "contract:/props/storageKey",
+        "contract:/props/*/members/*:multiple",
+        "contract:/props/*/members/*:multiple/**",
+        "contract:/props/multiple",
+        "contract:/props/*/members/*:shouldCloseOnSelect",
+        "contract:/props/*/members/*:shouldCloseOnSelect/**",
+        "contract:/props/shouldCloseOnSelect"
+      ],
+      "disposition": "refused",
+      "reason": "Data-driven children (steps, options, filters, storage keys) are consumer-composed; the runtime does not iterate or persist them."
+    },
+    {
+      "id": "prop-structured-data",
+      "match": [
+        "contract:/props/*/members/*:postId",
+        "contract:/props/*/members/*:postId/**",
+        "contract:/props/postId",
+        "contract:/props/*/members/*:author",
+        "contract:/props/*/members/*:author/**",
+        "contract:/props/author",
+        "contract:/props/*/members/*:stats",
+        "contract:/props/*/members/*:stats/**",
+        "contract:/props/stats",
+        "contract:/props/*/members/*:embed",
+        "contract:/props/*/members/*:embed/**",
+        "contract:/props/embed",
+        "contract:/props/*/members/*:profile",
+        "contract:/props/*/members/*:profile/**",
+        "contract:/props/profile"
+      ],
+      "disposition": "refused",
+      "reason": "Structured object data (post/profile entities) is not modelled by any target runtime; consumers render their own fields."
+    },
+    {
+      "id": "prop-media-source",
+      "match": [
+        "contract:/props/*/members/*:src",
+        "contract:/props/*/members/*:src/**",
+        "contract:/props/src",
+        "contract:/props/*/members/*:alt",
+        "contract:/props/*/members/*:alt/**",
+        "contract:/props/alt"
+      ],
+      "disposition": "lowered",
+      "via": "the anatomy runtime sets a Texture or res:// source on the native media host and projects alt onto the accessibility description"
+    },
+    {
+      "id": "prop-media-layout",
+      "match": [
+        "contract:/props/*/members/*:priority",
+        "contract:/props/*/members/*:priority/**",
+        "contract:/props/priority",
+        "contract:/props/*/members/*:width",
+        "contract:/props/*/members/*:width/**",
+        "contract:/props/width",
+        "contract:/props/*/members/*:height",
+        "contract:/props/*/members/*:height/**",
+        "contract:/props/height",
+        "contract:/props/*/members/*:objectFit",
+        "contract:/props/*/members/*:objectFit/**",
+        "contract:/props/objectFit",
+        "contract:/props/*/members/*:objectPosition",
+        "contract:/props/*/members/*:objectPosition/**",
+        "contract:/props/objectPosition"
+      ],
+      "disposition": "refused",
+      "reason": "Media layout and load-priority props are not projected: the native host keeps its own size and stretch behaviour and no loader priority is negotiated."
+    },
+    {
+      "id": "prop-media",
+      "match": [
+        "contract:/props/*/members/*:fallbackSrc",
+        "contract:/props/*/members/*:fallbackSrc/**",
+        "contract:/props/fallbackSrc",
+        "contract:/props/*/members/*:sizes",
+        "contract:/props/*/members/*:sizes/**",
+        "contract:/props/sizes",
+        "contract:/props/*/members/*:loading",
+        "contract:/props/*/members/*:loading/**",
+        "contract:/props/loading",
+        "contract:/props/*/members/*:placeholderSrc",
+        "contract:/props/*/members/*:placeholderSrc/**",
+        "contract:/props/placeholderSrc"
+      ],
+      "disposition": "refused",
+      "reason": "Fallback sources, responsive sizes and lazy-loading have no native carrier: the runtime sets the texture it is given and performs no fetching, sizing negotiation or placeholder swap."
+    },
+    {
+      "id": "prop-navigation",
+      "match": [
+        "contract:/props/*/members/*:href",
+        "contract:/props/*/members/*:href/**",
+        "contract:/props/href",
+        "contract:/props/*/members/*:target",
+        "contract:/props/*/members/*:target/**",
+        "contract:/props/target",
+        "contract:/props/*/members/*:rel",
+        "contract:/props/*/members/*:rel/**",
+        "contract:/props/rel"
+      ],
+      "disposition": "refused",
+      "reason": "URL/navigation-target props have no native meaning on this target; consumers handle navigation themselves."
+    },
+    {
+      "id": "prop-aria-labeling",
+      "match": [
+        "contract:/props/*/members/*:ariaLabelledby",
+        "contract:/props/*/members/*:ariaLabelledby/**",
+        "contract:/props/*/members/*:ariaDescribedby",
+        "contract:/props/*/members/*:ariaDescribedby/**"
+      ],
+      "disposition": "lowered",
+      "via": "the surface runtime wires the declared ariaLabelledby/ariaDescribedby values onto accessibility_labeled_by_nodes / accessibility_described_by_nodes"
+    },
+    {
+      "id": "prop-aria",
+      "match": [
+        "contract:/props/*/members/*:ariaLabelledby",
+        "contract:/props/*/members/*:ariaLabelledby/**",
+        "contract:/props/ariaLabelledby",
+        "contract:/props/*/members/*:ariaDescribedby",
+        "contract:/props/*/members/*:ariaDescribedby/**",
+        "contract:/props/ariaDescribedby",
+        "contract:/props/*/members/*:ariaExpanded",
+        "contract:/props/*/members/*:ariaExpanded/**",
+        "contract:/props/ariaExpanded",
+        "contract:/props/*/members/*:ariaPressed",
+        "contract:/props/*/members/*:ariaPressed/**",
+        "contract:/props/ariaPressed",
+        "contract:/props/*/members/*:ariaHidden",
+        "contract:/props/*/members/*:ariaHidden/**",
+        "contract:/props/ariaHidden"
+      ],
+      "disposition": "refused",
+      "reason": "The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above."
+    },
+    {
+      "id": "prop-field-association",
+      "match": [
+        "contract:/props/*/members/*:htmlFor",
+        "contract:/props/*/members/*:htmlFor/**",
+        "contract:/props/htmlFor",
+        "contract:/props/*/members/*:form",
+        "contract:/props/*/members/*:form/**",
+        "contract:/props/form"
+      ],
+      "disposition": "refused",
+      "reason": "Form association props have no native meaning on this target: the runtime does not register controls with a form or submit anything."
+    },
+    {
+      "id": "prop-runtime-behaviour",
+      "match": [
+        "contract:/props/*/members/*:indeterminate",
+        "contract:/props/*/members/*:indeterminate/**",
+        "contract:/props/indeterminate",
+        "contract:/props/*/members/*:inline",
+        "contract:/props/*/members/*:inline/**",
+        "contract:/props/inline",
+        "contract:/props/*/members/*:length",
+        "contract:/props/*/members/*:length/**",
+        "contract:/props/length",
+        "contract:/props/*/members/*:mode",
+        "contract:/props/*/members/*:mode/**",
+        "contract:/props/mode"
+      ],
+      "disposition": "refused",
+      "reason": "Godot's CheckBox exposes no tri-state/indeterminate property in 4.7 and the target has no OTP field-group runtime, so length/mode/readOnly/indeterminate behaviour is not realised rather than faked."
+    },
+    {
+      "id": "prop-presentation-semantics",
+      "match": [
+        "contract:/props/*/members/*:decorative",
+        "contract:/props/*/members/*:decorative/**",
+        "contract:/props/decorative"
+      ],
+      "disposition": "refused",
+      "reason": "semantic separator versus presentation has no native accessibility mapping in the Godot target"
+    },
+    {
+      "id": "prop-citation",
+      "match": [
+        "contract:/props/*/members/*:cite",
+        "contract:/props/*/members/*:cite/**",
+        "contract:/props/cite"
+      ],
+      "disposition": "refused",
+      "reason": "citation metadata has no native meaning in the Godot target"
+    },
+    {
+      "id": "tokens",
+      "match": [
+        "tokens:/**"
+      ],
+      "disposition": "lowered",
+      "via": "token facts are consumed by the painted style vocabulary and the generated theme resource"
+    },
+    {
+      "id": "styles-pseudo-element",
+      "match": [
+        "styles:/*::*/**",
+        "styles:/**/*::*/**"
+      ],
+      "disposition": "refused",
+      "reason": "native controls have no pseudo-element nodes; ::before/::after content boxes are not synthesized."
+    },
+    {
+      "id": "styles-starting-style",
+      "match": [
+        "styles:/@starting-style/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS @starting-style entry animation has no native equivalent and is not approximated."
+    },
+    {
+      "id": "styles-platform-metadata",
+      "match": [
+        "styles:/**/platforms/**",
+        "styles:/**/platforms"
+      ],
+      "disposition": "refused",
+      "reason": "a platform-restriction annotation has no engine-target meaning; the declaration is classified by its property family"
+    },
+    {
+      "id": "styles-design-metadata",
+      "match": [
+        "styles:/**/design/**"
+      ],
+      "disposition": "refused",
+      "reason": "design-slot authoring metadata has no engine-target meaning"
+    },
+    {
+      "id": "styles-token-slot",
+      "match": [
+        "styles:/*/*.*",
+        "styles:/*/*.*/**"
+      ],
+      "disposition": "lowered",
+      "via": "token-slot re-pointing is consumed as a painted token fact"
+    },
+    {
+      "id": "styles-motion",
+      "match": [
+        "styles:/**/transition/**",
+        "styles:/**/transition",
+        "styles:/**/transition-*/**",
+        "styles:/**/transition-*",
+        "styles:/**/animation/**",
+        "styles:/**/animation",
+        "styles:/**/animation-*/**",
+        "styles:/**/animation-*",
+        "styles:/**/transform/**",
+        "styles:/**/transform",
+        "styles:/**/transform-origin/**",
+        "styles:/**/translate/**",
+        "styles:/**/scale/**",
+        "styles:/**/rotate/**",
+        "styles:/**/will-change/**"
+      ],
+      "disposition": "refused",
+      "reason": "Godot Controls have no CSS transitions, animations or transforms; state changes apply immediately, so transition/animation/transform declarations are not approximated."
+    },
+    {
+      "id": "styles-focus-ring",
+      "match": [
+        "styles:/**/outline/**",
+        "styles:/**/outline",
+        "styles:/**/outline-*/**",
+        "styles:/**/outline-*"
+      ],
+      "disposition": "lowered",
+      "via": "focus-predicate outline rules project into a focus ring: the control shape builds the native focus StyleBox, the anatomy shape paints a projected ring on a focusable part host"
+    },
+    {
+      "id": "styles-elevation",
+      "match": [
+        "styles:/**/box-shadow/**"
+      ],
+      "disposition": "refused",
+      "reason": "box-shadow blur/spread has no StyleBox mapping in this projection; elevation is not approximated."
+    },
+    {
+      "id": "styles-effects-contain",
+      "match": [
+        "styles:/**/contain/**",
+        "styles:/**/clip/**",
+        "styles:/**/mask/**",
+        "styles:/**/filter/**",
+        "styles:/**/backdrop-filter/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS containment, clipping, masks and filters have no StyleBox/Control equivalent; they are not approximated."
+    },
+    {
+      "id": "styles-effects",
+      "match": [
+        "styles:/**/opacity/**",
+        "styles:/**/visibility/**"
+      ],
+      "disposition": "refused",
+      "reason": "Opacity and visibility are declared under state selectors in the corpus; the runtime applies only unconditional declarations, so state-scoped effects are not claimed."
+    },
+    {
+      "id": "styles-content-layer",
+      "match": [
+        "styles:/**/position/**",
+        "styles:/**/inset/**",
+        "styles:/**/inset",
+        "styles:/**/inset-*/**",
+        "styles:/**/top/**",
+        "styles:/**/right/**",
+        "styles:/**/bottom/**",
+        "styles:/**/left/**",
+        "styles:/**/z-index/**"
+      ],
+      "disposition": "refused",
+      "reason": "position/inset/z-index describe CSS layout and stacking; native containers own layout and the overlay layer owns stacking, so these declarations are not projected."
+    },
+    {
+      "id": "styles-interaction-affordance",
+      "match": [
+        "styles:/**/cursor/**",
+        "styles:/**/pointer-events/**",
+        "styles:/**/user-select/**",
+        "styles:/**/resize/**"
+      ],
+      "disposition": "refused",
+      "reason": "Cursor, user-select and resize declarations are authored per state; the control runtime has no state selector to switch them, so they are not projected (the uniform cursor subset is applied when declared unconditionally)."
+    },
+    {
+      "id": "styles-typography-line",
+      "match": [
+        "styles:/**/line-height/**",
+        "styles:/**/line-height"
+      ],
+      "disposition": "lowered",
+      "via": "projected into the control configuration and applied as integer native line spacing on the text nodes under the hosted part"
+    },
+    {
+      "id": "styles-typography-align",
+      "match": [
+        "styles:/**/text-align/**",
+        "styles:/**/text-align"
+      ],
+      "disposition": "refused",
+      "reason": "text-align is declared only under state/variant selectors the control shape does not host; the runtime can set alignment but no unconditional declaration exists to project."
+    },
+    {
+      "id": "styles-typography",
+      "match": [
+        "styles:/**/letter-spacing/**",
+        "styles:/**/text-transform/**",
+        "styles:/**/text-decoration/**",
+        "styles:/**/text-decoration-line/**",
+        "styles:/**/text-decoration-color/**",
+        "styles:/**/text-underline-offset/**",
+        "styles:/**/text-overflow/**",
+        "styles:/**/white-space/**",
+        "styles:/**/word-break/**",
+        "styles:/**/word-wrap/**",
+        "styles:/**/overflow-wrap/**",
+        "styles:/**/hyphens/**",
+        "styles:/**/tab-size/**",
+        "styles:/**/font-family/**",
+        "styles:/**/font-style/**",
+        "styles:/**/font-variant-numeric/**",
+        "styles:/**/font/**",
+        "styles:/**/list-style/**",
+        "styles:/**/list-style-type/**",
+        "styles:/**/content/**",
+        "styles:/**/quotes/**",
+        "styles:/**/direction/**",
+        "styles:/**/unicode-bidi/**",
+        "styles:/**/-webkit-line-clamp/**",
+        "styles:/**/line-clamp/**",
+        "styles:/**/-webkit-box-orient/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS text layout with no Godot Label/Button equivalent in this projection: letter spacing, font family/style, text decoration, list styling, generated content, bidi direction, line clamping, white-space and hyphenation are not approximated."
+    },
+    {
+      "id": "styles-media-fit",
+      "match": [
+        "styles:/**/object-fit/**",
+        "styles:/**/object-position/**"
+      ],
+      "disposition": "refused",
+      "reason": "object-fit/object-position have no TextureRect mapping in this projection; the host keeps its native stretch behaviour rather than an approximation."
+    },
+    {
+      "id": "styles-painted-color",
+      "match": [
+        "styles:/**/color/**",
+        "styles:/**/background-color/**",
+        "styles:/**/border-color/**",
+        "styles:/**/border-top-color/**",
+        "styles:/**/border-right-color/**",
+        "styles:/**/border-bottom-color/**",
+        "styles:/**/border-left-color/**",
+        "styles:/**/border-block-start-color/**",
+        "styles:/**/border-block-end-color/**",
+        "styles:/**/border-inline-start-color/**",
+        "styles:/**/border-inline-end-color/**"
+      ],
+      "disposition": "lowered",
+      "via": "the color declaration projects into the generated style rule's painted color"
+    },
+    {
+      "id": "styles-painted-border-radius",
+      "match": [
+        "styles:/**/border-radius/**",
+        "styles:/**/border-top-left-radius/**",
+        "styles:/**/border-top-right-radius/**",
+        "styles:/**/border-bottom-left-radius/**",
+        "styles:/**/border-bottom-right-radius/**",
+        "styles:/**/border-start-start-radius/**",
+        "styles:/**/border-start-end-radius/**",
+        "styles:/**/border-end-start-radius/**",
+        "styles:/**/border-end-end-radius/**"
+      ],
+      "disposition": "lowered",
+      "via": "the radius declaration projects into the generated style rule's border radius"
+    },
+    {
+      "id": "styles-painted-border-width",
+      "match": [
+        "styles:/**/border-width/**",
+        "styles:/**/border-top-width/**",
+        "styles:/**/border-right-width/**",
+        "styles:/**/border-bottom-width/**",
+        "styles:/**/border-left-width/**",
+        "styles:/**/border-block-start-width/**",
+        "styles:/**/border-block-end-width/**",
+        "styles:/**/border-inline-start-width/**",
+        "styles:/**/border-inline-end-width/**"
+      ],
+      "disposition": "lowered",
+      "via": "the border-width declaration projects into the generated style rule's border width"
+    },
+    {
+      "id": "styles-painted-padding",
+      "match": [
+        "styles:/**/padding/**",
+        "styles:/**/padding-top/**",
+        "styles:/**/padding-right/**",
+        "styles:/**/padding-bottom/**",
+        "styles:/**/padding-left/**",
+        "styles:/**/padding-block/**",
+        "styles:/**/padding-block-start/**",
+        "styles:/**/padding-block-end/**",
+        "styles:/**/padding-inline/**",
+        "styles:/**/padding-inline-start/**",
+        "styles:/**/padding-inline-end/**"
+      ],
+      "disposition": "lowered",
+      "via": "the padding declaration projects into the generated style rule's content margins"
+    },
+    {
+      "id": "styles-painted-gap",
+      "match": [
+        "styles:/**/gap/**",
+        "styles:/**/row-gap/**",
+        "styles:/**/column-gap/**"
+      ],
+      "disposition": "lowered",
+      "via": "the gap declaration projects into the generated container's separation"
+    },
+    {
+      "id": "styles-painted-min-size",
+      "match": [
+        "styles:/**/min-height/**",
+        "styles:/**/min-width/**",
+        "styles:/**/min-block-size/**",
+        "styles:/**/min-inline-size/**"
+      ],
+      "disposition": "lowered",
+      "via": "the minimum-size declaration projects into the generated control's minimum size"
+    },
+    {
+      "id": "styles-painted-font",
+      "match": [
+        "styles:/**/font-size/**",
+        "styles:/**/font-weight/**"
+      ],
+      "disposition": "lowered",
+      "via": "the type declaration projects into the generated theme's font size/weight"
+    },
+    {
+      "id": "styles-shorthand",
+      "match": [
+        "styles:/**/background/**",
+        "styles:/**/border/**",
+        "styles:/**/border-top/**",
+        "styles:/**/border-right/**",
+        "styles:/**/border-bottom/**",
+        "styles:/**/border-left/**",
+        "styles:/**/border-block/**",
+        "styles:/**/border-block-start/**",
+        "styles:/**/border-block-end/**",
+        "styles:/**/border-inline/**",
+        "styles:/**/border-inline-start/**",
+        "styles:/**/border-inline-end/**",
+        "styles:/**/border-style/**",
+        "styles:/**/border-top-style/**",
+        "styles:/**/border-right-style/**",
+        "styles:/**/border-bottom-style/**",
+        "styles:/**/border-left-style/**",
+        "styles:/**/border-block-start-style/**",
+        "styles:/**/border-block-end-style/**",
+        "styles:/**/border-inline-start-style/**",
+        "styles:/**/border-inline-end-style/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS shorthand/border-style machinery has no native mapping; the painted vocabulary paints whole borders"
+    },
+    {
+      "id": "styles-layout",
+      "match": [
+        "styles:/**/display/**",
+        "styles:/**/flex/**",
+        "styles:/**/flex-direction/**",
+        "styles:/**/flex-wrap/**",
+        "styles:/**/flex-grow/**",
+        "styles:/**/flex-shrink/**",
+        "styles:/**/flex-basis/**",
+        "styles:/**/order/**",
+        "styles:/**/grid/**",
+        "styles:/**/grid-template-columns/**",
+        "styles:/**/grid-template-rows/**",
+        "styles:/**/align-items/**",
+        "styles:/**/align-self/**",
+        "styles:/**/align-content/**",
+        "styles:/**/justify-content/**",
+        "styles:/**/justify-items/**",
+        "styles:/**/justify-self/**",
+        "styles:/**/box-sizing/**",
+        "styles:/**/margin/**",
+        "styles:/**/margin-*/**",
+        "styles:/**/max-width/**",
+        "styles:/**/max-height/**",
+        "styles:/**/width/**",
+        "styles:/**/height/**",
+        "styles:/**/aspect-ratio/**",
+        "styles:/**/overflow/**",
+        "styles:/**/overflow-x/**",
+        "styles:/**/overflow-y/**",
+        "styles:/**/border-collapse/**",
+        "styles:/**/border-spacing/**",
+        "styles:/**/table-layout/**",
+        "styles:/**/vertical-align/**"
+      ],
+      "disposition": "refused",
+      "reason": "CSS layout/geometry machinery has no entry in the shared Godot painted style vocabulary"
+    },
+    {
+      "id": "unadjudicated",
+      "match": [
+        "contract:/**",
+        "tokens:/**",
+        "styles:/**"
+      ],
+      "disposition": "refused",
+      "reason": "this leaf belongs to a family no rule adjudicates; the family must be classified as lowered, pending or refused before the Godot target may support it",
+      "catchAll": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Godot comparative pilot
 
-Copy `addons/full_stack_ds` into a Godot 4.7.2 project. The generated script classes and `.tscn` scenes in `components/` are editor-importable. No editor plugin must be enabled. Channel controls depend on `runtime/control.gd`; passive text and rule shapes depend on `runtime/static_content.gd`; projected actions depend on `runtime/action.gd`; composed parts depend on `runtime/composite.gd`; glyph hosts depend on `runtime/glyph.gd` and its generated `glyph_catalog.json`.
+Copy `addons/full_stack_ds` into a Godot 4.7.2 project. The generated script classes and `.tscn` scenes in `components/` are editor-importable. No editor plugin must be enabled. Channel controls depend on `runtime/control.gd`; passive text and rule shapes depend on `runtime/static_content.gd`; projected actions depend on `runtime/action.gd`; composed parts depend on `runtime/composite.gd`; `glyph_catalog.json`; generic anatomy components depend on `runtime/anatomy.gd`; wider presence surfaces (modals, sheets, toasts, coachmarks, tooltips) depend on `runtime/surface.gd`.
 
 This is a comparative semantic pilot with bounded component admission. For interaction controls, `value` is a normalized string channel, `controlled` prevents speculative state commitment, and `value_requested`/`value_changed` expose requests and accepted state. Boolean channels use `"true"` and `"false"`. Use `add_item(key, label, body, disabled)` after attachment for compound content. Add arbitrary content to a Popover's `content` after attachment. The surface is an in-viewport CanvasLayer overlay.
 
@@ -11,6 +11,45 @@ This is a comparative semantic pilot with bounded component admission. For inter
 `DSCard` and `DSBadge` have serialized part hosts. Call `get_part(name)` on the instantiated scene to attach a consumer Control, and set that child's `owner` to the Card root when packing a composed scene. Card exposes `density`, `interactive`, `axis_values` and `token_overrides`; Badge exposes string `content`, `variant`, `intent`, `size_axis`, `axis_values` and `token_overrides`. Badge's `icon` part accepts a consumer Control. Restyling the parent keeps those child nodes and their state. The emitted capability receipts identify omitted styles and props. Badge does not supply a default status glyph.
 
 `DSIcon` renders canonical iconography names. Set `glyph_name` and `size_axis` (`sm`, `md`, `lg`, `xl`), or use `set_contract_prop` with the generated contract prop names. The renderer selects the largest authored grid at or below the requested size, then rasterizes the authored SVG into the contract's size frame. An unknown name clears the texture. `currentColor` paths use the inherited Label foreground. Set `decorative = false` and `aria_label` for an informative icon. The native accessibility name and decorative-hidden flag are projected structurally; screen-reader delivery and parity are unverified.
+
+## Admission set and boundary audit
+
+The registry allowlist matches the Unity target's component set: every corpus contract emits a script, scene, theme and capability receipt. Widening from ten components was a capability slice — a generic anatomy shape, a wider presence-surface shape and a committed support-boundary ledger — not a registry edit.
+
+Admission is structural, not behavioural. Each generated `capabilities.json` names the props it excludes and the semantics it does not realize; the generic anatomy shape emits a loadable part tree with inert declared props (data-driven iteration emits one host, component refs emit an empty host), and the presence-surface runtime implements an open flag and signal only — no backdrop, focus containment, dismissal, anchoring, stacking or timer. Treat every receipt's `omissions` list as the component's actual contract on this target.
+
+Two gates pin the accounting:
+
+```sh
+pnpm run audit:godot-boundary   # ledger totality, receipt totality, inventory drift
+pnpm run write:godot-boundary   # regenerate packages/ds-godot/verification/capability-inventory.json
+```
+
+A planner/ledger disagreement (a shape declining a fact the target lowers elsewhere) is recorded as a shape variance, not swallowed and not fatal. An unadjudicated contract family, a receipt that drops an excluded prop, or a drifted inventory exits non-zero.
+
+## Disclosure family behaviour
+
+Accordion, Tabs, Popover and Details reach their behaviour through `runtime/control.gd`, which acts on disclosure facts the emitter projects from the contracts (focus strategy, dismissal triggers with their gating props, portal layering, structural aria bindings). `roving`/`manual` focus rotates across triggers by keyboard direction and honours orientation/wrap; escape, outside click and focus leave dismiss surfaces when the contract's `closeOn*` props allow it; the trigger reports `aria_expanded`/`aria_controls` and items report `aria_selected`/`aria_expanded` as structural state.
+
+The contract's labeling attributes, part relationships and per-state ARIA projection are projected too: the accessible name follows the visible label until a consumer overrides it, `accessibility_controls_nodes`/`labeled_by_nodes`/`described_by_nodes` are wired per item where the relation is item-scoped, and structural state attributes come from the authored state mapping. Godot exposes no accessible-role property, so the authored role, the APG pattern reference and the keyboard table are refused with reasons rather than approximated.
+
+Unconditional style rules that address a hosted part are projected into the configuration and applied natively: font size and colour on the trigger and item buttons, integer line spacing and alignment on text under an item body, opacity, cursor shape and hit testing, and an outline-derived focus StyleBox. Rules addressing parts the runtime does not host, and state/variant-conditioned rules, are named in the capability receipt. CSS families with no native equivalent are `refused` in `support-boundary.json` with reasons (motion transitions/keyframes, position/inset, box-shadow, pseudo-elements, and text-layout declarations Godot cannot express) rather than silently ignored.
+
+Godot's accessibility tree is not populated by this project, so that aria state is a structural projection rather than assistive-technology delivery. Initial-focus targeting, scroll locking, CSS motion/typography/focus-ring projection and blocking modality (backdrop, focus containment) are not realized yet and stay `pending` in `support-boundary.json`.
+
+The disclosure family (Accordion, Tabs, Popover, Details) has no pending boundary leaves: every contract fact is either lowered with a headless witness or refused with a written reason. That includes manual/automatic activation (`activationMode`), the anatomy-hosted focus ring on Details' summary, and the projected accessibility name/relations.
+
+The overlay-surface family (Dialog, Sheet, Toast, Command, Tooltip, Walkthrough) is closed too: `runtime/surface.gd` realises presence, inert declared-prop projection and the `ariaLabelledby`/`ariaDescribedby` props wired onto Godot's native accessibility relations. Blocking modality/backdrop, message defaults, data-model and data-driven children, consumer callbacks and iterated anatomy are refused with written reasons in `support-boundary.json`.
+
+The form-control family (Select, Checkbox, ToggleSwitch, Input, TextField, Field, OTP, RadioGroup, Shuttle) is closed: the declared `required`/`invalid` state is projected as structural `aria_required`/`aria_invalid` (validation itself is the consumer's job), and `ariaLabelledby`/`ariaDescribedby` props wire Godot's native labeled-by/described-by relations. The checkbox tri-state, the OTP field-group runtime, data-driven options, authored bindings and the transfer model are refused with written reasons.
+
+The collections/date family (Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel) is closed by **refusal**: the target has no date-grid, paged-set or collection runtime and no formatter, so the date-grid/paged-set models, dynamic component-ref facts, formatting/highlighting, navigation targets and authored bindings are refused with written reasons rather than claimed. Building those runtimes is a feature slice, not a ledger adjudication.
+
+## Boundary state
+
+The corpus boundary is closed: every contract and sidecar leaf of the 55 admitted components is either **lowered** (with a runtime realisation and a headless witness) or **refused with a written reason** — zero pending, zero unclassified, 163 rules, 183 recorded shape variances. `pnpm run audit:godot-boundary` fails if any leaf becomes unadjudicated, if a receipt drops an excluded prop, or if the committed inventory drifts.
+
+The last family (Image, Postcard, Label, Avatar, ProfileFlag, ShowMore, Truncate, CodeBlock, Markdown, Progress) added media projection: a `Texture` or `res://` `src` reaches the native `TextureRect` and `alt` becomes the accessibility description. Fallback sources, responsive sizes, lazy loading, object-fit, structured data, form association, content transforms, text clamping and CSS-variable bindings are refused with reasons.
 
 ## Generate and verify
 

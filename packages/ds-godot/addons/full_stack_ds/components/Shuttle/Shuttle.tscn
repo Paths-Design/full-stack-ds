@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Shuttle/Shuttle.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Shuttle/theme.tres" id="2"]
+
+[node name="Shuttle" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="list" type="PanelContainer" parent="."]
+[node name="item" type="PanelContainer" parent="list"]
+[node name="controls" type="VBoxContainer" parent="."]
+[node name="add" type="Button" parent="controls"]
+text = "Add"
+[node name="remove" type="Button" parent="controls"]
+text = "Remove"
+[node name="list_2" type="PanelContainer" parent="."]
+[node name="item_2" type="PanelContainer" parent="list_2"]

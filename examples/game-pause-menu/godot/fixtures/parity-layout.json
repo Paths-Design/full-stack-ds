@@ -45,10 +45,11 @@
     "footer": 11,
     "letterSpacingMicro": 0,
     "letterSpacingTab": 0,
-    "drawerTitle": 28
+    "drawerTitle": 28,
+    "ghost": 160
   },
   "style": {
-    "panelBorder": 1,
+    "panelBorder": 2,
     "radius": 0,
     "shadow": "none"
   },
@@ -75,7 +76,7 @@
       "w": 1280,
       "h": 104
     },
-    "background": "charcoal",
+    "background": "sage",
     "ruleBottom": "rule",
     "wordmark": {
       "x": 32,
@@ -127,6 +128,21 @@
       "w": 64,
       "h": 24,
       "text": "PAUSED"
+    },
+    "wordmarkColor": "ink",
+    "wordmarkAccentColor": "signalDeep",
+    "missionColor": "ink",
+    "statLabelColor": "ink",
+    "statValueColor": "ink",
+    "statSubColor": "ink",
+    "ghost": {
+      "x": 960,
+      "y": -28,
+      "w": 300,
+      "h": 170,
+      "text": "N5",
+      "color": "ruleStrong",
+      "opacity": 0.18
     }
   },
   "tabBar": {
@@ -136,7 +152,7 @@
       "w": 1280,
       "h": 56
     },
-    "background": "charcoal",
+    "background": "signal",
     "ruleBottom": "rule",
     "tabs": [
       {
@@ -164,10 +180,10 @@
         "label": "SETTINGS"
       }
     ],
-    "activeBackground": "signal",
-    "activeText": "onSignal",
-    "inactiveText": "textSecondary",
-    "separator": "rule",
+    "activeBackground": "signalDeep",
+    "activeText": "boneBright",
+    "inactiveText": "onSignal",
+    "separator": "signalDeep",
     "labelAlign": "left",
     "labelInset": 32
   },
@@ -192,7 +208,10 @@
       "valueY": 770,
       "empty": "\u2014",
       "align": "right"
-    }
+    },
+    "background": "sage",
+    "hintsColor": "ink",
+    "navLabelColor": "ink"
   },
   "panels": {
     "content": {
@@ -204,7 +223,9 @@
     "headerHeight": 40,
     "padding": 16,
     "background": "charcoal",
-    "border": "rule"
+    "border": "rule",
+    "elevatedBackground": "ruleStrong",
+    "headerMetaColor": "textSecondary"
   },
   "map": {
     "mapPanel": {
@@ -305,7 +326,7 @@
         "w": 560,
         "h": 552
       },
-      "background": "paper",
+      "background": "sage",
       "text": "ink",
       "padding": 24,
       "headerY": 200,
@@ -640,7 +661,7 @@
       {
         "state": "map",
         "id": "wordmark",
-        "color": "boneBright",
+        "color": "ink",
         "x": 28,
         "y": 12,
         "w": 300,
@@ -650,17 +671,18 @@
       {
         "state": "map",
         "id": "mission",
-        "color": "muted",
+        "color": "ink",
         "x": 30,
         "y": 66,
         "w": 380,
         "h": 20,
-        "text": "MARS EXPEDITION // COMMANDER D3SO"
+        "text": "MARS EXPEDITION // COMMANDER D3SO",
+        "inkTolerance": 0.4
       },
       {
         "state": "map",
         "id": "stat-label",
-        "color": "muted",
+        "color": "ink",
         "x": 606,
         "y": 22,
         "w": 96,
@@ -670,7 +692,7 @@
       {
         "state": "map",
         "id": "stat-value",
-        "color": "boneBright",
+        "color": "ink",
         "x": 606,
         "y": 38,
         "w": 210,
@@ -680,7 +702,7 @@
       {
         "state": "map",
         "id": "stat-sub",
-        "color": "muted",
+        "color": "ink",
         "x": 606,
         "y": 64,
         "w": 220,
@@ -690,7 +712,7 @@
       {
         "state": "map",
         "id": "tab-active",
-        "color": "onSignal",
+        "color": "boneBright",
         "x": 30,
         "y": 116,
         "w": 120,
@@ -700,7 +722,7 @@
       {
         "state": "map",
         "id": "tab-inactive",
-        "color": "textSecondary",
+        "color": "onSignal",
         "x": 350,
         "y": 116,
         "w": 170,
@@ -720,7 +742,7 @@
       {
         "state": "map",
         "id": "panel-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 790,
         "y": 180,
         "w": 92,
@@ -760,7 +782,7 @@
       {
         "state": "map",
         "id": "footer-hints",
-        "color": "muted",
+        "color": "ink",
         "x": 22,
         "y": 762,
         "w": 450,
@@ -770,7 +792,7 @@
       {
         "state": "map",
         "id": "nav-label",
-        "color": "muted",
+        "color": "ink",
         "x": 1070,
         "y": 750,
         "w": 120,
@@ -800,7 +822,7 @@
       {
         "state": "map",
         "id": "icon-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 1160,
         "y": 180,
         "w": 96,
@@ -886,7 +908,8 @@
         "y": 242,
         "w": 90,
         "h": 16,
-        "text": "OPEN \u2192"
+        "text": "OPEN \u2192",
+        "inkTolerance": 0.35
       },
       {
         "state": "abilities",
@@ -901,7 +924,7 @@
       {
         "state": "abilities",
         "id": "grid-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 560,
         "y": 180,
         "w": 270,
@@ -962,7 +985,7 @@
       {
         "state": "settings",
         "id": "general-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 470,
         "y": 180,
         "w": 146,
@@ -1175,6 +1198,9 @@
     },
     "drawerTitle": {
       "token": "semantic.typography.graphic.size.display"
+    },
+    "ghost": {
+      "token": "semantic.typography.graphic.size.ghost"
     }
   }
 }

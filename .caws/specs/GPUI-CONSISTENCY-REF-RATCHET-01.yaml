@@ -1,0 +1,71 @@
+id: GPUI-CONSISTENCY-REF-RATCHET-01
+title: 'Ratchet reference projection: declared componentRef nodes vs realized retained children'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Reference projection is now measured and ratcheted (web 20/20, GPUI 18/20 with both gaps receipted); audit reads only committed source.'
+created_at: '2026-11-01T10:52:57.919Z'
+updated_at: '2026-11-01T10:56:14.131Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'cross-target consistency: reference-projection dimension and rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - packages/ds-codegen/src/frameworks/gpui/anatomy.ts
+  out: []
+  support:
+    - docs/architecture/gpui-target.md
+invariants:
+  - 'The dimension is derived from IR ref nodes and generated artifacts; no hand counts'
+  - 'Existing dimensions keep their baselines; only the new dimension is added'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus and generated targets; when the audit runs; then it reports declared componentRef nodes vs realized retained children per target and includes the dimension in the matrix and baseline'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a component that loses a realized reference; when --check runs; then the ratchet fails naming it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the docs; when read after the slice; then the ref-projection dimension and its limit (rendered child presence, not child behaviour) are stated'
+non_functional: {}
+contracts:
+  - name: 'gpui-consistency-ref-dimension'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "the audit reports declared componentRef nodes vs realized references per target in its matrix, baseline and console summary: web trio 20/20, GPUI 18/20 (Progres/Nav nested refs identified); the dimension is part of DIMENSIONS so the generic regression/staleness ratchet covers it, and the audit now reads only committed generated source (no gitignored receipts), verified by identical numbers before and after regeneration"
+    recorded_at: "2026-11-01T10:56:11.419Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: f12a60839
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "falsified manually: deleting Dialog's retained Entity field made --check exit 1 with 'Dialog/gpui: refs regressed 1 -> 0'; restoring the field returned PASS. The self-test independently proves the regression, stale-entry and removed-entry detections fire for the generic dimension loop"
+    recorded_at: "2026-11-01T10:56:12.119Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    artifact_path: scripts/gpui-web-consistency-audit.mjs
+    commit_sha: f12a60839
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "the consistency doc gains the references row, the source-only measurement note and the nested-ref-children explanation; the target doc names ref-children among the composition omission families; docs:check-links resolves 277 relative links and every marked claim in this slice's docs passes (the only stale stamp on main remains docs/architecture/unity-target.md, owned by other active specs)"
+    recorded_at: "2026-11-01T10:56:12.812Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-web-consistency.md
+    commit_sha: "1ed45690f"

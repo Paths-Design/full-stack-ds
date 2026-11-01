@@ -2,9 +2,8 @@ id: GAME-PAUSE-PARITY-DEFENSIBILITY-01
 title: 'Pause-menu parity defensibility: goldens, oracle, consumption gates and bounded claims'
 mode: feature
 lifecycle_state: active
-worktree: game-pause-parity-defensibility
 created_at: '2026-11-01T06:52:37.699Z'
-updated_at: '2026-11-01T06:52:48.828Z'
+updated_at: '2026-11-01T08:23:12.307Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
@@ -19,7 +18,11 @@ scope:
     - 'packages/ds-unity'
     - 'examples/README.md'
     - 'docs/architecture/unity-target.md'
+    - packages/ds-tokens/src/brands/orion.tokens.json
+    - packages/ds-tokens/generated
   out: []
+  support:
+    - docs/specifications/governed-ci.md
 invariants:
   - 'Existing 195-probe/117-bbox parity and lane test baselines remain green'
 acceptance:
@@ -52,3 +55,30 @@ contracts:
   - name: 'pause-menu-parity-spec'
     type: behavior
     path: 'examples/game-pause-menu/parity.md'
+evidence:
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node scripts/game-pause-token-consumption.mjs: 11 lane contract checks pass; GPUI tests/parity.rs loaded_palette_consumes_every_authority_colour_token; Godot 209/209 includes all-role provenance checks; Unity EditMode 37/37 includes TokenConsumptionTests.PanelSurfaceResolvesThroughTheOrionBrandTokenChannel (dark/light brand-scope resolved style)"
+    recorded_at: "2026-11-01T07:57:49.943Z"
+    command: node scripts/game-pause-token-consumption.mjs
+    exit_code: 0
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/game-pause-menu/unity/README.md + token-channel-ledger.md now state 'ledgered migration started, not a completed token-channel migration': 318 -> 315 direct inline assignments, Card token channel only, badge/button/design-slot consumers unsupported"
+    recorded_at: "2026-11-01T07:57:54.243Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "examples/game-pause-menu/evidence/parity-matrix.md records claimed states/lanes/host viewport and non-coverage: full state matrix, DPI/backends/OS, physical input, accessibility, usability, source-design composition; checker now covers all eight states"
+    recorded_at: "2026-11-01T07:57:57.931Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "grep -rni 'full parity' examples/game-pause-menu docs/architecture/unity-target.md returns only negated/non-claim contexts; parity-check.mjs emits a bounded claim; parity.md/README/matrix state the bounded claim"
+    recorded_at: "2026-11-01T07:58:01.148Z"
+  - criterion_id: A1
+    status: unchecked
+    evidence_ref: "Goldens + oracle committed and agent visual review recorded; human sign-off pending in examples/game-pause-menu/evidence/visual-review.md. Oracle audit records 90 composition-band violations (not met)."
+    recorded_at: "2026-11-01T07:58:08.826Z"
+  - criterion_id: A2
+    status: unchecked
+    evidence_ref: "Merged main 5ae968ac6: GPUI 70/70, Godot 209/209, Unity 37/37, 24 captures + checker 0 failures + 24/24 goldens exact; root vitest 5427/5433 with 6 load-induced timeouts and 2 worker RPC errors; isolated re-run of all five affected files 164/164 tests pass. Full idle-machine rerun pending (machine load ~280 from another project)."
+    recorded_at: "2026-11-01T07:58:11.629Z"

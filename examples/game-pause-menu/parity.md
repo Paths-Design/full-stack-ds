@@ -26,11 +26,70 @@ copy and the same capture states.
    switch root causes, capture states and the permitted-difference list.
 3. [`spec.md`](spec.md) — app semantics and interaction contract (unchanged).
 
-Parity means: at 1280 × 800 the four captured tab states are structurally
-indistinguishable across GPUI, Unity and Godot — header, tab bar, panel
-rectangles, rows, cards, controls and switch geometry occupy the same pixels and
-use the same colours. Type **rasterisation** and anti-aliasing may differ; layout
-may not.
+**Bounded parity claim.** For the eight captured states at 1280 × 800 on the
+pinned macOS host, GPUI, Unity and Godot agree with each other within the
+checker's declared probe, typography, RMSE and image-golden tolerances: header,
+tab bar, panel rectangles, rows, cards, controls and switch geometry occupy the
+same pixels and use the same colours. Type **rasterisation** and anti-aliasing
+may differ, and the Unity body-copy weight residual is absorbed by its declared
+ink tolerance; layout and palette are the claim.
+
+This is **not** a full or pixel-identical parity claim. It does not cover a full
+state/transition matrix, other DPI/backends/OSes, physical-input behaviour,
+accessibility, usability, or source-design composition fidelity. The evidence
+matrix and the conditions for a stronger claim are in
+[`evidence/parity-matrix.md`](evidence/parity-matrix.md).
+
+## Evidence binding the claim
+
+- [`parity-check.mjs`](parity-check.mjs) requires all eight captures per lane,
+  measures 195 colour/geometry probes and 117 typography bbox/ink values across
+  the four base states, and compares 24 lane-pair RMSE images.
+- [`evidence/goldens/`](evidence/goldens/) commits 24 lossless-WebP image
+  goldens plus a manifest binding them to the authority, resolved token graph
+  and Orion brand; `pnpm parity:goldens:check` verifies the manifest, and the
+  checker fails when a fresh capture drifts beyond `--golden-rmse`.
+- [`fixtures/orion-style-oracle.json`](fixtures/orion-style-oracle.json) and
+  [`scripts/game-pause-oracle-audit.mjs`](../../scripts/game-pause-oracle-audit.mjs)
+  encode the source-design criteria. The current audit **does not meet the
+  composition bands** (90 violations across 24 lane/state observations); the
+  palette anchors match, the display typography and industrial composition do
+  not. [`evidence/visual-review.md`](evidence/visual-review.md) records the
+  review and is awaiting human sign-off.
+- [`scripts/game-pause-token-consumption.mjs`](../../scripts/game-pause-token-consumption.mjs)
+  fails when a lane stops routing rendering through its token path; the GPUI
+  all-role test, Godot all-provenance test and Unity resolved-style/brand-scope
+  test are the runtime witnesses.
+- [`scripts/game-pause-token-provenance.mjs`](../../scripts/game-pause-token-provenance.mjs)
+  fails when an authority colour or type size loses its resolvable token
+  provenance.
+
+## Orion restyle pass
+
+A human review of the first parity evidence chose the restyle branch before
+accepting a bounded claim. The first restyle pass is authority-driven:
+
+- the tab bar ground is `signal` with a `signalDeep` active tab and
+  `boneBright`/`onSignal` labels, creating the reference's orange band;
+- the progress dossier ground is `sage` instead of warm `paper`, and the map
+  field remains `sage`;
+- the shell and footer use `ruleStrong` as the steel field, while panels keep
+  the charcoal housing;
+- GPUI gained the full-viewport ink/0.78 remap-modal scrim that Unity and Godot
+  already painted, which the brighter chrome exposed as a real parity gap.
+
+The source-design oracle audit dropped from 90 composition violations / 0 clean
+observations to **36 violations / 6 clean**. Pass 2 adds a 160 px grey ghost
+`N5` display layer and turns the header and footer into mint fields (the orange
+tab band now sits between them). Pass 3 thickens the panel housings to 2 px
+industrial frames (Unity lane class, GPUI panel widget, Godot panel-frame
+width). Pass 4 splits the fields: settings panels and the ability-detail panel
+use the steel surface, map/progress keep charcoal housings, and the chrome stays
+mint/orange. Abilities now meets the oracle bands; settings is grey-heavy,
+map/progress are mint-heavy, and the full-screen remap modal is a
+documented scrim-dominated exception. See See
+[`evidence/visual-review.md`](evidence/visual-review.md) and
+[`evidence/oracle-report.json`](evidence/oracle-report.json).
 
 ## Global rules
 
@@ -149,7 +208,7 @@ Pinned so the three engines cannot drift on "reasonable" choices:
   JSON `markerColors`, 11 px / 800 monogram from `markerMonograms` in `ink`
   (or `boneBright` when the fill is `onSignal`). Nav target: 3 px `signal`
   outline around the marker.
-- **Drawer** — `paper` ground with `ink` text: micro-labels 10 px / 700
+- **Drawer** — `sage` ground with `ink` text: micro-labels 10 px / 700
   letter-spaced `paperMuted`, title 28 px / 800, body 13 px / 400, perks and
   parts 11 px.
 - **Header** — stat labels 10 px / 700 letter-spaced `muted`; values 20 px /
@@ -187,7 +246,7 @@ front; the drawer/popover/modal are overlays on top of their tab content.
    `progress.rows`: 3 px accent bar, name, tagline, 200 × 6 reputation bar with
    `REPUTATION 68 / 100` label, status chip (`ACCESS` signal fill / `LOCKED`
    alert outline) and `OPEN DOSSIER →`.
-2. When a faction is selected, the drawer rect `progress.drawer` (paper ground,
+2. When a faction is selected, the drawer rect `progress.drawer` (sage ground,
    ink text) overlays the left side of the list and renders: dossier meta +
    `CLOSE`, title, tagline, rule, BRIEF, HISTORY, PERKS bullets, PARTS table
    (PART / COST / RARITY / SIZE) and the `SHOP PARTS` button (disabled with the
@@ -222,7 +281,8 @@ Settings is fully visible without scrolling at 1280 × 800 in this layout.
 ## Header, tab bar, footer
 
 Exactly as in the JSON. Header stats are fixed to the fixture values; tab bar
-tabs are equal 320 px columns, active tab signal fill with on-signal text; footer
+tabs are equal 320 px columns on a signal-orange band, active tab `signalDeep`
+with `boneBright` text and idle tabs `onSignal`; footer
 shows control hints left and `NAV TARGET` + the fixture-selected target right
 (em dash when none).
 
@@ -236,9 +296,9 @@ Per lane, after rework:
 3. Record a `parity` section in the lane README: geometry authority consumed,
    per-region DS vs fallback, switch implementation/root cause, permitted
    differences (font/letter-spacing), evidence.
-4. The slice compares the three lanes' captures per tab: same panel/row/card
-   rectangles and colours; only glyph rasterisation may differ. The comparison
-   document records the result and the remaining non-claims.
+4. The slice compares the three lanes' captures for all eight states. The
+   bounded claim covers the declared probe/tolerance/golden matrix only; the
+   coverage matrix records the remaining non-claims.
 
 ## Permitted differences
 
@@ -251,8 +311,12 @@ Per lane, after rework:
 - Native focus/hover decorations are not part of the captured states; when a
   capture triggers one it must be dismissed/unchanged.
 
-Everything else — positions, sizes, colours, copy, component shapes, switch
-geometry, active states and overlay states — is parity.
+Within the covered states and the declared tolerance/golden matrix, positions,
+sizes, colours, copy, component shapes, switch geometry, active states and
+overlay states are claimed. Outside that matrix they are not. The source-design
+oracle is a separate fidelity question: palette anchors are claimed, the
+reference's composition/display-typography/graphic-language criteria are not
+met and are recorded as non-claims.
 
 ## Corrections pinned after the first parity review round
 
@@ -378,9 +442,9 @@ Every authority colour and type size stores its token provenance:
   surface roles (`moss`, `alert`, `clear`) are new Orion brand tokens
   (`semantic.color.surface.moss`, `semantic.color.status.alert`,
   `semantic.color.status.clear`).
-- `typeTokens` maps all 20 `type` entries to token values: 11 sizes map to the
-  core typography ramp or semantic sizes, the three app-specific sizes
-  (11 px / 13 px / 28 px) are new Orion brand `typography.graphic.size.*`
+- `typeTokens` maps all 21 `type` entries to token values: 11 sizes map to the
+  core typography ramp or semantic sizes, the app-specific sizes
+  (11 px / 13 px / 28 px / 160 px ghost) are new Orion brand `typography.graphic.size.*`
   tokens, and both tracking entries map to the zero letter-spacing token.
 - The gate `node scripts/game-pause-token-provenance.mjs` (pnpm
   `tokens:check:game-pause-authority`) fails on any authority colour/size with

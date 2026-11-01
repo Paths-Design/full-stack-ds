@@ -15,7 +15,8 @@
  * Usage:
  *   node examples/game-pause-menu/parity-check.mjs \
  *     --root /abs/path/to/tmp/game-pause-menu \
- *     --out  /abs/path/to/tmp/game-pause-menu/parity
+ *     --out  /abs/path/to/tmp/game-pause-menu/parity \
+ *     [--goldens examples/game-pause-menu/evidence/goldens]
  *
  * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe matches
  * and every pairwise RMSE is below --max-rmse (default 0.14); 1 otherwise. Font
@@ -28,7 +29,20 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const LANES = ['gpui', 'unity', 'godot'];
-const STATES = ['map', 'progress', 'abilities', 'settings'];
+// All eight committed capture states are compared for pairwise RMSE and
+// regression goldens. The four base states additionally carry the pinned
+// authority probes (colour/geometry and typography).
+const STATES = [
+  'map', 'map-popover', 'progress', 'abilities',
+  'abilities-hover', 'settings', 'settings-remap-modal', 'settings-subtitle',
+];
+const PROBED_STATES = new Set(['map', 'progress', 'abilities', 'settings']);
+
+// The bounded claim this report supports. Do not widen this without widening
+// the evidence matrix in examples/game-pause-menu/evidence/visual-review.md.
+const CLAIM =
+  'Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; '
+  + 'not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const layout = JSON.parse(readFileSync(join(here, 'fixtures/parity-layout.json'), 'utf8'));
@@ -43,6 +57,8 @@ const maxRmse = Number(arg('max-rmse', '0.14'));
 const tolerance = Number(arg('tolerance', '18'));
 const typographyFuzz = Number(arg('type-fuzz', '30'));
 const inkTolerance = Number(arg('ink-tolerance', '0.25'));
+const goldens = arg('goldens', '');
+const goldenRmse = Number(arg('golden-rmse', '0.02'));
 const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
@@ -62,11 +78,11 @@ const TAB_X = { map: 0, progress: 320, abilities: 640, settings: 960 };
 function tabProbes(state) {
   const x = TAB_X[state];
   const probes = [
-    [x + 3, 107, 'signal', 'active tab top-left fill'],
-    [x + 317, 157, 'signal', 'active tab bottom-right fill'],
+    [x + 3, 107, 'signalDeep', 'active tab top-left fill'],
+    [x + 317, 157, 'signalDeep', 'active tab bottom-right fill'],
   ];
   const neighbour = x === 0 ? 323 : x - 3;
-  probes.push([neighbour, 132, 'charcoal', 'inactive tab background beside active tab']);
+  probes.push([neighbour, 132, 'signal', 'inactive tab background beside active tab']);
   return probes;
 }
 
@@ -75,15 +91,15 @@ const SWITCH_OFF = { x: 1176, y: 472 };
 const SETTING_SWITCH_ON = { x: 552, y: 222 };
 
 const COMMON = [
-  [4, 4, 'charcoal', 'header background'],
-  [4, 780, 'ink', 'footer background'],
+  [4, 4, 'sage', 'header background'],
+  [4, 780, 'sage', 'footer background'],
 ];
 
 const PROBES = {
   map: [
     ...COMMON,
     ...tabProbes('map'),
-    [900, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [900, 150, 'signal', 'inactive tab background (opposite side)'],
     // Map field: filled sage exactly from (40,232) to (880,712).
     [48, 240, 'sage', 'map field top-left fill'],
     [872, 704, 'sage', 'map field bottom-right fill'],
@@ -106,12 +122,12 @@ const PROBES = {
   progress: [
     ...COMMON,
     ...tabProbes('progress'),
-    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [100, 150, 'signal', 'inactive tab background (opposite side)'],
     // Drawer paper ground (24,176,560,552).
-    [25, 177, 'paper', 'drawer top-left fill'],
-    [582, 726, 'paper', 'drawer bottom-right fill'],
-    [16, 168, 'ink', 'outside drawer top-left'],
-    [584, 730, 'ink', 'outside drawer bottom-right'],
+    [25, 177, 'sage', 'drawer top-left fill'],
+    [582, 726, 'sage', 'drawer bottom-right fill'],
+    [16, 168, 'ruleStrong', 'outside drawer top-left'],
+    [584, 730, 'ruleStrong', 'outside drawer bottom-right'],
     [960, 200, 'charcoal', 'roster panel background'],
     // ACCESS chip (1080,240,76,22).
     [1082, 242, 'signal', 'ACCESS chip top-left fill'],
@@ -122,29 +138,29 @@ const PROBES = {
   abilities: [
     ...COMMON,
     ...tabProbes('abilities'),
-    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [100, 150, 'signal', 'inactive tab background (opposite side)'],
     [42, 226, 'charcoal', 'grid panel background'],
-    [850, 178, 'charcoal', 'detail panel background'],
-    [1254, 200, 'charcoal', 'detail panel inside right edge'],
-    [1258, 200, 'ink', 'outside detail panel right edge'],
-    [300, 730, 'ink', 'content gap below panels'],
+    [850, 178, 'ruleStrong', 'detail panel background'],
+    [1248, 200, 'ruleStrong', 'detail panel inside right edge'],
+    [1258, 200, 'ruleStrong', 'outside detail panel right edge'],
+    [300, 730, 'ruleStrong', 'content gap below panels'],
   ],
   settings: [
     ...COMMON,
     ...tabProbes('settings'),
-    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [100, 150, 'signal', 'inactive tab background (opposite side)'],
     // GENERAL panel (24,176,608,268) and CONTROLLER panel (648,...).
-    [26, 178, 'charcoal', 'GENERAL panel top-left fill'],
-    [629, 300, 'charcoal', 'GENERAL panel inside right edge'],
-    [634, 300, 'ink', 'gap between top panels'],
-    [300, 446, 'ink', 'gap below GENERAL panel'],
-    [650, 178, 'charcoal', 'CONTROLLER panel top-left fill'],
+    [26, 178, 'ruleStrong', 'GENERAL panel top-left fill'],
+    [629, 300, 'ruleStrong', 'GENERAL panel inside right edge'],
+    [634, 300, 'ruleStrong', 'gap between top panels'],
+    [300, 446, 'ruleStrong', 'gap below GENERAL panel'],
+    [650, 178, 'ruleStrong', 'CONTROLLER panel top-left fill'],
     // REMAP (24,460) and AUDIO (648,460) panels.
-    [26, 462, 'charcoal', 'REMAP panel top-left fill'],
-    [650, 462, 'charcoal', 'AUDIO panel top-left fill'],
-    [300, 730, 'ink', 'gap below bottom panels'],
+    [26, 462, 'ruleStrong', 'REMAP panel top-left fill'],
+    [650, 462, 'ruleStrong', 'AUDIO panel top-left fill'],
+    [300, 730, 'ruleStrong', 'gap below bottom panels'],
     // General switch ON at (552,222,64,32).
-    [SETTING_SWITCH_ON.x + 2, SETTING_SWITCH_ON.y + 2, 'charcoal', 'settings switch corner outside pill'],
+    [SETTING_SWITCH_ON.x + 2, SETTING_SWITCH_ON.y + 2, 'ruleStrong', 'settings switch corner outside pill'],
     [SETTING_SWITCH_ON.x + 12, SETTING_SWITCH_ON.y + 2, 'signal', 'settings switch stadium arc filled'],
     [SETTING_SWITCH_ON.x + 4, SETTING_SWITCH_ON.y + 16, 'signal', 'settings switch track left fill'],
     [SETTING_SWITCH_ON.x + 48, SETTING_SWITCH_ON.y + 16, 'onSignal', 'settings switch thumb centre'],
@@ -228,19 +244,21 @@ for (const state of STATES) {
     failures.push(`${state}: missing capture for one of ${LANES.join(', ')} (${files.filter((f) => !existsSync(f)).join(', ')})`);
     continue;
   }
-  for (let i = 0; i < LANES.length; i++) {
-    const lane = LANES[i];
-    const probes = PROBES[state];
-    const pixels = samplePixels(files[i], probes);
-    probes.forEach(([x, y, expectedName, description], index) => {
-      const expected = hexToRgb(color(expectedName));
-      const actual = pixels[index];
-      const delta = distance(actual, expected);
-      results.push({ state, lane, x, y, expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta, description });
-      if (delta > tolerance) {
-        failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
-      }
-    });
+  const probes = PROBED_STATES.has(state) ? PROBES[state] : null;
+  if (probes) {
+    for (let i = 0; i < LANES.length; i++) {
+      const lane = LANES[i];
+      const pixels = samplePixels(files[i], probes);
+      probes.forEach(([x, y, expectedName, description], index) => {
+        const expected = hexToRgb(color(expectedName));
+        const actual = pixels[index];
+        const delta = distance(actual, expected);
+        results.push({ state, lane, x, y, expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta, description });
+        if (delta > tolerance) {
+          failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
+        }
+      });
+    }
   }
 
   // Typography parity: measure the pixel bbox of every pinned text string in
@@ -312,12 +330,34 @@ for (const state of STATES) {
     }
     run(['compare', '-compose', 'difference', join(root, a, `${state}.png`), join(root, b, `${state}.png`), join(out, `${state}-diff-${a}-${b}.png`)]);
   }
+
+  // Committed image goldens: one per lane and state under
+  // examples/game-pause-menu/evidence/goldens/<lane>/<state>.webp. These are
+  // lossless WebP encodings of the reviewed captures, so a later capture is
+  // compared image-for-image rather than only through point samples.
+  if (goldens) {
+    for (const lane of LANES) {
+      const golden = join(goldens, lane, `${state}.webp`);
+      if (!existsSync(golden)) {
+        failures.push(`${state}/${lane}: missing committed golden ${golden}`);
+        continue;
+      }
+      const value = rmse(files[LANES.indexOf(lane)], golden);
+      results.push({ state, lane, kind: 'golden', golden, rmse: value });
+      if (value > goldenRmse) {
+        failures.push(`${state}/${lane}: RMSE ${value.toFixed(4)} against committed golden > max ${goldenRmse} (${golden})`);
+      }
+    }
+  }
 }
 
-writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ root, out, maxRmse, tolerance, results, failures }, null, 2));
+writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ claim: CLAIM, root, out, states: STATES, goldens: goldens || null, maxRmse, goldenRmse, tolerance, results, failures }, null, 2));
 const probeCount = results.filter((r) => 'description' in r).length;
 const typeCount = results.filter((r) => r.kind === 'typography').length;
-console.log(`parity: ${probeCount} colour probe(s), ${typeCount} typography bbox measurement(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
+const rmseCount = results.filter((r) => 'rmse' in r && r.kind !== 'golden').length;
+const goldenCount = results.filter((r) => r.kind === 'golden').length;
+console.log(`bounded parity: ${probeCount} colour probe(s), ${typeCount} typography bbox measurement(s), ${rmseCount} RMSE pair(s), ${goldenCount} golden comparison(s), ${failures.length} failure(s)`);
+console.log(`claim: ${CLAIM}`);
 console.log(`report: ${join(out, 'parity-report.json')}`);
 console.log(`montages: ${out}`);
 if (failures.length) {

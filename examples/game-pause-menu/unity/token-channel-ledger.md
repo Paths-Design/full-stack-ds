@@ -1,9 +1,12 @@
 # Unity parity lane — token-channel and inline-style ledger
 
-The parity lane places authority values as inline styles because the layout is
-absolute (`fixtures/parity-layout.json`). This ledger records which of those
-writes go through a generated-component token channel and which are kept inline
-because the Unity target has no consumer for the underlying token family.
+**Status: ledgered migration started.** This is not a completed reduction of the
+inline-style inventory and must not be described as one. The parity lane places
+authority values as inline styles because the layout is absolute
+(`fixtures/parity-layout.json`). This ledger records the one generated-component
+token channel in use (the Card surface), the 318 → 315 direct-assignment
+reduction, and why every remaining write is kept inline because the Unity target
+has no consumer for the underlying token family.
 
 ## Generated Card channel (used)
 

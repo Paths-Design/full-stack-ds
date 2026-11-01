@@ -16,14 +16,18 @@ The lane exists to answer two questions for the engine comparison:
 
 ## Design-token channels
 
-The parity lane uses the generated `Card` component's token variables
-(`--fsds-card-color-background-default`, `--fsds-card-color-border`,
-`--fsds-card-size-radius`) from the Orion brand scope instead of inline
-background/border/radius styles on parity panels and ability cards. The rest of
-the lane's 315 inline setter assignments are authority geometry and per-instance
-chrome that the current Unity UI Toolkit projection has no token consumer for;
-the classification and counts live in
-[`token-channel-ledger.md`](token-channel-ledger.md).
+**Status: ledgered migration started, not a completed token-channel migration.**
+The only generated-component token channel the parity lane currently uses is the
+`Card` surface: it sets `--fsds-card-color-background-default`,
+`--fsds-card-color-border` and `--fsds-card-size-radius` from the Orion brand
+scope instead of inline background/border/radius styles on parity panels and
+ability cards. That removes 3 direct `.style.*` writes and 6 helper invocations
+(27 effective property writes) from the construction path, leaving **315 direct
+inline `.style.*` assignments** out of the original **318**. Badge/Button radius
+token-variable overrides do not win against the generated component's own
+stylesheet token block, and design-slot/brand component overrides remain
+unsupported, so those stay inline or ledgered. The classification and counts
+live in [`token-channel-ledger.md`](token-channel-ledger.md).
 
 The generated `Controls.uss` brand scope now projects every brand-layer variable
 that resolves to a USS scalar: Orion grew from 93 light / 68 dark variables to
@@ -107,7 +111,7 @@ Every region is an absolute rect from the layout authority. The Player log
 | paused chip | `(1184, 40, 64, 24)` |
 | remap modal panel | `(430, 300, 420, 200)` |
 
-Other pinned boxes implemented from the authority: tab cells at 320×56 (active fill signal,
+Other pinned boxes implemented from the authority: tab cells at 320×56 on a signal-orange tab band (active fill signalDeep,
 inactive text `textSecondary`, 1 px `rule` separators); map icon panel `(912, 176, 344, 552)` with
 8 rows of 48 px and switches at row x=248/y=8; roster rows at `x=40, firstY=224, h=88`; drawer
 `(24, 176, 560, 552)`; ability cards 152×240 at `firstY=224` with 12 px column/row gaps (second row

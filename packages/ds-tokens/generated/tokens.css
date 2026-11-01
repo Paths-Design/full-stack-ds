@@ -8422,8 +8422,8 @@
     --fsds-semantic-typography-body-default-letter-spacing: 0rem;
     --fsds-semantic-typography-body-small-line-height: 1.35;
     --fsds-semantic-typography-heading-font-weight: 700;
-    --fsds-semantic-typography-semantic-family-heading: var(--fsds-typography-font-family-inter);
-    --fsds-semantic-typography-semantic-family-body: var(--fsds-typography-font-family-inter);
+    --fsds-semantic-typography-semantic-family-heading: var(--fsds-core-typography-font-family-inter);
+    --fsds-semantic-typography-semantic-family-body: var(--fsds-core-typography-font-family-inter);
     --fsds-semantic-typography-line-height-body: 1.45;
     --fsds-semantic-typography-line-height-heading: 1;
     --fsds-semantic-typography-line-height-tight: 1.1;
@@ -8432,6 +8432,7 @@
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-label: 13px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-interaction-background-hover: #E9E5D8;
     --fsds-semantic-interaction-background-active: #D8D4C6;
     --fsds-semantic-interaction-background-selected: #F7D8C9;
@@ -8697,8 +8698,8 @@
     --fsds-semantic-typography-body-default-letter-spacing: 0rem;
     --fsds-semantic-typography-body-small-line-height: 1.35;
     --fsds-semantic-typography-heading-font-weight: 700;
-    --fsds-semantic-typography-semantic-family-heading: var(--fsds-typography-font-family-inter);
-    --fsds-semantic-typography-semantic-family-body: var(--fsds-typography-font-family-inter);
+    --fsds-semantic-typography-semantic-family-heading: var(--fsds-core-typography-font-family-inter);
+    --fsds-semantic-typography-semantic-family-body: var(--fsds-core-typography-font-family-inter);
     --fsds-semantic-typography-line-height-body: 1.45;
     --fsds-semantic-typography-line-height-heading: 1;
     --fsds-semantic-typography-line-height-tight: 1.1;
@@ -8707,6 +8708,7 @@
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-label: 13px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-interaction-background-hover: #E9E5D8;
     --fsds-semantic-interaction-background-active: #D8D4C6;
     --fsds-semantic-interaction-background-selected: #F7D8C9;
@@ -8888,6 +8890,7 @@
       --fsds-semantic-typography-graphic-size-compact: 11px;
       --fsds-semantic-typography-graphic-size-label: 13px;
       --fsds-semantic-typography-graphic-size-display: 28px;
+      --fsds-semantic-typography-graphic-size-ghost: 160px;
       --fsds-semantic-interaction-background-hover: #2E2E29;
       --fsds-semantic-interaction-background-active: #3A3A34;
       --fsds-semantic-interaction-background-selected: #4A2418;
@@ -9015,6 +9018,7 @@
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-label: 13px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-interaction-background-hover: #2E2E29;
     --fsds-semantic-interaction-background-active: #3A3A34;
     --fsds-semantic-interaction-background-selected: #4A2418;

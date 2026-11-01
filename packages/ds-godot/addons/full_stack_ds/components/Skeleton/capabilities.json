@@ -1,0 +1,477 @@
+{
+  "operation": "anatomy",
+  "parts": [
+    "stack",
+    "row",
+    "shape"
+  ],
+  "styles": [
+    {
+      "source": "tokens",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "box-model.width",
+          "value": "100%"
+        },
+        {
+          "property": "box-model.min-height",
+          "value": "1em"
+        },
+        {
+          "property": "box-model.padding",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block-start",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block-end",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline-start",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline-end",
+          "value": "0"
+        },
+        {
+          "property": "box-model.gap",
+          "value": "0"
+        },
+        {
+          "property": "box-model.min-width",
+          "value": "0"
+        },
+        {
+          "property": "box-model.max-width",
+          "value": "none"
+        },
+        {
+          "property": "box-model.height",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.max-height",
+          "value": "none"
+        },
+        {
+          "property": "skeleton.color.base",
+          "value": "#f7f7f7",
+          "token": "semantic.color.background.secondary"
+        },
+        {
+          "property": "skeleton.color.highlight",
+          "value": "#f5a2a1",
+          "token": "semantic.color.background.highlight"
+        },
+        {
+          "property": "skeleton.radius.sm",
+          "value": "4px",
+          "token": "semantic.shape.radius.small"
+        },
+        {
+          "property": "skeleton.radius.md",
+          "value": "8px",
+          "token": "semantic.shape.radius.medium"
+        },
+        {
+          "property": "skeleton.gap.compact",
+          "value": "4px",
+          "token": "core.spacing.size.03"
+        },
+        {
+          "property": "skeleton.gap.md",
+          "value": "12px",
+          "token": "core.spacing.size.05"
+        },
+        {
+          "property": "skeleton.gap.spacious",
+          "value": "24px",
+          "token": "core.spacing.size.07"
+        },
+        {
+          "property": "skeleton.anim.duration",
+          "value": "400ms",
+          "token": "core.motion.duration.long"
+        },
+        {
+          "property": "skeleton.anim.easing",
+          "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "token": "core.motion.easing.standard"
+        },
+        {
+          "property": "skeleton.shape.height.text",
+          "value": "1rem",
+          "token": "core.typography.ramp.4"
+        }
+      ]
+    },
+    {
+      "source": "structure",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "min-height",
+          "value": "1em",
+          "token": "box-model.min-height"
+        },
+        {
+          "property": "gap",
+          "value": "0",
+          "token": "box-model.gap"
+        }
+      ]
+    },
+    {
+      "source": "root",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "#f7f7f7",
+          "token": "skeleton.color.base",
+          "designSlot": "skeleton.design.root.background.fill"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.root.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "shape",
+      "part": "shape",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "#f7f7f7",
+          "token": "skeleton.color.base",
+          "designSlot": "skeleton.design.shape.background.fill"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.shape.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--block",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "variant",
+          "value": "block"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.radius.md",
+          "value": "8px",
+          "token": "semantic.shape.radius.medium"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.condition-bd614435ddb4.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--text",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "variant",
+          "value": "text"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.radius.md",
+          "value": "4px",
+          "token": "semantic.shape.radius.small"
+        },
+        {
+          "property": "skeleton.shape.height.text",
+          "value": "1rem",
+          "token": "core.typography.ramp.4"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.condition-1c40d16552ca.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--avatar",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "variant",
+          "value": "avatar"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.radius.md",
+          "value": "9999px",
+          "token": "semantic.shape.control.radius.pill"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.condition-6c84e66d0bf9.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--media",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "variant",
+          "value": "media"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.radius.md",
+          "value": "8px",
+          "token": "semantic.shape.radius.medium"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.condition-36338882e838.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--dataviz",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "variant",
+          "value": "dataviz"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.radius.md",
+          "value": "8px",
+          "token": "semantic.shape.radius.medium"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.condition-5c609fce7db7.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--actions",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "variant",
+          "value": "actions"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.radius.md",
+          "value": "8px",
+          "token": "semantic.shape.radius.medium"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "skeleton.radius.md",
+          "designSlot": "skeleton.design.condition-97dab48677d5.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "--wipe",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "animate",
+          "value": "wipe"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.color.base",
+          "value": "#d0d0d0",
+          "token": "semantic.color.background.tertiary"
+        }
+      ]
+    },
+    {
+      "source": "--compact",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "density",
+          "value": "compact"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.gap.md",
+          "value": "4px",
+          "token": "skeleton.gap.compact"
+        }
+      ]
+    },
+    {
+      "source": "--regular",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "density",
+          "value": "regular"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.gap.md",
+          "value": "12px",
+          "token": "core.spacing.size.05"
+        }
+      ]
+    },
+    {
+      "source": "--spacious",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "density",
+          "value": "spacious"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "skeleton.gap.md",
+          "value": "24px",
+          "token": "skeleton.gap.spacious"
+        }
+      ]
+    }
+  ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-busy"
+    ],
+    "role": "status"
+  },
+  "projectedProps": [
+    "variant",
+    "animate",
+    "density"
+  ],
+  "defaults": {
+    "variant": "\"block\"",
+    "animate": "\"shimmer\"",
+    "density": "\"regular\"",
+    "decorative": "true"
+  },
+  "excludedProps": [
+    "aspectRatio",
+    "lines",
+    "radius",
+    "decorative",
+    "ariaLabel"
+  ],
+  "omissions": [
+    "root: attribute bindings (role, aria-busy, aria-hidden, aria-label) not projected natively",
+    "stack: render guard (if lines) not lowered; host always emitted",
+    "row: iteration (count over lines) emits a single host; repeated native instances not lowered",
+    "shape: attributes (aria-hidden) not projected natively",
+    "structure.width: no Godot anatomy style mapping",
+    "structure.padding: host root has no padded panel to inset its children",
+    "structure.padding-block: host root has no padded panel to inset its children",
+    "structure.padding-block-start: no Godot anatomy style mapping",
+    "structure.padding-block-end: no Godot anatomy style mapping",
+    "structure.padding-inline: host root has no padded panel to inset its children",
+    "structure.padding-inline-start: no Godot anatomy style mapping",
+    "structure.padding-inline-end: no Godot anatomy style mapping",
+    "structure.min-width: no Godot anatomy style mapping",
+    "structure.display: no Godot anatomy style mapping",
+    "structure.box-sizing: no Godot anatomy style mapping",
+    "root.display: platform web only",
+    "root.transition-duration: no Godot anatomy style mapping",
+    "root.transition-timing-function: no Godot anatomy style mapping",
+    "shape.display: platform web only",
+    "stack.display: platform web only",
+    "stack.flex-direction: platform web only",
+    "stack.gap: host panel has no stacked layout to space",
+    "--text.height: no Godot anatomy style mapping",
+    "--avatar.aspect-ratio: platform web only",
+    "--media.aspect-ratio: platform web only",
+    "--media.width: platform web only",
+    "--dataviz.aspect-ratio: platform web only",
+    "--dataviz.width: platform web only",
+    "--actions.height: platform web only",
+    "--actions.min-width: platform web only",
+    "--wipe.overflow: platform web only",
+    "--wipe.position: platform web only",
+    "--wipe.animation: platform web only",
+    ".skeleton--wipe::after: pseudo-element selector not lowered",
+    "--none.animation: platform web only",
+    ".skeleton:has(.skeleton__stack): selector outside normalized native grammar",
+    ".skeleton:has(.skeleton__stack) .skeleton__shape: selector outside normalized native grammar",
+    "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
+    "root accessibility role and labeling: native projection unverified",
+    "motion.keyframes: 1 declared keyframe animation(s) not lowered",
+    "motion.loop shimmer: native loop policy not lowered",
+    "motion.loop pulse: native loop policy not lowered",
+    "reduced motion: native preference handling unverified",
+    "aspectRatio: no executable native projection",
+    "lines: drives node iteration; repeated native instances unlowered",
+    "radius: no executable native projection",
+    "decorative: bound to the role attribute; native attribute projection unverified",
+    "ariaLabel: bound to the aria-label attribute; native attribute projection unverified"
+  ],
+  "theme": "source-bearing anatomy style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

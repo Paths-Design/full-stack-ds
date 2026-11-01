@@ -169,6 +169,7 @@ pub struct TypeScale {
     pub body: f32,
     pub micro: f32,
     pub footer: f32,
+    pub ghost: f32,
     pub drawer_title: f32,
     pub letter_spacing_micro: f32,
     pub letter_spacing_tab: f32,
@@ -179,7 +180,7 @@ impl TypeScale {
         for name in [
             "wordmark", "mission", "statLabel", "statValue", "statSub", "chip", "tab",
             "panelTitle", "panelMeta", "rowLabel", "rowSub", "value", "bigValue", "title",
-            "body", "micro", "footer", "drawerTitle", "letterSpacingMicro", "letterSpacingTab",
+            "body", "micro", "footer", "ghost", "drawerTitle", "letterSpacingMicro", "letterSpacingTab",
         ] {
             let value = *sizes.get(name).ok_or_else(|| {
                 invalid(format!("authority type sizes are missing token provenance for '{name}'"))
@@ -208,6 +209,7 @@ impl TypeScale {
             "body" => &mut self.body,
             "micro" => &mut self.micro,
             "footer" => &mut self.footer,
+            "ghost" => &mut self.ghost,
             "drawerTitle" => &mut self.drawer_title,
             "letterSpacingMicro" => &mut self.letter_spacing_micro,
             "letterSpacingTab" => &mut self.letter_spacing_tab,
@@ -339,6 +341,25 @@ pub struct Header {
     pub mission: TextAt,
     pub stats: Vec<HeaderStat>,
     pub paused_chip: ChipRect,
+    pub wordmark_color: String,
+    pub wordmark_accent_color: String,
+    pub mission_color: String,
+    pub stat_label_color: String,
+    pub stat_value_color: String,
+    pub stat_sub_color: String,
+    pub ghost: HeaderGhost,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HeaderGhost {
+    pub x: f32,
+    pub y: f32,
+    pub w: f32,
+    pub h: f32,
+    pub text: String,
+    pub color: String,
+    pub opacity: f32,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -381,6 +402,9 @@ pub struct NavTarget {
 pub struct Footer {
     pub rect: Rect,
     pub rule_top: String,
+    pub background: String,
+    pub hints_color: String,
+    pub nav_label_color: String,
     pub hints: TextAt,
     pub nav_target: NavTarget,
 }
@@ -392,6 +416,7 @@ pub struct Panels {
     pub header_height: f32,
     pub padding: f32,
     pub background: String,
+    pub elevated_background: String,
     pub border: String,
 }
 

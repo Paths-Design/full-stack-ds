@@ -1,0 +1,82 @@
+{
+  "operation": "boolean",
+  "excluded": [
+    "defaultChecked",
+    "size",
+    "ariaLabel",
+    "ariaDescribedby"
+  ],
+  "omissions": [
+    "ariaLabel: lowered (boundary prop-aria-label)",
+    "ariaDescribedby: The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above. (boundary prop-aria)",
+    "root.display: platform web only",
+    "root.align-items: platform web only",
+    "root.background-color: no Godot control style mapping",
+    "root.border-color: no Godot control style mapping",
+    "root.border-radius: no Godot control style mapping",
+    "root.transition-duration: no Godot control style mapping",
+    "root.border-style: platform web only",
+    "root.border-width: platform web only",
+    "root.cursor: platform web only",
+    "root.box-sizing: platform web only",
+    "hover: state/variant-conditioned styling has no native selector in the control shape",
+    "[aria-checked=\"true\"]: state/variant-conditioned styling has no native selector in the control shape",
+    "disabled: state/variant-conditioned styling has no native selector in the control shape",
+    "defaultChecked: declined by the boolean shape; no native realization on this target",
+    "size: declined by the boolean shape; no native realization on this target"
+  ],
+  "disclosure": {
+    "focus": {
+      "strategy": "auto",
+      "orientation": "both",
+      "wrap": false
+    },
+    "dismissal": []
+  },
+  "accessibility": {
+    "stateAria": [
+      {
+        "category": "selection",
+        "attribute": "aria-checked",
+        "values": {
+          "unchecked": "false",
+          "checked": "true"
+        }
+      }
+    ],
+    "labeling": [
+      "aria-label",
+      "aria-checked",
+      "aria-describedby"
+    ],
+    "role": "switch"
+  },
+  "focusRing": {
+    "width": "2px",
+    "color": "#0566fe",
+    "offset": "2px"
+  },
+  "styles": [
+    {
+      "source": "root",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#141414",
+          "designSlot": "toggle-switch.design.root.foreground.color"
+        }
+      ]
+    }
+  ],
+  "theme": "unconditional foreground fallback only",
+  "otherStyling": "unsupported",
+  "excludedProps": [
+    "defaultChecked",
+    "size",
+    "ariaLabel",
+    "ariaDescribedby"
+  ],
+  "proof": "requires-runtime-witness"
+}

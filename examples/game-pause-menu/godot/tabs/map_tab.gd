@@ -35,7 +35,7 @@ func _build_map_panel() -> void:
 	map_panel.name = "MapPanel"
 	UI.place_rect(map_panel, rect)
 	add_child(map_panel)
-	var frame := UI.frame("charcoal", "rule")
+	var frame := UI.frame(str(app.parity.panels["background"]), "rule")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size
@@ -64,7 +64,7 @@ func _build_icon_panel() -> void:
 	icon_panel.name = "IconPanel"
 	UI.place_rect(icon_panel, rect)
 	add_child(icon_panel)
-	var frame := UI.frame("charcoal", "rule")
+	var frame := UI.frame(str(app.parity.panels["background"]), "rule")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size

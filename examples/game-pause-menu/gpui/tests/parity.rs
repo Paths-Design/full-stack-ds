@@ -5,9 +5,10 @@
 //! share, the canonical switch contract, and the negative authoring paths.
 
 use game_pause_menu_gpui::seam::parity::{
-    PARITY_LAYOUT_JSON, ParityLayout, code_two_letters, icon_code, parse_parity_layout,
-    try_load_parity_layout,
+    PARITY_LAYOUT_JSON, ParityLayout, code_two_letters, icon_code, load_parity_layout,
+    parse_parity_layout, try_load_parity_layout,
 };
+use game_pause_menu_gpui::seam::tokens;
 
 fn layout() -> ParityLayout {
     try_load_parity_layout().expect("the committed parity layout must validate")
@@ -125,7 +126,7 @@ fn per_tab_rects_match_the_parity_authority() {
     assert_eq!((progress.list_panel.x, progress.list_panel.y, progress.list_panel.w, progress.list_panel.h), (24.0, 176.0, 1232.0, 552.0));
     let drawer = progress.drawer.rect;
     assert_eq!((drawer.x, drawer.y, drawer.w, drawer.h), (24.0, 176.0, 560.0, 552.0));
-    assert_eq!(progress.drawer.background, "paper");
+    assert_eq!(progress.drawer.background, "sage");
     assert_eq!(progress.drawer.text, "ink");
     assert_eq!(progress.rows.row_h, 88.0);
     assert_eq!(progress.rows.rep_bar_w, 200.0);
@@ -349,4 +350,31 @@ fn unequal_tab_columns_are_an_authoring_error() {
     );
     let error = parse_parity_layout(&broken).expect_err("unequal tabs must fail");
     assert!(error.to_string().contains("equal quarter-width"));
+}
+
+/// Runtime consumption witness: the loaded colours come from the authority's
+/// `colorTokens` entries resolved through the embedded token graph + Orion
+/// brand, not from the literal JSON values. The values currently agree, so the
+/// check is structural (every role must resolve) and would fail if a lane
+/// stopped routing a role through the token path or a provenance entry drifted.
+#[test]
+fn loaded_palette_consumes_every_authority_colour_token() {
+    let layout = load_parity_layout();
+    assert_eq!(layout.color_tokens.len(), 19, "all authority colours carry token provenance");
+    assert_eq!(layout.type_tokens.len(), 21, "all authority type values carry token provenance");
+    for (name, provenance) in &layout.color_tokens {
+        let expected = tokens::resolve_color(&provenance.token, &provenance.mode)
+            .unwrap_or_else(|| panic!("colour {name} token {} must resolve", provenance.token));
+        let actual = layout.colors.role(name).expect("known colour role");
+        assert_eq!(
+            actual.to_ascii_uppercase(),
+            expected.to_ascii_uppercase(),
+            "colour {name} must be resolved from {} ({})",
+            provenance.token,
+            provenance.mode
+        );
+    }
+    let drawer = tokens::resolve_size("semantic.typography.graphic.size.display", "dark")
+        .expect("drawer title token must resolve");
+    assert!((layout.type_scale.drawer_title - drawer).abs() < 0.001);
 }

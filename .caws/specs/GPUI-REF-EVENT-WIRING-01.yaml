@@ -1,0 +1,73 @@
+id: GPUI-REF-EVENT-WIRING-01
+title: 'Wire by-reference events to parent callbacks'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Reference events forward to realized parent callbacks, witnessed on Alert; behavior 5->7 with no regressions.'
+created_at: '2026-11-01T11:10:01.492Z'
+updated_at: '2026-11-01T11:16:10.013Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI reference event wiring: child handler forwarding, receipt, witness, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only reference events whose expression is a realized parent callback are wired; other expressions stay named omissions'
+  - 'Static-only references regenerate byte-identically apart from the added event wiring where a projected event exists'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a componentRef instance event whose expression is a realized parent callback; when generate --target=gpui runs; then the retained child''s callback setter receives a closure that invokes the parent handler'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a mounted Alert with onDismiss; when its dismiss trigger is clicked; then the parent callback fires once'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-ref-event-wiring'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "a componentRef instance event whose expression is a realized parent callback now emits a closure into the child's callback setter (generated Alert shows alert-dismiss child updated with set_on_click(move |window,cx| ... forwarding self.on_dismiss)); events with non-parent-callback expressions (paged/selection) remain named ref-event omissions; only Alert and Chip regenerate"
+    recorded_at: "2026-11-01T11:16:05.462Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Alert/Alert.rs
+    commit_sha: f6492f8e0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_alert_reference_action_forwards_to_parent_callback passes: mounting Alert with dismissible(true) and onDismiss, then clicking the retained alert-dismiss child fires the parent callback exactly once per activation (2 after 2 clicks); the pilot requires the witness by name and reports GPUI_NATIVE_PASS"
+    recorded_at: "2026-11-01T11:16:06.602Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: f6492f8e0
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "ratchet rebaselined: GPUI behavior 5/30 -> 7/30 (Alert and Chip realize their reference event wire; the proxy accepts forwarded child handlers); parts/props/a11y/refs unchanged and --check reports no regression on main"
+    recorded_at: "2026-11-01T11:16:07.941Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: afaba83de

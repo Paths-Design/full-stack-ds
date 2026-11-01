@@ -98,6 +98,11 @@ pub(crate) const INSTALLED_CHIP: ChipMetrics = ChipMetrics {
 /// the constant so the app and the layout validation cannot drift.
 pub(crate) use game_pause_menu_gpui::seam::parity::SETTINGS_PANEL_HEADER_HEIGHT as SETTINGS_HEADER_HEIGHT;
 
+/// Oversized grey display wordmark/numeral (`parity.md` → Orion restyle).
+pub(crate) fn ghost(type_scale: &TypeScale) -> TextStyleSpec {
+    TextStyleSpec::new(type_scale.ghost, Weight::Bold, 0.9)
+}
+
 /// Panel title: 11 px / 700 / uppercase / boneBright (`parity.md`).
 pub(crate) fn panel_title(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.panel_title, Weight::Bold, 1.0)

@@ -16,6 +16,7 @@ import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
 import { disabledProp, findNode, hasChannel, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
 import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
 import { unityGlyphPlan, type UnityGlyphPlan } from "./glyph-plan.js";
+import { nativeLoopVisualPlan } from "../native-loop-visual.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 export const pascal = (s: string): string => s.replace(/(^|[-_])([a-z])/g, (_, _sep: string, c: string) => c.toUpperCase());
@@ -1414,15 +1415,24 @@ function commandRootApi(ctx: Context): RootApi {
 function motionLoopRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
   if (lowering.behavior !== "MotionLoop") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a motion-loop lowering`);
+  const visual = nativeLoopVisualPlan(ir);
+  if (!visual || visual.targetPart !== lowering.targetPart) throw new Error(`UNITY_UNSUPPORTED_LOOP_VISUAL: ${ir.name} has no matching painted target`);
   const target = classes[0]!.members.find(member => member.part === lowering.targetPart);
   if (!target) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its loop target outside the root class`);
   const easing = lowering.easing ?? [0, 0, 1, 1];
+  const sizeProp = ir.styledProps.find(prop => prop.name === visual.sizeAxis);
+  const thicknessProp = ir.styledProps.find(prop => prop.name === visual.thicknessAxis);
+  if (!sizeProp || !thicknessProp) throw new Error(`UNITY_UNSUPPORTED_LOOP_VISUAL: ${ir.name} lacks variant properties`);
+  const sizeValues = ir.variants[visual.sizeAxis] ?? [];
+  const thicknessValues = ir.variants[visual.thicknessAxis] ?? [];
   const members: string[] = [
     "        public MotionLoopControl Control { get; }",
     "        [UxmlAttribute] public bool ReducedMotion { get => Control.ReducedMotion; set => Control.ReducedMotion = value; }",
+    variantProperty(ctx, sizeProp, sizeValues, "Control.Size"),
+    variantProperty(ctx, thicknessProp, thicknessValues, undefined),
   ];
   const attach: string[] = [
-    `Control = MotionLoopControl.Attach(this, target: ${target.ref}, durationMs: ${lowering.durationMs}, multiplier: ${lowering.multiplier}, easing: new float[] { ${easing.map(value => `${value.toFixed(3)}f`).join(", ")} }, reducedValue: ${lowering.reducedValue});`,
+    `Control = MotionLoopControl.Attach(this, target: ${target.ref}, durationMs: ${lowering.durationMs}, multiplier: ${lowering.multiplier}, easing: new float[] { ${easing.map(value => `${value.toFixed(3)}f`).join(", ")} }, reducedValue: ${lowering.reducedValue}, sizeNames: new string[] { ${sizeValues.map(quote).join(", ")} }, sizePixels: new float[] { ${sizeValues.map(value => `${visual.sizePixels[value]!.toFixed(3)}f`).join(", ")} });`,
   ];
   return { members, attach, defaults: [] };
 }

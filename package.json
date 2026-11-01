@@ -2,7 +2,7 @@
   "name": "full-stack-design-system",
   "version": "1.0.0",
   "private": true,
-  "description": "Full Stack DS — a falsifiable claim about contract-governed compositional systems",
+  "description": "Full Stack DS \u2014 a falsifiable claim about contract-governed compositional systems",
   "type": "module",
   "packageManager": "pnpm@10.14.0",
   "scripts": {
@@ -65,6 +65,11 @@
     "tokens:write-usage-baseline": "pnpm --filter @full-stack-ds/tokens run write-usage-baseline",
     "tokens:check-brand-refs": "pnpm --filter @full-stack-ds/tokens run check-brand-refs",
     "tokens:check:game-pause-authority": "node scripts/game-pause-token-provenance.mjs",
+    "parity:goldens": "node scripts/game-pause-goldens.mjs --write",
+    "parity:goldens:check": "node scripts/game-pause-goldens.mjs --check",
+    "parity:oracle": "node scripts/game-pause-oracle-audit.mjs",
+    "parity:oracle:enforce": "node scripts/game-pause-oracle-audit.mjs --enforce",
+    "parity:consumption": "node scripts/game-pause-token-consumption.mjs",
     "swiftui:semantic-defaults": "node scripts/generate-swiftui-semantic-defaults.mjs",
     "swiftui:semantic-defaults:check": "node scripts/generate-swiftui-semantic-defaults.mjs --check",
     "test": "vitest run",
@@ -117,6 +122,8 @@
     "audit:dead-slots": "pnpm --filter @full-stack-ds/codegen build && node scripts/dead-slot-audit/classification.test.mjs && node scripts/dead-slot-audit/audit.mjs",
     "audit:pseudo-state": "node scripts/lib/ledger-ratchet.test.mjs && node scripts/pseudo-state-audit/realization.test.mjs && node scripts/pseudo-state-audit/audit.mjs",
     "audit:state-suppression": "node scripts/lib/ledger-ratchet.test.mjs && node scripts/state-suppression-audit/selfcheck.mjs && node scripts/state-suppression-audit/audit.mjs",
+    "audit:gpui-web-consistency": "pnpm exec turbo run build --filter=@full-stack-ds/codegen && node scripts/gpui-web-consistency-audit.mjs --self-test && node scripts/gpui-web-consistency-audit.mjs --check",
+    "write:gpui-web-consistency": "pnpm exec turbo run build --filter=@full-stack-ds/codegen && node scripts/gpui-web-consistency-audit.mjs --write",
     "audit:token-resolvability": "node scripts/lib/ledger-ratchet.test.mjs && node scripts/token-resolvability-audit/selfcheck.mjs && node scripts/token-resolvability-audit/audit.mjs",
     "audit:custom-regions": "node scripts/lib/ledger-ratchet.test.mjs && node scripts/custom-region-audit/selfcheck.mjs && node scripts/custom-region-audit/audit.mjs",
     "audit:motion-realization": "pnpm exec turbo run build --filter=@full-stack-ds/codegen && node scripts/lib/ledger-ratchet.test.mjs && node scripts/motion-realization-audit/selfcheck.mjs && node scripts/motion-realization-audit/audit.mjs",
@@ -135,7 +142,9 @@
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
     "dev:gpui": "node scripts/gpui-gallery.mjs",
-    "test:package:release": "node scripts/release-package-check/verify.mjs"
+    "test:package:release": "node scripts/release-package-check/verify.mjs",
+    "audit:godot-boundary": "pnpm --filter @full-stack-ds/codegen build && node packages/ds-codegen/dist/frameworks/godot/capabilities.js . --check",
+    "write:godot-boundary": "pnpm --filter @full-stack-ds/codegen build && node packages/ds-codegen/dist/frameworks/godot/capabilities.js . --write"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",

@@ -1,0 +1,313 @@
+{
+  "operation": "anatomy",
+  "parts": [],
+  "styles": [
+    {
+      "source": "tokens",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "box-model.padding",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block-start",
+          "value": "4px",
+          "token": "semantic.input.size.medium.padding-block"
+        },
+        {
+          "property": "box-model.padding-block-end",
+          "value": "4px",
+          "token": "semantic.input.size.medium.padding-block"
+        },
+        {
+          "property": "box-model.padding-inline",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline-start",
+          "value": "8px",
+          "token": "semantic.input.size.medium.padding-inline"
+        },
+        {
+          "property": "box-model.padding-inline-end",
+          "value": "8px",
+          "token": "semantic.input.size.medium.padding-inline"
+        },
+        {
+          "property": "box-model.gap",
+          "value": "8px",
+          "token": "semantic.input.size.medium.gap"
+        },
+        {
+          "property": "box-model.width",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-width",
+          "value": "0"
+        },
+        {
+          "property": "box-model.max-width",
+          "value": "none"
+        },
+        {
+          "property": "box-model.height",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-height",
+          "value": "32px",
+          "token": "semantic.input.size.medium.min-height"
+        },
+        {
+          "property": "box-model.max-height",
+          "value": "none"
+        },
+        {
+          "property": "input.color.bg.default",
+          "value": "#ffffff",
+          "token": "semantic.color.background.primary"
+        },
+        {
+          "property": "input.color.bg.disabled",
+          "value": "#b8b8b8",
+          "token": "semantic.interaction.background.disabled"
+        },
+        {
+          "property": "input.color.text.default",
+          "value": "#141414",
+          "token": "semantic.color.foreground.primary"
+        },
+        {
+          "property": "input.color.text.placeholder",
+          "value": "#888889",
+          "token": "semantic.color.foreground.placeholder"
+        },
+        {
+          "property": "input.color.text.disabled",
+          "value": "#727272",
+          "token": "semantic.color.foreground.disabled"
+        },
+        {
+          "property": "input.color.border.default",
+          "value": "#a0a0a1",
+          "token": "semantic.color.border.default"
+        },
+        {
+          "property": "input.color.border.hover",
+          "value": "#888889",
+          "token": "semantic.color.border.hover"
+        },
+        {
+          "property": "input.color.border.disabled",
+          "value": "#b8b8b8",
+          "token": "semantic.color.border.disabled"
+        },
+        {
+          "property": "input.size.height",
+          "value": "32px",
+          "token": "semantic.input.size.medium.min-height"
+        },
+        {
+          "property": "input.size.padding-block",
+          "value": "4px",
+          "token": "semantic.input.size.medium.padding-block"
+        },
+        {
+          "property": "input.size.padding-inline",
+          "value": "8px",
+          "token": "semantic.input.size.medium.padding-inline"
+        },
+        {
+          "property": "input.size.radius",
+          "value": "6px",
+          "token": "semantic.shape.control.radius.default"
+        },
+        {
+          "property": "input.size.border",
+          "value": "1px",
+          "token": "semantic.shape.control.border.defaultWidth"
+        },
+        {
+          "property": "input.color.focus",
+          "value": "#0566fe",
+          "token": "semantic.color.border.focus"
+        },
+        {
+          "property": "input.color.invalid",
+          "value": "#b31b1b",
+          "token": "semantic.color.border.danger"
+        },
+        {
+          "property": "input.typography.size",
+          "value": "1rem",
+          "token": "semantic.typography.body.02"
+        },
+        {
+          "property": "input.typography.line-height",
+          "value": "1.5",
+          "token": "semantic.typography.line.height.body"
+        },
+        {
+          "property": "input.opacity.disabled",
+          "value": "0.5",
+          "token": "semantic.interaction.disabled.opacity"
+        },
+        {
+          "property": "input.focus.ring.width",
+          "value": "2px",
+          "token": "semantic.focus.ring.width"
+        },
+        {
+          "property": "input.focus.ring.color",
+          "value": "#0566fe",
+          "token": "semantic.focus.ring.color"
+        },
+        {
+          "property": "input.focus.ring.style",
+          "value": "solid",
+          "token": "semantic.focus.ring.style"
+        },
+        {
+          "property": "input.focus.ring.offset",
+          "value": "2px",
+          "token": "semantic.focus.ring.offset"
+        },
+        {
+          "property": "input.motion.duration.fast",
+          "value": "150ms",
+          "token": "core.motion.duration.short"
+        },
+        {
+          "property": "input.motion.easing.standard",
+          "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "token": "core.motion.easing.standard"
+        }
+      ]
+    },
+    {
+      "source": "structure",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "min-height",
+          "value": "32px",
+          "token": "box-model.min-height"
+        }
+      ]
+    },
+    {
+      "source": "root",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "input.color.text.default",
+          "designSlot": "input.design.root.foreground.color"
+        },
+        {
+          "property": "min-height",
+          "value": "32px",
+          "token": "input.size.height",
+          "designSlot": "input.design.root.sizing.min-height"
+        },
+        {
+          "property": "font-size",
+          "value": "1rem",
+          "token": "input.typography.size",
+          "designSlot": "input.design.root.typography.size"
+        }
+      ]
+    }
+  ],
+  "focusRings": [
+    {
+      "part": "root",
+      "width": 2,
+      "color": "#0566fe",
+      "offset": 2
+    }
+  ],
+  "accessibility": {
+    "labeling": [
+      "aria-label",
+      "aria-labelledby",
+      "aria-invalid"
+    ]
+  },
+  "projectedProps": [],
+  "defaults": {},
+  "excludedProps": [
+    "type",
+    "value",
+    "defaultValue",
+    "onChange",
+    "placeholder",
+    "disabled",
+    "invalid",
+    "required",
+    "name",
+    "ariaLabel",
+    "ariaLabelledby"
+  ],
+  "omissions": [
+    "root: attribute bindings (type, value, disabled, aria-invalid, placeholder, name, required, aria-label, aria-labelledby) not projected natively",
+    "root: event bindings (input) are not wired natively",
+    "root: native text channel (value) not lowered",
+    "structure.padding: host control has no padded panel to inset its children",
+    "structure.padding-block: host control has no padded panel to inset its children",
+    "structure.padding-block-start: no Godot anatomy style mapping",
+    "structure.padding-block-end: no Godot anatomy style mapping",
+    "structure.padding-inline: host control has no padded panel to inset its children",
+    "structure.padding-inline-start: no Godot anatomy style mapping",
+    "structure.padding-inline-end: no Godot anatomy style mapping",
+    "structure.gap: host control has no stacked layout to space",
+    "structure.min-width: no Godot anatomy style mapping",
+    "root.box-sizing: platform web only",
+    "root.border-style: platform web only",
+    "root.border-width: host control paints no panel",
+    "root.background-color: host control paints no panel",
+    "root.border-color: host control paints no panel",
+    "root.border-radius: host control paints no panel",
+    "root.line-height: no Godot anatomy style mapping",
+    "root.padding-block: host control has no padded panel to inset its children",
+    "root.padding-inline: host control has no padded panel to inset its children",
+    "root.transition-property: platform web only",
+    "root.transition-duration: no Godot anatomy style mapping",
+    "root.transition-timing-function: no Godot anatomy style mapping",
+    "hover: state selector not lowered",
+    "--invalid.border-color: host control paints no panel",
+    ".input--invalid:focus-visible: focus selector carries no outline declarations",
+    "disabled: state selector not lowered",
+    "::placeholder: selector outside normalized native grammar",
+    "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
+    "root accessibility role and labeling: native projection unverified",
+    "channel value: native string flow not lowered (value/onChange)",
+    "formControl value (text): native input value and commit flow not lowered",
+    "native text channels (value): DOM readback not lowered",
+    "reduced motion: native preference handling unverified",
+    "type: bound to the type attribute; native attribute projection unverified",
+    "value: no executable native projection",
+    "defaultValue: no executable native projection",
+    "onChange: callback surface has no native signal projection",
+    "placeholder: bound to the placeholder attribute; native attribute projection unverified",
+    "disabled: bound to the disabled attribute; native attribute projection unverified",
+    "invalid: bound to the aria-invalid attribute; native attribute projection unverified",
+    "required: bound to the required attribute; native attribute projection unverified",
+    "name: bound to the name attribute; native attribute projection unverified",
+    "ariaLabel: bound to the aria-label attribute; native attribute projection unverified",
+    "ariaLabelledby: bound to the aria-labelledby attribute; native attribute projection unverified"
+  ],
+  "theme": "source-bearing anatomy style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

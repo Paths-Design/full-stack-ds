@@ -55,7 +55,7 @@ func _build_panel(panel_def: Dictionary, header_height := 40.0) -> Dictionary:
 	panel.name = "Panel_" + str(panel_def["id"])
 	UI.place_rect(panel, rect)
 	add_child(panel)
-	var frame := UI.frame("charcoal", "rule")
+	var frame := UI.frame(str(app.parity.panels["elevatedBackground"]), "rule")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size
@@ -67,7 +67,7 @@ func _build_panel(panel_def: Dictionary, header_height := 40.0) -> Dictionary:
 
 func _panel_header(parent: Control, width: float, title_text: String, meta_text: String, header_height: float) -> Label:
 	var padding := float(app.parity.panels.get("padding", 16))
-	var strip := UI.rect_node("charcoal")
+	var strip := UI.rect_node(str(app.parity.panels["elevatedBackground"]))
 	UI.place(strip, 0, 0, width, header_height)
 	parent.add_child(strip)
 	var title_label := UI.panel_title(title_text)

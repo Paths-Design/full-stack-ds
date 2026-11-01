@@ -649,7 +649,11 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public VisualElement Visual { get; } = new VisualElement();");
     expect(source).toContain("[UxmlAttribute] public bool ReducedMotion");
     expect(source).toContain("MotionLoopControl.Attach(this, target: Visual, durationMs: 800, multiplier: 1, easing: new float[]");
-    expect(source).not.toMatch(/Size|Thickness|ShowAfterMs|Inline|ariaHidden/);
+    expect(source).toContain('sizeNames: new string[] { "xs", "sm", "md", "lg" }');
+    expect(source).toContain('sizePixels: new float[] { 12.000f, 16.000f, 20.000f, 24.000f }');
+    expect(source).toContain("public string Size");
+    expect(source).toContain("public string Thickness");
+    expect(source).not.toMatch(/ShowAfterMs|Inline|ariaHidden/);
   });
 
   it("degrades the markdown content transform to a text source for Markdown", () => {

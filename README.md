@@ -4,7 +4,7 @@ A falsifiable architectural claim about contract-governed compositional systems,
 
 ## Current state routing
 
-Start with [`docs/current-implementation-snapshot.md`](docs/current-implementation-snapshot.md) when deciding what the project currently proves. Older architecture docs remain useful, but several were written before the latest implementation slices landed. The snapshot records the current claim boundary — ledger last updated <!-- snapshot-updated -->2026-10-31: what is implemented, what is CI-gated, what is only a foundation, and what remains a non-claim.
+Start with [`docs/current-implementation-snapshot.md`](docs/current-implementation-snapshot.md) when deciding what the project currently proves. Older architecture docs remain useful, but several were written before the latest implementation slices landed. The snapshot records the current claim boundary — ledger last updated <!-- snapshot-updated -->2026-11-01: what is implemented, what is CI-gated, what is only a foundation, and what remains a non-claim.
 
 Use this README as the orientation surface. Use the snapshot as the freshness index. Use the detailed docs under `docs/` for doctrine and rationale.
 
@@ -239,7 +239,7 @@ Codegen is **`@full-stack-ds/codegen`** ([`packages/ds-codegen`](packages/ds-cod
 
 Default target is React. Pass `--target=<framework>` or `--target=all` to emit other targets.
 
-The [GPUI native target](docs/architecture/gpui-target.md) emits the registry's <!-- target-component-count:gpui -->7-component allowlist with `pnpm run generate:gpui`. `pnpm run test:gpui` runs pinned macOS compilation and mounted engine input/style tests; `pnpm run dev:gpui` builds and opens the native gallery. Supported token/variant styling, controlled input, retained children and typed named slots are implemented. The pinned renderer includes upstream device-pixel snapping and native glyph fixes; complete pixel parity and omitted capabilities remain unqualified. The dedicated native CI lane is configured; remote execution is unverified. GPUI remains outside the TypeScript admission rail.
+The [GPUI native target](docs/architecture/gpui-target.md) emits the registry's <!-- target-component-count:gpui -->55-component allowlist (the whole corpus, matching Unity) with `pnpm run generate:gpui`; the bounded planners keep their strict shapes and the generic anatomy projection emits the rest with omission-bearing receipts. `pnpm run test:gpui` runs pinned macOS compilation and mounted engine input/style tests; `pnpm run dev:gpui` builds and opens the native gallery. Supported token/variant styling, controlled input, retained children and typed named slots are implemented. The pinned renderer includes upstream device-pixel snapping and native glyph fixes; complete pixel parity and omitted capabilities remain unqualified. The dedicated native CI lane is configured; remote execution is unverified. GPUI remains outside the TypeScript admission rail.
 
 ```bash
 pnpm run generate                                  # React only (default)

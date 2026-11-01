@@ -3287,6 +3287,7 @@
     --fsds-semantic-typography-body-small-line-height: 1.35;
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-typography-graphic-size-label: 13px;
     --fsds-semantic-typography-heading-font-weight: 700;
     --fsds-semantic-typography-line-height-body: 1.45;
@@ -3294,8 +3295,8 @@
     --fsds-semantic-typography-line-height-tight: 1.1;
     --fsds-semantic-typography-link-decoration-offset: 2px;
     --fsds-semantic-typography-link-decoration-thickness: 2px;
-    --fsds-semantic-typography-semantic-family-body: var(--fsds-typography-font-family-inter);
-    --fsds-semantic-typography-semantic-family-heading: var(--fsds-typography-font-family-inter);
+    --fsds-semantic-typography-semantic-family-body: var(--fsds-core-typography-font-family-inter);
+    --fsds-semantic-typography-semantic-family-heading: var(--fsds-core-typography-font-family-inter);
 }
 
 .fsds-theme.fsds-brand-orion.fsds-theme--dark {
@@ -3421,6 +3422,7 @@
     --fsds-semantic-shape-card-border-transparent: rgba(0, 0, 0, 0);
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-typography-graphic-size-label: 13px;
 }
 

@@ -176,12 +176,26 @@ func test_corpus() -> void:
 	check(app.parity.viewport == Vector2(1280, 800), "parity viewport is 1280x800")
 	check(app.parity.switch_data["width"] == 64 and app.parity.switch_data["height"] == 32, "parity switch geometry 64x32")
 	check(app.parity.raw.get("colorTokens", {}).size() == 19, "authority carries 19 colour provenances")
-	check(app.parity.raw.get("typeTokens", {}).size() == 20, "authority carries 20 type provenances")
+	check(app.parity.raw.get("typeTokens", {}).size() == 21, "authority carries 21 type provenances")
 	var token_resolver := TokenResolver.load_from_project()
 	check(token_resolver.ok(), "token graph and Orion brand load from ds-tokens", str(token_resolver.errors))
 	check(token_resolver.resolve_color("semantic.color.background.accent", "dark") == "#EF6A3C", "Orion dark accent resolves from the token graph")
 	check(app.parity.color("signal") == Color("#EF6A3C"), "parity signal colour is token-resolved")
 	check(app.parity.type_size("drawerTitle") == 28, "drawer title size is token-resolved")
+	var token_colour_mismatches: Array[String] = []
+	for name in app.parity.raw["colorTokens"]:
+		var provenance: Dictionary = app.parity.raw["colorTokens"][name]
+		var resolved_hex := token_resolver.resolve_color(str(provenance["token"]), str(provenance.get("mode", "dark")))
+		if resolved_hex.is_empty() or app.parity.color(str(name)) != Color(resolved_hex):
+			token_colour_mismatches.append("%s=%s token=%s" % [name, app.parity.color(str(name)), resolved_hex])
+	check(token_colour_mismatches.is_empty(), "every parity colour resolves through its token provenance", str(token_colour_mismatches))
+	var token_type_mismatches: Array[String] = []
+	for key in app.parity.raw["typeTokens"]:
+		var provenance: Dictionary = app.parity.raw["typeTokens"][key]
+		var resolved_size := token_resolver.resolve_size(str(provenance["token"]), str(provenance.get("mode", "dark")))
+		if is_nan(resolved_size) or not is_equal_approx(float(app.parity.type_size(str(key))), resolved_size):
+			token_type_mismatches.append("%s=%s token=%s" % [key, app.parity.type_size(str(key)), resolved_size])
+	check(token_type_mismatches.is_empty(), "every parity type size resolves through its token provenance", str(token_type_mismatches))
 	check(app.fixtures.commander.get("callsign", "") == "ORION N5", "commander callsign")
 	check(app.fixtures.map_icons.get("icons", []).size() == 8, "map icon count")
 	check(app.fixtures.factions.get("factions", []).size() == 5, "faction count")

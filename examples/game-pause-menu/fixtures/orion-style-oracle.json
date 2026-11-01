@@ -1,0 +1,83 @@
+{
+  "$schema": "game-pause-menu.orion-style-oracle.v1",
+  "$note": "Source-design oracle distilled from the two user-supplied Orion N5 style-reference images (2026-10-31). The reference images are third-party artwork and are not committed; this manifest records the measurable design facts they establish plus the review criteria that cannot be automated. Cross-engine parity is tested by parity-check.mjs and the image goldens; this oracle tests fidelity to the source design, which is a separate claim.",
+  "source": {
+    "received": "2026-10-31",
+    "images": [
+      {
+        "description": "Orion N5 style board: grey/charcoal poster panels, mint-ice-cream background fields, orange data plates and vehicle livery, oversized grey display numerals, D35O technical framing.",
+        "sha256": "8e883260c5b89fe3c21c8f06d86f5eb117f0f17d25386b22b162b86a7cb21273"
+      },
+      {
+        "description": "Orion N5 orbital-data panel: mint ribbed background, dark ribbed housing, full-width orange data band, oversized grey 79 numeral, hex/orbit diagram, registration marks and barcode strips.",
+        "sha256": "f0ec5f36d105c1538923f620276386375e1ff10bdbbd09aa877e9a847546a284"
+      }
+    ],
+    "paletteBasis": "Dominant-colour quantisation of the two reference images (see evidence/oracle-report.json).",
+    "compositionBasis": "Quantised colour-family shares of the reference images; approximate design review bands, not pixel measurements."
+  },
+  "paletteAnchors": [
+    { "family": "ink", "hex": "#272726", "role": "large grey/charcoal poster and housing fields" },
+    { "family": "ink", "hex": "#222322", "role": "dark ribbed housing" },
+    { "family": "ink", "hex": "#3C463E", "role": "dark moss-grey frame shading" },
+    { "family": "mint", "hex": "#C6D9C6", "role": "primary mint-ice-cream background" },
+    { "family": "mint", "hex": "#BCD4C3", "role": "secondary mint panel wash" },
+    { "family": "mint", "hex": "#C7DFCE", "role": "pale ice highlight" },
+    { "family": "grey", "hex": "#515352", "role": "big grey display type and industrial metal" },
+    { "family": "grey", "hex": "#545E56", "role": "grey-green secondary field" },
+    { "family": "grey", "hex": "#6F8B78", "role": "moss-grey diagram/telemetry field" },
+    { "family": "orange", "hex": "#E75C2F", "role": "primary signal-orange data band / livery" },
+    { "family": "orange", "hex": "#F0724C", "role": "orange highlight on mint" }
+  ],
+  "composition": {
+    "referenceShares": {
+      "styleBoard": { "ink": 0.400, "mint": 0.279, "grey": 0.179, "orange": 0.108, "cream": 0.000 },
+      "orbitalPanel": { "ink": 0.426, "mint": 0.217, "grey": 0.275, "orange": 0.066, "cream": 0.000 }
+    },
+    "bands": {
+      "ink": [0.30, 0.60],
+      "mint": [0.15, 0.40],
+      "grey": [0.08, 0.30],
+      "orange": [0.04, 0.15],
+      "cream": [0.00, 0.10]
+    },
+    "states": ["map", "map-popover", "progress", "abilities", "abilities-hover", "settings", "settings-remap-modal", "settings-subtitle"],
+    "knownCurrentStatus": "not_met",
+    "knownCurrentGap": "The current dark HUD uses the Orion swatches but allocates most of every non-map frame to near-black; mint is confined to the map field and cream is used instead of mint on the progress dossier. The oracle audit records the exact shares; see evidence/visual-review.md."
+  },
+  "typography": {
+    "family": "Inter",
+    "displayMinimumPx": 96,
+    "requiredDevices": [
+      "one oversized grey display wordmark or numeral per screen",
+      "orange data band or plate large enough to read as a field, not only a state accent",
+      "tight display tracking at large sizes"
+    ],
+    "knownCurrentStatus": "not_met",
+    "knownCurrentGap": "The largest current type is 40 px; the reference's defining big-grey display layer is absent."
+  },
+  "graphicLanguage": {
+    "requiredMotifs": [
+      "thick dark housings and cutaway/chamfered panel frames",
+      "hex/orbit diagrams and crosshair registration marks",
+      "barcode/mission-code strips and technical specimen labels",
+      "ribbed/hatched material fields"
+    ],
+    "knownCurrentStatus": "partial",
+    "knownCurrentGap": "The map grid and hairline technical labels are present; the panel housings, hex/orbit diagrams, registration marks and display typography are absent."
+  },
+  "claimBoundary": {
+    "claimed": "The three lanes are compared against each other for the eight captured 1280x800 states, with committed image goldens and a token-consumption gate, and are compared against the reference palette anchors.",
+    "notClaimed": [
+      "unbounded or pixel-identical visual parity",
+      "fidelity to the reference composition, display typography or industrial graphic language",
+      "DPI/backend/OS coverage beyond the pinned macOS host",
+      "physical-input, accessibility or usability parity"
+    ]
+  },
+  "review": {
+    "method": "Agent visual inspection of the four state montages against the two reference images, plus quantised colour-family shares.",
+    "humanReview": "pending",
+    "record": "examples/game-pause-menu/evidence/visual-review.md"
+  }
+}

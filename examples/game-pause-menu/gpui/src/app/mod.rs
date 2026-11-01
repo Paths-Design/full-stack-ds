@@ -586,17 +586,33 @@ impl Menu {
             cx,
             "header:wordmark-main",
             wordmark_spec,
-            &layout.colors.bone_bright,
+            &layout.color(&layout.header.wordmark_color),
             format!("{} ", layout.header.wordmark.text_main),
         );
         let accent = self.text(
             cx,
             "header:wordmark-accent",
             wordmark_spec,
-            &layout.colors.signal,
+            &layout.color(&layout.header.wordmark_accent_color),
             layout.header.wordmark.text_accent.clone(),
         );
+        let ghost = &layout.header.ghost;
         let mut header_children: Vec<AnyElement> = vec![
+            div()
+                .absolute()
+                .left(px(ghost.x))
+                .top(px(ghost.y))
+                .w(px(ghost.w))
+                .h(px(ghost.h))
+                .opacity(ghost.opacity)
+                .child(self.text(
+                    cx,
+                    "header:ghost",
+                    style::ghost(&layout.type_scale),
+                    &layout.color(&ghost.color),
+                    ghost.text.clone(),
+                ))
+                .into_any_element(),
             div()
                 .absolute()
                 .left(px(layout.header.wordmark.x))
@@ -612,7 +628,7 @@ impl Menu {
                 cx,
                 "header:mission",
                 style::mission(&layout.type_scale),
-                &layout.colors.muted,
+                &layout.color(&layout.header.mission_color),
                 layout.header.mission.text.clone(),
                 layout.header.mission.x,
                 layout.header.mission.y,
@@ -623,13 +639,13 @@ impl Menu {
                 cx,
                 format!("header:{}", stat.id),
                 stat.value.clone(),
-                &layout.colors.bone_bright,
+                &layout.color(&layout.header.stat_value_color),
             );
             header_children.push(self.text_at(
                 cx,
                 format!("header:{}:label", stat.id),
                 style::stat_label(&layout.type_scale),
-                &layout.colors.muted,
+                &layout.color(&layout.header.stat_label_color),
                 stat.label.clone(),
                 stat.x,
                 stat.label_y,
@@ -646,7 +662,7 @@ impl Menu {
                 cx,
                 format!("header:{}:sub", stat.id),
                 style::stat_sub(&layout.type_scale),
-                &layout.colors.muted,
+                &layout.color(&layout.header.stat_sub_color),
                 stat.sub.clone(),
                 stat.x,
                 stat.sub_y,
@@ -704,9 +720,9 @@ impl Menu {
                 _ => Tab::Map,
             };
             let label_color = if active {
-                layout.colors.on_signal.clone()
+                layout.color(&layout.tab_bar.active_text).to_string()
             } else {
-                layout.colors.text_secondary.clone()
+                layout.color(&layout.tab_bar.inactive_text).to_string()
             };
             let key = format!("tab:{}:{}", tab.id, if active { "active" } else { "idle" });
             let label = self.text(cx, key, style::tab(&layout.type_scale), &label_color, tab.label.clone());
@@ -765,14 +781,14 @@ impl Menu {
             cx,
             "footer:hints",
             style::footer_hint(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.color(&layout.footer.hints_color),
             layout.footer.hints.text.clone(),
         );
         let nav_label = self.text(
             cx,
             "footer:label",
             style::footer_label(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.color(&layout.footer.nav_label_color),
             layout.footer.nav_target.label.clone(),
         );
         let target = self
@@ -783,7 +799,7 @@ impl Menu {
         let value_color = if self.state.nav_target().is_some() {
             layout.colors.signal.clone()
         } else {
-            layout.colors.muted.clone()
+            layout.colors.text_secondary.clone()
         };
         let value = self.text(
             cx,
@@ -800,7 +816,7 @@ impl Menu {
         };
         children.push(
             widgets::rect_box(footer)
-                .bg(colors::paint(&layout.colors.ink))
+                .bg(colors::paint(&layout.color(&layout.footer.background)))
                 .child(
                     div()
                         .absolute()
@@ -986,7 +1002,7 @@ impl Render for Menu {
             .relative()
             .w(px(viewport.width))
             .h(px(viewport.height))
-            .bg(colors::paint(&self.layout.colors.ink))
+            .bg(colors::paint(&self.layout.colors.rule_strong))
             .font_family("Inter")
             .text_color(colors::paint(&self.layout.colors.bone_bright))
             .track_focus(&self.focus)

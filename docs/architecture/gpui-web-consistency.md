@@ -1,0 +1,159 @@
+---
+doc_id: ARCH-GPUI-WEB-CONSISTENCY-001
+authority: architecture
+status: active
+title: GPUI ↔ web consistency
+owner: "@darianrosebrook"
+updated: 2026-11-01
+governs:
+  - scripts/gpui-web-consistency-audit.mjs
+  - packages/ds-gpui/web-consistency-baseline.json
+---
+
+# GPUI ↔ web consistency
+
+This doc records how far the GPUI target's generated components are from the
+React/Vue/Svelte realizations of the same contracts, and the ratchet that keeps
+the gap from growing silently. It is the evidence behind the GPUI parity goal;
+the target doc ([GPUI target](gpui-target.md)) owns the realization boundary.
+
+## What is measured
+
+[The audit](../../scripts/gpui-web-consistency-audit.mjs) derives every number
+from contract/IR facts and the generated artifacts. Nothing here is hand-counted.
+
+| Dimension | Declared fact (from contract/IR) | Realized in a target |
+|---|---|---|
+| parts | distinct anatomy parts in the normalized DOM | web: the BEM block class (`<prefix>__<part>`, root is the bare block); GPUI: the part debug selector (`<prefix>-<part>`) |
+| props | `styledProps` names | web: the generated props block; GPUI: generated builder methods plus receipt-claimed props |
+| behavior | components carrying normalized event wires, channels, composite/interaction/surface facts | web: a handler syntax or a behavior hook; GPUI: a realized boolean control channel |
+| a11y | components authoring `role`/`aria` facts in the contract or anatomy | role/aria attributes in the generated artifact |
+| references | `componentRef` anatomy nodes | web: the referenced component rendered as a tag; GPUI: a retained `Entity<Child>` field |
+
+Cross-check: the web columns agree with the committed derived audits —
+behavior-realization reports every derived obligation realized across the five
+web frameworks, and the anatomy audit reports 43/55 components fully styled
+contract-side with 7 declared-part realization mismatches. The audit is a
+*consistency* measurement, not a substitute for those gates.
+
+## Current matrix
+
+Aggregates over the 55-component corpus (214 declared parts, 379 declared props,
+30 components with behavior facts, 44 with authored a11y facts):
+
+| target | parts | props | behavior | a11y | references |
+|---|---|---|---|---|---|
+| React | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
+| Vue | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
+| Svelte | 213/214 | 379/379 | 30/30 | 40/44 | 20/20 |
+| GPUI | 180/214 | 261/379 | 14/30 | 0/44 | 20/20 |
+
+All five dimensions are measured from the committed generated source; the audit
+does not read the regenerated, gitignored `capabilities.json` receipts, so a
+fresh checkout and a post-generation tree produce the same numbers.
+
+The three web frameworks are internally consistent (they are one IR through
+three emitters). GPUI is consistent on **component identity** (55/55), partial on
+**structure**, and materially behind on **semantics**.
+
+### Divergence classes
+
+- **Parts**: equal to web in 35 components, fewer in 20, never more. The
+  by-reference composition slice closed the child-component gap (PageNavigator
+  3/10→8/10, Chip 1/5→3/5, Button 1/3→2/3, Details 3/6→4/6, Accordion 5/7→6/7,
+  Alert/Avatar/Status/Carousel +1 each), and reference bindings whose expression
+  is a realized parent prop now drive the retained child through its generated
+  setters each render. Remaining gaps are collection and overlay shapes:
+  PageNavigator 8/10, Chip 3/5, Pagination 2/5, Select 6/9, Calendar 5/7, plus the
+  single web-side miss of one Toast part.
+- **Props**: 10 components project the full web prop surface, 5 at 80–99%,
+  28 at 50–79%, 10 at 1–49%, 2 at 0%. The web targets project every declared prop.
+- **Behavior**: 14 of 30 behavior-bearing components realize an interaction —
+  four value channels (Switch, ToggleSwitch, Checkbox and Details' disclosure
+  `open`), one collection open-value channel (Accordion's trigger toggles its
+  gated content part from controlled or uncontrolled value), four
+  surface-presence channels (Dialog, Sheet, Toast and Command gate their
+  backdrop/panel on open state), one expansion-state channel (ShowMore's declared
+  trigger toggles a boolean expansion state and emits a change request), two
+  action controls (Button's root click, AlertNotice's dismiss trigger) that invoke
+  a stored callback from pointer and keyboard activation, and two reference-event
+  forwarders (Alert and Chip forward their retained trigger's click to the
+  parent's dismiss/action callback). The remaining 16 are mounts only — Tabs,
+  anchored surfaces (Tooltip/Popover/Walkthrough), composite and collection state
+  (Select/RadioGroup/OTP/Calendar/Shuttle/Pagination/PageNavigator/Carousel),
+  text input (Input/TextField/Field) and truncation (Truncate).
+- **A11y**: 0 of 44, and this is a **substrate non-claim** rather than pending
+  work: the pinned GPUI revision (`a38fc8c`) exposes no accessibility channel —
+  `crates/gpui/src` has no `accesskit` integration and no role/label/description
+  API — so the boundary ledger records every accessibility family with the
+  `substrate` disposition and the target doc states the non-claim with its
+  re-probe command. The number measures the gap; the ledger explains it.
+- **References**: all 20 declared `componentRef` nodes are realized. Nested
+  references (PageNavigator's previous/next icons inside the retained buttons)
+  are projected through the child component's content API; a non-reference child
+  nested inside a reference would still be named as a `ref-children` omission.
+- **Styles**: the GPUI receipts name 481 omitted style declarations across the
+  corpus, each adjudicated by the support-boundary ledger.
+
+### Mounted witness inventory
+
+Every realized interaction mechanism is witnessed by a named mounted GPUI test in
+`packages/ds-gpui/tests/native_runtime.rs` (16 witnesses; `pnpm run test:gpui`
+requires each by name and fails if one disappears):
+
+| capability | witness |
+|---|---|
+| Root action callback (Button) | `mounted_button_action_callback_pointer_and_keyboard` |
+| Part action callback + toggle button | `mounted_toggle_button_enter_and_space_request_once` |
+| Boolean channel keyboard/owner policy (Switch) | `mounted_switch_pointer_space_owner_acceptance_and_disabled_suppression` |
+| Mixed mark + hover owner (Checkbox) | `mounted_checkbox_mixed_mark_and_hover_owner` |
+| Keyboard verification channel (Checkbox) | `mounted_checkbox_keyboard_cycles_request_once_and_enter_is_suppressed` |
+| Disclosure open channel (Details) | `mounted_details_disclosure_toggles_from_trigger_click_and_keyboard` |
+| Surface presence gating (Dialog) | `mounted_dialog_presence_gates_backdrop_and_panel` |
+| Collection open value (Accordion) | `mounted_accordion_collection_open_toggles_trigger_and_gated_panel` |
+| Expansion state (ShowMore) | `mounted_show_more_expansion_toggles_from_trigger_click_and_keyboard` |
+| Reference event forwarding (Alert) | `mounted_alert_reference_action_forwards_to_parent_callback` |
+| Nested reference children (PageNavigator) | `mounted_page_navigator_nested_reference_children_render` |
+| Focus/tab order across disabled | `mounted_tab_order_skips_disabled_and_focus_is_stable` |
+| Fractional layout snapping | `mounted_fractional_layout_edges_snap_and_survive_owner_redraw` |
+| Static style/token reach | `mounted_static_typography_badge_and_divider_are_styled`, `mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint`, `mounted_switch_variant_geometry_and_component_token_override` |
+
+The 39 components without an interaction witness still have a generated mount
+witness (`<Name>/<Name>.test.rs`) proving only construction and rendering. The
+audit's behavior column is a source-level proxy: a component can carry a witness
+without a behavior fact (style/layout witnesses) and vice versa is never
+accepted — a realized interaction must be witnessed by name.
+
+### Class closure status
+
+| class | status |
+|---|---|
+| composition (`componentRef`) | **closed** — 20/20 references realized (static attrs, dynamic props, forwarded events, nested children) |
+| disclosure / action behavior | **closed for the realized mechanisms** — four value channels, disclosure, surface presence, collection open value, expansion, action callbacks, reference events; 16 behavior-bearing components remain mounts only |
+| surfaces | **partial** — dialog-kind presence realized (Dialog/Sheet/Toast/Command); anchored Tooltip/Popover and Walkthrough keep the anatomy projection |
+| composite / collection state | **partial** — Accordion realizes controlled open value; iteration, per-item identity and the remaining 9 collection components are not projected |
+| text input / form association | **open** — Input/TextField/Field realize mount + bindings only; no IME, no field association |
+| content transforms / glyphs | **open** — transforms and glyph rendering are receipted omissions |
+| accessibility | **substrate non-claim** — the pinned renderer has no accessibility channel; 0/44 measured, ledger explains it |
+
+## The ratchet
+
+`packages/ds-gpui/web-consistency-baseline.json` is the committed measurement.
+`pnpm run audit:gpui-web-consistency` fails when any component loses a realized
+fact (on GPUI **or** a web target), when a corpus component has no baseline
+entry, or when a baseline entry names a component that no longer exists — so
+progress must be rebaselined deliberately with
+`pnpm run write:gpui-web-consistency`. The audit's `--self-test` proves the
+regression, stale-entry and removed-entry detections fire.
+
+## Limits
+
+- Presence of a part class, prop name, handler syntax or role attribute is
+  evidence of projection, not of styling correctness, interaction semantics,
+  runtime behaviour or pixels. Mounted witnesses remain the runtime evidence.
+- Web measurements parse generated source; a target that emits an equivalent
+  fact through a different spelling would be undercounted. The web columns are
+  corroborated by the committed audits above.
+- The audit reads only committed generated source, so receipts never affect the
+  numbers; a capability that is claimed in a receipt but absent from the source
+  would be undercounted, which is the conservative direction.

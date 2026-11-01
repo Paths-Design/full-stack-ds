@@ -17,6 +17,14 @@ function iconIr() {
   return ir;
 }
 
+function navTreeIr() {
+  const base = path.join(root, "packages/ds-contracts/components/NavTree/NavTree");
+  const contract = JSON.parse(fs.readFileSync(`${base}.contract.json`, "utf8")) as ComponentContract & { tokens?: unknown; styles?: unknown };
+  contract.tokens = JSON.parse(fs.readFileSync(`${base}.tokens.json`, "utf8"));
+  contract.styles = JSON.parse(fs.readFileSync(`${base}.styles.json`, "utf8"));
+  return buildComponentIR(contract);
+}
+
 describe("Godot glyph plan", () => {
   it("binds authored name, size, accessible name and exact token style values independent of component name", () => {
     const ir = iconIr();
@@ -113,5 +121,29 @@ describe("Godot glyph plan", () => {
     expect(files.find(file => file.relativePath.endsWith(".tscn"))!.contents).not.toContain("theme = ExtResource");
     expect(emitter.emitTargetAssets!([ir], { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") })).toHaveLength(1);
     expect(emitter.emitTargetAssets!([], { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") })).toEqual([]);
+  });
+
+  it("declines a glyph nested in a wider passive anatomy so the anatomy planner owns the tree", () => {
+    const navTree = navTreeIr();
+    expect(() => godotGlyphPlan(navTree)).not.toThrow();
+    expect(godotGlyphPlan(navTree)).toBeUndefined();
+    let refusal = "";
+    try {
+      godotPlan(navTree);
+    } catch (error) {
+      refusal = (error as Error).message;
+    }
+    expect(refusal).not.toContain("GODOT_UNSUPPORTED_GLYPH");
+  });
+
+  it("declines multi-glyph trees instead of claiming the single-glyph runtime", () => {
+    const multi = iconIr();
+    const glyph = multi.dom!.children[0]!;
+    multi.dom!.children.push({ ...glyph, children: [] });
+    expect(godotGlyphPlan(multi)).toBeUndefined();
+    const nested = iconIr();
+    const wrapper = { ...nested.dom!.children[0]!, tag: "div", iconGlyph: undefined, children: [nested.dom!.children[0]!] };
+    nested.dom!.children = [wrapper];
+    expect(godotGlyphPlan(nested)).toBeUndefined();
   });
 });

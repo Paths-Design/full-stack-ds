@@ -1,0 +1,1531 @@
+{
+  "schema": "game-pause-menu.oracle-report.v1",
+  "oracle": "examples/game-pause-menu/fixtures/orion-style-oracle.json",
+  "referenceImages": [
+    {
+      "description": "Orion N5 style board: grey/charcoal poster panels, mint-ice-cream background fields, orange data plates and vehicle livery, oversized grey display numerals, D35O technical framing.",
+      "sha256": "8e883260c5b89fe3c21c8f06d86f5eb117f0f17d25386b22b162b86a7cb21273"
+    },
+    {
+      "description": "Orion N5 orbital-data panel: mint ribbed background, dark ribbed housing, full-width orange data band, oversized grey 79 numeral, hex/orbit diagram, registration marks and barcode strips.",
+      "sha256": "f0ec5f36d105c1538923f620276386375e1ff10bdbbd09aa877e9a847546a284"
+    }
+  ],
+  "method": "Quantise each committed golden to 48 colours at 320x320, classify each quantised colour to the nearest reference/app anchor within RGB distance 40, and compare the resulting family shares with the oracle's reference-derived bands.",
+  "bands": {
+    "ink": [
+      0.3,
+      0.6
+    ],
+    "mint": [
+      0.15,
+      0.4
+    ],
+    "grey": [
+      0.08,
+      0.3
+    ],
+    "orange": [
+      0.04,
+      0.15
+    ],
+    "cream": [
+      0,
+      0.1
+    ]
+  },
+  "referenceShares": {
+    "styleBoard": {
+      "ink": 0.4,
+      "mint": 0.279,
+      "grey": 0.179,
+      "orange": 0.108,
+      "cream": 0
+    },
+    "orbitalPanel": {
+      "ink": 0.426,
+      "mint": 0.217,
+      "grey": 0.275,
+      "orange": 0.066,
+      "cream": 0
+    }
+  },
+  "manualCriteria": {
+    "displayTypography": {
+      "family": "Inter",
+      "displayMinimumPx": 96,
+      "requiredDevices": [
+        "one oversized grey display wordmark or numeral per screen",
+        "orange data band or plate large enough to read as a field, not only a state accent",
+        "tight display tracking at large sizes"
+      ],
+      "knownCurrentStatus": "not_met",
+      "knownCurrentGap": "The largest current type is 40 px; the reference's defining big-grey display layer is absent."
+    },
+    "graphicLanguage": {
+      "requiredMotifs": [
+        "thick dark housings and cutaway/chamfered panel frames",
+        "hex/orbit diagrams and crosshair registration marks",
+        "barcode/mission-code strips and technical specimen labels",
+        "ribbed/hatched material fields"
+      ],
+      "knownCurrentStatus": "partial",
+      "knownCurrentGap": "The map grid and hairline technical labels are present; the panel housings, hex/orbit diagrams, registration marks and display typography are absent."
+    }
+  },
+  "results": [
+    {
+      "lane": "gpui",
+      "state": "map",
+      "shares": {
+        "ink": 0.241,
+        "mint": 0.555,
+        "grey": 0.095,
+        "orange": 0.056,
+        "cream": 0.001,
+        "other": 0.052
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.241,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "mint",
+          "observed": 0.555,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "gpui",
+      "state": "map-popover",
+      "shares": {
+        "ink": 0.304,
+        "mint": 0.475,
+        "grey": 0.103,
+        "orange": 0.064,
+        "cream": 0.001,
+        "other": 0.054
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "mint",
+          "observed": 0.475,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "gpui",
+      "state": "progress",
+      "shares": {
+        "ink": 0.354,
+        "mint": 0.422,
+        "grey": 0.091,
+        "orange": 0.058,
+        "cream": 0.001,
+        "other": 0.075
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "mint",
+          "observed": 0.422,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "gpui",
+      "state": "abilities",
+      "shares": {
+        "ink": 0.474,
+        "mint": 0.17,
+        "grey": 0.245,
+        "orange": 0.053,
+        "cream": 0,
+        "other": 0.057
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "gpui",
+      "state": "abilities-hover",
+      "shares": {
+        "ink": 0.472,
+        "mint": 0.17,
+        "grey": 0.248,
+        "orange": 0.053,
+        "cream": 0,
+        "other": 0.057
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "gpui",
+      "state": "settings",
+      "shares": {
+        "ink": 0.052,
+        "mint": 0.17,
+        "grey": 0.653,
+        "orange": 0.058,
+        "cream": 0.003,
+        "other": 0.065
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.052,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.653,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-remap-modal",
+      "shares": {
+        "ink": 0.988,
+        "mint": 0,
+        "grey": 0.006,
+        "orange": 0,
+        "cream": 0,
+        "other": 0.006
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.988,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "above"
+        },
+        {
+          "family": "mint",
+          "observed": 0,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.006,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "orange",
+          "observed": 0,
+          "band": [
+            0.04,
+            0.15
+          ],
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-subtitle",
+      "shares": {
+        "ink": 0.041,
+        "mint": 0.17,
+        "grey": 0.64,
+        "orange": 0.068,
+        "cream": 0.003,
+        "other": 0.079
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.041,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.64,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "unity",
+      "state": "map",
+      "shares": {
+        "ink": 0.243,
+        "mint": 0.555,
+        "grey": 0.104,
+        "orange": 0.06,
+        "cream": 0.001,
+        "other": 0.037
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.243,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "mint",
+          "observed": 0.555,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "unity",
+      "state": "map-popover",
+      "shares": {
+        "ink": 0.309,
+        "mint": 0.474,
+        "grey": 0.11,
+        "orange": 0.063,
+        "cream": 0.002,
+        "other": 0.042
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "mint",
+          "observed": 0.474,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "unity",
+      "state": "progress",
+      "shares": {
+        "ink": 0.36,
+        "mint": 0.429,
+        "grey": 0.094,
+        "orange": 0.064,
+        "cream": 0.001,
+        "other": 0.052
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "mint",
+          "observed": 0.429,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "unity",
+      "state": "abilities",
+      "shares": {
+        "ink": 0.476,
+        "mint": 0.171,
+        "grey": 0.254,
+        "orange": 0.058,
+        "cream": 0,
+        "other": 0.041
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "unity",
+      "state": "abilities-hover",
+      "shares": {
+        "ink": 0.474,
+        "mint": 0.171,
+        "grey": 0.256,
+        "orange": 0.057,
+        "cream": 0,
+        "other": 0.042
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "unity",
+      "state": "settings",
+      "shares": {
+        "ink": 0.059,
+        "mint": 0.17,
+        "grey": 0.657,
+        "orange": 0.062,
+        "cream": 0.002,
+        "other": 0.05
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.059,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.657,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "unity",
+      "state": "settings-remap-modal",
+      "shares": {
+        "ink": 0.987,
+        "mint": 0,
+        "grey": 0.002,
+        "orange": 0.001,
+        "cream": 0,
+        "other": 0.01
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.987,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "above"
+        },
+        {
+          "family": "mint",
+          "observed": 0,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.002,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "orange",
+          "observed": 0.001,
+          "band": [
+            0.04,
+            0.15
+          ],
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "lane": "unity",
+      "state": "settings-subtitle",
+      "shares": {
+        "ink": 0.046,
+        "mint": 0.17,
+        "grey": 0.655,
+        "orange": 0.073,
+        "cream": 0.002,
+        "other": 0.055
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.046,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.655,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "godot",
+      "state": "map",
+      "shares": {
+        "ink": 0.239,
+        "mint": 0.546,
+        "grey": 0.098,
+        "orange": 0.061,
+        "cream": 0.001,
+        "other": 0.055
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.239,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "mint",
+          "observed": 0.546,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "godot",
+      "state": "map-popover",
+      "shares": {
+        "ink": 0.304,
+        "mint": 0.467,
+        "grey": 0.105,
+        "orange": 0.065,
+        "cream": 0.001,
+        "other": 0.057
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "mint",
+          "observed": 0.467,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "godot",
+      "state": "progress",
+      "shares": {
+        "ink": 0.355,
+        "mint": 0.423,
+        "grey": 0.088,
+        "orange": 0.063,
+        "cream": 0,
+        "other": 0.069
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "mint",
+          "observed": 0.423,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "godot",
+      "state": "abilities",
+      "shares": {
+        "ink": 0.474,
+        "mint": 0.172,
+        "grey": 0.246,
+        "orange": 0.059,
+        "cream": 0.001,
+        "other": 0.049
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "godot",
+      "state": "abilities-hover",
+      "shares": {
+        "ink": 0.477,
+        "mint": 0.172,
+        "grey": 0.248,
+        "orange": 0.057,
+        "cream": 0,
+        "other": 0.045
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": []
+    },
+    {
+      "lane": "godot",
+      "state": "settings",
+      "shares": {
+        "ink": 0.051,
+        "mint": 0.171,
+        "grey": 0.657,
+        "orange": 0.062,
+        "cream": 0.003,
+        "other": 0.056
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.051,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.657,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    },
+    {
+      "lane": "godot",
+      "state": "settings-remap-modal",
+      "shares": {
+        "ink": 0.995,
+        "mint": 0,
+        "grey": 0.003,
+        "orange": 0,
+        "cream": 0,
+        "other": 0.002
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.995,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "above"
+        },
+        {
+          "family": "mint",
+          "observed": 0,
+          "band": [
+            0.15,
+            0.4
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.003,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "orange",
+          "observed": 0,
+          "band": [
+            0.04,
+            0.15
+          ],
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "lane": "godot",
+      "state": "settings-subtitle",
+      "shares": {
+        "ink": 0.039,
+        "mint": 0.171,
+        "grey": 0.655,
+        "orange": 0.073,
+        "cream": 0.002,
+        "other": 0.059
+      },
+      "referenceShares": {
+        "styleBoard": {
+          "ink": 0.4,
+          "mint": 0.279,
+          "grey": 0.179,
+          "orange": 0.108,
+          "cream": 0
+        },
+        "orbitalPanel": {
+          "ink": 0.426,
+          "mint": 0.217,
+          "grey": 0.275,
+          "orange": 0.066,
+          "cream": 0
+        }
+      },
+      "violations": [
+        {
+          "family": "ink",
+          "observed": 0.039,
+          "band": [
+            0.3,
+            0.6
+          ],
+          "direction": "below"
+        },
+        {
+          "family": "grey",
+          "observed": 0.655,
+          "band": [
+            0.08,
+            0.3
+          ],
+          "direction": "above"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "lanes": 3,
+    "states": 8,
+    "observations": 24,
+    "violationCount": 36,
+    "cleanObservations": 6,
+    "overall": "does-not-meet-composition-bands"
+  },
+  "violations": [
+    {
+      "lane": "gpui",
+      "state": "map",
+      "family": "ink",
+      "observed": 0.241,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "map",
+      "family": "mint",
+      "observed": 0.555,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "gpui",
+      "state": "map-popover",
+      "family": "mint",
+      "observed": 0.475,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "gpui",
+      "state": "progress",
+      "family": "mint",
+      "observed": 0.422,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings",
+      "family": "ink",
+      "observed": 0.052,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings",
+      "family": "grey",
+      "observed": 0.653,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-remap-modal",
+      "family": "ink",
+      "observed": 0.988,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-remap-modal",
+      "family": "mint",
+      "observed": 0,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-remap-modal",
+      "family": "grey",
+      "observed": 0.006,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-remap-modal",
+      "family": "orange",
+      "observed": 0,
+      "band": [
+        0.04,
+        0.15
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-subtitle",
+      "family": "ink",
+      "observed": 0.041,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-subtitle",
+      "family": "grey",
+      "observed": 0.64,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "unity",
+      "state": "map",
+      "family": "ink",
+      "observed": 0.243,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "map",
+      "family": "mint",
+      "observed": 0.555,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "unity",
+      "state": "map-popover",
+      "family": "mint",
+      "observed": 0.474,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "unity",
+      "state": "progress",
+      "family": "mint",
+      "observed": 0.429,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "unity",
+      "state": "settings",
+      "family": "ink",
+      "observed": 0.059,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "settings",
+      "family": "grey",
+      "observed": 0.657,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-remap-modal",
+      "family": "ink",
+      "observed": 0.987,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-remap-modal",
+      "family": "mint",
+      "observed": 0,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-remap-modal",
+      "family": "grey",
+      "observed": 0.002,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-remap-modal",
+      "family": "orange",
+      "observed": 0.001,
+      "band": [
+        0.04,
+        0.15
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-subtitle",
+      "family": "ink",
+      "observed": 0.046,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "unity",
+      "state": "settings-subtitle",
+      "family": "grey",
+      "observed": 0.655,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "godot",
+      "state": "map",
+      "family": "ink",
+      "observed": 0.239,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "map",
+      "family": "mint",
+      "observed": 0.546,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "godot",
+      "state": "map-popover",
+      "family": "mint",
+      "observed": 0.467,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "godot",
+      "state": "progress",
+      "family": "mint",
+      "observed": 0.423,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "godot",
+      "state": "settings",
+      "family": "ink",
+      "observed": 0.051,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings",
+      "family": "grey",
+      "observed": 0.657,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-remap-modal",
+      "family": "ink",
+      "observed": 0.995,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "above"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-remap-modal",
+      "family": "mint",
+      "observed": 0,
+      "band": [
+        0.15,
+        0.4
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-remap-modal",
+      "family": "grey",
+      "observed": 0.003,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-remap-modal",
+      "family": "orange",
+      "observed": 0,
+      "band": [
+        0.04,
+        0.15
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-subtitle",
+      "family": "ink",
+      "observed": 0.039,
+      "band": [
+        0.3,
+        0.6
+      ],
+      "direction": "below"
+    },
+    {
+      "lane": "godot",
+      "state": "settings-subtitle",
+      "family": "grey",
+      "observed": 0.655,
+      "band": [
+        0.08,
+        0.3
+      ],
+      "direction": "above"
+    }
+  ],
+  "claimBoundary": {
+    "claimed": "The three lanes are compared against each other for the eight captured 1280x800 states, with committed image goldens and a token-consumption gate, and are compared against the reference palette anchors.",
+    "notClaimed": [
+      "unbounded or pixel-identical visual parity",
+      "fidelity to the reference composition, display typography or industrial graphic language",
+      "DPI/backend/OS coverage beyond the pinned macOS host",
+      "physical-input, accessibility or usability parity"
+    ]
+  }
+}

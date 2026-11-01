@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Chip/Chip.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Chip/theme.tres" id="2"]
+
+[node name="Chip" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="action" type="VBoxContainer" parent="."]
+[node name="icon" type="Label" parent="action"]
+[node name="text" type="VBoxContainer" parent="action"]
+[node name="dismiss" type="PanelContainer" parent="."]

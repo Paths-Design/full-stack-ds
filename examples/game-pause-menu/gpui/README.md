@@ -12,7 +12,7 @@ The lane consumes ONLY the public API of the bounded GPUI package
 Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
 marked `// NOT FSDS: <reason>`.
 
-> Status: **`cargo build` clean (0 warnings), 69 tests pass (default) / 72 with
+> Status: **`cargo build` clean (0 warnings), 70 tests pass (default) / 73 with
 > `--features capture`; all I1–I15 interactions are real code paths; the eight
 > parity capture states are produced at exactly 1280 × 800; all 26 shared
 > colour probes and all measured parity region boxes pass on this lane's
@@ -40,7 +40,7 @@ failure. Any lane source reaching into package internals is a boundary failure.
 ```bash
 # From the lane directory (rust-toolchain.toml pins 1.94.1):
 cargo +1.94.1 build --locked          # clean build, 0 warnings
-cargo +1.94.1 test  --locked          # 69 tests (3 lib + 2 palette + 15 parity + 49 seam)
+cargo +1.94.1 test  --locked          # 70 tests (3 lib + 2 palette + 16 parity + 49 seam)
 cargo +1.94.1 build --features capture
 cargo run                             # opens the 1280x800 pause menu on MAP
 cargo run -- --tab settings           # open a specific tab
@@ -87,7 +87,7 @@ authority; lane copy embedded with `include_str!`) is parsed by
 - **per tab**: MAP map panel `(24,176,872,552)` with sage field
   `(40,232,840,480)`, 24 px markers, icon panel `(912,176,344,552)` and 8 rows
   at `firstY 224 / rowH 48`; PROGRESS roster `(24,176,1232,552)` with 88 px
-  rows and a paper drawer `(24,176,560,552)`; ABILITIES grid
+  rows and a sage/mint dossier drawer `(24,176,560,552)`; ABILITIES grid
   `(24,176,808,552)` with 5×2 152×240 cards (`firstY 224`, 12 px gaps) and
   detail panel `(848,176,408,552)` with a 2×3 slot grid; SETTINGS 2×2 panels at
   `(24,176)/(648,176)/(24,460)/(648,460)`, each 608×268 with a 36 px header.
@@ -182,7 +182,7 @@ the shared app-authority art, not a package change.
 | Map icon-visibility panel (8 rows, canonical switches) | FSDS `Switch` + FSDS `Text` rows; 16 px portable code tile (`iconArt.rowTile`) hand-authored | mixed — Switch **FSDS**, Icon art app-authority |
 | Marker popover (anchored, CLOSE + SET AS NAV TARGET) | hand-authored surface; FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Popover/Button |
 | Progress roster (rows, accent bar, reputation bar, status chips, `OPEN →`) | FSDS `Text`/`Badge`; bars/rows hand-authored | mixed |
-| Progress paper dossier drawer (brief/history/perks/parts/SHOP PARTS) | hand-authored drawer + FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Drawer/Sheet |
+| Progress mint dossier drawer (brief/history/perks/parts/SHOP PARTS) | hand-authored drawer + FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Drawer/Sheet |
 | Abilities card grid (5×2, rarity chip, 40 px portable code tile, name, pips, installed chip) | hand-authored cards + FSDS `Badge` (rarity/installed) and `Text` | mixed — no Card/Icon component; card art is the shared `iconArt.cardTile` code |
 | Ability hover popover | hand-authored surface; FSDS `Text`/`Badge` | NOT FSDS — no Tooltip/Popover |
 | Detail panel + vehicle loadout (2×3 slots, compatible outlines, install/remove/reject) | hand-authored rows + FSDS `Text`/`Badge` | mixed |
@@ -238,7 +238,7 @@ not a global font setting.
   `40,232,840,480`; active tab columns `0/320/640/960 × 320 × 56`; switch ON
   `1176,232,64,32` and OFF `1176,472,64,32`; SETTINGS general switch
   `552,222,64,32`; ACCESS chip `1080,240,76,22`; footer NAV TARGET value
-  right-aligned to x = 1256; drawer paper occupies `24,176,560,552`.
+  right-aligned to x = 1256; drawer mint occupies `24,176,560,552`.
 - The lane's `tests/parity.rs` (13 tests) pins the JSON contract (shell rects,
   tab columns, per-tab rects, switch contract incl. off/on colours and pill
   math, palette/type maps, capture plan, settings sub-layout, nav-target pin)
@@ -268,7 +268,7 @@ not an interaction recording.
 
 ## Tests
 
-- `cargo +1.94.1 test --locked` → **69 tests**: 3 lib (`Switch` resolved-style + token resolver)
+- `cargo +1.94.1 test --locked` → **70 tests**: 3 lib (`Switch` resolved-style + token resolver)
   token cascade), 2 colour helpers, 15 parity-layout contract tests (incl. the
   icon-art code language), 49 seam tests (fixture parsing/validation and every
   I1–I15 domain rule).

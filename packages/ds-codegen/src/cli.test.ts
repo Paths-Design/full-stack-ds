@@ -277,19 +277,21 @@ describe("cli main — emitter admitContract seam", () => {
   });
 
   it("passes admitted=false for an explicit request outside the target's allowlist", async () => {
+    // Choose a registered target whose current allowlist excludes Pagination;
+    // the engine targets admit the whole corpus.
     const { events } = prepareWithAdmissionRecorder([
       "--dry-run",
-      "--target=godot",
-      "Command",
+      "--target=jetpack-compose",
+      "Pagination",
     ]);
     vi.spyOn(console, "error").mockImplementation(() => {});
-    // Unity's own emitter may reject Calendar after admission; this case pins
-    // only the admission context, which is recorded before any emit.
+    // The emitter may reject Pagination; this case pins only the admission context,
+    // which is recorded before any emit.
     await import("./cli.js").catch(() => undefined);
     expect(events[0]).toEqual({
       kind: "admit",
-      target: "godot",
-      component: "Command",
+      target: "jetpack-compose",
+      component: "Pagination",
       admitted: false,
     });
   });

@@ -1,0 +1,1862 @@
+{
+  "schema": "gpui-support-boundary.v1",
+  "phases": {
+    "runtime-semantics": "Interaction, overlay, iteration, media, motion, accessibility, form and cross-component semantics the shared GPUI substrate does not implement yet."
+  },
+  "rules": [
+    {
+      "id": "authoring-metadata",
+      "match": [
+        "contract:/$schema",
+        "contract:/schemaVersion",
+        "contract:/codegen/**"
+      ],
+      "disposition": "refused",
+      "reason": "contract authoring/codegen metadata has no engine-target meaning"
+    },
+    {
+      "id": "identity",
+      "match": [
+        "contract:/name",
+        "contract:/cssPrefix"
+      ],
+      "disposition": "lowered",
+      "via": "the component identity projects onto the generated class_name and scene root node"
+    },
+    {
+      "id": "documentation",
+      "match": [
+        "contract:/description",
+        "contract:/category",
+        "contract:/layer",
+        "contract:/**/description"
+      ],
+      "disposition": "refused",
+      "reason": "documentation and catalogue text is authoring metadata with no engine-target meaning"
+    },
+    {
+      "id": "a2ui",
+      "match": [
+        "contract:/a2ui/**"
+      ],
+      "disposition": "refused",
+      "reason": "a2ui authoring metadata is out of scope for an engine target"
+    },
+    {
+      "id": "ssr",
+      "match": [
+        "contract:/ssr/**"
+      ],
+      "disposition": "refused",
+      "reason": "SSR hydration metadata has no meaning in a self-hosted engine scene"
+    },
+    {
+      "id": "rtl",
+      "match": [
+        "contract:/rtl/**"
+      ],
+      "disposition": "refused",
+      "reason": "RTL/logical-property metadata is a web layout concern with no native mapping"
+    },
+    {
+      "id": "morphology",
+      "match": [
+        "contract:/morphology/**"
+      ],
+      "disposition": "lowered",
+      "via": "box-model geometry facts are consumed as box-model token facts in the painted style vocabulary"
+    },
+    {
+      "id": "anatomy-parts",
+      "match": [
+        "contract:/anatomy/parts/**"
+      ],
+      "disposition": "lowered",
+      "via": "part identity projects onto named scene nodes and generated part hosts"
+    },
+    {
+      "id": "anatomy-details-tag",
+      "match": [
+        "contract:/anatomy/details/*/tag"
+      ],
+      "disposition": "lowered",
+      "via": "the authored element tag selects the native control class of the generated scene node"
+    },
+    {
+      "id": "anatomy-details-role",
+      "match": [
+        "contract:/anatomy/details/*/role"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-details-focusable",
+      "match": [
+        "contract:/anatomy/details/*/focusable",
+        "contract:/anatomy/details/*/interactive"
+      ],
+      "disposition": "pending",
+      "reason": "focusability is realized only by the bounded control planner"
+    },
+    {
+      "id": "anatomy-details-multiple",
+      "match": [
+        "contract:/anatomy/details/*/multiple"
+      ],
+      "disposition": "pending",
+      "reason": "no multiple-expansion state carrier"
+    },
+    {
+      "id": "anatomy-details-subcomponent",
+      "match": [
+        "contract:/anatomy/details/*/subcomponent"
+      ],
+      "disposition": "pending",
+      "reason": "no compound subcomponent dispatch"
+    },
+    {
+      "id": "anatomy-details-aria",
+      "match": [
+        "contract:/anatomy/details/*/aria/**"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-details-collapse-intent",
+      "match": [
+        "contract:/anatomy/details/*/collapsibleTo"
+      ],
+      "disposition": "pending",
+      "reason": "collapse intent has no realized GPUI carrier"
+    },
+    {
+      "id": "anatomy-details-component-ref",
+      "match": [
+        "contract:/anatomy/details/*/componentRef"
+      ],
+      "disposition": "pending",
+      "reason": "component references are not composed by the GPUI projection"
+    },
+    {
+      "id": "anatomy-node-structure",
+      "match": [
+        "contract:/anatomy/dom/part",
+        "contract:/anatomy/dom/tag",
+        "contract:/anatomy/dom/name",
+        "contract:/anatomy/dom/**/children/*/part",
+        "contract:/anatomy/dom/**/children/*/tag",
+        "contract:/anatomy/dom/**/children/*/name"
+      ],
+      "disposition": "lowered",
+      "via": "element and part structure projects onto the generated scene tree and named part/content hosts"
+    },
+    {
+      "id": "anatomy-component-ref",
+      "match": [
+        "contract:/anatomy/dom/**/ref:*/componentRef",
+        "contract:/anatomy/dom/**/ref:*/part"
+      ],
+      "disposition": "pending",
+      "reason": "component references are not composed by the GPUI projection"
+    },
+    {
+      "id": "anatomy-component-ref-props",
+      "match": [
+        "contract:/anatomy/dom/**/ref:*/attrs/**"
+      ],
+      "disposition": "pending",
+      "reason": "component reference attributes are not projected"
+    },
+    {
+      "id": "anatomy-component-ref-dynamic",
+      "match": [
+        "contract:/anatomy/dom/**/ref:*/bindings/**",
+        "contract:/anatomy/dom/**/ref:*/events/**",
+        "contract:/anatomy/dom/**/ref:*/if",
+        "contract:/anatomy/dom/**/ref:*/children/**"
+      ],
+      "disposition": "pending",
+      "reason": "component reference bindings/events/guards are not projected"
+    },
+    {
+      "id": "anatomy-content-transform",
+      "match": [
+        "contract:/anatomy/dom/content/transform",
+        "contract:/anatomy/dom/**/children/*/content/transform"
+      ],
+      "disposition": "pending",
+      "reason": "content transforms (Markdown, highlighted code) have no GPUI renderer"
+    },
+    {
+      "id": "anatomy-content",
+      "match": [
+        "contract:/anatomy/dom/content",
+        "contract:/anatomy/dom/content/**",
+        "contract:/anatomy/dom/**/children/*/content",
+        "contract:/anatomy/dom/**/children/*/content/**"
+      ],
+      "disposition": "lowered",
+      "via": "content strings and their prop source project into the generated label/line text"
+    },
+    {
+      "id": "anatomy-icon-glyph",
+      "match": [
+        "contract:/anatomy/dom/**/iconGlyph/**"
+      ],
+      "disposition": "pending",
+      "reason": "no glyph/svg rendering is realized; anatomy parts render without their glyph"
+    },
+    {
+      "id": "anatomy-css-variable-bindings",
+      "match": [
+        "contract:/anatomy/dom/**/cssVariableBindings/**"
+      ],
+      "disposition": "pending",
+      "reason": "CSS variable carriers have no GPUI binding channel"
+    },
+    {
+      "id": "anatomy-iteration",
+      "match": [
+        "contract:/anatomy/dom/**/iterate/**"
+      ],
+      "disposition": "pending",
+      "reason": "iteration over data collections has no GPUI render loop"
+    },
+    {
+      "id": "anatomy-guards",
+      "match": [
+        "contract:/anatomy/dom/if",
+        "contract:/anatomy/dom/**/children/*/if",
+        "contract:/anatomy/dom/**/ref:*/if"
+      ],
+      "disposition": "pending",
+      "reason": "conditional part presence is not realised by the shared runtime yet"
+    },
+    {
+      "id": "anatomy-dom-properties",
+      "match": [
+        "contract:/anatomy/dom/**/properties/**"
+      ],
+      "disposition": "pending",
+      "reason": "DOM property bindings have no GPUI carrier"
+    },
+    {
+      "id": "anatomy-aria-label-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/aria-label"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-disabled-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/disabled"
+      ],
+      "disposition": "pending",
+      "reason": "DOM attribute data flow is not consumed; the bounded control planner derives disabled from normalized form facts"
+    },
+    {
+      "id": "anatomy-channel-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/checked",
+        "contract:/anatomy/dom/**/bindings/open",
+        "contract:/anatomy/dom/**/bindings/expanded",
+        "contract:/anatomy/dom/**/bindings/value",
+        "contract:/anatomy/dom/**/bindings/index",
+        "contract:/anatomy/dom/**/bindings/month",
+        "contract:/anatomy/dom/**/bindings/search"
+      ],
+      "disposition": "pending",
+      "reason": "DOM attribute data flow is not consumed; the bounded control planner derives channel state from normalized control facts"
+    },
+    {
+      "id": "anatomy-placeholder-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/placeholder"
+      ],
+      "disposition": "pending",
+      "reason": "placeholder binding has no GPUI text-input carrier"
+    },
+    {
+      "id": "anatomy-dom-binding-type",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/type"
+      ],
+      "disposition": "refused",
+      "reason": "DOM input type has no native meaning in the Godot target"
+    },
+    {
+      "id": "anatomy-dom-binding-role",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/role"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-dom-binding-media",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/width",
+        "contract:/anatomy/dom/**/bindings/height",
+        "contract:/anatomy/dom/**/bindings/loading",
+        "contract:/anatomy/dom/**/bindings/sizes"
+      ],
+      "disposition": "pending",
+      "reason": "media attribute bindings are not projected"
+    },
+    {
+      "id": "anatomy-dom-binding-datetime",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/datetime"
+      ],
+      "disposition": "pending",
+      "reason": "date-time attribute bindings are not projected"
+    },
+    {
+      "id": "anatomy-dom-binding-title",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/title"
+      ],
+      "disposition": "pending",
+      "reason": "title attribute bindings are not projected"
+    },
+    {
+      "id": "anatomy-dom-binding-empty",
+      "match": [
+        "contract:/anatomy/dom/**/bindings"
+      ],
+      "disposition": "pending",
+      "reason": "unadjudicated DOM bindings are not projected"
+    },
+    {
+      "id": "anatomy-aria-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/aria-expanded",
+        "contract:/anatomy/dom/**/bindings/aria-checked",
+        "contract:/anatomy/dom/**/bindings/aria-selected",
+        "contract:/anatomy/dom/**/bindings/aria-pressed",
+        "contract:/anatomy/dom/**/bindings/aria-current",
+        "contract:/anatomy/dom/**/bindings/aria-busy",
+        "contract:/anatomy/dom/**/bindings/aria-hidden",
+        "contract:/anatomy/dom/**/bindings/aria-*"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-form-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/name"
+      ],
+      "disposition": "refused",
+      "reason": "there is no native form serialization or submission surface in the Godot target"
+    },
+    {
+      "id": "anatomy-validation-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/required",
+        "contract:/anatomy/dom/**/bindings/aria-invalid"
+      ],
+      "disposition": "pending",
+      "reason": "form validation semantics are not realized"
+    },
+    {
+      "id": "anatomy-association-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/htmlFor",
+        "contract:/anatomy/dom/**/bindings/form"
+      ],
+      "disposition": "pending",
+      "reason": "field association is not realized"
+    },
+    {
+      "id": "anatomy-navigation-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/href",
+        "contract:/anatomy/dom/**/bindings/target",
+        "contract:/anatomy/dom/**/bindings/rel"
+      ],
+      "disposition": "pending",
+      "reason": "navigation attributes are not projected"
+    },
+    {
+      "id": "anatomy-media-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/src",
+        "contract:/anatomy/dom/**/bindings/alt"
+      ],
+      "disposition": "pending",
+      "reason": "media source attributes are not projected"
+    },
+    {
+      "id": "anatomy-data-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/data-*"
+      ],
+      "disposition": "pending",
+      "reason": "data attribute bindings are not projected"
+    },
+    {
+      "id": "anatomy-focus-binding",
+      "match": [
+        "contract:/anatomy/dom/**/bindings/tabindex"
+      ],
+      "disposition": "pending",
+      "reason": "focus order is realized only by the bounded control planner"
+    },
+    {
+      "id": "anatomy-dom-attrs-aria",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/aria-*"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-dom-attrs-role",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/role"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "anatomy-dom-attrs-data",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/data-*"
+      ],
+      "disposition": "pending",
+      "reason": "data attributes are authoring metadata for the engine target"
+    },
+    {
+      "id": "anatomy-dom-attrs-dom",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/type",
+        "contract:/anatomy/dom/**/attrs/inputmode",
+        "contract:/anatomy/dom/**/attrs/autocomplete",
+        "contract:/anatomy/dom/**/attrs/spellcheck",
+        "contract:/anatomy/dom/**/attrs/scope",
+        "contract:/anatomy/dom/**/attrs/type/**",
+        "contract:/anatomy/dom/**/attrs/inputmode/**",
+        "contract:/anatomy/dom/**/attrs/autocomplete/**",
+        "contract:/anatomy/dom/**/attrs/spellcheck/**",
+        "contract:/anatomy/dom/**/attrs/scope/**"
+      ],
+      "disposition": "refused",
+      "reason": "DOM form/table attributes have no native meaning in the Godot target"
+    },
+    {
+      "id": "anatomy-dom-attrs-maxlength",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/maxlength"
+      ],
+      "disposition": "pending",
+      "reason": "no text-input runtime carrier"
+    },
+    {
+      "id": "anatomy-glyph-svg-attrs",
+      "match": [
+        "contract:/anatomy/dom/**/attrs/fill",
+        "contract:/anatomy/dom/**/attrs/xmlns"
+      ],
+      "disposition": "pending",
+      "reason": "no glyph/svg rendering is realized"
+    },
+    {
+      "id": "anatomy-click-event",
+      "match": [
+        "contract:/anatomy/dom/**/events/click"
+      ],
+      "disposition": "lowered",
+      "via": "pointer activation projects onto the generated control operation and activation signal"
+    },
+    {
+      "id": "anatomy-keyboard-event",
+      "match": [
+        "contract:/anatomy/dom/**/events/keydown",
+        "contract:/anatomy/dom/**/events/keyup",
+        "contract:/anatomy/dom/**/events/keypress"
+      ],
+      "disposition": "pending",
+      "reason": "DOM keyboard events are not projected; bounded controls use normalized activation keys"
+    },
+    {
+      "id": "anatomy-focus-event",
+      "match": [
+        "contract:/anatomy/dom/**/events/focus",
+        "contract:/anatomy/dom/**/events/blur",
+        "contract:/anatomy/dom/**/events/focusin",
+        "contract:/anatomy/dom/**/events/focusout"
+      ],
+      "disposition": "pending",
+      "reason": "DOM focus events are not projected"
+    },
+    {
+      "id": "surface-dismissal",
+      "match": [
+        "contract:/surface/dismissal/**"
+      ],
+      "disposition": "pending",
+      "reason": "dismissal semantics have no GPUI overlay runtime"
+    },
+    {
+      "id": "surface-layer",
+      "match": [
+        "contract:/surface/positioning/**",
+        "contract:/surface/anchor/**",
+        "contract:/surface/timing/**"
+      ],
+      "disposition": "pending",
+      "reason": "overlay positioning, anchoring and timing have no GPUI overlay runtime"
+    },
+    {
+      "id": "surface-modality",
+      "match": [
+        "contract:/surface/modality",
+        "contract:/surface/modalityProp"
+      ],
+      "disposition": "pending",
+      "reason": "modality has no GPUI overlay runtime"
+    },
+    {
+      "id": "surface-content",
+      "match": [
+        "contract:/surface/content/**"
+      ],
+      "disposition": "lowered",
+      "via": "surface content anatomy projects as static view children"
+    },
+    {
+      "id": "surface-core",
+      "match": [
+        "contract:/surface/kind",
+        "contract:/surface/presence",
+        "contract:/surface/attachment",
+        "contract:/surface/openTriggers/**"
+      ],
+      "disposition": "lowered",
+      "via": "the surface component's root and content anatomy project as a static view tree; no overlay presence semantics"
+    },
+    {
+      "id": "dismissal",
+      "match": [
+        "contract:/dismissal/**"
+      ],
+      "disposition": "pending",
+      "reason": "dismissal semantics have no GPUI overlay runtime"
+    },
+    {
+      "id": "relationships",
+      "match": [
+        "contract:/relationships/**"
+      ],
+      "disposition": "pending",
+      "reason": "cross-component relationships are not projected"
+    },
+    {
+      "id": "form",
+      "match": [
+        "contract:/form/**",
+        "contract:/fieldAssociation"
+      ],
+      "disposition": "refused",
+      "reason": "there is no native form serialization, submission or validation surface in the Godot target"
+    },
+    {
+      "id": "form-control",
+      "match": [
+        "contract:/formControl/**"
+      ],
+      "disposition": "lowered",
+      "via": "the bounded boolean-control planner lowers a single boolean channel with native host activation; other control shapes are named in the component receipt"
+    },
+    {
+      "id": "a11y",
+      "match": [
+        "contract:/a11y/**"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "messages",
+      "match": [
+        "contract:/messages/**"
+      ],
+      "disposition": "pending",
+      "reason": "message catalogs are not lowered by this target"
+    },
+    {
+      "id": "portal",
+      "match": [
+        "contract:/portal/**"
+      ],
+      "disposition": "pending",
+      "reason": "portals have no GPUI overlay runtime"
+    },
+    {
+      "id": "focus",
+      "match": [
+        "contract:/focus/**"
+      ],
+      "disposition": "lowered",
+      "via": "the bounded control planner maintains a persistent focus handle and tab order; the generic anatomy projection has no focus carrier"
+    },
+    {
+      "id": "interaction",
+      "match": [
+        "contract:/interaction/**"
+      ],
+      "disposition": "pending",
+      "reason": "disclosure/paging/selection interactions have no GPUI state model"
+    },
+    {
+      "id": "channels",
+      "match": [
+        "contract:/channels/**"
+      ],
+      "disposition": "lowered",
+      "via": "the bounded boolean-control planner realizes a single boolean channel with controlled/uncontrolled request policy"
+    },
+    {
+      "id": "types",
+      "match": [
+        "contract:/types/**"
+      ],
+      "disposition": "lowered",
+      "via": "prop type normalization projects onto the generated builder method signatures"
+    },
+    {
+      "id": "variants",
+      "match": [
+        "contract:/variants/**"
+      ],
+      "disposition": "lowered",
+      "via": "variant axes project onto generated builder/setter methods and style predicates"
+    },
+    {
+      "id": "states-accessibility",
+      "match": [
+        "contract:/states/*/*/a11y/**"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "states",
+      "match": [
+        "contract:/states/**"
+      ],
+      "disposition": "lowered",
+      "via": "declared interactive states project onto style-rule predicates"
+    },
+    {
+      "id": "events",
+      "match": [
+        "contract:/events/**"
+      ],
+      "disposition": "pending",
+      "reason": "normalized event metadata is consumed only by the bounded control activation planner"
+    },
+    {
+      "id": "slots-required",
+      "match": [
+        "contract:/slots/**/required",
+        "contract:/slots/required"
+      ],
+      "disposition": "pending",
+      "reason": "required-slot enforcement has no runtime carrier"
+    },
+    {
+      "id": "slots",
+      "match": [
+        "contract:/slots/**"
+      ],
+      "disposition": "lowered",
+      "via": "slot anchors project onto named part and content hosts of the generated scene"
+    },
+    {
+      "id": "sequence",
+      "match": [
+        "contract:/sequence/**"
+      ],
+      "disposition": "pending",
+      "reason": "sequence steps have no GPUI state model"
+    },
+    {
+      "id": "composite-control",
+      "match": [
+        "contract:/compositeControl/**"
+      ],
+      "disposition": "pending",
+      "reason": "composite control state has no GPUI realization"
+    },
+    {
+      "id": "paged-set",
+      "match": [
+        "contract:/pagedSet/**"
+      ],
+      "disposition": "pending",
+      "reason": "paged sets have no GPUI state model"
+    },
+    {
+      "id": "date-grid",
+      "match": [
+        "contract:/dateGrid/**"
+      ],
+      "disposition": "pending",
+      "reason": "date grids have no GPUI state model"
+    },
+    {
+      "id": "transfer",
+      "match": [
+        "contract:/transfer/**"
+      ],
+      "disposition": "pending",
+      "reason": "transfer selection has no GPUI state model"
+    },
+    {
+      "id": "text-overflow",
+      "match": [
+        "contract:/textOverflow/**"
+      ],
+      "disposition": "pending",
+      "reason": "declared truncation policy has no GPUI text runtime"
+    },
+    {
+      "id": "motion",
+      "match": [
+        "contract:/motion/**"
+      ],
+      "disposition": "pending",
+      "reason": "motion sequences have no GPUI animation runtime"
+    },
+    {
+      "id": "keyframes",
+      "match": [
+        "contract:/keyframes/**"
+      ],
+      "disposition": "pending",
+      "reason": "keyframes have no GPUI animation runtime"
+    },
+    {
+      "id": "state-machine",
+      "match": [
+        "contract:/stateMachine/**"
+      ],
+      "disposition": "pending",
+      "reason": "state machines have no GPUI runtime"
+    },
+    {
+      "id": "data-model",
+      "match": [
+        "contract:/dataModel/**"
+      ],
+      "disposition": "pending",
+      "reason": "data models have no GPUI render loop"
+    },
+    {
+      "id": "prop-channel-value",
+      "match": [
+        "contract:/props/*/members/channel-value:**",
+        "contract:/props/*/members/channel-value:**/**",
+        "contract:/props/checked",
+        "contract:/props/expanded",
+        "contract:/props/index",
+        "contract:/props/month",
+        "contract:/props/open",
+        "contract:/props/search",
+        "contract:/props/value"
+      ],
+      "disposition": "lowered",
+      "via": "the selection/boolean channel value projects into the generated control configuration"
+    },
+    {
+      "id": "prop-channel-default",
+      "match": [
+        "contract:/props/*/members/channel-default:**",
+        "contract:/props/*/members/channel-default:**/**",
+        "contract:/props/defaultChecked",
+        "contract:/props/defaultExpanded",
+        "contract:/props/defaultIndex",
+        "contract:/props/defaultMonth",
+        "contract:/props/defaultOpen",
+        "contract:/props/defaultSearch",
+        "contract:/props/defaultValue"
+      ],
+      "disposition": "lowered",
+      "via": "the channel default projects into the generated control configuration"
+    },
+    {
+      "id": "prop-channel-change",
+      "match": [
+        "contract:/props/*/members/channel-change:**",
+        "contract:/props/*/members/channel-change:**/**",
+        "contract:/props/onChange",
+        "contract:/props/onExpandedChange",
+        "contract:/props/onIndexChange",
+        "contract:/props/onMonthChange",
+        "contract:/props/onOpenChange",
+        "contract:/props/onSearchChange",
+        "contract:/props/onStepChange",
+        "contract:/props/onValueChange"
+      ],
+      "disposition": "lowered",
+      "via": "the channel change projects onto the runtime's native value/activation signal"
+    },
+    {
+      "id": "prop-form-field",
+      "match": [
+        "contract:/props/*/members/form-field:**",
+        "contract:/props/*/members/form-field:**/**"
+      ],
+      "disposition": "refused",
+      "reason": "there is no native form serialization or submission surface in the Godot target"
+    },
+    {
+      "id": "prop-glyph-name",
+      "match": [
+        "contract:/props/*/members/glyph-name:**",
+        "contract:/props/*/members/glyph-name:**/**",
+        "contract:/props/name",
+        "contract:/props/icon"
+      ],
+      "disposition": "pending",
+      "reason": "no glyph/svg rendering is realized"
+    },
+    {
+      "id": "prop-passthrough",
+      "match": [
+        "contract:/props/passthrough",
+        "contract:/props/passthrough/**"
+      ],
+      "disposition": "refused",
+      "reason": "React passthrough attributes (class/style) have no engine-target meaning"
+    },
+    {
+      "id": "prop-aria-label",
+      "match": [
+        "contract:/props/*/members/plain:ariaLabel/**",
+        "contract:/props/*/members/plain:ariaLabel",
+        "contract:/props/ariaLabel"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "prop-polymorphic-tag",
+      "match": [
+        "contract:/props/*/members/plain:as/**",
+        "contract:/props/*/members/plain:as",
+        "contract:/props/as",
+        "contract:/props/*/members/plain:type/**",
+        "contract:/props/*/members/plain:type",
+        "contract:/props/type"
+      ],
+      "disposition": "refused",
+      "reason": "DOM element/input-type polymorphism has no native meaning in the Godot target"
+    },
+    {
+      "id": "prop-identity-metadata",
+      "match": [
+        "contract:/props/*/members/plain:id/**",
+        "contract:/props/*/members/plain:id",
+        "contract:/props/id",
+        "contract:/props/*/members/plain:idBase/**",
+        "contract:/props/*/members/plain:idBase",
+        "contract:/props/idBase"
+      ],
+      "disposition": "refused",
+      "reason": "authored DOM id generation is authoring metadata with no engine-target meaning"
+    },
+    {
+      "id": "prop-plain-value",
+      "match": [
+        "contract:/props/*/members/plain:value",
+        "contract:/props/*/members/plain:value/**"
+      ],
+      "disposition": "pending",
+      "reason": "plain value props have no generic GPUI carrier outside the bounded control planner"
+    },
+    {
+      "id": "prop-content-string",
+      "match": [
+        "contract:/props/*/members/*:text",
+        "contract:/props/*/members/*:text/**",
+        "contract:/props/text",
+        "contract:/props/*/members/*:label",
+        "contract:/props/*/members/*:label/**",
+        "contract:/props/label",
+        "contract:/props/*/members/*:summary",
+        "contract:/props/*/members/*:summary/**",
+        "contract:/props/summary",
+        "contract:/props/*/members/*:title",
+        "contract:/props/*/members/*:title/**",
+        "contract:/props/title",
+        "contract:/props/*/members/*:placeholder",
+        "contract:/props/*/members/*:placeholder/**",
+        "contract:/props/placeholder",
+        "contract:/props/*/members/*:caption",
+        "contract:/props/*/members/*:caption/**",
+        "contract:/props/caption",
+        "contract:/props/*/members/*:content",
+        "contract:/props/*/members/*:content/**",
+        "contract:/props/content",
+        "contract:/props/*/members/*:code",
+        "contract:/props/*/members/*:code/**",
+        "contract:/props/code",
+        "contract:/props/*/members/*:timestamp",
+        "contract:/props/*/members/*:timestamp/**",
+        "contract:/props/timestamp",
+        "contract:/props/*/members/*:initials",
+        "contract:/props/*/members/*:initials/**",
+        "contract:/props/initials",
+        "contract:/props/*/members/*:emptyMessage",
+        "contract:/props/*/members/*:emptyMessage/**",
+        "contract:/props/emptyMessage",
+        "contract:/props/*/members/*:expandText",
+        "contract:/props/*/members/*:expandText/**",
+        "contract:/props/expandText",
+        "contract:/props/*/members/*:collapseText",
+        "contract:/props/*/members/*:collapseText/**",
+        "contract:/props/collapseText",
+        "contract:/props/*/members/*:showMoreLabel",
+        "contract:/props/*/members/*:showMoreLabel/**",
+        "contract:/props/showMoreLabel",
+        "contract:/props/*/members/*:showLessLabel",
+        "contract:/props/*/members/*:showLessLabel/**",
+        "contract:/props/showLessLabel",
+        "contract:/props/*/members/*:nextLabel",
+        "contract:/props/*/members/*:nextLabel/**",
+        "contract:/props/nextLabel",
+        "contract:/props/*/members/*:previousLabel",
+        "contract:/props/*/members/*:previousLabel/**",
+        "contract:/props/previousLabel",
+        "contract:/props/*/members/*:pageLabel",
+        "contract:/props/*/members/*:pageLabel/**",
+        "contract:/props/pageLabel",
+        "contract:/props/*/members/*:commitLabel",
+        "contract:/props/*/members/*:commitLabel/**",
+        "contract:/props/commitLabel",
+        "contract:/props/*/members/*:fieldLabel",
+        "contract:/props/*/members/*:fieldLabel/**",
+        "contract:/props/fieldLabel",
+        "contract:/props/*/members/*:triggerLabel",
+        "contract:/props/*/members/*:triggerLabel/**",
+        "contract:/props/triggerLabel",
+        "contract:/props/*/members/*:searchLabel",
+        "contract:/props/*/members/*:searchLabel/**",
+        "contract:/props/searchLabel",
+        "contract:/props/*/members/*:progressLabel",
+        "contract:/props/*/members/*:progressLabel/**",
+        "contract:/props/progressLabel",
+        "contract:/props/*/members/*:separator",
+        "contract:/props/*/members/*:separator/**",
+        "contract:/props/separator",
+        "contract:/props/*/members/*:name",
+        "contract:/props/*/members/*:name/**",
+        "contract:/props/name"
+      ],
+      "disposition": "lowered",
+      "via": "the content string projects into the generated label/line text"
+    },
+    {
+      "id": "prop-variant-axis",
+      "match": [
+        "contract:/props/*/members/*:variant",
+        "contract:/props/*/members/*:variant/**",
+        "contract:/props/variant",
+        "contract:/props/*/members/*:size",
+        "contract:/props/*/members/*:size/**",
+        "contract:/props/size",
+        "contract:/props/*/members/*:weight",
+        "contract:/props/*/members/*:weight/**",
+        "contract:/props/weight",
+        "contract:/props/*/members/*:status",
+        "contract:/props/*/members/*:status/**",
+        "contract:/props/status",
+        "contract:/props/*/members/*:intent",
+        "contract:/props/*/members/*:intent/**",
+        "contract:/props/intent",
+        "contract:/props/*/members/*:trend",
+        "contract:/props/*/members/*:trend/**",
+        "contract:/props/trend",
+        "contract:/props/*/members/*:level",
+        "contract:/props/*/members/*:level/**",
+        "contract:/props/level",
+        "contract:/props/*/members/*:density",
+        "contract:/props/*/members/*:density/**",
+        "contract:/props/density",
+        "contract:/props/*/members/*:marker",
+        "contract:/props/*/members/*:marker/**",
+        "contract:/props/marker",
+        "contract:/props/*/members/*:spacing",
+        "contract:/props/*/members/*:spacing/**",
+        "contract:/props/spacing",
+        "contract:/props/*/members/*:align",
+        "contract:/props/*/members/*:align/**",
+        "contract:/props/align",
+        "contract:/props/*/members/*:transform",
+        "contract:/props/*/members/*:transform/**",
+        "contract:/props/transform",
+        "contract:/props/*/members/*:animate",
+        "contract:/props/*/members/*:animate/**",
+        "contract:/props/animate",
+        "contract:/props/*/members/*:appearance",
+        "contract:/props/*/members/*:appearance/**",
+        "contract:/props/appearance",
+        "contract:/props/*/members/*:orientation",
+        "contract:/props/*/members/*:orientation/**",
+        "contract:/props/orientation",
+        "contract:/props/*/members/*:thickness",
+        "contract:/props/*/members/*:thickness/**",
+        "contract:/props/thickness"
+      ],
+      "disposition": "lowered",
+      "via": "the variant axis projects as a native style predicate"
+    },
+    {
+      "id": "prop-boolean-state",
+      "match": [
+        "contract:/props/*/members/*:disabled",
+        "contract:/props/*/members/*:disabled/**",
+        "contract:/props/disabled",
+        "contract:/props/*/members/*:collapsible",
+        "contract:/props/*/members/*:collapsible/**",
+        "contract:/props/collapsible",
+        "contract:/props/*/members/*:interactive",
+        "contract:/props/*/members/*:interactive/**",
+        "contract:/props/interactive",
+        "contract:/props/*/members/*:truncate",
+        "contract:/props/*/members/*:truncate/**",
+        "contract:/props/truncate",
+        "contract:/props/*/members/*:loading",
+        "contract:/props/*/members/*:loading/**",
+        "contract:/props/loading",
+        "contract:/props/*/members/*:autoPlay",
+        "contract:/props/*/members/*:autoPlay/**",
+        "contract:/props/autoPlay",
+        "contract:/props/*/members/*:autoStart",
+        "contract:/props/*/members/*:autoStart/**",
+        "contract:/props/autoStart",
+        "contract:/props/*/members/*:previousDisabled",
+        "contract:/props/*/members/*:previousDisabled/**",
+        "contract:/props/previousDisabled",
+        "contract:/props/*/members/*:duration",
+        "contract:/props/*/members/*:duration/**",
+        "contract:/props/duration"
+      ],
+      "disposition": "lowered",
+      "via": "the boolean/timing value projects into the generated control configuration"
+    },
+    {
+      "id": "prop-glyph-mount",
+      "match": [
+        "contract:/props/*/members/plain:icon/**",
+        "contract:/props/*/members/plain:icon",
+        "contract:/props/icon",
+        "contract:/props/*/members/plain:iconSize/**",
+        "contract:/props/*/members/plain:iconSize",
+        "contract:/props/iconSize"
+      ],
+      "disposition": "lowered",
+      "via": "the icon name/size selects and sizes the emitted glyph catalog mount"
+    },
+    {
+      "id": "prop-action-callback",
+      "match": [
+        "contract:/props/*/members/plain:onClick/**",
+        "contract:/props/*/members/plain:onClick",
+        "contract:/props/onClick"
+      ],
+      "disposition": "pending",
+      "reason": "action callbacks (onClick) have no GPUI event carrier outside the bounded control planner"
+    },
+    {
+      "id": "prop-sequence-callback",
+      "match": [
+        "contract:/props/*/members/*:onComplete",
+        "contract:/props/*/members/*:onComplete/**",
+        "contract:/props/onComplete",
+        "contract:/props/*/members/*:onNext",
+        "contract:/props/*/members/*:onNext/**",
+        "contract:/props/onNext",
+        "contract:/props/*/members/*:onPrevious",
+        "contract:/props/*/members/*:onPrevious/**",
+        "contract:/props/onPrevious",
+        "contract:/props/*/members/*:onSkip",
+        "contract:/props/*/members/*:onSkip/**",
+        "contract:/props/onSkip"
+      ],
+      "disposition": "pending",
+      "reason": "per-step sequence callbacks are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-dismissal",
+      "match": [
+        "contract:/props/*/members/*:dismissible",
+        "contract:/props/*/members/*:dismissible/**",
+        "contract:/props/dismissible",
+        "contract:/props/*/members/*:dismissLabel",
+        "contract:/props/*/members/*:dismissLabel/**",
+        "contract:/props/dismissLabel",
+        "contract:/props/*/members/*:onDismiss",
+        "contract:/props/*/members/*:onDismiss/**",
+        "contract:/props/onDismiss",
+        "contract:/props/*/members/*:closeOnEscape",
+        "contract:/props/*/members/*:closeOnEscape/**",
+        "contract:/props/closeOnEscape",
+        "contract:/props/*/members/*:closeOnOutsideClick",
+        "contract:/props/*/members/*:closeOnOutsideClick/**",
+        "contract:/props/closeOnOutsideClick",
+        "contract:/props/*/members/*:closeOnBlur",
+        "contract:/props/*/members/*:closeOnBlur/**",
+        "contract:/props/closeOnBlur",
+        "contract:/props/*/members/*:closeOnBackdropClick",
+        "contract:/props/*/members/*:closeOnBackdropClick/**",
+        "contract:/props/closeOnBackdropClick"
+      ],
+      "disposition": "pending",
+      "reason": "dismissal behaviour is not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-focus-management",
+      "match": [
+        "contract:/props/*/members/*:initialFocus",
+        "contract:/props/*/members/*:initialFocus/**",
+        "contract:/props/initialFocus",
+        "contract:/props/*/members/*:returnFocus",
+        "contract:/props/*/members/*:returnFocus/**",
+        "contract:/props/returnFocus",
+        "contract:/props/*/members/*:activationMode",
+        "contract:/props/*/members/*:activationMode/**",
+        "contract:/props/activationMode",
+        "contract:/props/*/members/*:loop",
+        "contract:/props/*/members/*:loop/**",
+        "contract:/props/loop",
+        "contract:/props/*/members/*:unmountInactive",
+        "contract:/props/*/members/*:unmountInactive/**",
+        "contract:/props/unmountInactive",
+        "contract:/props/*/members/*:politeness",
+        "contract:/props/*/members/*:politeness/**",
+        "contract:/props/politeness"
+      ],
+      "disposition": "pending",
+      "reason": "focus/keyboard/announcement management is not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-modality-layer",
+      "match": [
+        "contract:/props/*/members/*:modal",
+        "contract:/props/*/members/*:modal/**",
+        "contract:/props/modal",
+        "contract:/props/*/members/*:side",
+        "contract:/props/*/members/*:side/**",
+        "contract:/props/side",
+        "contract:/props/*/members/*:placement",
+        "contract:/props/*/members/*:placement/**",
+        "contract:/props/placement"
+      ],
+      "disposition": "pending",
+      "reason": "modality, placement and content-layer positioning are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-form-validation",
+      "match": [
+        "contract:/props/*/members/*:required",
+        "contract:/props/*/members/*:required/**",
+        "contract:/props/required",
+        "contract:/props/*/members/*:invalid",
+        "contract:/props/*/members/*:invalid/**",
+        "contract:/props/invalid",
+        "contract:/props/*/members/*:validate",
+        "contract:/props/*/members/*:validate/**",
+        "contract:/props/validate",
+        "contract:/props/*/members/*:validating",
+        "contract:/props/*/members/*:validating/**",
+        "contract:/props/validating",
+        "contract:/props/*/members/*:readOnly",
+        "contract:/props/*/members/*:readOnly/**",
+        "contract:/props/readOnly"
+      ],
+      "disposition": "pending",
+      "reason": "form validation and read-only state are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-formatting",
+      "match": [
+        "contract:/props/*/members/*:formatValue",
+        "contract:/props/*/members/*:formatValue/**",
+        "contract:/props/formatValue",
+        "contract:/props/*/members/*:locale",
+        "contract:/props/*/members/*:locale/**",
+        "contract:/props/locale",
+        "contract:/props/*/members/*:minDate",
+        "contract:/props/*/members/*:minDate/**",
+        "contract:/props/minDate",
+        "contract:/props/*/members/*:maxDate",
+        "contract:/props/*/members/*:maxDate/**",
+        "contract:/props/maxDate",
+        "contract:/props/*/members/*:language",
+        "contract:/props/*/members/*:language/**",
+        "contract:/props/language",
+        "contract:/props/*/members/*:highlight",
+        "contract:/props/*/members/*:highlight/**",
+        "contract:/props/highlight",
+        "contract:/props/*/members/*:showLineNumbers",
+        "contract:/props/*/members/*:showLineNumbers/**",
+        "contract:/props/showLineNumbers",
+        "contract:/props/*/members/*:tokens",
+        "contract:/props/*/members/*:tokens/**",
+        "contract:/props/tokens",
+        "contract:/props/*/members/*:lines",
+        "contract:/props/*/members/*:lines/**",
+        "contract:/props/lines",
+        "contract:/props/*/members/*:maxLines",
+        "contract:/props/*/members/*:maxLines/**",
+        "contract:/props/maxLines",
+        "contract:/props/*/members/*:expandable",
+        "contract:/props/*/members/*:expandable/**",
+        "contract:/props/expandable",
+        "contract:/props/*/members/*:showAfterMs",
+        "contract:/props/*/members/*:showAfterMs/**",
+        "contract:/props/showAfterMs",
+        "contract:/props/*/members/*:progress",
+        "contract:/props/*/members/*:progress/**",
+        "contract:/props/progress",
+        "contract:/props/*/members/*:showValue",
+        "contract:/props/*/members/*:showValue/**",
+        "contract:/props/showValue",
+        "contract:/props/*/members/*:showChoices",
+        "contract:/props/*/members/*:showChoices/**",
+        "contract:/props/showChoices",
+        "contract:/props/*/members/*:presentation",
+        "contract:/props/*/members/*:presentation/**",
+        "contract:/props/presentation",
+        "contract:/props/*/members/*:showPlaceholder",
+        "contract:/props/*/members/*:showPlaceholder/**",
+        "contract:/props/showPlaceholder",
+        "contract:/props/*/members/*:showStatusIcon",
+        "contract:/props/*/members/*:showStatusIcon/**",
+        "contract:/props/showStatusIcon",
+        "contract:/props/*/members/*:indicator",
+        "contract:/props/*/members/*:indicator/**",
+        "contract:/props/indicator",
+        "contract:/props/*/members/*:responsive",
+        "contract:/props/*/members/*:responsive/**",
+        "contract:/props/responsive",
+        "contract:/props/*/members/*:aspectRatio",
+        "contract:/props/*/members/*:aspectRatio/**",
+        "contract:/props/aspectRatio",
+        "contract:/props/*/members/*:radius",
+        "contract:/props/*/members/*:radius/**",
+        "contract:/props/radius"
+      ],
+      "disposition": "pending",
+      "reason": "formatting/presentation projection is not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-data-children",
+      "match": [
+        "contract:/props/*/members/*:options",
+        "contract:/props/*/members/*:options/**",
+        "contract:/props/options",
+        "contract:/props/*/members/*:slides",
+        "contract:/props/*/members/*:slides/**",
+        "contract:/props/slides",
+        "contract:/props/*/members/*:steps",
+        "contract:/props/*/members/*:steps/**",
+        "contract:/props/steps",
+        "contract:/props/*/members/*:pages",
+        "contract:/props/*/members/*:pages/**",
+        "contract:/props/pages",
+        "contract:/props/*/members/*:pageCount",
+        "contract:/props/*/members/*:pageCount/**",
+        "contract:/props/pageCount",
+        "contract:/props/*/members/*:empty",
+        "contract:/props/*/members/*:empty/**",
+        "contract:/props/empty",
+        "contract:/props/*/members/*:filter",
+        "contract:/props/*/members/*:filter/**",
+        "contract:/props/filter",
+        "contract:/props/*/members/*:filterFn",
+        "contract:/props/*/members/*:filterFn/**",
+        "contract:/props/filterFn",
+        "contract:/props/*/members/*:shouldFilter",
+        "contract:/props/*/members/*:shouldFilter/**",
+        "contract:/props/shouldFilter",
+        "contract:/props/*/members/*:searchable",
+        "contract:/props/*/members/*:searchable/**",
+        "contract:/props/searchable",
+        "contract:/props/*/members/*:storageKey",
+        "contract:/props/*/members/*:storageKey/**",
+        "contract:/props/storageKey",
+        "contract:/props/*/members/*:multiple",
+        "contract:/props/*/members/*:multiple/**",
+        "contract:/props/multiple",
+        "contract:/props/*/members/*:shouldCloseOnSelect",
+        "contract:/props/*/members/*:shouldCloseOnSelect/**",
+        "contract:/props/shouldCloseOnSelect"
+      ],
+      "disposition": "pending",
+      "reason": "data-driven children and their selection/filter behaviour are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-structured-data",
+      "match": [
+        "contract:/props/*/members/*:postId",
+        "contract:/props/*/members/*:postId/**",
+        "contract:/props/postId",
+        "contract:/props/*/members/*:author",
+        "contract:/props/*/members/*:author/**",
+        "contract:/props/author",
+        "contract:/props/*/members/*:stats",
+        "contract:/props/*/members/*:stats/**",
+        "contract:/props/stats",
+        "contract:/props/*/members/*:embed",
+        "contract:/props/*/members/*:embed/**",
+        "contract:/props/embed",
+        "contract:/props/*/members/*:profile",
+        "contract:/props/*/members/*:profile/**",
+        "contract:/props/profile"
+      ],
+      "disposition": "pending",
+      "reason": "structured data model facts are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-media",
+      "match": [
+        "contract:/props/*/members/*:src",
+        "contract:/props/*/members/*:src/**",
+        "contract:/props/src",
+        "contract:/props/*/members/*:alt",
+        "contract:/props/*/members/*:alt/**",
+        "contract:/props/alt",
+        "contract:/props/*/members/*:fallbackSrc",
+        "contract:/props/*/members/*:fallbackSrc/**",
+        "contract:/props/fallbackSrc",
+        "contract:/props/*/members/*:priority",
+        "contract:/props/*/members/*:priority/**",
+        "contract:/props/priority",
+        "contract:/props/*/members/*:objectFit",
+        "contract:/props/*/members/*:objectFit/**",
+        "contract:/props/objectFit",
+        "contract:/props/*/members/*:objectPosition",
+        "contract:/props/*/members/*:objectPosition/**",
+        "contract:/props/objectPosition",
+        "contract:/props/*/members/*:height",
+        "contract:/props/*/members/*:height/**",
+        "contract:/props/height",
+        "contract:/props/*/members/*:width",
+        "contract:/props/*/members/*:width/**",
+        "contract:/props/width",
+        "contract:/props/*/members/*:sizes",
+        "contract:/props/*/members/*:sizes/**",
+        "contract:/props/sizes"
+      ],
+      "disposition": "pending",
+      "reason": "media presentation and its intrinsic geometry are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-navigation",
+      "match": [
+        "contract:/props/*/members/*:href",
+        "contract:/props/*/members/*:href/**",
+        "contract:/props/href",
+        "contract:/props/*/members/*:target",
+        "contract:/props/*/members/*:target/**",
+        "contract:/props/target",
+        "contract:/props/*/members/*:rel",
+        "contract:/props/*/members/*:rel/**",
+        "contract:/props/rel"
+      ],
+      "disposition": "pending",
+      "reason": "web navigation semantics are not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-aria",
+      "match": [
+        "contract:/props/*/members/*:ariaLabelledby",
+        "contract:/props/*/members/*:ariaLabelledby/**",
+        "contract:/props/ariaLabelledby",
+        "contract:/props/*/members/*:ariaDescribedby",
+        "contract:/props/*/members/*:ariaDescribedby/**",
+        "contract:/props/ariaDescribedby",
+        "contract:/props/*/members/*:ariaExpanded",
+        "contract:/props/*/members/*:ariaExpanded/**",
+        "contract:/props/ariaExpanded",
+        "contract:/props/*/members/*:ariaPressed",
+        "contract:/props/*/members/*:ariaPressed/**",
+        "contract:/props/ariaPressed",
+        "contract:/props/*/members/*:ariaHidden",
+        "contract:/props/*/members/*:ariaHidden/**",
+        "contract:/props/ariaHidden"
+      ],
+      "disposition": "substrate",
+      "reason": "the pinned GPUI revision (zed a38fc8c8de6e4010fadcfde7dd111d90dfd66845) exposes no accessibility channel: crates/gpui/src contains no accesskit integration and no role/label/description API, so accessibility facts have no engine-target realization and this target states a non-claim instead of pending work"
+    },
+    {
+      "id": "prop-field-association",
+      "match": [
+        "contract:/props/*/members/*:htmlFor",
+        "contract:/props/*/members/*:htmlFor/**",
+        "contract:/props/htmlFor",
+        "contract:/props/*/members/*:form",
+        "contract:/props/*/members/*:form/**",
+        "contract:/props/form"
+      ],
+      "disposition": "pending",
+      "reason": "field association is not realized"
+    },
+    {
+      "id": "prop-runtime-behaviour",
+      "match": [
+        "contract:/props/*/members/*:indeterminate",
+        "contract:/props/*/members/*:indeterminate/**",
+        "contract:/props/indeterminate",
+        "contract:/props/*/members/*:inline",
+        "contract:/props/*/members/*:inline/**",
+        "contract:/props/inline",
+        "contract:/props/*/members/*:length",
+        "contract:/props/*/members/*:length/**",
+        "contract:/props/length",
+        "contract:/props/*/members/*:mode",
+        "contract:/props/*/members/*:mode/**",
+        "contract:/props/mode"
+      ],
+      "disposition": "pending",
+      "reason": "the declared behaviour is not realised by the shared runtime yet"
+    },
+    {
+      "id": "prop-presentation-semantics",
+      "match": [
+        "contract:/props/*/members/*:decorative",
+        "contract:/props/*/members/*:decorative/**",
+        "contract:/props/decorative"
+      ],
+      "disposition": "refused",
+      "reason": "semantic separator versus presentation has no native accessibility mapping in the Godot target"
+    },
+    {
+      "id": "prop-citation",
+      "match": [
+        "contract:/props/*/members/*:cite",
+        "contract:/props/*/members/*:cite/**",
+        "contract:/props/cite"
+      ],
+      "disposition": "pending",
+      "reason": "citation metadata has no GPUI rendering"
+    },
+    {
+      "id": "tokens",
+      "match": [
+        "tokens:/**"
+      ],
+      "disposition": "lowered",
+      "via": "token facts are consumed by the painted style vocabulary and the generated theme resource"
+    },
+    {
+      "id": "styles-pseudo-element",
+      "match": [
+        "styles:/*::*/**",
+        "styles:/**/*::*/**"
+      ],
+      "disposition": "lowered",
+      "via": "pseudo-element rules render through render_pseudo parts"
+    },
+    {
+      "id": "styles-starting-style",
+      "match": [
+        "styles:/@starting-style/**"
+      ],
+      "disposition": "pending",
+      "reason": "@starting-style has no GPUI realization"
+    },
+    {
+      "id": "styles-platform-metadata",
+      "match": [
+        "styles:/**/platforms/**",
+        "styles:/**/platforms"
+      ],
+      "disposition": "refused",
+      "reason": "a platform-restriction annotation has no engine-target meaning; the declaration is classified by its property family"
+    },
+    {
+      "id": "styles-design-metadata",
+      "match": [
+        "styles:/**/design/**"
+      ],
+      "disposition": "refused",
+      "reason": "design-slot authoring metadata has no engine-target meaning"
+    },
+    {
+      "id": "styles-token-slot",
+      "match": [
+        "styles:/*/*.*",
+        "styles:/*/*.*/**"
+      ],
+      "disposition": "lowered",
+      "via": "scoped token/design-slot declarations feed the style cascade"
+    },
+    {
+      "id": "styles-transform-realized",
+      "match": [
+        "styles:/**/transform/**",
+        "styles:/**/translate/**"
+      ],
+      "disposition": "lowered",
+      "via": "translate/transform declarations project onto the style resolution; values outside the admitted scalar vocabulary are named omissions"
+    },
+    {
+      "id": "styles-motion",
+      "match": [
+        "styles:/**/transition/**",
+        "styles:/**/transition",
+        "styles:/**/transition-*/**",
+        "styles:/**/transition-*",
+        "styles:/**/animation/**",
+        "styles:/**/animation",
+        "styles:/**/animation-*/**",
+        "styles:/**/animation-*",
+        "styles:/**/transform/**",
+        "styles:/**/transform",
+        "styles:/**/transform-origin/**",
+        "styles:/**/translate/**",
+        "styles:/**/scale/**",
+        "styles:/**/rotate/**",
+        "styles:/**/will-change/**"
+      ],
+      "disposition": "pending",
+      "reason": "transition/animation/transform-origin/will-change have no GPUI animation runtime"
+    },
+    {
+      "id": "styles-focus-ring",
+      "match": [
+        "styles:/**/outline/**",
+        "styles:/**/outline",
+        "styles:/**/outline-*/**",
+        "styles:/**/outline-*"
+      ],
+      "disposition": "lowered",
+      "via": "outline width/colour/style/offset project onto the style resolution"
+    },
+    {
+      "id": "styles-elevation",
+      "match": [
+        "styles:/**/box-shadow/**"
+      ],
+      "disposition": "pending",
+      "reason": "box-shadow has no GPUI paint realization"
+    },
+    {
+      "id": "styles-opacity-realized",
+      "match": [
+        "styles:/**/opacity/**"
+      ],
+      "disposition": "lowered",
+      "via": "opacity declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-effects",
+      "match": [
+        "styles:/**/opacity/**",
+        "styles:/**/visibility/**",
+        "styles:/**/mask/**",
+        "styles:/**/clip/**",
+        "styles:/**/contain/**",
+        "styles:/**/filter/**",
+        "styles:/**/backdrop-filter/**"
+      ],
+      "disposition": "pending",
+      "reason": "visibility/mask/clip/contain/filter effects have no GPUI paint realization"
+    },
+    {
+      "id": "styles-position-realized",
+      "match": [
+        "styles:/**/position/**",
+        "styles:/**/top/**",
+        "styles:/**/right/**",
+        "styles:/**/bottom/**",
+        "styles:/**/left/**"
+      ],
+      "disposition": "lowered",
+      "via": "position and inset-edge declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-content-layer",
+      "match": [
+        "styles:/**/position/**",
+        "styles:/**/inset/**",
+        "styles:/**/inset",
+        "styles:/**/inset-*/**",
+        "styles:/**/top/**",
+        "styles:/**/right/**",
+        "styles:/**/bottom/**",
+        "styles:/**/left/**",
+        "styles:/**/z-index/**"
+      ],
+      "disposition": "pending",
+      "reason": "inset/z-index have no GPUI stacking realization"
+    },
+    {
+      "id": "styles-interaction-affordance",
+      "match": [
+        "styles:/**/cursor/**",
+        "styles:/**/pointer-events/**",
+        "styles:/**/user-select/**",
+        "styles:/**/resize/**"
+      ],
+      "disposition": "pending",
+      "reason": "cursor/pointer-events/user-select/resize have no GPUI realization"
+    },
+    {
+      "id": "styles-typography-realized",
+      "match": [
+        "styles:/**/font-family/**",
+        "styles:/**/font-size/**",
+        "styles:/**/font-weight/**",
+        "styles:/**/line-height/**",
+        "styles:/**/text-align/**",
+        "styles:/**/white-space/**",
+        "styles:/**/text-overflow/**"
+      ],
+      "disposition": "lowered",
+      "via": "font family/size/weight/line-height and text alignment/overflow declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-typography",
+      "match": [
+        "styles:/**/line-height/**",
+        "styles:/**/letter-spacing/**",
+        "styles:/**/text-align/**",
+        "styles:/**/text-transform/**",
+        "styles:/**/text-decoration/**",
+        "styles:/**/text-decoration-line/**",
+        "styles:/**/text-decoration-color/**",
+        "styles:/**/text-underline-offset/**",
+        "styles:/**/text-overflow/**",
+        "styles:/**/white-space/**",
+        "styles:/**/word-break/**",
+        "styles:/**/word-wrap/**",
+        "styles:/**/overflow-wrap/**",
+        "styles:/**/hyphens/**",
+        "styles:/**/tab-size/**",
+        "styles:/**/font-family/**",
+        "styles:/**/font-style/**",
+        "styles:/**/font-variant-numeric/**",
+        "styles:/**/font/**",
+        "styles:/**/list-style/**",
+        "styles:/**/list-style-type/**",
+        "styles:/**/content/**",
+        "styles:/**/quotes/**",
+        "styles:/**/direction/**",
+        "styles:/**/unicode-bidi/**",
+        "styles:/**/-webkit-line-clamp/**",
+        "styles:/**/line-clamp/**",
+        "styles:/**/-webkit-box-orient/**"
+      ],
+      "disposition": "pending",
+      "reason": "typography extras beyond font-size/weight/family/line-height/text-align/white-space/text-overflow have no GPUI realization"
+    },
+    {
+      "id": "styles-media-fit",
+      "match": [
+        "styles:/**/object-fit/**",
+        "styles:/**/object-position/**"
+      ],
+      "disposition": "pending",
+      "reason": "object-fit/object-position have no GPUI media realization"
+    },
+    {
+      "id": "styles-painted-color",
+      "match": [
+        "styles:/**/color/**",
+        "styles:/**/background-color/**",
+        "styles:/**/border-color/**",
+        "styles:/**/border-top-color/**",
+        "styles:/**/border-right-color/**",
+        "styles:/**/border-bottom-color/**",
+        "styles:/**/border-left-color/**",
+        "styles:/**/border-block-start-color/**",
+        "styles:/**/border-block-end-color/**",
+        "styles:/**/border-inline-start-color/**",
+        "styles:/**/border-inline-end-color/**"
+      ],
+      "disposition": "lowered",
+      "via": "colour declarations resolve through the scoped token cascade"
+    },
+    {
+      "id": "styles-painted-border-radius",
+      "match": [
+        "styles:/**/border-radius/**",
+        "styles:/**/border-top-left-radius/**",
+        "styles:/**/border-top-right-radius/**",
+        "styles:/**/border-bottom-left-radius/**",
+        "styles:/**/border-bottom-right-radius/**",
+        "styles:/**/border-start-start-radius/**",
+        "styles:/**/border-start-end-radius/**",
+        "styles:/**/border-end-start-radius/**",
+        "styles:/**/border-end-end-radius/**"
+      ],
+      "disposition": "lowered",
+      "via": "border-radius declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-painted-border-width",
+      "match": [
+        "styles:/**/border-width/**",
+        "styles:/**/border-top-width/**",
+        "styles:/**/border-right-width/**",
+        "styles:/**/border-bottom-width/**",
+        "styles:/**/border-left-width/**",
+        "styles:/**/border-block-start-width/**",
+        "styles:/**/border-block-end-width/**",
+        "styles:/**/border-inline-start-width/**",
+        "styles:/**/border-inline-end-width/**"
+      ],
+      "disposition": "lowered",
+      "via": "border width declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-painted-padding",
+      "match": [
+        "styles:/**/padding/**",
+        "styles:/**/padding-top/**",
+        "styles:/**/padding-right/**",
+        "styles:/**/padding-bottom/**",
+        "styles:/**/padding-left/**",
+        "styles:/**/padding-block/**",
+        "styles:/**/padding-block-start/**",
+        "styles:/**/padding-block-end/**",
+        "styles:/**/padding-inline/**",
+        "styles:/**/padding-inline-start/**",
+        "styles:/**/padding-inline-end/**"
+      ],
+      "disposition": "lowered",
+      "via": "padding declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-painted-gap",
+      "match": [
+        "styles:/**/gap/**",
+        "styles:/**/row-gap/**",
+        "styles:/**/column-gap/**"
+      ],
+      "disposition": "lowered",
+      "via": "gap declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-painted-min-size",
+      "match": [
+        "styles:/**/min-height/**",
+        "styles:/**/min-width/**",
+        "styles:/**/min-block-size/**",
+        "styles:/**/min-inline-size/**"
+      ],
+      "disposition": "lowered",
+      "via": "min-size declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-painted-font",
+      "match": [
+        "styles:/**/font-size/**",
+        "styles:/**/font-weight/**"
+      ],
+      "disposition": "lowered",
+      "via": "font-size/font-weight declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-border-style-realized",
+      "match": [
+        "styles:/**/border-style/**",
+        "styles:/**/border-top-style/**",
+        "styles:/**/border-right-style/**",
+        "styles:/**/border-bottom-style/**",
+        "styles:/**/border-left-style/**"
+      ],
+      "disposition": "lowered",
+      "via": "border style declarations project onto the style resolution"
+    },
+    {
+      "id": "styles-shorthand",
+      "match": [
+        "styles:/**/background/**",
+        "styles:/**/border/**",
+        "styles:/**/border-top/**",
+        "styles:/**/border-right/**",
+        "styles:/**/border-bottom/**",
+        "styles:/**/border-left/**",
+        "styles:/**/border-block/**",
+        "styles:/**/border-block-start/**",
+        "styles:/**/border-block-end/**",
+        "styles:/**/border-inline/**",
+        "styles:/**/border-inline-start/**",
+        "styles:/**/border-inline-end/**",
+        "styles:/**/border-style/**",
+        "styles:/**/border-top-style/**",
+        "styles:/**/border-right-style/**",
+        "styles:/**/border-bottom-style/**",
+        "styles:/**/border-left-style/**",
+        "styles:/**/border-block-start-style/**",
+        "styles:/**/border-block-end-style/**",
+        "styles:/**/border-inline-start-style/**",
+        "styles:/**/border-inline-end-style/**"
+      ],
+      "disposition": "pending",
+      "reason": "CSS shorthand families are not projected as shorthands"
+    },
+    {
+      "id": "styles-layout",
+      "match": [
+        "styles:/**/display/**",
+        "styles:/**/flex/**",
+        "styles:/**/flex-direction/**",
+        "styles:/**/flex-wrap/**",
+        "styles:/**/flex-grow/**",
+        "styles:/**/flex-shrink/**",
+        "styles:/**/flex-basis/**",
+        "styles:/**/order/**",
+        "styles:/**/grid/**",
+        "styles:/**/grid-template-columns/**",
+        "styles:/**/grid-template-rows/**",
+        "styles:/**/align-items/**",
+        "styles:/**/align-self/**",
+        "styles:/**/align-content/**",
+        "styles:/**/justify-content/**",
+        "styles:/**/justify-items/**",
+        "styles:/**/justify-self/**",
+        "styles:/**/box-sizing/**",
+        "styles:/**/margin/**",
+        "styles:/**/margin-*/**",
+        "styles:/**/max-width/**",
+        "styles:/**/max-height/**",
+        "styles:/**/width/**",
+        "styles:/**/height/**",
+        "styles:/**/aspect-ratio/**",
+        "styles:/**/overflow/**",
+        "styles:/**/overflow-x/**",
+        "styles:/**/overflow-y/**",
+        "styles:/**/border-collapse/**",
+        "styles:/**/border-spacing/**",
+        "styles:/**/table-layout/**",
+        "styles:/**/vertical-align/**"
+      ],
+      "disposition": "lowered",
+      "via": "the GPUI style substrate realises display/flex/box/overflow and sizing declarations; values outside the admitted scalar vocabulary are named omissions"
+    },
+    {
+      "id": "unadjudicated",
+      "match": [
+        "contract:/**",
+        "tokens:/**",
+        "styles:/**"
+      ],
+      "disposition": "refused",
+      "reason": "leaf belongs to no adjudicated family; widening the allowlist or adding a fact to an admitted contract requires an explicit disposition",
+      "catchAll": true
+    }
+  ]
+}
