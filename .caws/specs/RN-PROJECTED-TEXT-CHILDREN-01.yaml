@@ -68,3 +68,10 @@ evidence:
     command: "pnpm run governed:rail && pnpm run test:frameworks"
     exit_code: 0
     commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Candidate 224646866 landed in merge96fdc03f8. Full root5731, all framework suites including native311, all types/lint/build/rail/docs/tokens/icon ledger/generated drift/policy pass; exact raw stage outcomes checks/224646866-VpCSHe/receipt.json. Variant audit exited1 with same53 findings; later concurrent b2d9879 ledgered them without repairing behavior, so source adjudication remains parent work. All eight fresh tarballs, positive/negative public types, five installed browsers and production ios/android Metro pass: packed-final.log and runs/fsds-release-packages-cTjBrv/ under .caws/state/release-evidence/RN-PROJECTED-TEXT-CHILDREN-01/. CodeBlock browser10pass; independent peer bigint/resolved-host findings grounded and repaired. Landed pnpm test shard2663+3068 passed in landed-root-shards.log after concurrent script change. Native OS/AT, async nodes, remaining component/browser/publication-auth work and overall release readiness remain open; no publish or push."
+    recorded_at: "2026-11-01T23:12:48.916Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "224646866aad964ffd075c4322f9abf193e4b794"
