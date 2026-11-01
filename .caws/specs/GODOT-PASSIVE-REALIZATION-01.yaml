@@ -55,3 +55,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run audit:godot-boundary -> exit 0: 'godot support boundary: {\"lowered\":8915,\"pending\":0,\"refused\":8586,\"unclassified\":0} rules 163 dead 0 shape-variance 183' and 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; pending is 0 across all 55 admitted components"
     recorded_at: "2026-11-01T10:28:25.663Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:godot row passive-media-projection: a Texture set as src reaches the native TextureRect on the Image scene and alt reaches accessibility_description; the anatomy runtime also accepts a loadable res:// path (remote fetching refused and named)"
+    recorded_at: "2026-11-01T10:28:26.629Z"
