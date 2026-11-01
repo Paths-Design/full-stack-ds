@@ -2,7 +2,6 @@ id: GPUI-NESTED-REF-CHILDREN-01
 title: 'Project nested reference children through the child content API'
 mode: feature
 lifecycle_state: active
-worktree: gpui-nested-ref-children
 created_at: '2026-11-01T11:17:09.625Z'
 updated_at: '2026-11-01T11:17:12.409Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
