@@ -1,9 +1,10 @@
 id: GOVERNED-CI-DOC-RESTAMP-01
 title: 'Restamp governed-ci.md after the Godot parity merge changed package.json'
 mode: chore
-lifecycle_state: draft
+lifecycle_state: active
+worktree: governed-ci-restamp
 created_at: '2026-11-01T08:22:25.903Z'
-updated_at: '2026-11-01T08:22:25.903Z'
+updated_at: '2026-11-01T08:22:30.955Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
