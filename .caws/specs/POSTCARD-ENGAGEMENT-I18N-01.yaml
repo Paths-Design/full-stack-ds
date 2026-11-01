@@ -9,6 +9,7 @@ created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
     - 'Postcard engagement contract and six npm runtime consumers plus packed browser/type witnesses'
+    - 'Bounded SwiftUI and Compose metadata/catalog projection and Unity percentage constraints required by the existing release checks'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -76,6 +77,16 @@ acceptance:
     given: 'the bounded engagement candidate'
     when: 'full relevant checks independent review and governed landing finish'
     then: 'generated artifacts match and acceptance is recorded while remaining Postcard and parent release blockers stay explicit'
+  - id: A5
+    given: 'projected native metadata and percentage dimension declarations'
+    when: >-
+      source-identity tests real SwiftUI and Compose compilation and the Unity
+      Editor percentage witness execute
+    then: >-
+      actual scalar inputs feed metadata catalog sites around the consumer body
+      generic collisions and conditional inputs are refused and all four percentage
+      constraints respond to parent resizing without allowance growth or native OS
+      accessibility claims
 observability:
   - 'Retain raw five-framework installed browser text geometry accessibility type and native host observations under canonical ignored release evidence'
 rollback:
