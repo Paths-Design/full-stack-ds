@@ -49,3 +49,7 @@ evidence:
     status: pass
     evidence_ref: "GPUI cargo +1.94.1 test --locked: 67 pass incl 15 parity tests; Unity verify-unity.sh: 36/36 EditMode; Godot headless: 201/201; eight captures per lane regenerated"
     recorded_at: "2026-11-01T03:04:17.690Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node examples/game-pause-menu/parity-check.mjs --root /tmp/typography-evidence: 195 colour probes, 117 typography bbox measurements (39 probes x 3 engines), 12 RMSE pairs, 0 failures on merged main"
+    recorded_at: "2026-11-01T03:04:18.676Z"
