@@ -128,9 +128,9 @@ pub(crate) fn drawer_micro() -> TextStyleSpec {
     TextStyleSpec::new(11.0, Weight::Regular, 1.2)
 }
 
-/// Drawer title: 28 px / 800 (`parity.md` → "Drawer").
-pub(crate) fn drawer_title() -> TextStyleSpec {
-    TextStyleSpec::new(28.0, Weight::Heavy, 1.0)
+/// Drawer title: `type.drawerTitle` / 700 (`parity.md` → "Drawer").
+pub(crate) fn drawer_title(type_scale: &TypeScale) -> TextStyleSpec {
+    TextStyleSpec::new(type_scale.drawer_title, Weight::Bold, 1.0)
 }
 
 /// Header stat label: 10 px / 700 / muted.

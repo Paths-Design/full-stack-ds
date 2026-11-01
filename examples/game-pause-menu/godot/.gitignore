@@ -16,3 +16,6 @@ evidence/
 
 # Inter faces are copied from ../fonts by setup.sh (committed single source).
 fonts/
+
+# Token graph copy resolved by setup.sh from packages/ds-tokens.
+fixtures/ds-tokens/

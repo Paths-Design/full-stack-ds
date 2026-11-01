@@ -388,3 +388,12 @@ Every authority colour and type size stores its token provenance:
   the resolved token/brand value. The authority no longer owns a parallel
   palette: every literal is checked against `resolved.tokens.json` + the Orion
   brand layer.
+- **Runtime loaders.** GPUI embeds `resolved.tokens.json` and
+  `orion.tokens.json` at compile time and overwrites its parsed palette and
+  type scale from the provenance maps before any view renders. Godot's
+  `setup.sh` copies both token files into `res://fixtures/ds-tokens/` and
+  `TokenResolver` rewrites the authority's colours/type sizes at load. Unity
+  continues to consume the generated `.fsds-brand-orion` scope. The shared
+  `orion-appearance.json` fixture is retained only for the shared fixture
+  corpus' validation tests; it is not a rendering palette for any lane (Godot
+  no longer loads it, GPUI keeps it out of the render path).

@@ -90,6 +90,10 @@ tokens. The three app-specific type sizes (11/13/28 px) are new Orion
 `typography.graphic.size.*` tokens; the rest map to the core typography ramp and
 zero tracking token. `node scripts/game-pause-token-provenance.mjs` fails if any
 excerpted value drifts from `resolved.tokens.json` + `orion.tokens.json`.
+At runtime, GPUI embeds both token files and resolves its parsed palette/type
+scale from the provenance maps at load, and Godot's `setup.sh` copies them into
+`res://fixtures/ds-tokens/` for its `TokenResolver`; neither lane renders from
+the legacy `orion-appearance.json` palette copy.
 
 ### Icon art
 

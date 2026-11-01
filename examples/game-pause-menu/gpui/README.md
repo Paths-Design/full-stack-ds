@@ -12,7 +12,7 @@ The lane consumes ONLY the public API of the bounded GPUI package
 Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
 marked `// NOT FSDS: <reason>`.
 
-> Status: **`cargo build` clean (0 warnings), 67 tests pass (default) / 70 with
+> Status: **`cargo build` clean (0 warnings), 69 tests pass (default) / 72 with
 > `--features capture`; all I1–I15 interactions are real code paths; the eight
 > parity capture states are produced at exactly 1280 × 800; all 26 shared
 > colour probes and all measured parity region boxes pass on this lane's
@@ -40,7 +40,7 @@ failure. Any lane source reaching into package internals is a boundary failure.
 ```bash
 # From the lane directory (rust-toolchain.toml pins 1.94.1):
 cargo +1.94.1 build --locked          # clean build, 0 warnings
-cargo +1.94.1 test  --locked          # 67 tests (1 lib + 2 palette + 15 parity + 49 seam)
+cargo +1.94.1 test  --locked          # 69 tests (3 lib + 2 palette + 15 parity + 49 seam)
 cargo +1.94.1 build --features capture
 cargo run                             # opens the 1280x800 pause menu on MAP
 cargo run -- --tab settings           # open a specific tab
@@ -206,7 +206,10 @@ OFL) through `TextSystem::add_fonts` and pins the root family to `Inter`; this r
 earlier `.SystemUIFont` fallback. Two weights are requested (400 regular / 700 bold) with the
 authority's sizes and zero tracking; the retired 600/800 requests collapse to regular/bold. Text
 weights are applied through the generated `Text` weight variants plus token overrides, and the
-root `font_family` propagates into generated components. The lane also writes
+root `font_family` propagates into generated components. The parity palette and
+type scale are resolved at load from `resolved.tokens.json` + `orion.tokens.json`
+(embedded at compile time) through the authority's `colorTokens` / `typeTokens`
+maps; the lane does not render from a lane-local palette copy. The lane also writes
 `AppleFontSmoothing = 0` into its own application preferences domain before GPUI
 initialises: the pinned `gpui_macos` renderer otherwise applies
 CoreGraphics-style glyph dilation to light-on-dark text, which made the same
@@ -265,7 +268,7 @@ not an interaction recording.
 
 ## Tests
 
-- `cargo +1.94.1 test --locked` → **67 tests**: 1 lib (`Switch` resolved-style
+- `cargo +1.94.1 test --locked` → **69 tests**: 3 lib (`Switch` resolved-style + token resolver)
   token cascade), 2 colour helpers, 15 parity-layout contract tests (incl. the
   icon-art code language), 49 seam tests (fixture parsing/validation and every
   I1–I15 domain rule).

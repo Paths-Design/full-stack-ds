@@ -78,7 +78,7 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 node ../parity-check.mjs --root /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu
 ```
 
-Measured on this machine: headless suite 201 checks / 201 passed, 4.1 s,
+Measured on this machine: headless suite 207 checks / 207 passed, 4.1 s,
 `input_dispatch=viewport_push_input`; capture 4.8 s for eight 1280×800 PNGs.
 
 ## Parity geometry consumed
@@ -161,7 +161,7 @@ Every fallback carries `# NOT FSDS: <reason>` in source.
 
 ## Interaction coverage (shared I1–I15)
 
-All 15 are implemented and covered by the headless suite (201 checks, including parity geometry, pinned corrections and icon-art probes). Full
+All 15 are implemented and covered by the headless suite (207 checks, including parity geometry, pinned corrections and icon-art probes). Full
 screenshot evidence is the eight capture states; the four required states are
 `map`, `progress`, `abilities`, `settings`.
 
@@ -235,6 +235,11 @@ slot count, incomplete parity layout (`test_corpus`).
   < 700 to Regular and >= 700 to Bold with `FontFile.fixed_size`, and pins
   theme default fonts. The retired `SystemFont` projection and glyph tracking
   are gone. The taxonomy follows `parity.md` → "Typography parity".
+- **Token palette:** `setup.sh` also copies `resolved.tokens.json` and the Orion
+  brand file into `res://fixtures/ds-tokens/`; `TokenResolver` rewrites the
+  authority's colours and type sizes from the `colorTokens` / `typeTokens`
+  provenance maps at fixture load. `orion-appearance.json` is no longer loaded
+  by this lane.
 
 ## Non-claims
 
