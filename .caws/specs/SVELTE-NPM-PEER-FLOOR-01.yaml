@@ -41,3 +41,9 @@ contracts:
   - name: 'svelte-package-peer'
     type: api
     path: 'packages/ds-svelte/package.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Manual primary-artifact inspection: the peer floor commit f5befc357335e18bce9b3897f7672f04ae01d372 is merged by 8639e6fb70ba4bf0c18a452a09bef64c38436f1a. Retained compile-5.19.0.json under .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/dependency-qualification/svelte-5.20.0 records 18 rune_invalid_name failures for props.id. Current UQAu76 packed manifest requires >=5.20.0; TABLE-WEB-RESPONSIVE-01/svelte-minimum-current/compile-5.20.0.json records all 350 client/server compilations passing with verified compiler5.20.0. Commit verification checks identity; behavior was inspected in the raw artifacts."
+    recorded_at: "2026-11-01T08:21:41.499Z"
+    commit_sha: f5befc357335e18bce9b3897f7672f04ae01d372
