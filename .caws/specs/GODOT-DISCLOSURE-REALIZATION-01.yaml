@@ -1,0 +1,53 @@
+id: GODOT-DISCLOSURE-REALIZATION-01
+title: 'Godot disclosure family realization: Accordion, Tabs, Popover, Details pending-ledger closure'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T08:29:40.373Z'
+updated_at: '2026-11-01T08:29:40.373Z'
+created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
+blast_radius:
+  modules:
+    - 'Godot disclosure realization: control runtime, disclosure surface hosting, capability ledger'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The Godot runtimes stay component-agnostic; no component-name dispatch is introduced'
+  - 'A pending fact moves to lowered only with a headless witness, and to refused only with a written reason'
+  - 'The other 51 admitted components keep their emitted semantics'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the four disclosure components; when the support boundary is re-audited; then every pending leaf is either realized and flipped to lowered with a pilot witness or refused with a written reason, and audit:godot-boundary exits 0 with zero pending leaves for Accordion, Tabs, Popover and Details'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the generated disclosure scenes; when the shared runtimes run headless; then trigger activation drives the open channel through native input, aria-expanded/controls/labelledby are structurally projected, roving focus and focus restore work, escape/outside-click/close dismissal paths fire, reducedMotion skips transitions, and Popover hosts on the overlay layer'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pilot lane; when pnpm run test:godot runs; then new rows exercise each realized disclosure behaviour class and the receipt records them, with all pre-existing rows unchanged'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the target docs and capability receipts; when read; then the bounded claim and the non-claims (assistive-technology delivery, CSS transition fidelity, exact overlay placement) are stated for the disclosure family'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the other 51 admitted components; when the targets regenerate; then their emitted bytes are unchanged apart from capability receipts that gained named omissions'
+non_functional: {}
+contracts:
+  - name: 'disclosure-control-runtime'
+    type: behavior
+    path: 'packages/ds-godot/addons/full_stack_ds/runtime/control.gd'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
