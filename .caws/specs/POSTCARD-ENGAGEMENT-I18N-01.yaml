@@ -1,0 +1,55 @@
+id: POSTCARD-ENGAGEMENT-I18N-01
+title: 'Render and localize all advertised Postcard engagement statistics'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-01T19:07:23.492Z'
+updated_at: '2026-11-01T19:07:23.492Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Postcard engagement contract and six npm runtime consumers plus packed browser/type witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Postcard'
+    - 'packages/ds-react/src/components/Postcard'
+    - 'packages/ds-vue/src/components/Postcard'
+    - 'packages/ds-svelte/src/components/Postcard'
+    - 'packages/ds-angular/src/components/Postcard'
+    - 'packages/ds-lit/src/components/Postcard'
+    - 'packages/ds-react-native/src/components/Postcard'
+    - 'scripts/release-package-check'
+    - 'scripts/public-types-consumer/fixtures.mjs'
+    - 'docs/codegen-authority.md'
+    - 'packages/ds-codegen/src/postcard-engagement.test.ts'
+  out: []
+invariants:
+  - 'Keep required author and stats inputs and existing public media/avatar props; this slice does not close omitted media/avatar or preview-fixture obligations'
+  - 'No component-name emitter branches, no publication, no weakened gates or new allowances'
+acceptance:
+  - id: A1
+    given: 'a valid Postcard with three engagement values including zero'
+    when: 'default and translated catalogs render and values update'
+    then: 'likes replies and reposts each render with their own visible contextual labels and no stale values'
+  - id: A2
+    given: 'numeric or consumer-localized engagement text and mixed-script RTL content'
+    when: 'installed consumers render in all five web frameworks'
+    then: 'labels and number text preserve the intended catalog and consumer values and real article content remains available without clipping at representative narrow widths'
+  - id: A3
+    given: 'all six public package props and React Native host output'
+    when: 'positive negative type cases and real generated host tests run'
+    then: 'public stat value types are discoverable malformed values are rejected and native labels and updates match the contract with OS proof limits stated'
+  - id: A4
+    given: 'the bounded engagement candidate'
+    when: 'full relevant checks independent review and governed landing finish'
+    then: 'generated artifacts match and acceptance is recorded while remaining Postcard and parent release blockers stay explicit'
+observability:
+  - 'Retain raw five-framework installed browser text geometry accessibility type and native host observations under canonical ignored release evidence'
+rollback:
+  - 'Revert this isolated engagement contract and generated consumer changes then regenerate'
+non_functional: {}
+contracts:
+  - name: 'postcard-engagement'
+    type: behavior
+    path: 'packages/ds-contracts/components/Postcard/Postcard.contract.json'
