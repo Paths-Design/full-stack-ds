@@ -164,6 +164,11 @@ export function propRoles(contract: ComponentContract): Map<string, string> {
     for (const child of node?.children ?? []) visit(child);
   };
   visit((contract as { anatomy?: { dom?: GlyphNode } }).anatomy?.dom);
+  // Host fact: root anchor activation, independent of callback spelling.
+  const anchor = Array.isArray(contract.anatomy) ? undefined : contract.anatomy?.dom;
+  const activation = anchor?.tag === "a" ? anchor.events?.click : undefined;
+  const callback = typeof activation === "string" ? /^prop:([A-Za-z_$][\w$-]*)$/.exec(activation) : undefined;
+  if (callback) roles.set(callback[1]!, "anchor-activation");
   return roles;
 }
 

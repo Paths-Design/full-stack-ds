@@ -5,6 +5,8 @@ package com.fullstackds.components.postcard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
@@ -28,8 +33,15 @@ enum class PostcardType { Image, Video, Audio }
 fun Postcard(
     modifier: Modifier = Modifier,
     type: PostcardType = PostcardType.Image,
+    authorName: String = "",
+    authorHandle: String = "",
+    timestamp: String = "",
+    statsLikes: String = "",
+    statsReplies: String = "",
+    statsReposts: String = "",
     content: @Composable () -> Unit,
 ) {
+    val fsdsMessages = LocalFsdsMessages.current
     val fsdsTheme = LocalFsdsTheme.current
     fun layeredSlot(slotName: String): String? {
         for (key in listOf("variant_" + type.name.lowercase(), "root")) {
@@ -57,7 +69,17 @@ fun Postcard(
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
     CompositionLocalProvider(LocalFsdsContentColor provides (contentColor ?: Color.Unspecified)) {
-        Box(modifier.then(chromeModifier)) { content() }
+        Box(modifier.then(chromeModifier).semantics(mergeDescendants = false) { contentDescription = fsdsMessages.string("Postcard.postLabel", "Post by {name}", mapOf("name" to authorName)) }) {
+    Column {
+        Text(text = authorName)
+        Text(text = authorHandle)
+        Text(text = timestamp)
+        content()
+        Text(text = fsdsMessages.string("Postcard.likes", "Likes: {count}", mapOf("count" to statsLikes)))
+        Text(text = fsdsMessages.string("Postcard.replies", "Replies: {count}", mapOf("count" to statsReplies)))
+        Text(text = fsdsMessages.string("Postcard.reposts", "Reposts: {count}", mapOf("count" to statsReposts)))
+    }
+}
     }
 }
 // @generated:end

@@ -1,10 +1,11 @@
 id: TABLE-WEB-RESPONSIVE-01
 title: 'Honor Table scrolling policy and keyboard viewport access'
 mode: fix
-lifecycle_state: active
-worktree: table-web-responsive
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Web Table responsive policy, localized viewport keyboard access and preserved composition are verified in five installed Chromium consumers with A1-A3 recorded; generic lowering, all-target generation, root/framework/type/admission checks pass; parent Unity18 reference and53 variant release-audit failures remain open.'
 created_at: '2026-11-01T03:24:18.913Z'
-updated_at: '2026-11-01T10:19:41.072Z'
+updated_at: '2026-11-01T14:10:20.475Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -48,6 +49,15 @@ scope:
     - packages/ds-figma-plugin/src/generated/components/Carousel/Carousel.figma.json
     - docs/architecture/design/box-model-primitive.md
     - docs/architecture/design/component-design-bindings.md
+    - packages/ds-codegen/src/frameworks/godot/support-boundary.json
+    - packages/ds-codegen/src/frameworks/godot/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    - packages/ds-godot/addons/full_stack_ds/components/Table/
+    - docs/architecture/godot-target.md
+    - packages/ds-godot/verification/capability-inventory.json
+    - packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    - packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    - packages/ds-gpui/src/components/Table/
   out: []
 invariants:
   - 'Native Table sections cells metadata and composed node identity remain intact through live policy updates'
@@ -75,3 +85,19 @@ contracts:
   - name: 'table-responsive'
     type: behavior
     path: 'packages/ds-contracts/components/Table/Table.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At source 6362aa9c7, raw installed-consumer browser-{react,vue,svelte,angular,lit}.json in .caws/state/release-evidence/TABLE-WEB-RESPONSIVE-01/runs/fsds-release-packages-4Uwrj0/ each passed with no failures. Inspected viewport policies default/true/false/true/default: 240px viewport and 822px content, scroll120/120/0/120/120, overflow auto/auto/visible/auto/auto, tab0/0/-1/0/0, and stable native table/cell identity. French and Arabic metadata and header IDREFs are preserved. Commit verification checks identity only; raw browser execution was inspected separately."
+    recorded_at: "2026-11-01T14:08:46.341Z"
+    commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At source 6362aa9c7, the same five installed browser reports and AX/screenshots show the localizable region name Contenu du tableau, real Tab focus and native arrows. LTR14/RTL6 arrow steps reveal the Arabic edit button fully inside both viewport axes from initially clipped bounds, with focus retained; disabled policy is untabbable. The authoritative harness is scripts/release-package-check/browser.mjs. Evidence is scoped to Chromium web behavior, not assistive-technology announcements or native scrolling."
+    recorded_at: "2026-11-01T14:08:55.125Z"
+    commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At source6362aa9c7, inspected checks/6362aa9c7-7euK5x/receipt.json and raw logs: all12 targets regenerate; six-target rail, 5553 root tests, all five framework suites, typecheck:all, lint, 7 source-browser cases, all8 packed consumers, generated drift, Godot boundary, GPUI consistency and policy pass. Swift grammar22cases and native metadata48cases pass; native exclusions remain explicit. Overall29-stage run remains RED only for parent-owned Unity18 unresolved names and53 variant findings, with no Table/Web finding; these release gates are not waived or discharged. No native accessibility/localized-label realization is claimed for GPUI API carriage. Commit verification checks identity only; executions were inspected separately."
+    recorded_at: "2026-11-01T14:09:04.765Z"
+    commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"

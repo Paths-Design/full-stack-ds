@@ -38,6 +38,11 @@ export function defaultPropsFromContract(component: ComponentBundle): DemoProps 
     if (!m.required || m.name in props) continue;
     const sample = sampleValueForProp(component, m);
     if (sample !== undefined) props[m.name] = sample;
+    else if (Object.prototype.hasOwnProperty.call(component.previewSamples?.values ?? {}, m.name)) {
+      // The build-side projection contains only JSON data. Each preview gets
+      // its own nested values so editing one cannot mutate the bundle fixture.
+      props[m.name] = JSON.parse(JSON.stringify(component.previewSamples!.values[m.name]));
+    }
   }
   return props;
 }
@@ -134,6 +139,8 @@ function sampleStringForProp(propName: string): string {
       return "#";
     case "src":
       return "";
+    case "timestamp":
+      return "2031-03-14T12:00:00Z";
     case "alt":
       return "Image";
     default:

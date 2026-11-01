@@ -2,6 +2,7 @@
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createAlertStyles } from "./Alert.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -69,7 +70,7 @@ export function Alert({
         <RNText style={[styles.rootText, textVariantStyleForIntent, textVariantStyleForLevel]}>{icon}</RNText>
       </View>
       ) : null}
-      {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForIntent, textVariantStyleForLevel]}>{children}</RNText> : children}
+      {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForIntent, textVariantStyleForLevel] })}
       {dismissible ? (
       <Button
         ariaLabel={dismissLabel}

@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createToastStyles } from "./Toast.styles";
 import { resolveToastTokens } from "./Toast.tokens";
@@ -91,13 +92,13 @@ export function Toast({
           <View
             style={styles.description}
           >
-            {typeof children === "string" ? <RNText>{children}</RNText> : children}
+            {renderTextChildren(children)}
           </View>
           {slots?.action ? (
           <View
             style={styles.action}
           >
-            {slots?.action}
+            {renderTextChildren(slots?.action)}
           </View>
           ) : null}
           <Pressable

@@ -1,0 +1,70 @@
+id: UNITY-BRAND-REFERENCE-RESOLUTION-01
+title: 'Resolve Unity brand scalars from source-preserving token scopes'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Merged source-preserving theme and brand scalar resolution with focused browser and Unity Editor evidence; separate variant audit and eight-package component qualification remain open.'
+created_at: '2026-11-01T14:20:56.597Z'
+updated_at: '2026-11-01T16:10:03.515Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Unity token source parsing and scoped scalar projection'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity/uss.ts'
+    - 'packages/ds-codegen/src/frameworks/unity/uss.test.ts'
+    - 'packages/ds-codegen/src/frameworks/unity/token-sources.ts'
+    - 'packages/ds-codegen/src/frameworks/unity/token-sources.test.ts'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS/Controls.unsupported.json'
+    - 'docs/architecture/unity-target.md'
+    - packages/ds-unity/Tests/Editor/StylingTests.cs
+    - packages/ds-codegen/src/frameworks/unity/lore.test.ts
+  out: []
+invariants:
+  - 'Published Web token bytes and source token identities remain unchanged'
+  - 'Supported values preserve explicit native theme-root layer and brand precedence while unsupported aliases emit exact refusal evidence'
+acceptance:
+  - id: A1
+    given: 'generated core semantic theme and brand scopes including base and brand-only alias chains'
+    when: 'an explicit native theme-root scope is projected'
+    then: >-
+      supported scalar values match source CSS layer and brand precedence with
+      correct light and dark restatement and the unbranded root honors default-brand
+      declarations as the native Theme API specifies
+  - id: A2
+    given: 'missing malformed cyclic or unsupported alias targets and fallback values'
+    when: 'brand declarations resolve'
+    then: 'only genuinely missing targets use supported fallbacks and other failures retain exact source property value and theme refusal without dangling emitted reads'
+  - id: A3
+    given: 'the actual token corpus and regenerated Unity assets'
+    when: 'focused tests source CSS browser comparisons admission and required test gates run'
+    then: 'supported output is stable generated artifacts match and the Unity token reference audit has zero unresolved names without allowances'
+observability:
+  - 'Retain source scope fixtures browser scalar observations and raw gate logs under canonical ignored CAWS release evidence'
+rollback:
+  - 'Revert the isolated Unity token projection commits and regenerate the Unity target'
+non_functional: {}
+contracts:
+  - name: 'unity-token-scope'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/unity/uss.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected source-preserving alias/default-brand/theme tests and raw .caws/state/release-evidence/UNITY-BRAND-REFERENCE-RESOLUTION-01/integrated-repair-focused-corrected.log (87 cases); fresh Chromium at128c9b68c compared16112 emitted scalars across48 explicit theme/brand/OS-preference scopes with0 mismatches versus400 on authentic baseline: browser-scalars-128c9b68c-{before,after}.json. Candidate302ea3927 assets and token CSS verified byte-identical to tested browser inputs. Actual Unity6000.5.3f1 Editor atd89066853 passed100/100 on identical C#/USS assets (unity-editor-final.log). Bounded native theme-root scalar equivalence; no descendant/density/AT/full visual completeness claim. Commit verification below checks identity, not test execution."
+    recorded_at: "2026-11-01T16:09:05.195Z"
+    commit_sha: "302ea3927c3d45e6b668a257b621a6132d68a34e"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected source tests and .caws/state/release-evidence/UNITY-BRAND-REFERENCE-RESOLUTION-01/peer-counterexamples-before.log (5 meaningful failures), peer-partial-support.log (82 pass), and integrated-repair-focused-corrected.log (87 pass including architecture census). Missing aliases alone permit scalar fallback; cycles/present unsupported/malformed/trailing expressions and misordered media guards refuse with exact source/property/value/theme evidence. Partial unsupported overrides can leave native base inheritance but cannot justify source composite substitution. Final integrated token-resolvability.log has0 unresolved/0 allowances; refusal rows are explicit target capability evidence, not audit allowances. Commit verification is identity only."
+    recorded_at: "2026-11-01T16:09:14.605Z"
+    commit_sha: "302ea3927c3d45e6b668a257b621a6132d68a34e"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Raw .caws/state/release-evidence/UNITY-BRAND-REFERENCE-RESOLUTION-01/checks/9e5217fc1-ceQm1M/receipt.json: rail,5593 root cases,all5 framework suites,typecheck:all,lint,token drift,docs links,9 realization audits,generated committed-tree check and CAWS policy passed; final tracked status clean. Stale doc stamp in that run was corrected by docs-only302ea3927; doc-claims-302ea3927.log passed81 claims. Unity reference audit0 unresolved/0 ledger. No published8-package byte changes. Separate variant audit remains FAIL53 unledgered findings (variant-realization.log), retained as parent release blocker without waiver or allowance growth. Browser/native artifacts cited inA1 remain applicable by byte comparison. Required checks executed, not a claim that every publication gate passed."
+    recorded_at: "2026-11-01T16:09:24.036Z"
+    commit_sha: "302ea3927c3d45e6b668a257b621a6132d68a34e"

@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createFieldStyles } from "./Field.styles";
 // @generated:end
@@ -69,7 +70,7 @@ export function Field({
       <View
         style={styles.control}
       >
-        {slots?.control}
+        {renderTextChildren(slots?.control)}
       </View>
       <View
         style={styles.meta}

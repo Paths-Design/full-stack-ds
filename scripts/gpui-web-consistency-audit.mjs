@@ -286,6 +286,10 @@ function diffAgainstBaseline(current, baseline) {
       else if (!was && now) improvements.push(`${name}/${target}: target output appeared`);
       else {
         for (const dimension of DIMENSIONS) {
+          // A behavior score of one with zero declared behavior is N/A,
+          // not a realized handler. New obligations remain visible in current
+          // coverage; they cannot remove an earlier, nonexistent realization.
+          if (dimension === 'behavior' && before.declared?.behavior === 0) continue;
           if (now[dimension] < was[dimension]) failures.push(`${name}/${target}: ${dimension} regressed ${was[dimension]} -> ${now[dimension]}`);
           else if (now[dimension] > was[dimension]) improvements.push(`${name}/${target}: ${dimension} improved ${was[dimension]} -> ${now[dimension]}`);
         }
@@ -332,11 +336,21 @@ if (MODE === 'self-test') {
   const removedCurrent = JSON.parse(JSON.stringify(baselineDocument));
   delete removedCurrent.components[first];
   const removed = diffAgainstBaseline(removedCurrent, baseline).failures.some(failure => failure.includes(`stale baseline entry: ${first}`));
-  if (!detected || !stale || !removed) {
-    console.error(`GPUI_CONSISTENCY_SELFTEST_FAIL: regression=${detected} stale=${stale} removed=${removed}`);
+  const noPriorObligation = JSON.parse(JSON.stringify(baselineDocument));
+  noPriorObligation.components[first].declared.behavior = 0;
+  noPriorObligation.components[first].targets.gpui.behavior = 1;
+  const newUnrealizedObligation = JSON.parse(JSON.stringify(noPriorObligation));
+  newUnrealizedObligation.components[first].declared.behavior = 1;
+  newUnrealizedObligation.components[first].targets.gpui.behavior = 0;
+  const vacuousCredit = !diffAgainstBaseline(newUnrealizedObligation, noPriorObligation).failures.some(failure => failure.includes(`${first}/gpui: behavior regressed`));
+  const realizedBefore = JSON.parse(JSON.stringify(noPriorObligation));
+  realizedBefore.components[first].declared.behavior = 1;
+  const behaviorLoss = diffAgainstBaseline(newUnrealizedObligation, realizedBefore).failures.some(failure => failure.includes(`${first}/gpui: behavior regressed`));
+  if (!detected || !stale || !removed || !vacuousCredit || !behaviorLoss) {
+    console.error(`GPUI_CONSISTENCY_SELFTEST_FAIL: regression=${detected} stale=${stale} removed=${removed} vacuousCredit=${vacuousCredit} behaviorLoss=${behaviorLoss}`);
     process.exit(1);
   }
-  console.log('GPUI_CONSISTENCY_SELFTEST_PASS: regression, stale-entry and removed-entry detection all fire.');
+  console.log('GPUI_CONSISTENCY_SELFTEST_PASS: real fact loss, realized behavior loss, stale and removed entries are detected; N/A behavior credit is not a realization.');
   process.exit(0);
 }
 

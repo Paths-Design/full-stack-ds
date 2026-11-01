@@ -244,18 +244,6 @@
       ]
     },
     {
-      "source": "userInfo",
-      "part": "userInfo",
-      "predicates": [],
-      "declarations": [
-        {
-          "property": "postcard.size.gap",
-          "value": "4px",
-          "token": "core.spacing.size.03"
-        }
-      ]
-    },
-    {
       "source": "displayName",
       "part": "displayName",
       "predicates": [],
@@ -317,6 +305,19 @@
       ]
     },
     {
+      "source": "stats",
+      "part": "stats",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "12px",
+          "token": "postcard.size.gap",
+          "designSlot": "postcard.design.stats.spacing.gap"
+        }
+      ]
+    },
+    {
       "source": "stat",
       "part": "stat",
       "predicates": [],
@@ -342,7 +343,7 @@
   ],
   "accessibility": {
     "labeling": [
-      "aria-labelledby"
+      "aria-label"
     ]
   },
   "projectedProps": [],
@@ -355,11 +356,14 @@
     "embed"
   ],
   "omissions": [
+    "root: attribute bindings (aria-label) not projected natively",
     "displayName: content binding (prop:author.name) not projected; host text is unbound",
     "handle: content binding (prop:author.handle) not projected; host text is unbound",
     "timestamp: attribute bindings (datetime) not projected natively",
     "timestamp: content binding (prop:timestamp) not projected; host text is unbound",
-    "stat: content binding (prop:stats.likes) not projected; host text is unbound",
+    "stat: message text (likes) with parameters not projected",
+    "stat: message text (replies) with parameters not projected",
+    "stat: message text (reposts) with parameters not projected",
     "structure.padding: host root has no padded panel to inset its children",
     "structure.padding-block: host root has no padded panel to inset its children",
     "structure.padding-block-start: no Godot anatomy style mapping",
@@ -374,6 +378,7 @@
     "root.flex-direction: platform web only",
     "root.border-style: platform web only",
     "root.box-sizing: platform web only",
+    "root.overflow-wrap: platform web only",
     "hover: state selector not lowered",
     "content.line-height: no Godot anatomy style mapping",
     "content.display: platform web only",
@@ -383,9 +388,16 @@
     "header.display: platform web only",
     "header.align-items: platform web only",
     "header.justify-content: platform web only",
+    "header.flex-wrap: platform web only",
+    "header.min-width: platform web only",
     "userInfo.display: platform web only",
     "userInfo.align-items: platform web only",
     "userInfo.flex: platform web only",
+    "userInfo.flex-wrap: platform web only",
+    "userInfo.min-width: platform web only",
+    "userInfo.max-width: platform web only",
+    "userInfo.gap: platform web only",
+    "timestamp.max-width: platform web only",
     "timestamp.flex-shrink: platform web only",
     "footer.display: platform web only",
     "footer.align-items: platform web only",
@@ -397,14 +409,18 @@
     "footer.font-size: host panel renders no text",
     "stats.display: platform web only",
     "stats.align-items: platform web only",
-    "stats.gap: host panel has no stacked layout to space",
+    "stats.flex-wrap: platform web only",
+    "stats.min-width: platform web only",
+    "stats.max-width: platform web only",
     "stat.display: platform web only",
     "stat.align-items: platform web only",
+    "stat.max-width: platform web only",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "root accessibility role and labeling: native projection unverified",
     "reduced motion: native preference handling unverified",
+    "messages: 4 translatable message(s) render as contract defaults; no native message catalog",
     "postId: no executable native projection",
-    "author: bound to node content; native text projection unverified",
+    "author: bound to the aria-label attribute; native attribute projection unverified",
     "timestamp: bound to node content; native text projection unverified",
     "stats: bound to node content; native text projection unverified",
     "embed: no executable native projection"

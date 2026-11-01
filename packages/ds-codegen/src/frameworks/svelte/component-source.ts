@@ -37,6 +37,7 @@ import type {
 } from "../../ir.js";
 import { componentNeedsInstanceId } from "../../id-relationships.js";
 import {
+  hasDisabledActivation,
   hasChildrenPlaceholder,
   TABLE_COMPOSITION_TAGS,
   nativeTableAttrsFor,
@@ -1383,7 +1384,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   const assocConsumerPart = ir.fieldAssociation?.consumerPart;
 
   const importLines: string[] = [];
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction${hasDisabledActivation(ir.dom) ? ", isActivationDisabled" : ""} } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) importLines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (hasHook) {
@@ -2046,6 +2047,12 @@ function renderSvelteDomNode(
     (node.componentInstance?.events ?? []).map((e) => [e.name, e]),
   );
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderSvelteBindingValue(node.disabledActivation.disabled, ctx);
+      const callback = renderSvelteBindingValue(expr, ctx);
+      attrs.push(`onclick={(e) => { if (canActivateInteraction(e, false, isActivationDisabled(${disabled}))) (${callback})?.(e); }}`);
+      continue;
+    }
     if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
       const channel = node.nativeTextChannel;
       attrs.push(`on${eventName}={(e) => requestNativeTextChange(e, () => ${ctx.hookVar}.set${capitalizeSvelte(channel)}((e.currentTarget as HTMLInputElement).value), () => ${ctx.hookVar}.${channel})}`);
@@ -2074,6 +2081,11 @@ function renderSvelteDomNode(
     const rendered = renderSvelteEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderSvelteBindingValue(node.disabledActivation.disabled, ctx);
+    attrs.push(`onclick={(e) => { canActivateInteraction(e, false, isActivationDisabled(${disabled})); }}`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2107,6 +2119,11 @@ function renderSvelteDomNode(
   }
 
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderSvelteBindingValue(node.disabledActivation.disabled, ctx);
+      attrs.push(`href={isActivationDisabled(${disabled}) ? undefined : ${renderSvelteBindingValue(expr, ctx)}}`);
+      continue;
+    }
     if (key === "textContent" || key === "children") {
       if (textContentExpr === null) {
         textContentExpr = renderSvelteTextChildExpression(expr, ctx);
@@ -2572,17 +2589,27 @@ function renderSvelteTextChildExpression(
   }
 }
 
+const NUMERIC_SVELTE_ATTRS = new Set([
+  "tabindex", "maxlength", "minlength", "size", "rowspan", "colspan",
+  "min", "max", "step", "rows", "cols", "span", "start",
+  "aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-level",
+  "aria-posinset", "aria-setsize", "aria-colcount", "aria-colindex",
+  "aria-colspan", "aria-rowcount", "aria-rowindex", "aria-rowspan",
+]);
+
 /**
  * Lower a BindingExpression to a bare Svelte template expression (no
  * `attr={...}` scaffolding). Used by callers that splice the expression
  * into a surrounding template construct — `cssVarBindings` ->
  * `style:--fsds-foo={<expr>}`, future `{#each}` source expressions, etc.
+ * Numeric DOM slots retain integer literal types through conditionals.
  * Returns null for binding kinds that can't appear in an expression
  * position (e.g. channel events).
  */
 function renderSvelteBindingValue(
   expr: BindingExpression,
   ctx: SvelteRenderContext,
+  numericLiterals = false,
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
@@ -2591,7 +2618,9 @@ function renderSvelteBindingValue(
     case "prop":
       return appendPath(sveltePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
-      return JSON.stringify(expr.value);
+      return numericLiterals && /^-?\d+$/.test(expr.value)
+        ? String(Number(expr.value))
+        : JSON.stringify(expr.value);
     case "message":
       return composeMessageExpression("fsdsMessages.current", expr, (value) => renderSvelteBindingValue(value, ctx));
     case "iterationLocal": {
@@ -2630,8 +2659,8 @@ function renderSvelteBindingValue(
       return renderSveltePredicate(expr, ctx);
     case "conditional": {
       const condition = renderSvelteBindingValue(expr.condition, ctx);
-      const whenTrue = renderSvelteBindingValue(expr.whenTrue, ctx);
-      const whenFalse = renderSvelteBindingValue(expr.whenFalse, ctx);
+      const whenTrue = renderSvelteBindingValue(expr.whenTrue, ctx, numericLiterals);
+      const whenFalse = renderSvelteBindingValue(expr.whenFalse, ctx, numericLiterals);
       if (condition === null || whenTrue === null || whenFalse === null) return null;
       return `(${condition} ? ${whenTrue} : ${whenFalse})`;
     }
@@ -2812,7 +2841,7 @@ function renderSvelteBinding(
       return lowered === null ? null : `${attr}={${lowered}}`;
     }
     case "conditional": {
-      const lowered = renderSvelteBindingValue(expr, ctx);
+      const lowered = renderSvelteBindingValue(expr, ctx, hostTag !== undefined && hostTag !== "" && NUMERIC_SVELTE_ATTRS.has(attr.toLowerCase()));
       return lowered === null ? null : `${attr}={${lowered}}`;
     }
   }

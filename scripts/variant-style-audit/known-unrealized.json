@@ -1,5 +1,5 @@
 {
-  "$comment": "Inverse (variant-realization) ledger. An entry means: the component emits this variant carrier and no CSS rule selects it, so choosing that value changes nothing. The census predicate is exactly that — RAIL-WEB-STYLE-CARRIER-REACHABILITY-01 removed the old `stylingIntent` admission rule, under which an axis only counted if someone had ALREADY authored a per-value token or `--<value>` block. That made the evidence of intent the artifact missing precisely when nobody authored the styling, and hid the worst debt (Checkbox.size, Progress.size/variant, ToggleSwitch.size all read intent=false, realized=0/n and never entered the failing set while a browser measured them as identical). `disposition` keeps that signal as TRIAGE only: `no-styling-intent` marks values likely to be structural or behavioral (placement, `as`, politeness) rather than visual debt. Until a contract fact declares a visual obligation, this ledger is a ratchet and not a semantic rejection rule — a row may be resolved by painting the value OR by establishing that the axis is non-visual and retiring the overclaim. Two-directional: a new dead knob fails, a burned entry left on the books fails. Re-derive with --reseed.",
+  "$comment": "Inverse (variant-realization) ledger. An entry means: the component emits this variant carrier and no CSS rule selects it, so choosing that value changes nothing. The census predicate is exactly that \u2014 RAIL-WEB-STYLE-CARRIER-REACHABILITY-01 removed the old `stylingIntent` admission rule, under which an axis only counted if someone had ALREADY authored a per-value token or `--<value>` block. That made the evidence of intent the artifact missing precisely when nobody authored the styling, and hid the worst debt (Checkbox.size, Progress.size/variant, ToggleSwitch.size all read intent=false, realized=0/n and never entered the failing set while a browser measured them as identical). `disposition` keeps that signal as TRIAGE only: `no-styling-intent` marks values likely to be structural or behavioral (placement, `as`, politeness) rather than visual debt. Until a contract fact declares a visual obligation, this ledger is a ratchet and not a semantic rejection rule \u2014 a row may be resolved by painting the value OR by establishing that the axis is non-visual and retiring the overclaim. Two-directional: a new dead knob fails, a burned entry left on the books fails. Re-derive with --reseed.",
   "gaps": [
     {
       "component": "Accordion",
@@ -8,10 +8,7 @@
       "carrier": "accordion--multiple",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Selection cardinality (single vs multiple open panels), not appearance.",
-      "remedy": "None.",
-      "note": "structural-behavioral — Selection cardinality (single vs multiple open panels), not appearance. Remedy: None."
+      "note": "structural-behavioral \u2014 Selection cardinality (single vs multiple open panels), not appearance. Remedy: None."
     },
     {
       "component": "Badge",
@@ -20,10 +17,7 @@
       "carrier": "badge--default",
       "disposition": "styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "stale-vocabulary",
-      "evidence": "The variant prop declares no default, so the audit treats no value as base-covered and flags the de-facto default. Unlike its painted peers counter/tag, `default` IS the base rule.",
-      "remedy": "Declare \"default\": \"default\" on the variant prop. No styling owed.",
-      "note": "stale-vocabulary — The variant prop declares no default, so the audit treats no value as base-covered and flags the de-facto default. Unlike its painted peers counter/tag, `default` IS the base rule. Remedy: Declare \"default\": \"default\" on the variant prop. No styling owed."
+      "note": "stale-vocabulary \u2014 The variant prop declares no default, so the audit treats no value as base-covered and flags the de-facto default. Unlike its painted peers counter/tag, `default` IS the base rule. Remedy: Declare \"default\": \"default\" on the variant prop. No styling owed."
     },
     {
       "component": "Badge",
@@ -32,22 +26,16 @@
       "carrier": "badge--status",
       "disposition": "styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "counter and tag are painted; status is the unpainted peer of an otherwise painted vocabulary, so the axis does claim a visual distinction here.",
-      "remedy": "Author the --status block.",
-      "note": "visual-obligation — counter and tag are painted; status is the unpainted peer of an otherwise painted vocabulary, so the axis does claim a visual distinction here. Remedy: Author the --status block."
+      "note": "visual-obligation \u2014 counter and tag are painted; status is the unpainted peer of an otherwise painted vocabulary, so the axis does claim a visual distinction here. Remedy: Author the --status block."
     },
     {
       "component": "Calendar",
       "axis": "mode",
       "value": "range",
       "carrier": "calendar--range",
-      "disposition": "styling-intent",
+      "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Selection semantics (single date vs range), not appearance.",
-      "remedy": "None for the axis carrier. Range selection may later owe in-range day styling, which is a state surface rather than this variant carrier.",
-      "note": "structural-behavioral — Selection semantics (single date vs range), not appearance. Remedy: None for the axis carrier. Range selection may later owe in-range day styling, which is a state surface rather than this variant carrier."
+      "note": "structural-behavioral \u2014 Selection semantics (single date vs range), not appearance. Remedy: None for the axis carrier. Range selection may later owe in-range day styling, which is a state surface rather than this variant carrier."
     },
     {
       "component": "Checkbox",
@@ -56,10 +44,7 @@
       "carrier": "checkbox--sm",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No --sm/--md/--lg block and no per-value token in Checkbox.styles.json; a browser measures sm/md/lg as identical.",
-      "remedy": "Author per-size box-model and indicator dimensions.",
-      "note": "visual-obligation — No --sm/--md/--lg block and no per-value token in Checkbox.styles.json; a browser measures sm/md/lg as identical. Remedy: Author per-size box-model and indicator dimensions."
+      "note": "visual-obligation \u2014 No --sm/--md/--lg block and no per-value token in Checkbox.styles.json; a browser measures sm/md/lg as identical. Remedy: Author per-size box-model and indicator dimensions."
     },
     {
       "component": "Checkbox",
@@ -68,10 +53,7 @@
       "carrier": "checkbox--lg",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No --sm/--md/--lg block and no per-value token in Checkbox.styles.json; a browser measures sm/md/lg as identical.",
-      "remedy": "Author per-size box-model and indicator dimensions.",
-      "note": "visual-obligation — No --sm/--md/--lg block and no per-value token in Checkbox.styles.json; a browser measures sm/md/lg as identical. Remedy: Author per-size box-model and indicator dimensions."
+      "note": "visual-obligation \u2014 No --sm/--md/--lg block and no per-value token in Checkbox.styles.json; a browser measures sm/md/lg as identical. Remedy: Author per-size box-model and indicator dimensions."
     },
     {
       "component": "Chip",
@@ -80,10 +62,7 @@
       "carrier": "chip--default",
       "disposition": "styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "stale-vocabulary",
-      "evidence": "The variant prop declares no default, so the de-facto default is flagged. selected and dismissible are painted; `default` IS the base rule.",
-      "remedy": "Declare \"default\": \"default\" on the variant prop. No styling owed.",
-      "note": "stale-vocabulary — The variant prop declares no default, so the de-facto default is flagged. selected and dismissible are painted; `default` IS the base rule. Remedy: Declare \"default\": \"default\" on the variant prop. No styling owed."
+      "note": "stale-vocabulary \u2014 The variant prop declares no default, so the de-facto default is flagged. selected and dismissible are painted; `default` IS the base rule. Remedy: Declare \"default\": \"default\" on the variant prop. No styling owed."
     },
     {
       "component": "Divider",
@@ -92,10 +71,7 @@
       "carrier": "divider--horizontal",
       "disposition": "styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "stale-vocabulary",
-      "evidence": "The orientation prop declares no default. --vertical is painted; horizontal is the base <hr> rule.",
-      "remedy": "Declare \"default\": \"horizontal\" on the orientation prop.",
-      "note": "stale-vocabulary — The orientation prop declares no default. --vertical is painted; horizontal is the base <hr> rule. Remedy: Declare \"default\": \"horizontal\" on the orientation prop."
+      "note": "stale-vocabulary \u2014 The orientation prop declares no default. --vertical is painted; horizontal is the base <hr> rule. Remedy: Declare \"default\": \"horizontal\" on the orientation prop."
     },
     {
       "component": "List",
@@ -104,10 +80,7 @@
       "carrier": "list--ul",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element.",
-      "remedy": "None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes.",
-      "note": "structural-behavioral — Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element. Remedy: None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes."
+      "note": "structural-behavioral \u2014 Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element. Remedy: None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes."
     },
     {
       "component": "List",
@@ -116,10 +89,7 @@
       "carrier": "list--ol",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element.",
-      "remedy": "None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes.",
-      "note": "structural-behavioral — Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element. Remedy: None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes."
+      "note": "structural-behavioral \u2014 Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element. Remedy: None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes."
     },
     {
       "component": "List",
@@ -128,10 +98,7 @@
       "carrier": "list--dl",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element.",
-      "remedy": "None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes.",
-      "note": "structural-behavioral — Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element. Remedy: None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes."
+      "note": "structural-behavioral \u2014 Realized by the polymorphic root, not by CSS: the generated source reads `const As = as ?? \"ul\"` and renders `<Stack as={As}>`. The value changes the element. Remedy: None for styling. The redundant list--<tag> carrier could be suppressed for polymorphic-tag axes."
     },
     {
       "component": "NavList",
@@ -140,10 +107,7 @@
       "carrier": "nav-list--horizontal",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "The `list` part hard-codes flex-direction: column, so orientation=horizontal still renders a column. The nav-list--horizontal carrier is emitted and selected by nothing.",
-      "remedy": "Author .nav-list--horizontal .nav-list__list { flex-direction: row }.",
-      "note": "visual-obligation — The `list` part hard-codes flex-direction: column, so orientation=horizontal still renders a column. The nav-list--horizontal carrier is emitted and selected by nothing. Remedy: Author .nav-list--horizontal .nav-list__list { flex-direction: row }."
+      "note": "visual-obligation \u2014 The `list` part hard-codes flex-direction: column, so orientation=horizontal still renders a column. The nav-list--horizontal carrier is emitted and selected by nothing. Remedy: Author .nav-list--horizontal .nav-list__list { flex-direction: row }."
     },
     {
       "component": "NavTree",
@@ -152,10 +116,7 @@
       "carrier": "nav-tree--md",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No per-size block; md and sm render the same glyph box.",
-      "remedy": "Author the md icon dimensions.",
-      "note": "visual-obligation — No per-size block; md and sm render the same glyph box. Remedy: Author the md icon dimensions."
+      "note": "visual-obligation \u2014 No per-size block; md and sm render the same glyph box. Remedy: Author the md icon dimensions."
     },
     {
       "component": "OTP",
@@ -164,10 +125,7 @@
       "carrier": "otp--alphanumeric",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Drives the field inputmode/pattern — an input-method fact.",
-      "remedy": "None.",
-      "note": "structural-behavioral — Drives the field inputmode/pattern — an input-method fact. Remedy: None."
+      "note": "structural-behavioral \u2014 Drives the field inputmode/pattern \u2014 an input-method fact. Remedy: None."
     },
     {
       "component": "Popover",
@@ -176,10 +134,7 @@
       "carrier": "popover--top",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed.",
-      "remedy": "None. A CSS modifier here would be actively wrong, not merely absent.",
-      "note": "structural-behavioral — surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
+      "note": "structural-behavioral \u2014 surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
     },
     {
       "component": "Popover",
@@ -188,10 +143,7 @@
       "carrier": "popover--bottom",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed.",
-      "remedy": "None. A CSS modifier here would be actively wrong, not merely absent.",
-      "note": "structural-behavioral — surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
+      "note": "structural-behavioral \u2014 surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
     },
     {
       "component": "Popover",
@@ -200,10 +152,7 @@
       "carrier": "popover--left",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed.",
-      "remedy": "None. A CSS modifier here would be actively wrong, not merely absent.",
-      "note": "structural-behavioral — surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
+      "note": "structural-behavioral \u2014 surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
     },
     {
       "component": "Popover",
@@ -212,10 +161,7 @@
       "carrier": "popover--right",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed.",
-      "remedy": "None. A CSS modifier here would be actively wrong, not merely absent.",
-      "note": "structural-behavioral — surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
+      "note": "structural-behavioral \u2014 surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
     },
     {
       "component": "Popover",
@@ -224,10 +170,7 @@
       "carrier": "popover--auto",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed.",
-      "remedy": "None. A CSS modifier here would be actively wrong, not merely absent.",
-      "note": "structural-behavioral — surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
+      "note": "structural-behavioral \u2014 surface.positioning declares strategy=anchored, placementProp=placement, collision=flip-shift. Placement is resolved at runtime and applied as coordinates; under collision flipping a --top class would assert a side the runtime has already changed. Remedy: None. A CSS modifier here would be actively wrong, not merely absent."
     },
     {
       "component": "Postcard",
@@ -236,10 +179,7 @@
       "carrier": "postcard--image",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither.",
-      "remedy": "Decide what type means before painting it — per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither.",
-      "note": "unresolved-contract-semantics — image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither. Remedy: Decide what type means before painting it — per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither."
+      "note": "unresolved-contract-semantics \u2014 image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither. Remedy: Decide what type means before painting it \u2014 per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither."
     },
     {
       "component": "Postcard",
@@ -248,10 +188,7 @@
       "carrier": "postcard--video",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither.",
-      "remedy": "Decide what type means before painting it — per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither.",
-      "note": "unresolved-contract-semantics — image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither. Remedy: Decide what type means before painting it — per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither."
+      "note": "unresolved-contract-semantics \u2014 image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither. Remedy: Decide what type means before painting it \u2014 per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither."
     },
     {
       "component": "Postcard",
@@ -260,10 +197,7 @@
       "carrier": "postcard--audio",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither.",
-      "remedy": "Decide what type means before painting it — per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither.",
-      "note": "unresolved-contract-semantics — image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither. Remedy: Decide what type means before painting it — per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither."
+      "note": "unresolved-contract-semantics \u2014 image/video/audio name distinct media kinds, but the contract renders no per-kind element and authors no per-kind chrome. Nothing in the contract says whether the axis owes a different element, different styling, or neither. Remedy: Decide what type means before painting it \u2014 per-kind media element (structural) or per-kind chrome (visual). Retire the axis if neither."
     },
     {
       "component": "Progress",
@@ -272,10 +206,7 @@
       "carrier": "progress--linear",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "circular cannot be delivered by a modifier class over the linear anatomy; it needs a different subtree (an SVG arc). The carrier is emitted, so the axis claims a distinction the current anatomy cannot express.",
-      "remedy": "Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular.",
-      "note": "unresolved-contract-semantics — circular cannot be delivered by a modifier class over the linear anatomy; it needs a different subtree (an SVG arc). The carrier is emitted, so the axis claims a distinction the current anatomy cannot express. Remedy: Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular."
+      "note": "unresolved-contract-semantics \u2014 circular cannot be delivered by a modifier class over the linear anatomy; it needs a different subtree (an SVG arc). The carrier is emitted, so the axis claims a distinction the current anatomy cannot express. Remedy: Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular."
     },
     {
       "component": "Progress",
@@ -284,10 +215,7 @@
       "carrier": "progress--circular",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "circular cannot be delivered by a modifier class over the linear anatomy; it needs a different subtree (an SVG arc). The carrier is emitted, so the axis claims a distinction the current anatomy cannot express.",
-      "remedy": "Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular.",
-      "note": "unresolved-contract-semantics — circular cannot be delivered by a modifier class over the linear anatomy; it needs a different subtree (an SVG arc). The carrier is emitted, so the axis claims a distinction the current anatomy cannot express. Remedy: Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular."
+      "note": "unresolved-contract-semantics \u2014 circular cannot be delivered by a modifier class over the linear anatomy; it needs a different subtree (an SVG arc). The carrier is emitted, so the axis claims a distinction the current anatomy cannot express. Remedy: Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular."
     },
     {
       "component": "Progress",
@@ -296,10 +224,7 @@
       "carrier": "progress--sm",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No per-size block or token; bar thickness is fixed across sm/md/lg.",
-      "remedy": "Author per-size track thickness.",
-      "note": "visual-obligation — No per-size block or token; bar thickness is fixed across sm/md/lg. Remedy: Author per-size track thickness."
+      "note": "visual-obligation \u2014 No per-size block or token; bar thickness is fixed across sm/md/lg. Remedy: Author per-size track thickness."
     },
     {
       "component": "Progress",
@@ -308,10 +233,7 @@
       "carrier": "progress--md",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No per-size block or token; bar thickness is fixed across sm/md/lg.",
-      "remedy": "Author per-size track thickness.",
-      "note": "visual-obligation — No per-size block or token; bar thickness is fixed across sm/md/lg. Remedy: Author per-size track thickness."
+      "note": "visual-obligation \u2014 No per-size block or token; bar thickness is fixed across sm/md/lg. Remedy: Author per-size track thickness."
     },
     {
       "component": "Progress",
@@ -320,10 +242,7 @@
       "carrier": "progress--lg",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No per-size block or token; bar thickness is fixed across sm/md/lg.",
-      "remedy": "Author per-size track thickness.",
-      "note": "visual-obligation — No per-size block or token; bar thickness is fixed across sm/md/lg. Remedy: Author per-size track thickness."
+      "note": "visual-obligation \u2014 No per-size block or token; bar thickness is fixed across sm/md/lg. Remedy: Author per-size track thickness."
     },
     {
       "component": "Select",
@@ -332,10 +251,7 @@
       "carrier": "select--bottom",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "The string \"position\" occurs exactly once in Select's contract — the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume.",
-      "remedy": "Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis.",
-      "note": "unresolved-contract-semantics — The string \"position\" occurs exactly once in Select's contract — the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume. Remedy: Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis."
+      "note": "unresolved-contract-semantics \u2014 The string \"position\" occurs exactly once in Select's contract \u2014 the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume. Remedy: Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis."
     },
     {
       "component": "Select",
@@ -344,10 +260,7 @@
       "carrier": "select--top",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "The string \"position\" occurs exactly once in Select's contract — the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume.",
-      "remedy": "Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis.",
-      "note": "unresolved-contract-semantics — The string \"position\" occurs exactly once in Select's contract — the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume. Remedy: Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis."
+      "note": "unresolved-contract-semantics \u2014 The string \"position\" occurs exactly once in Select's contract \u2014 the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume. Remedy: Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis."
     },
     {
       "component": "Select",
@@ -356,10 +269,7 @@
       "carrier": "select--auto",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "unresolved-contract-semantics",
-      "evidence": "The string \"position\" occurs exactly once in Select's contract — the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume.",
-      "remedy": "Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis.",
-      "note": "unresolved-contract-semantics — The string \"position\" occurs exactly once in Select's contract — the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume. Remedy: Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis."
+      "note": "unresolved-contract-semantics \u2014 The string \"position\" occurs exactly once in Select's contract \u2014 the axis declaration itself. No prop binding, no surface.positioning block, no style block. Unlike the anchored family, Select declares no positioning for a runtime to consume. Remedy: Either declare surface.positioning so the listbox side is runtime-resolved (matching Popover/Tooltip/Walkthrough) or retire the axis."
     },
     {
       "component": "Tabs",
@@ -368,10 +278,7 @@
       "carrier": "tabs--manual",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Keyboard activation semantics (automatic vs manual), not appearance.",
-      "remedy": "None.",
-      "note": "structural-behavioral — Keyboard activation semantics (automatic vs manual), not appearance. Remedy: None."
+      "note": "structural-behavioral \u2014 Keyboard activation semantics (automatic vs manual), not appearance. Remedy: None."
     },
     {
       "component": "Toast",
@@ -380,10 +287,7 @@
       "carrier": "toast--assertive",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Lowered to aria-live and bound in anatomy.dom — an assistive-technology fact with no visual counterpart.",
-      "remedy": "None.",
-      "note": "structural-behavioral — Lowered to aria-live and bound in anatomy.dom — an assistive-technology fact with no visual counterpart. Remedy: None."
+      "note": "structural-behavioral \u2014 Lowered to aria-live and bound in anatomy.dom \u2014 an assistive-technology fact with no visual counterpart. Remedy: None."
     },
     {
       "component": "ToggleSwitch",
@@ -392,10 +296,7 @@
       "carrier": "toggle-switch--small",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No per-size block or token; small/medium/large render identically.",
-      "remedy": "Author per-size track and thumb dimensions.",
-      "note": "visual-obligation — No per-size block or token; small/medium/large render identically. Remedy: Author per-size track and thumb dimensions."
+      "note": "visual-obligation \u2014 No per-size block or token; small/medium/large render identically. Remedy: Author per-size track and thumb dimensions."
     },
     {
       "component": "ToggleSwitch",
@@ -404,10 +305,7 @@
       "carrier": "toggle-switch--large",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "No per-size block or token; small/medium/large render identically.",
-      "remedy": "Author per-size track and thumb dimensions.",
-      "note": "visual-obligation — No per-size block or token; small/medium/large render identically. Remedy: Author per-size track and thumb dimensions."
+      "note": "visual-obligation \u2014 No per-size block or token; small/medium/large render identically. Remedy: Author per-size track and thumb dimensions."
     },
     {
       "component": "Tooltip",
@@ -416,10 +314,7 @@
       "carrier": "tooltip--top",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Tooltip",
@@ -428,10 +323,7 @@
       "carrier": "tooltip--bottom",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Tooltip",
@@ -440,10 +332,7 @@
       "carrier": "tooltip--left",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Tooltip",
@@ -452,10 +341,7 @@
       "carrier": "tooltip--right",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Tooltip",
@@ -464,10 +350,7 @@
       "carrier": "tooltip--auto",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration as Popover; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Walkthrough",
@@ -476,10 +359,7 @@
       "carrier": "walkthrough--top",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Walkthrough",
@@ -488,10 +368,7 @@
       "carrier": "walkthrough--bottom",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Walkthrough",
@@ -500,10 +377,7 @@
       "carrier": "walkthrough--left",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "component": "Walkthrough",
@@ -512,10 +386,7 @@
       "carrier": "walkthrough--right",
       "disposition": "no-styling-intent",
       "spec": "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved.",
-      "remedy": "None. A CSS modifier here would be actively wrong.",
-      "note": "structural-behavioral — Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+      "note": "structural-behavioral \u2014 Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
     },
     {
       "target": "unity",
@@ -525,10 +396,7 @@
       "carrier": "accordion--multiple",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated Type attribute toggles the carrier and sets ItemGroup.SelectionType (single vs multiple open panels); selection cardinality, not appearance.",
-      "remedy": "None.",
-      "note": "structural-behavioral — The generated Type attribute toggles the carrier and sets ItemGroup.SelectionType (single vs multiple open panels); selection cardinality, not appearance. Remedy: None."
+      "note": "structural-behavioral \u2014 The generated Type attribute toggles the carrier and sets ItemGroup.SelectionType (single vs multiple open panels); selection cardinality, not appearance. Remedy: None."
     },
     {
       "target": "unity",
@@ -538,10 +406,7 @@
       "carrier": "popover--top",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
-      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
-      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+      "note": "structural-behavioral \u2014 The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
     },
     {
       "target": "unity",
@@ -551,10 +416,7 @@
       "carrier": "popover--bottom",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
-      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
-      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+      "note": "structural-behavioral \u2014 The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
     },
     {
       "target": "unity",
@@ -564,10 +426,7 @@
       "carrier": "popover--left",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
-      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
-      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+      "note": "structural-behavioral \u2014 The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
     },
     {
       "target": "unity",
@@ -577,10 +436,7 @@
       "carrier": "popover--right",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
-      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
-      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+      "note": "structural-behavioral \u2014 The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
     },
     {
       "target": "unity",
@@ -590,10 +446,7 @@
       "carrier": "popover--auto",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
-      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
-      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+      "note": "structural-behavioral \u2014 The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
     },
     {
       "target": "unity",
@@ -603,10 +456,7 @@
       "carrier": "tabs--manual",
       "disposition": "no-styling-intent",
       "spec": "UNITY-STYLING-PROJECTION-01",
-      "adjudication": "structural-behavioral",
-      "evidence": "The generated ActivationMode attribute toggles the carrier and sets ItemGroup.ActivationMode (keyboard activation semantics); not appearance.",
-      "remedy": "None.",
-      "note": "structural-behavioral — The generated ActivationMode attribute toggles the carrier and sets ItemGroup.ActivationMode (keyboard activation semantics); not appearance. Remedy: None."
+      "note": "structural-behavioral \u2014 The generated ActivationMode attribute toggles the carrier and sets ItemGroup.ActivationMode (keyboard activation semantics); not appearance. Remedy: None."
     },
     {
       "target": "unity",
@@ -614,12 +464,9 @@
       "axis": "align",
       "value": "left",
       "carrier": "text--left",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text align=left is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text align=left is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text align=left is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -627,12 +474,9 @@
       "axis": "align",
       "value": "center",
       "carrier": "text--center",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text align=center is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text align=center is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text align=center is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -640,12 +484,9 @@
       "axis": "align",
       "value": "right",
       "carrier": "text--right",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text align=right is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text align=right is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text align=right is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -653,12 +494,9 @@
       "axis": "align",
       "value": "justify",
       "carrier": "text--justify",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text align=justify is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text align=justify is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text align=justify is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower alignment through a supported UI Toolkit text-align property and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -666,12 +504,9 @@
       "axis": "transform",
       "value": "none",
       "carrier": "text--none",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text transform=none is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower case conversion through the Text runtime and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text transform=none is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text transform=none is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -679,12 +514,9 @@
       "axis": "transform",
       "value": "uppercase",
       "carrier": "text--uppercase",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text transform=uppercase is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower case conversion through the Text runtime and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text transform=uppercase is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text transform=uppercase is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -692,12 +524,9 @@
       "axis": "transform",
       "value": "lowercase",
       "carrier": "text--lowercase",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text transform=lowercase is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower case conversion through the Text runtime and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text transform=lowercase is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text transform=lowercase is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -705,12 +534,9 @@
       "axis": "transform",
       "value": "capitalize",
       "carrier": "text--capitalize",
-      "disposition": "no-styling-intent",
+      "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "visual-obligation",
-      "evidence": "Unity Text transform=capitalize is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer.",
-      "remedy": "Lower case conversion through the Text runtime and verify a rendered consumer.",
-      "note": "visual-obligation — Unity Text transform=capitalize is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
+      "note": "visual-obligation \u2014 Unity Text transform=capitalize is declared in the contract but omitted from the generated Text API by the support boundary; its conceptual carrier has no USS selector and no runtime consumer. Remedy: Lower case conversion through the Text runtime and verify a rendered consumer."
     },
     {
       "target": "unity",
@@ -720,10 +546,696 @@
       "carrier": "divider--horizontal",
       "disposition": "styling-intent",
       "spec": "ENGINE-PASSIVE-FAMILY-01",
-      "adjudication": "stale-vocabulary",
-      "evidence": "The orientation prop declares no default, so the audit flags horizontal although the generated base Divider USS rule paints the horizontal rule.",
-      "remedy": "Declare horizontal as the contract default in a separately governed corpus change; no additional Unity styling is owed.",
-      "note": "stale-vocabulary — The orientation prop declares no default, so the audit flags horizontal although the generated base Divider USS rule paints the horizontal rule. Remedy: Declare horizontal as the contract default in a separately governed corpus change; no additional Unity styling is owed."
+      "note": "stale-vocabulary \u2014 The orientation prop declares no default, so the audit flags horizontal although the generated base Divider USS rule paints the horizontal rule. Remedy: Declare horizontal as the contract default in a separately governed corpus change; no additional Unity styling is owed."
+    },
+    {
+      "target": "unity",
+      "component": "Checkbox",
+      "axis": "size",
+      "value": "sm",
+      "carrier": "checkbox--sm",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-BOOLEAN-CONTROLS-01",
+      "note": "deferred-carrier \u2014 The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing sm/lg changes nothing on the Unity target. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing sm/lg changes nothing on the Unity target.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Checkbox",
+      "axis": "size",
+      "value": "lg",
+      "carrier": "checkbox--lg",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-BOOLEAN-CONTROLS-01",
+      "note": "deferred-carrier \u2014 The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing sm/lg changes nothing on the Unity target. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing sm/lg changes nothing on the Unity target.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "ToggleSwitch",
+      "axis": "size",
+      "value": "small",
+      "carrier": "toggle-switch--small",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-BOOLEAN-CONTROLS-01",
+      "note": "deferred-carrier \u2014 The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing small/large changes nothing on the Unity target. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing small/large changes nothing on the Unity target.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "ToggleSwitch",
+      "axis": "size",
+      "value": "large",
+      "carrier": "toggle-switch--large",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-BOOLEAN-CONTROLS-01",
+      "note": "deferred-carrier \u2014 The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing small/large changes nothing on the Unity target. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The boolean control exposes no size axis: its USS carrier waits on the styling-projection phase (P3); choosing small/large changes nothing on the Unity target.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Badge",
+      "axis": "variant",
+      "value": "default",
+      "carrier": "badge--default",
+      "disposition": "styling-intent",
+      "spec": "UNITY-BADGE-01",
+      "note": "deferred-carrier \u2014 The composed Badge exposes Variant/Intent/Size carriers, but default/status have no USS rule selecting the emitted class; the class is emitted and unpainted. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The composed Badge exposes Variant/Intent/Size carriers, but default/status have no USS rule selecting the emitted class; the class is emitted and unpainted.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Badge",
+      "axis": "variant",
+      "value": "status",
+      "carrier": "badge--status",
+      "disposition": "styling-intent",
+      "spec": "UNITY-BADGE-01",
+      "note": "deferred-carrier \u2014 The composed Badge exposes Variant/Intent/Size carriers, but default/status have no USS rule selecting the emitted class; the class is emitted and unpainted. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The composed Badge exposes Variant/Intent/Size carriers, but default/status have no USS rule selecting the emitted class; the class is emitted and unpainted.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "as",
+      "value": "ul",
+      "carrier": "list--ul",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "as",
+      "value": "ol",
+      "carrier": "list--ol",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "as",
+      "value": "dl",
+      "carrier": "list--dl",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "variant",
+      "value": "divided",
+      "carrier": "list--variant-divided",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "variant",
+      "value": "spaced",
+      "carrier": "list--variant-spaced",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "none",
+      "carrier": "list--marker-none",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "disc",
+      "carrier": "list--marker-disc",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "circle",
+      "carrier": "list--marker-circle",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "square",
+      "carrier": "list--marker-square",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "decimal",
+      "carrier": "list--marker-decimal",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "alpha",
+      "carrier": "list--marker-alpha",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "marker",
+      "value": "roman",
+      "carrier": "list--marker-roman",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "spacing",
+      "value": "none",
+      "carrier": "list--spacing-none",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "spacing",
+      "value": "sm",
+      "carrier": "list--spacing-sm",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "spacing",
+      "value": "md",
+      "carrier": "list--spacing-md",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "List",
+      "axis": "spacing",
+      "value": "lg",
+      "carrier": "list--spacing-lg",
+      "disposition": "styling-intent",
+      "spec": "UNITY-LIST-01",
+      "note": "deferred-carrier \u2014 USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "USS has no list semantics: `as` and `marker` are refused, `spacing` is pending P4, and the Variant values divide/space through carriers that no USS rule selects yet.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Tooltip",
+      "axis": "placement",
+      "value": "top",
+      "carrier": "tooltip--top",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-TOOLTIP-01",
+      "note": "deferred-carrier \u2014 The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Tooltip",
+      "axis": "placement",
+      "value": "bottom",
+      "carrier": "tooltip--bottom",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-TOOLTIP-01",
+      "note": "deferred-carrier \u2014 The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Tooltip",
+      "axis": "placement",
+      "value": "left",
+      "carrier": "tooltip--left",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-TOOLTIP-01",
+      "note": "deferred-carrier \u2014 The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Tooltip",
+      "axis": "placement",
+      "value": "right",
+      "carrier": "tooltip--right",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-TOOLTIP-01",
+      "note": "deferred-carrier \u2014 The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Tooltip",
+      "axis": "placement",
+      "value": "auto",
+      "carrier": "tooltip--auto",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-TOOLTIP-01",
+      "note": "deferred-carrier \u2014 The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The anchored surface owns placement at runtime (`AnchoredSurface`); the declared placement axis is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "NavList",
+      "axis": "orientation",
+      "value": "horizontal",
+      "carrier": "nav-list--horizontal",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-NAVLIST-01",
+      "note": "deferred-carrier \u2014 The uncarried legacy orientation axis is withheld by the admission; the horizontal modifier has no USS rule selecting it. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The uncarried legacy orientation axis is withheld by the admission; the horizontal modifier has no USS rule selecting it.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Skeleton",
+      "axis": "animate",
+      "value": "pulse",
+      "carrier": "skeleton--pulse",
+      "disposition": "styling-intent",
+      "spec": "UNITY-SKELETON-01",
+      "note": "deferred-carrier \u2014 Animation is withheld: the emitter exposes Variant/Animate/Density carriers but no USS rule selects the animate values, and no shimmer timeline is emitted. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Animation is withheld: the emitter exposes Variant/Animate/Density carriers but no USS rule selects the animate values, and no shimmer timeline is emitted.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Skeleton",
+      "axis": "animate",
+      "value": "none",
+      "carrier": "skeleton--none",
+      "disposition": "styling-intent",
+      "spec": "UNITY-SKELETON-01",
+      "note": "deferred-carrier \u2014 Animation is withheld: the emitter exposes Variant/Animate/Density carriers but no USS rule selects the animate values, and no shimmer timeline is emitted. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Animation is withheld: the emitter exposes Variant/Animate/Density carriers but no USS rule selects the animate values, and no shimmer timeline is emitted.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Progress",
+      "axis": "variant",
+      "value": "linear",
+      "carrier": "progress--linear",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-PROGRESS-01",
+      "note": "deferred-carrier \u2014 The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Progress",
+      "axis": "variant",
+      "value": "circular",
+      "carrier": "progress--circular",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-PROGRESS-01",
+      "note": "deferred-carrier \u2014 The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Progress",
+      "axis": "size",
+      "value": "sm",
+      "carrier": "progress--sm",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-PROGRESS-01",
+      "note": "deferred-carrier \u2014 The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Progress",
+      "axis": "size",
+      "value": "md",
+      "carrier": "progress--md",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-PROGRESS-01",
+      "note": "deferred-carrier \u2014 The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Progress",
+      "axis": "size",
+      "value": "lg",
+      "carrier": "progress--lg",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-PROGRESS-01",
+      "note": "deferred-carrier \u2014 The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The value-fill behavior realizes the numeric prop; the variant/size axes are pending and their emitted classes have no USS rule.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Chip",
+      "axis": "variant",
+      "value": "default",
+      "carrier": "chip--default",
+      "disposition": "styling-intent",
+      "spec": "UNITY-CHIP-01",
+      "note": "deferred-carrier \u2014 The composed action chrome carries the variant modifier, but no USS rule selects the emitted class; visual parity for the composed Button instances is refused. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The composed action chrome carries the variant modifier, but no USS rule selects the emitted class; visual parity for the composed Button instances is refused.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "CodeSnippet",
+      "axis": "as",
+      "value": "kbd",
+      "carrier": "code-snippet--kbd",
+      "disposition": "styling-intent",
+      "spec": "UNITY-CODESNIPPET-01",
+      "note": "deferred-carrier \u2014 The element switch (`as`) is refused: the root derives TextElement regardless of the kbd/samp/code value, so the modifier is unpainted. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The element switch (`as`) is refused: the root derives TextElement regardless of the kbd/samp/code value, so the modifier is unpainted.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Toast",
+      "axis": "politeness",
+      "value": "assertive",
+      "carrier": "toast--assertive",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-TOAST-01",
+      "note": "deferred-carrier \u2014 ARIA politeness is not modelled by the runtime: the politeness value is stored but no USS carrier or accessible live region distinguishes it. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "ARIA politeness is not modelled by the runtime: the politeness value is stored but no USS carrier or accessible live region distinguishes it.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Walkthrough",
+      "axis": "placement",
+      "value": "top",
+      "carrier": "walkthrough--top",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-WALKTHROUGH-01",
+      "note": "deferred-carrier \u2014 Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Walkthrough",
+      "axis": "placement",
+      "value": "bottom",
+      "carrier": "walkthrough--bottom",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-WALKTHROUGH-01",
+      "note": "deferred-carrier \u2014 Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Walkthrough",
+      "axis": "placement",
+      "value": "left",
+      "carrier": "walkthrough--left",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-WALKTHROUGH-01",
+      "note": "deferred-carrier \u2014 Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Walkthrough",
+      "axis": "placement",
+      "value": "right",
+      "carrier": "walkthrough--right",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-WALKTHROUGH-01",
+      "note": "deferred-carrier \u2014 Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Anchoring and placement are withheld: the coachmark renders inline and the placement axis is not projected onto a carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "NavTree",
+      "axis": "iconSize",
+      "value": "md",
+      "carrier": "nav-tree--md",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-NAVTREE-01",
+      "note": "deferred-carrier \u2014 Glyph icon sizing is omitted with the glyph subtree: the iconSize axis has no painted carrier in the Unity projection. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Glyph icon sizing is omitted with the glyph subtree: the iconSize axis has no painted carrier in the Unity projection.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Postcard",
+      "axis": "type",
+      "value": "image",
+      "carrier": "postcard--image",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-POSTCARD-01",
+      "note": "deferred-carrier \u2014 The embed type axis is refused with the object-props projection: the media-type values have no USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The embed type axis is refused with the object-props projection: the media-type values have no USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Postcard",
+      "axis": "type",
+      "value": "video",
+      "carrier": "postcard--video",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-POSTCARD-01",
+      "note": "deferred-carrier \u2014 The embed type axis is refused with the object-props projection: the media-type values have no USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The embed type axis is refused with the object-props projection: the media-type values have no USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Postcard",
+      "axis": "type",
+      "value": "audio",
+      "carrier": "postcard--audio",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-POSTCARD-01",
+      "note": "deferred-carrier \u2014 The embed type axis is refused with the object-props projection: the media-type values have no USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The embed type axis is refused with the object-props projection: the media-type values have no USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "OTP",
+      "axis": "mode",
+      "value": "alphanumeric",
+      "carrier": "otp--alphanumeric",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-OTP-01",
+      "note": "deferred-carrier \u2014 Mode filtering is runtime behavior, not styling: the alphanumeric modifier has no USS rule, and a11y/keyboard hints are withheld. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Mode filtering is runtime behavior, not styling: the alphanumeric modifier has no USS rule, and a11y/keyboard hints are withheld.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Select",
+      "axis": "position",
+      "value": "bottom",
+      "carrier": "select--bottom",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-SELECT-01",
+      "note": "deferred-carrier \u2014 The listbox surface owns placement at runtime; the position axis (top/bottom/auto) is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The listbox surface owns placement at runtime; the position axis (top/bottom/auto) is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Select",
+      "axis": "position",
+      "value": "top",
+      "carrier": "select--top",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-SELECT-01",
+      "note": "deferred-carrier \u2014 The listbox surface owns placement at runtime; the position axis (top/bottom/auto) is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The listbox surface owns placement at runtime; the position axis (top/bottom/auto) is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Select",
+      "axis": "position",
+      "value": "auto",
+      "carrier": "select--auto",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-SELECT-01",
+      "note": "deferred-carrier \u2014 The listbox surface owns placement at runtime; the position axis (top/bottom/auto) is not projected onto a USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The listbox surface owns placement at runtime; the position axis (top/bottom/auto) is not projected onto a USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Carousel",
+      "axis": "indicator",
+      "value": "next",
+      "carrier": "carousel--next",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-CAROUSEL-01",
+      "note": "deferred-carrier \u2014 The sequence runtime owns navigation and the picker is composed by the consumer; the indicator axis values are not projected onto painters. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The sequence runtime owns navigation and the picker is composed by the consumer; the indicator axis values are not projected onto painters.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Carousel",
+      "axis": "indicator",
+      "value": "both",
+      "carrier": "carousel--both",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-CAROUSEL-01",
+      "note": "deferred-carrier \u2014 The sequence runtime owns navigation and the picker is composed by the consumer; the indicator axis values are not projected onto painters. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "The sequence runtime owns navigation and the picker is composed by the consumer; the indicator axis values are not projected onto painters.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
+    },
+    {
+      "target": "unity",
+      "component": "Calendar",
+      "axis": "mode",
+      "value": "range",
+      "carrier": "calendar--range",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-CALENDAR-01",
+      "note": "deferred-carrier \u2014 Range mode is withheld (single-date grid only): the mode=range modifier is emitted but has no USS carrier. Remedy: Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation.",
+      "adjudication": "deferred-carrier",
+      "evidence": "Range mode is withheld (single-date grid only): the mode=range modifier is emitted but has no USS carrier.",
+      "remedy": "Paint the carrier in the Unity USS projection, or retire the axis from the contract if it is not a visual obligation."
     }
   ]
 }

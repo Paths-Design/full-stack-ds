@@ -349,6 +349,54 @@
         }
       }
     },
+    "Postcard.likes": {
+      "comment": "Visible engagement metadata, including zero. The count may be localized display text supplied by the consumer. Placeholders: {count}.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Likes: {count}"
+          }
+        }
+      }
+    },
+    "Postcard.postLabel": {
+      "comment": "Accessible name of a post article. The name is the author's display name. Placeholders: {name}.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Post by {name}"
+          }
+        }
+      }
+    },
+    "Postcard.replies": {
+      "comment": "Visible reply metadata, including zero. The count may be localized display text supplied by the consumer. Placeholders: {count}.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replies: {count}"
+          }
+        }
+      }
+    },
+    "Postcard.reposts": {
+      "comment": "Visible repost metadata, including zero. The count may be localized display text supplied by the consumer. Placeholders: {count}.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reposts: {count}"
+          }
+        }
+      }
+    },
     "Select.placeholder": {
       "comment": "Text shown in the trigger while no value is selected.",
       "extractionState": "manual",
@@ -465,6 +513,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Selected"
+          }
+        }
+      }
+    },
+    "Table.content": {
+      "comment": "Accessible name of the region containing the table, including its scrollable viewport on the web.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Table content"
           }
         }
       }

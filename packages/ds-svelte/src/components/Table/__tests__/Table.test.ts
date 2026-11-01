@@ -35,7 +35,7 @@ describe("Table — unit", () => {
 
 describe("Table — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const { container } = render(Table as unknown as Component<Record<string, unknown>>, { props: { "ariaLabel": "Test Table", "children": createRawSnippet(() => ({ render: () => "<tbody><tr><td>content</td></tr></tbody>" })) } });
+    const { container } = render(Table as unknown as Component<Record<string, unknown>>, { props: { "contentLabel": "Test Table", "children": createRawSnippet(() => ({ render: () => "<tbody><tr><td>content</td></tr></tbody>" })) } });
     const results = await axe(container, componentAxeOptions);
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });

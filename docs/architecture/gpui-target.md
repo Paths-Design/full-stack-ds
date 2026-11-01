@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: GPUI native target
 owner: "@darianrosebrook"
-updated: 2026-10-03
+updated: 2026-11-01
 governs:
   - packages/ds-codegen/src/frameworks/gpui/**
   - packages/ds-gpui/**
@@ -26,6 +26,8 @@ carry is adjudicated in the committed
 [support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json);
 an unadjudicated fact fails the boundary audit. Emission is not realization:
 GPUI has no admission descriptor and remains outside the TypeScript admission rail.
+
+The anatomy projection withholds anchor callbacks that require a cancellable event or disabled-link activation policy. Its native handler carries window/app access rather than a portable cancellation event, so the callback and associated pointer/keyboard activation remain explicit omissions. Zero-payload action callbacks keep their native projection. Support-boundary labels do not select emitted behavior.
 
 ## Contract and style authority
 

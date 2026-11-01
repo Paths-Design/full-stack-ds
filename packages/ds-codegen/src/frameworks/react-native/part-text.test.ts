@@ -8,7 +8,7 @@ describe("react-native projected text presentation", () => {
       const { componentFile, stylesFile } = generateReactNativeComponentSource(corpusIR(name));
       expect(stylesFile).toContain("rootText: definedStyle({ color:");
       expect(componentFile).toContain(`style={styles.${part}}`);
-      expect(componentFile).toMatch(/<RNText style=\{\[styles\.rootText, textVariantStyleFor/);
+      expect(componentFile).toMatch(/renderTextChildren\(children, \{ style: \[styles\.rootText, textVariantStyleFor/);
     }
   });
 

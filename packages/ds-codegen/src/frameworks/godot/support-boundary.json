@@ -332,6 +332,12 @@
       "reason": "A bindings block with no entry carries no fact a target can project."
     },
     {
+      "id": "anatomy-disabled-aria-binding",
+      "match": ["contract:/anatomy/dom/**/bindings/aria-disabled"],
+      "disposition": "pending",
+      "reason": "disclosureFacts does not extract aria-disabled and the anatomy runtime has no discoverable disabled-anchor focus policy; this binding is not realized."
+    },
+    {
       "id": "anatomy-aria-binding",
       "match": [
         "contract:/anatomy/dom/**/bindings/aria-expanded",
@@ -402,10 +408,11 @@
     {
       "id": "anatomy-focus-binding",
       "match": [
-        "contract:/anatomy/dom/**/bindings/tabindex"
+        "contract:/anatomy/dom/**/bindings/tabindex",
+        "contract:/anatomy/dom/**/attrs/tabindex"
       ],
       "disposition": "refused",
-      "reason": "Authored tabindex bindings are not projected; focus order is decided by the scene tree and the projected focus strategy."
+      "reason": "Authored tabindex attributes and bindings are not projected; focus order is decided by the scene tree and the projected focus strategy."
     },
     {
       "id": "anatomy-dom-attrs-aria",
@@ -464,6 +471,12 @@
       ],
       "disposition": "lowered",
       "via": "glyph SVG paint attributes are carried by the emitted glyph catalog resource"
+    },
+    {
+      "id": "anatomy-anchor-activation-event",
+      "match": ["contract:/anatomy/dom/events/anchor-activation"],
+      "disposition": "pending",
+      "reason": "The anatomy projection emits no anchor callback wiring or cancellable navigation default action; the root click binding is withheld."
     },
     {
       "id": "anatomy-click-event",
@@ -932,6 +945,16 @@
       "reason": "React passthrough attributes (class/style) have no engine-target meaning"
     },
     {
+      "id": "prop-content-region-label",
+      "match": [
+        "contract:/props/*/members/plain:contentLabel/**",
+        "contract:/props/*/members/plain:contentLabel",
+        "contract:/props/contentLabel"
+      ],
+      "disposition": "refused",
+      "reason": "The Web viewport content label has no generated native property or runtime consumer in the anatomy projection; the capability receipt excludes the prop and names its unprojected ARIA binding."
+    },
+    {
       "id": "prop-aria-label",
       "match": [
         "contract:/props/*/members/plain:ariaLabel/**",
@@ -1159,6 +1182,12 @@
       ],
       "disposition": "lowered",
       "via": "the icon name/size selects and sizes the emitted glyph catalog mount"
+    },
+    {
+      "id": "prop-anchor-activation-callback",
+      "match": ["contract:/props/*/members/anchor-activation:*/**", "contract:/props/*/members/anchor-activation:*"],
+      "disposition": "pending",
+      "reason": "The anatomy runtime has no consumer anchor callback or cancellable event carrier; the declared callback prop is withheld."
     },
     {
       "id": "prop-action-callback",

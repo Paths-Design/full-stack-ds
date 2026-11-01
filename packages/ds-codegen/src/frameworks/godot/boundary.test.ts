@@ -43,6 +43,18 @@ const catchAll = rule({
 const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Godot support boundary", () => {
+  it("does not claim renamed anchor callbacks or disabled-link aria bindings are realized", () => {
+    const contract = load("Links");
+    contract.name = "DestinationControl";
+    contract.props!.designed!.members!.find(prop => prop.name === "onClick")!.name = "onActivate";
+    const dom = (contract.anatomy as { dom: { events: Record<string, string> } }).dom;
+    dom.events.click = "prop:onActivate";
+    const leaves = classifyLeaves(contract);
+    expect(leaves.find(leaf => leaf.pointer === "/anatomy/dom/events/click")).toMatchObject({ rule: "anatomy-anchor-activation-event", disposition: "pending" });
+    expect(leaves.find(leaf => leaf.keyed.endsWith("anchor-activation:onActivate/name"))).toMatchObject({ rule: "prop-anchor-activation-callback", disposition: "pending" });
+    expect(leaves.find(leaf => leaf.pointer === "/anatomy/dom/bindings/aria-disabled")).toMatchObject({ rule: "anatomy-disabled-aria-binding", disposition: "pending" });
+    expect(classifyLeaves(load("Button")).find(leaf => leaf.pointer === "/anatomy/dom/events/click")).toMatchObject({ rule: "anatomy-click-event", disposition: "lowered" });
+  });
   it("loads and structurally validates the committed ledger", () => {
     const boundary = loadBoundary();
     expect(boundary.schema).toBe("godot-support-boundary.v1");
@@ -177,6 +189,16 @@ describe("Godot support boundary", () => {
     }
   });
 
+  it("explicitly refuses Web viewport label and tab-order families", () => {
+    const boundary = loadBoundary();
+    expect(classifyProp(boundary, "contentLabel")).toMatchObject({ rule: "prop-content-region-label", disposition: "refused", catchAll: false });
+    expect(classifyProp(boundary, "futureViewportBehavior").catchAll).toBe(true);
+    for (const keyed of ["/anatomy/dom/bindings/tabindex", "/anatomy/dom/children/viewport/bindings/tabindex"]) {
+      expect(classifyLeaf({ source: "contract", pointer: keyed, keyed, value: "conditional" }, boundary))
+        .toMatchObject({ rule: "anatomy-focus-binding", disposition: "refused", catchAll: false });
+    }
+  });
+
   it("classifies every leaf of the live corpus and its sidecars with no dead rules", () => {
     const boundary = loadBoundary();
     const counts = { lowered: 0, pending: 0, refused: 0, unclassified: 0 };
@@ -194,10 +216,12 @@ describe("Godot support boundary", () => {
     expect(total).toBeGreaterThan(10_000);
     expect(counts.unclassified).toBe(0);
     expect(unadjudicated).toEqual([]);
-    // The corpus boundary is closed: every leaf is lowered or refused, and the
-    // pending bucket is empty — a regression would show up as a non-zero count.
+    // Anchor cancellation and discoverable disabled-link behavior remain
+    // unsupported; adding any other pending family requires adjudication.
     for (const disposition of ["lowered", "refused"] as const) expect(counts[disposition]).toBeGreaterThan(0);
-    expect(counts.pending).toBe(0);
+    expect(boundary.rules.filter(entry => used.has(entry.id) && entry.disposition === "pending").map(entry => entry.id).sort()).toEqual([
+      "anatomy-anchor-activation-event", "anatomy-disabled-aria-binding", "prop-anchor-activation-callback",
+    ]);
     const dead = boundary.rules.filter(entry => !used.has(entry.id) && entry.catchAll !== true).map(entry => entry.id);
     expect(dead).toEqual([]);
     // The terminal catch-all is exercised only by direct classification of an

@@ -2,13 +2,16 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createPostcardStyles } from "./Postcard.styles";
+import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
 export type PostcardAuthor = { name: string; handle: string; avatar: string };
-export type PostcardStats = { likes: number; replies: number; reposts: number };
+export type PostcardStatValue = number | string;
+export type PostcardStats = { likes: PostcardStatValue; replies: PostcardStatValue; reposts: PostcardStatValue };
 export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
 // @generated:end
 
@@ -29,6 +32,8 @@ export interface PostcardProps {
 // @generated:end
 
 // @generated:start component
+const PostcardMessages = { postLabel: "Post by {name}", likes: "Likes: {count}", replies: "Replies: {count}", reposts: "Reposts: {count}" };
+
 export function Postcard({
   author,
   timestamp,
@@ -39,13 +44,14 @@ export function Postcard({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: PostcardProps) {
+  const fsdsMessages = useFsdsMessages("Postcard", PostcardMessages);
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createPostcardStyles(fsdsTheme), [fsdsTheme]);
   return (
     <View
       testID={testID}
       style={[styles.root, style]}
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={accessibilityLabel ?? formatFsdsMessage(fsdsMessages.postLabel, { name: author.name })}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
       <View
@@ -74,7 +80,7 @@ export function Postcard({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: styles.rootText })}
       </View>
       <View
         style={styles.footer}
@@ -85,7 +91,17 @@ export function Postcard({
           <View
             style={styles.stat}
           >
-            <RNText style={styles.rootText}>{stats.likes}</RNText>
+            <RNText style={styles.rootText}>{formatFsdsMessage(fsdsMessages.likes, { count: stats.likes })}</RNText>
+          </View>
+          <View
+            style={styles.stat}
+          >
+            <RNText style={styles.rootText}>{formatFsdsMessage(fsdsMessages.replies, { count: stats.replies })}</RNText>
+          </View>
+          <View
+            style={styles.stat}
+          >
+            <RNText style={styles.rootText}>{formatFsdsMessage(fsdsMessages.reposts, { count: stats.reposts })}</RNText>
           </View>
         </View>
       </View>

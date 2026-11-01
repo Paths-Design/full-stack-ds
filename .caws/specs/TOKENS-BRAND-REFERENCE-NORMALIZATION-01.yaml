@@ -1,10 +1,11 @@
 id: TOKENS-BRAND-REFERENCE-NORMALIZATION-01
 title: 'Normalize brand references to declared graph paths before CSS emission'
 mode: fix
-lifecycle_state: active
-worktree: tokens-brand-reference-normalization
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Normalized brand reference emission is established by inspected focused tests, packed light and dark browser results, integrated rail and framework checks, and A1-A3 records; commit citations establish source identity while raw runtime evidence remains ignored.'
 created_at: '2026-11-01T10:33:10.418Z'
-updated_at: '2026-11-01T12:25:37.572Z'
+updated_at: '2026-11-01T13:14:22.504Z'
 created_by_session: '01a196a8-3dec-72b2-9d96-bd8b254a659b'
 blast_radius:
   modules:
@@ -47,3 +48,19 @@ non_functional: {}
 contracts:
   - name: 'brand-reference-resolution'
     type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Raw evidence inspected in .caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/parent-reference-composition.log: 61 executed cases establish exact/core/semantic preference, missing-reference rejection, semantic/component emission and composite leaves. parent-reference-before.log retains four expected pre-fix failures. The commit citation verifies source identity only; ignored raw logs are not represented as tracked artifacts."
+    recorded_at: "2026-11-01T13:12:54.907Z"
+    commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Raw evidence inspected in .caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/packed-font/result.json: actual packed CSS computes Inter family in both light and dark after, against empty inherited monospace before. Source diff has four Orion reference corrections and no source renaming; focused tests cover nested composition. Commit verification checks source identity only, not browser execution."
+    recorded_at: "2026-11-01T13:13:08.657Z"
+    commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected raw logs under .caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/: integrated token drift, six-target rail, 5517 root tests, five framework suites, generated tree and policy pass. parent logs show 61 focused cases, 4307 brand references and 648 contrast pairs pass. Diff is four CSS and two derived USS spellings. Private builder tsc has 92 baseline/current diagnostics, none introduced. Commit verification checks source identity only; execution claims rely on those inspected raw logs."
+    recorded_at: "2026-11-01T13:13:21.282Z"
+    commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"

@@ -1,8 +1,9 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { BackHandler, Modal, Pressable, Text as RNText, View } from "react-native";
+import { BackHandler, Modal, Pressable, View } from "react-native";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createDialogStyles } from "./Dialog.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -107,7 +108,7 @@ export function Dialog({
           <View
             style={styles.title}
           >
-            {slots?.title}
+            {renderTextChildren(slots?.title)}
           </View>
           {dismissible ? (
           <Pressable
@@ -126,12 +127,12 @@ export function Dialog({
         <View
           style={styles.body}
         >
-          {typeof children === "string" ? <RNText>{children}</RNText> : children}
+          {renderTextChildren(children)}
         </View>
         <View
           style={styles.footer}
         >
-          {slots?.footer}
+          {renderTextChildren(slots?.footer)}
         </View>
       </View>
       ) : null}

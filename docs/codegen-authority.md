@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: Codegen Semantic Authority
 owner: "@darianrosebrook"
-updated: 2026-08-17
+updated: 2026-11-01
 governs:
   - packages/ds-codegen/src/ir.ts
   - packages/ds-codegen/src/semantics.ts
@@ -60,6 +60,10 @@ The IR should turn contract facts into framework-neutral emission facts:
 - "this host has an implicit role, so explicit role would be redundant"
 
 These are not React/Svelte/Vue decisions. They are normalized DOM, accessibility, and interaction facts. Every framework emitter consumes the same IR fact and lowers it idiomatically.
+
+An authored `aria-disabled` binding on an anchor produces `DomNodeIR.disabledActivation`. Web realizations omit `href` while disabled, retain the contract's explicit role and tab order, and guard activation callbacks before native navigation. The portable callback event exposes `defaultPrevented` and `preventDefault()`; enabled navigation remains the browser's default action. React Native composes that callback with its URL-opening action and projects disabled text styling only where a rendered text consumer applies it. Native engine projections that cannot provide the event's cancellation semantics retain explicit omissions rather than narrowing the callback payload silently.
+
+State suppression resolves the union of category targets and named dimension targets. A named dimension identifies its declared state values, not a CSS pseudo with the dimension's name. Suppressing a pointer dimension can therefore exclude hover and visited styling while retaining a keyboard focus indicator. The CSS blocks and design-binding selectors share that resolution; the Figma planner retains the resolved relation as metadata.
 
 ### Framework emitter owns realization syntax and idioms
 

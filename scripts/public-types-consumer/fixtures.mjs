@@ -1,4 +1,77 @@
+const postcardWebImports = `
+import type { PostcardProps as RProps, PostcardStats as RStats, PostcardStatValue as RValue } from "@full-stack-ds/react";
+import type { PostcardProps as VProps, PostcardStats as VStats, PostcardStatValue as VValue } from "@full-stack-ds/vue";
+import type { PostcardProps as SProps, PostcardStats as SStats, PostcardStatValue as SValue } from "@full-stack-ds/svelte";
+import type { PostcardComponent as AComponent, PostcardStats as AStats, PostcardStatValue as AValue } from "@full-stack-ds/angular";
+import type { PostcardElement as LComponent, PostcardStats as LStats, PostcardStatValue as LValue } from "@full-stack-ds/lit";
+type AProps = Pick<AComponent, "postId" | "author" | "timestamp" | "stats">;
+type LProps = Pick<LComponent, "postId" | "author" | "timestamp" | "stats">;
+`;
+const postcardBase = `const base = { postId: "packed", author: { name: "ليلى 山田", handle: "@layla", avatar: "avatar.png" }, timestamp: "2026-11-01" };`;
+const postcardNativeImports = `import type { PostcardProps, PostcardStats, PostcardStatValue } from "@full-stack-ds/react-native";`;
+
 export const webCases = [
+  {
+    name: "postcard-public-message-providers",
+    source: `
+import { FsdsMessagesProvider } from "@full-stack-ds/react/primitives";
+import { provideFsdsMessages as vueMessages } from "@full-stack-ds/vue";
+import { setFsdsMessages as svelteMessages } from "@full-stack-ds/svelte/primitives";
+import { provideFsdsMessages as angularMessages, type FsdsMessageCatalog } from "@full-stack-ds/angular";
+import { setFsdsMessages as litMessages } from "@full-stack-ds/lit/primitives";
+const catalog: FsdsMessageCatalog = { Postcard: { likes: "{count} إعجاب", postLabel: "{name} の投稿" } };
+void [FsdsMessagesProvider, vueMessages, svelteMessages, angularMessages, litMessages, catalog];`,
+  },
+  {
+    name: "postcard-engagement-values",
+    source: postcardWebImports + postcardBase + ["R", "V", "S", "A", "L"].map(type => `
+const ${type.toLowerCase()}Value: ${type}Value = "١٬٢٣٤";
+const ${type.toLowerCase()}Stats: ${type}Stats = { likes: 42, replies: 0, reposts: ${type.toLowerCase()}Value };
+const ${type.toLowerCase()}Formatted: ${type}Stats = { likes: ${type.toLowerCase()}Value, replies: "٠", reposts: "١٤" };
+const ${type.toLowerCase()}: ${type}Props = { ...base, stats: ${type.toLowerCase()}Stats };`).join("\n"),
+  },
+  ...["stats", "author"].map(field => ({
+    name: "missing-postcard-" + field, error: [2322, 2741], count: 5, fragment: field,
+    source: postcardWebImports + postcardBase + ["R", "V", "S", "A", "L"].map(type => `
+const ${type.toLowerCase()}: ${type}Props = { postId: "packed", timestamp: "2026-11-01", ${field === "stats" ? "author: base.author" : "stats: { likes: 42, replies: 0, reposts: 14 }"} };`).join("\n"),
+  })),
+  ...[["boolean", "true", "boolean"], ["object", "{ count: 42 }", "count"]].map(([kind, value, fragment]) => ({
+    name: "invalid-postcard-" + kind + "-stat", error: 2322, count: 5, fragment,
+    source: postcardWebImports + ["R", "V", "S", "A", "L"].map(type => `
+const ${type.toLowerCase()}: ${type}Stats = { likes: ${value}, replies: 0, reposts: 14 };`).join("\n"),
+  })),
+  {
+    name: "invalid-managed-link-tab-order", error: 2353, fragment: "tabIndex",
+    source: `import type { LinksProps } from "@full-stack-ds/react"; const link: LinksProps = { tabIndex: -1 };`
+  },
+  {
+    name: "portable-link-activation",
+    source: `
+import type { LinksProps as R, LinkActivationEvent as RE } from "@full-stack-ds/react";
+import type { LinksProps as V, LinkActivationEvent as VE } from "@full-stack-ds/vue";
+import type { LinksProps as S, LinkActivationEvent as SE } from "@full-stack-ds/svelte";
+import type { LinksComponent as A, LinkActivationEvent as AE } from "@full-stack-ds/angular";
+import type { LinksElement as L, LinkActivationEvent as LE } from "@full-stack-ds/lit";
+const cancel = (event: RE) => { if (!event.defaultPrevented) event.preventDefault(); };
+const r: R = { disabled: true, onClick: cancel }; const v: V = { onClick: cancel }; const s: S = { onClick: cancel };
+const a: A["onClick"] = cancel; const l: L["onClick"] = cancel;
+const event = { defaultPrevented: false, preventDefault() {} };
+const same: [RE, VE, SE, AE, LE] = [event, event, event, event, event];
+`
+  },
+  {
+    name: "invalid-link-activation-payload", error: 2322, count: 5, fragment: "number",
+    source: `
+import type { LinksProps as R } from "@full-stack-ds/react";
+import type { LinksProps as V } from "@full-stack-ds/vue";
+import type { LinksProps as S } from "@full-stack-ds/svelte";
+import type { LinksComponent as A } from "@full-stack-ds/angular";
+import type { LinksElement as L } from "@full-stack-ds/lit";
+const wrong = (event: number) => {};
+const r: R = { onClick: wrong }; const v: V = { onClick: wrong }; const s: S = { onClick: wrong };
+const a: A["onClick"] = wrong; const l: L["onClick"] = wrong;
+`
+  },
   {
     name: "native-table-accessibility-attributes",
     source: `
@@ -135,6 +208,39 @@ const s: S = { kind: "invalid", text: "text" };
 ];
 
 export const nativeCases = [
+  {
+    name: "postcard-engagement-values",
+    source: postcardNativeImports + postcardBase + `
+const value: PostcardStatValue = "١٬٢٣٤";
+const stats: PostcardStats = { likes: 42, replies: 0, reposts: value };
+const formatted: PostcardStats = { likes: value, replies: "٠", reposts: "١٤" };
+const post: PostcardProps = { ...base, stats, children: "مرحبا 日本語" };`,
+  },
+  ...["stats", "author"].map(field => ({
+    name: "missing-postcard-" + field, error: [2322, 2741], fragment: field,
+    source: postcardNativeImports + postcardBase + `
+const post: PostcardProps = { postId: "packed", timestamp: "2026-11-01", ${field === "stats" ? "author: base.author" : "stats: { likes: 42, replies: 0, reposts: 14 }"} };`,
+  })),
+  ...[["boolean", "true", "boolean"], ["object", "{ count: 42 }", "count"]].map(([kind, value, fragment]) => ({
+    name: "invalid-postcard-" + kind + "-stat", error: 2322, fragment,
+    source: postcardNativeImports + `const stats: PostcardStats = { likes: ${value}, replies: 0, reposts: 14 };`,
+  })),
+  {
+    name: "portable-link-activation",
+    source: `
+import type { LinksProps, LinkActivationEvent } from "@full-stack-ds/react-native";
+const cancel = (event: LinkActivationEvent) => { if (!event.defaultPrevented) event.preventDefault(); };
+const link: LinksProps = { href: "https://example.test/docs", disabled: true, onClick: cancel, children: "المستندات" };
+`
+  },
+  {
+    name: "invalid-link-activation-payload", error: 2322, fragment: "number",
+    source: `import type { LinksProps } from "@full-stack-ds/react-native"; const link: LinksProps = { onClick: (event: number) => {} };`
+  },
+  {
+    name: "readonly-link-activation-state", error: 2540, fragment: "defaultPrevented",
+    source: `import type { LinkActivationEvent } from "@full-stack-ds/react-native"; function cancel(event: LinkActivationEvent) { event.defaultPrevented = true; }`
+  },
   {
     "name": "valid",
     "source": "\nimport { Button, type ButtonProps, type ButtonVariant, type SelectOption } from \"@full-stack-ds/react-native\";\nimport type { StackProps } from \"@full-stack-ds/react-native/primitives\";\nimport type { FsdsTheme } from \"@full-stack-ds/react-native/tokens\";\nconst button: ButtonProps = { variant: \"primary\" };\nconst variant: ButtonVariant = \"outline\";\nconst option: SelectOption = { value: \"one\", label: \"One\" };\nconst stack: StackProps = { layout: \"native\" };\nconst theme: FsdsTheme = { brand: \"consumer\", tokens: { \"color.example\": \"#123456\" } };\nvoid Button;"

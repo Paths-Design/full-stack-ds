@@ -634,6 +634,12 @@
       "reason": "Form serialization attributes (name, value) have no UI Toolkit counterpart: there is no form element to submit."
     },
     {
+      "id": "anatomy-dom-tab-order-binding",
+      "match": ["contract:/anatomy/dom/bindings/tabindex", "contract:/anatomy/dom/**/children/*/bindings/tabindex"],
+      "disposition": "refused",
+      "reason": "DOM tab order does not configure UI Toolkit focus traversal. The passive lowering omits the binding and exposes no corresponding native property."
+    },
+    {
       "id": "anatomy-aria-binding",
       "match": ["contract:/anatomy/dom/bindings/aria*", "contract:/anatomy/dom/bindings/role", "contract:/anatomy/dom/**/children/*/bindings/aria*", "contract:/anatomy/dom/**/children/*/bindings/role"],
       "disposition": "refused",
@@ -770,6 +776,14 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/content"], "valueIn": ["prop:author.name"] }],
       "disposition": "refused",
       "reason": "The machine-readable datetime attribute has no UI Toolkit consumer; the visible timestamp text is projected, the datetime wiring is withheld."
+    },
+    {
+      "id": "anatomy-anchor-activation-event",
+      "match": ["contract:/anatomy/dom/events/click"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["a"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "LinkControl emits Activated destination requests through Action<string>; it does not wire the declared cancellable callback or a navigation default action. The click callback is withheld."
     },
     {
       "id": "anatomy-action-event-click",
@@ -1093,6 +1107,13 @@
       "reason": "ARIA state attributes have no UI Toolkit consumer: the runtime exposes no assistive-technology tree."
     },
     {
+      "id": "prop-anchor-activation-callback",
+      "match": ["contract:/props/*/members/anchor-activation:*/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "LinkControl carries destination metadata and Activated requests but no cancellable event payload. The declared anchor activation callback prop is withheld."
+    },
+    {
       "id": "prop-action-callback",
       "match": ["contract:/props/*/members/plain:onClick/**"],
       "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
@@ -1324,6 +1345,13 @@
       "match": ["contract:/props/*/members/plain:ariaLabel/**"],
       "disposition": "refused",
       "reason": "UI Toolkit exposes no assistive-technology tree, so an aria-label prop has no native realisation; the generated control exposes no AriaLabel property."
+    },
+    {
+      "id": "prop-content-region-label",
+      "match": ["contract:/props/*/members/plain:contentLabel/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-label", "contract:/anatomy/dom/**/children/*/bindings/aria-label"], "valueIn": ["prop:contentLabel"] }],
+      "disposition": "refused",
+      "reason": "The prop names a DOM content region through aria-label. The supported UI Toolkit witness has no corresponding accessibility-region consumer, so no ContentLabel property is emitted."
     },
     {
       "id": "prop-passive-semantic-options",

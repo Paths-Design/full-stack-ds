@@ -72,7 +72,7 @@
     "parity:consumption": "node scripts/game-pause-token-consumption.mjs",
     "swiftui:semantic-defaults": "node scripts/generate-swiftui-semantic-defaults.mjs",
     "swiftui:semantic-defaults:check": "node scripts/generate-swiftui-semantic-defaults.mjs --check",
-    "test": "vitest run",
+    "test": "vitest run --shard=1/2 && vitest run --shard=2/2",
     "test:watch": "vitest",
     "test:vue": "pnpm --filter @full-stack-ds/vue run test",
     "test:lit": "pnpm --filter @full-stack-ds/lit run test",

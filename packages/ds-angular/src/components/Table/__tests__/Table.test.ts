@@ -30,10 +30,10 @@ const componentAxeOptions = { rules: { region: { enabled: false } } };
 @Component({
   standalone: true,
   imports: [TableComponent],
-  template: "<fsds-table [ariaLabel]=\"ariaLabel\"><tbody><tr><td>content</td></tr></tbody></fsds-table>",
+  template: "<fsds-table [contentLabel]=\"contentLabel\"><tbody><tr><td>content</td></tr></tbody></fsds-table>",
 })
 class TableAxeHost {
-  readonly ariaLabel = "Test Table";
+  readonly contentLabel = "Test Table";
 }
 
 describe("Table — accessibility", () => {

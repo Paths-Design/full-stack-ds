@@ -14,5 +14,7 @@ theme = ExtResource("2")
 [node name="timestamp" type="Label" parent="header"]
 [node name="content" type="VBoxContainer" parent="."]
 [node name="footer" type="PanelContainer" parent="."]
-[node name="stats" type="PanelContainer" parent="footer"]
+[node name="stats" type="VBoxContainer" parent="footer"]
 [node name="stat" type="Label" parent="footer/stats"]
+[node name="stat_2" type="Label" parent="footer/stats"]
+[node name="stat_3" type="Label" parent="footer/stats"]

@@ -6,7 +6,8 @@ import { PROGRESS_SIZE_PREFIX, PROGRESS_THICKNESS_PREFIX, TYPOGRAPHY_SIZE_INFIX,
 import { collectVariantAxes, emitAxisSlotLookup, emitChromeModifier, emitChromeVals, emitThemeHeader, findLayeredSlot, findLayeredSlotAny, findTokenSlot, resolveStaticChrome, tokenConstName } from "../chrome.js";
 import { emitComponentReference, referenceImports, referenceNodes, referenceParameterLines } from "../references.js";
 import type { ComponentIR } from "../../../ir.js";
-import { kotlinStringDefault } from "../messages.js";
+import { kotlinMetadataText, kotlinStringDefault } from "../messages.js";
+import { nativeMetadataTextPlan } from "../../../native-metadata-text.js";
 import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalProp, orientationEnumValues } from "../../native-emission-class.js";
 
 /**
@@ -17,7 +18,15 @@ import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalPro
  * over root — the same ordering the projected-children path uses.
  */
 export function emitStaticContent(ir: ComponentIR): string {
+  const metadata = nativeMetadataTextPlan(ir);
   const name = ir.name;
+  const regionLabel = ir.root.persistentRegionLabel;
+  const regionLabelName = regionLabel ? kotlinParamName(regionLabel.safeName) : undefined;
+  const regionLabelDefault = kotlinStringDefault(ir, regionLabel);
+  const metadataModifier = metadata?.label ? `.semantics(mergeDescendants = false) { contentDescription = ${kotlinMetadataText(ir, metadata, metadata.label)} }` : "";
+  const regionModifier = (!regionLabel ? "" : regionLabelDefault === null
+    ? `.then(if (${regionLabelName} != null) Modifier.semantics(mergeDescendants = false) { contentDescription = ${regionLabelName} } else Modifier)`
+    : `.semantics(mergeDescendants = false) { contentDescription = ${regionLabelName} }`) + metadataModifier;
   const segment = packageSegment(name);
   const axes = Object.keys(ir.variants ?? {}).map((axis) => {
     const values = ir.variants[axis] ?? [];
@@ -103,6 +112,10 @@ export function emitStaticContent(ir: ComponentIR): string {
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
   if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.layout.Box`);
+  if (metadata) {
+    lines.push(`import androidx.compose.foundation.layout.Column`);
+    lines.push(`import androidx.compose.material3.Text`);
+  }
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   if (slots.anyPaddingSlot) {
     lines.push(`import androidx.compose.foundation.layout.padding`);
@@ -123,8 +136,11 @@ export function emitStaticContent(ir: ComponentIR): string {
   }
   if (elementAxis) {
     lines.push(`import androidx.compose.ui.semantics.heading`);
+  }
+  if (elementAxis || regionLabel || metadata?.label) {
     lines.push(`import androidx.compose.ui.semantics.semantics`);
   }
+  if (regionLabel || metadata?.label) lines.push(`import androidx.compose.ui.semantics.contentDescription`);
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
     for (const line of referenceImports(ir)) lines.push(line);
@@ -174,6 +190,10 @@ export function emitStaticContent(ir: ComponentIR): string {
       `    ${kotlinParamName(elementAxis.propName)}: ${elementAxis.typeName} = ${elementAxis.typeName}.${kotlinEnumName(elementAxis.defaultExpr)},`,
     );
   }
+  if (regionLabel) lines.push(`    ${regionLabelName}: String${regionLabelDefault === null ? "?" : ""} = ${regionLabelDefault ?? "null"},`);
+  for (const input of metadata?.inputs ?? []) {
+    lines.push(`    ${kotlinParamName(input.name)}: String = "",`);
+  }
   lines.push(`    content: @Composable () -> Unit,`);
   lines.push(`) {`);
   if (usesTheme) {
@@ -221,8 +241,9 @@ export function emitStaticContent(ir: ComponentIR): string {
       lines.push(``);
     }
     const decorationRefs = referenceNodes(ir, "decoration");
-    const decorationBody =
-      decorationRefs.length > 0
+    const decorationBody = metadata
+      ? ["{", "    Column {", ...metadata.leaves.map(leaf => `        ${leaf.kind === "content" ? "content()" : `Text(text = ${kotlinMetadataText(ir, metadata, leaf.source)})`}`), "    }", "}"].join("\n")
+      : decorationRefs.length > 0
         ? [
             "{",
             ...decorationRefs.flatMap((ref) => emitComponentReference(ir, ref, "    ")),
@@ -231,8 +252,8 @@ export function emitStaticContent(ir: ComponentIR): string {
           ].join("\n")
         : "{ content() }";
     const box = elementAxis
-      ? `Box(modifier.then(chromeModifier).then(headingModifier)) ${decorationBody}`
-      : `Box(modifier.then(chromeModifier)) ${decorationBody}`;
+      ? `Box(modifier.then(chromeModifier).then(headingModifier)${regionModifier}) ${decorationBody}`
+      : `Box(modifier.then(chromeModifier)${regionModifier}) ${decorationBody}`;
     // Wrapping: text style outermost (M3 LocalTextStyle bridge), then the
     // content-color provider, then the box — each only when its fact exists.
     const contentLines: string[] = [];
@@ -253,7 +274,11 @@ export function emitStaticContent(ir: ComponentIR): string {
       for (const l of contentLines) lines.push(`    ${l}`);
     }
   } else {
-    lines.push(`    Box(modifier) { content() }`);
+    if (metadata) {
+      lines.push(`    Box(modifier${regionModifier}) {`, `        Column {`);
+      for (const leaf of metadata.leaves) lines.push(`            ${leaf.kind === "content" ? "content()" : `Text(text = ${kotlinMetadataText(ir, metadata, leaf.source)})`}`);
+      lines.push(`        }`, `    }`);
+    } else lines.push(`    Box(modifier${regionModifier}) { content() }`);
   }
   lines.push(`}`);
   lines.push(`// @generated:end`);

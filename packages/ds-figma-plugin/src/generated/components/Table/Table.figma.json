@@ -87,9 +87,19 @@
       "safeName": "responsive",
       "type": "boolean",
       "required": false,
-      "description": "Enable responsive horizontal scrolling",
-      "defaultExpr": null,
+      "description": "Enable a keyboard-focusable horizontal scrolling viewport on the web. Defaults to true; false allows content to overflow without a scrolling viewport.",
+      "defaultExpr": "true",
       "nodeKind": null
+    },
+    {
+      "name": "contentLabel",
+      "safeName": "contentLabel",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name of the surrounding table content region. Defaults to the localized Table content message.",
+      "defaultExpr": "\"Table content\"",
+      "nodeKind": null,
+      "defaultMessage": "content"
     },
     {
       "name": "ariaLabel",
@@ -99,6 +109,15 @@
       "description": "Accessible label for the table",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "content",
+      "catalogKey": "Table.content",
+      "defaultMessage": "Table content",
+      "description": "Accessible name of the region containing the table, including its scrollable viewport on the web.",
+      "params": []
     }
   ],
   "designBindings": [
@@ -514,6 +533,20 @@
     "booleanModifiers": []
   },
   "root": {
+    "persistentRegionLabel": {
+      "name": "contentLabel",
+      "safeName": "contentLabel",
+      "type": "string",
+      "typeRefs": [],
+      "required": false,
+      "description": "Accessible name of the surrounding table content region. Defaults to the localized Table content message.",
+      "defaultExpr": "\"Table content\"",
+      "defaultMessage": "content",
+      "propType": {
+        "kind": "fallback",
+        "raw": "string"
+      }
+    },
     "element": "div",
     "labeling": [
       "aria-sort",
@@ -585,6 +618,12 @@
           "font-size": "var(--fsds-table-text-size, 14px)",
           "line-height": "var(--fsds-table-text-line-height, 1.5)",
           "overflow-x": "auto"
+        }
+      },
+      {
+        "selector": ".table[data-responsive=\"false\"]",
+        "declarations": {
+          "overflow-x": "visible"
         }
       },
       {
@@ -667,7 +706,7 @@
     "form": null,
     "focus": {
       "strategy": "none",
-      "description": "The table itself does not manage focus. Individual interactive cells (sortable headers, checkboxes) are reachable via standard tab order."
+      "description": "The table does not manage cell focus. Its responsive web viewport is in the standard tab order for native horizontal arrow-key scrolling. Interactive cells remain in the standard tab order."
     },
     "portal": {
       "enabled": false

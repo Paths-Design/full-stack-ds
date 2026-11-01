@@ -113,6 +113,11 @@ export function propRoles(contract: ComponentContract): Map<string, string> {
     for (const child of node?.children ?? []) visit(child);
   };
   visit((contract as { anatomy?: { dom?: GlyphNode } }).anatomy?.dom);
+  // Host fact: root anchor activation, independent of callback spelling.
+  const anchor = Array.isArray(contract.anatomy) ? undefined : contract.anatomy?.dom;
+  const activation = anchor?.tag === "a" ? anchor.events?.click : undefined;
+  const callback = typeof activation === "string" ? /^prop:([A-Za-z_$][\w$-]*)$/.exec(activation) : undefined;
+  if (callback) roles.set(callback[1]!, "anchor-activation");
   return roles;
 }
 
@@ -140,7 +145,10 @@ function walk(value: unknown, source: GodotLeafSource, pointer: string, keyed: s
   }
   if (value !== null && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length) {
     for (const [key, child] of Object.entries(value)) {
-      walk(child, source, `${pointer}/${escape(key)}`, `${keyed}/${escape(key)}`, roles, out);
+      // Preserve the raw source pointer while classifying the host capability.
+      const anchorEvent = keyed === "/anatomy/dom/events" && key === "click" && typeof child === "string"
+        && child.startsWith("prop:") && roles.get(child.slice(5)) === "anchor-activation";
+      walk(child, source, `${pointer}/${escape(key)}`, `${keyed}/${escape(anchorEvent ? "anchor-activation" : key)}`, roles, out);
     }
     return;
   }

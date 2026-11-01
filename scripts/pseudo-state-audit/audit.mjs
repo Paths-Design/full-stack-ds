@@ -254,11 +254,11 @@ function isTextInput(contract, component) {
   return hasTextInput && (component === "Input" || component === "TextField" || /field|input/i.test(component));
 }
 
-export function classify(component) {
-  const contract = readJSON(resolve(CONTRACTS, component, `${component}.contract.json`)) ?? {};
-  const prefix = cssPrefix(component);
-  const css = readText(resolve(REACT, component, `${component}.css`));
-  const tokensCss = readText(resolve(REACT, component, `${component}.tokens.css`));
+export function classify(component, fixture) {
+  const contract = fixture?.contract ?? readJSON(resolve(CONTRACTS, component, `${component}.contract.json`)) ?? {};
+  const prefix = fixture ? getCssPrefix(contract) : cssPrefix(component);
+  const css = fixture?.css ?? readText(resolve(REACT, component, `${component}.css`));
+  const tokensCss = fixture?.tokensCss ?? readText(resolve(REACT, component, `${component}.tokens.css`));
   const both = css + "\n" + tokensCss;
 
   const dimsObj = contract.states?.dimensions ?? {};
@@ -268,8 +268,13 @@ export function classify(component) {
   // Which interaction categories are suppressed when an availability dimension
   // is active (e.g. availability=disabled suppresses interaction styling).
   const suppressedCategories = new Set();
+  const suppressedNames = new Set();
   for (const dim of Object.values(dimsObj)) {
     for (const cat of dim?.suppresses?.categories ?? []) suppressedCategories.add(cat);
+    for (const name of dim?.suppresses?.names ?? []) {
+      if (!Object.hasOwn(dimsObj, name)) throw new Error(`[STATE_SUPPRESSION_UNKNOWN_DIMENSION] ${component}: ${name}`);
+      suppressedNames.add(name);
+    }
   }
 
   // Styling intent (false-positive control, spec invariant): an INTERACTION
@@ -281,7 +286,7 @@ export function classify(component) {
   // its interaction dims are behavioral, not gaps. Non-interaction categories
   // (availability/selection/validation/visibility) always carry intent — a
   // declared disabled/invalid/open state is a real obligation to realize.
-  const stylesJson = readJSON(resolve(CONTRACTS, component, `${component}.styles.json`)) ?? {};
+  const stylesJson = fixture?.styles ?? readJSON(resolve(CONTRACTS, component, `${component}.styles.json`)) ?? {};
   const stylesKeys = Object.keys(stylesJson);
   const authorsInteractionStyling =
     /:hover|:focus-visible|:focus\b|:active/.test(both) ||
@@ -320,7 +325,8 @@ export function classify(component) {
       // an active availability dimension. The codegen legitimately omits it, so
       // it is neither a realization nor a gap — it's behavioral.
       const suppressed =
-        INTERACTION_PSEUDO_CATEGORIES.has(category) && suppressedCategories.has(category) && !realized;
+        (suppressedNames.has(dimName) ||
+          (INTERACTION_PSEUDO_CATEGORIES.has(category) && suppressedCategories.has(category))) && !realized;
 
       // focus.strategy=none roots carry no focus obligation on the root.
       const focusExempt = focusStrategyNone && category === "interaction" && /focus/.test(value);

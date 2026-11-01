@@ -20,6 +20,10 @@
   line-height: var(--fsds-table-design-root-typography-line-height, var(--fsds-table-text-line-height, 1.5));
   overflow-x: auto;
 
+  &[data-responsive="false"] {
+    overflow-x: visible;
+  }
+
   &:hover {
     background-color: var(--fsds-table-design-hover-background-fill, var(--fsds-table-color-background-hover, #f7f7f7));
   }

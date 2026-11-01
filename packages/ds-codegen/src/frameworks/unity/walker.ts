@@ -75,6 +75,12 @@ interface ElementPlan {
   text?: string;
   /** R5b: declared string prop whose value this text leaf paints. */
   textBinding?: string;
+  /** Prop/path identity before C# attribute names are flattened. */
+  textSource?: string;
+  /** Source-language fallback for a single projected message parameter. */
+  messageText?: { template: string; placeholder: string };
+  /** Source facts used to reject ambiguous repeated behavior hosts. */
+  node?: DomNodeIR;
   part?: string;
   children: ElementPlan[];
   /** The private composed-content host (R3), owned by its parent element. */
@@ -362,6 +368,17 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       node.content.kind === "prop" && !node.content.path?.length ? node.content.prop : undefined;
     const projected = ctx.lowering.behavior === "ProjectedText" && node.content !== undefined && "kind" in node.content &&
       node.content.kind === "prop" && (node.content.path?.length ?? 0) > 0 ? node.content : undefined;
+    const message = ctx.lowering.behavior === "ProjectedText" && node.content !== undefined && "kind" in node.content &&
+      node.content.kind === "message" ? node.content : undefined;
+    const messageParam = message?.params.length === 1 ? message.params[0] : undefined;
+    const messageValue = messageParam?.value.kind === "prop" ? messageParam.value : undefined;
+    const messageDefinition = message === undefined ? undefined : ctx.ir.messages.find(candidate => candidate.key === message.key);
+    const messageOwner = messageValue === undefined ? undefined : ctx.ir.styledProps.find(prop => prop.name === messageValue.prop);
+    if (message !== undefined && (messageValue === undefined || messageDefinition === undefined ||
+        type !== "Label" || !node.part || node.children.length || messageOwner === undefined ||
+        (!messageValue.path?.length && !isStringProp(messageOwner)))) {
+      throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} message ${message.key} requires one declared prop parameter on a static text leaf`);
+    }
     if (projected !== undefined) {
       const owner = ctx.ir.styledProps.find(candidate => candidate.name === projected.prop);
       if (!owner) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} projects an undeclared prop ${projected.prop}`);
@@ -378,15 +395,32 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       : node.part
       ? { ref: identifier(pascal(node.part)) + (isEmittedApiName(ctx, node.part) && (ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "TextInput" || !ctx.compound.has(node.part)) ? "Control" : ""), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
+    element.node = node;
     if (text !== undefined) element.text = text;
-    if (contentBinding !== undefined) element.textBinding = contentBinding;
+    if (contentBinding !== undefined) {
+      element.textBinding = contentBinding;
+      element.textSource = JSON.stringify([contentBinding]);
+    }
     if (contentBinding !== undefined && ctx.lowering.behavior === "ProjectedText" && element.ref === identifier(pascal(contentBinding))) {
       element.ref = identifier(`${pascal(contentBinding)}Control`);
     }
     if (projected !== undefined) {
       const flattened = flattenedProjectionName(ctx, projected.prop, projected.path!);
       element.textBinding = flattened;
+      element.textSource = JSON.stringify([projected.prop, ...projected.path!]);
       if (element.ref === identifier(pascal(flattened))) element.ref = identifier(`${pascal(flattened)}Control`);
+    }
+    // Source fact: MessageIR fallback text and one prop/path parameter. Applies
+    // by binding kind on static projection hosts; replace this fallback when a
+    // Unity catalog backend supplies the same parameter/value API.
+    if (messageValue !== undefined && messageDefinition !== undefined && messageParam !== undefined) {
+      element.textBinding = messageValue.path?.length
+        ? flattenedProjectionName(ctx, messageValue.prop, messageValue.path)
+        : messageValue.prop;
+      element.messageText = { template: messageDefinition.defaultMessage, placeholder: `{${messageParam.name}}` };
+      element.textSource = JSON.stringify([messageValue.prop, ...(messageValue.path ?? [])]);
+      element.text = messageDefinition.defaultMessage.replaceAll(element.messageText.placeholder, "");
+      if (element.ref === identifier(pascal(element.textBinding))) element.ref = identifier(`${element.ref}Control`);
     }
     if (node.componentRef !== undefined && !avatarImage) {
       const instance = node.componentInstance;
@@ -494,8 +528,49 @@ function planClasses(ctx: Context): ClassPlan[] {
       const propName = identifier(pascal(member.textBinding));
       for (const other of cls.members) if (other !== member && other.ref === propName) other.ref = identifier(`${other.ref}Control`);
     }
+    allocateRepeatedStaticMembers(ctx, cls);
   }
   return classes;
+}
+
+/**
+ * Source fact: multiple static text nodes may share a semantic anatomy part.
+ * Applies by `details.multiple` and host/binding facts, preserving the first
+ * public accessor and every node's semantic name/class. Behavioral lowerings
+ * resolve parts as singular refs and must refuse repetition until they carry
+ * explicit instance addressing; they must never bind an arbitrary occurrence.
+ */
+function allocateRepeatedStaticMembers(ctx: Context, cls: ClassPlan): void {
+  const byPart = new Map<string, ElementPlan[]>();
+  for (const member of cls.members) {
+    if (member.part === undefined) continue;
+    const group = byPart.get(member.part) ?? [];
+    group.push(member);
+    byPart.set(member.part, group);
+  }
+  const taken = new Set([
+    cls.name, ...cls.members.map(member => member.ref),
+    ...ctx.ir.styledProps.map(prop => identifier(pascal(prop.name))),
+    ...cls.members.flatMap(member => member.textBinding ? [identifier(pascal(member.textBinding))] : []),
+  ]);
+  for (const [partName, instances] of byPart) {
+    if (instances.length < 2) continue;
+    const part = ctx.ir.parts.find(candidate => candidate.name === partName);
+    const staticHost = ctx.lowering.behavior === "Passive" || ctx.lowering.behavior === "ProjectedText";
+    if (!staticHost || part?.details?.multiple !== true || part.details.interactive || part.details.focusable ||
+        instances.some(instance => instance.type !== "Label" || instance.children.length || instance.node === undefined ||
+          instance.node.componentRef !== undefined || Object.keys(instance.node.events).length ||
+          Object.keys(instance.node.bindings).length || Object.keys(instance.node.propertyBindings).length)) {
+      throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} repeated part ${partName} must declare multiple static text leaves on a static projection host`);
+    }
+    const base = instances[0]!.ref;
+    let ordinal = 2;
+    for (const instance of instances.slice(1)) {
+      while (taken.has(`${base}${ordinal}`)) ordinal++;
+      instance.ref = identifier(`${base}${ordinal++}`);
+      taken.add(instance.ref);
+    }
+  }
 }
 
 const behaviorMember = { BooleanControl: "Control", TextInput: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress", Modal: "Surface", Toast: "Surface" } as const;
@@ -579,11 +654,11 @@ function passiveRootApi(ctx: Context): RootApi {
 function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean, textProp?: string): void {
   if (!node || omitted?.(node)) return;
   // DOM-metadata bindings the passive lowering does not render: a11y
-  // role/aria attributes on any node, `data-*` attributes on any node, and the
+  // role/aria and DOM tab-order attributes, `data-*` attributes on any node, and the
   // root's field-association attributes (htmlFor, form). The admission boundary
   // classifies their leaves.
   const unsupportedBindings = Object.entries(node.bindings).some(([attribute]) => {
-    if (attribute === "role" || attribute.startsWith("aria-")) return false;
+    if (attribute === "role" || attribute === "tabindex" || attribute.startsWith("aria-")) return false;
     if (/^data-[a-z][a-z0-9-]*$/.test(attribute)) return false;
     const rootMetadataBinding = node === ir.dom && (attribute === "htmlFor" || attribute === "form");
     return !rootMetadataBinding;
@@ -950,11 +1025,37 @@ function projectedTextRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const root = classes[0]!;
   const members: string[] = [];
   const defaults: string[] = [];
+  const byBinding = new Map<string, ElementPlan[]>();
   for (const member of root.members) {
     if (!member.textBinding || member.declaration === "local") continue;
-    const name = identifier(pascal(member.textBinding));
-    members.push(`        [UxmlAttribute] public string ${name} { get => ${member.ref}.text; set { ${member.ref}.text = value ?? ""; } }`);
-    const prop = ir.styledProps.find(candidate => candidate.name === member.textBinding);
+    const group = byBinding.get(member.textBinding) ?? [];
+    if (group.some(other => other.textSource !== member.textSource)) {
+      throw new Error(`UNITY_IDENTIFIER_COLLISION: ${ir.name} ${root.name} projects distinct content sources to ${pascal(member.textBinding)}`);
+    }
+    group.push(member);
+    byBinding.set(member.textBinding, group);
+  }
+  const taken = new Set([root.name, ...root.members.map(member => member.ref), ...[...byBinding.keys(), ...ir.styledProps.map(prop => prop.name)].map(pascal)]);
+  let backingOrdinal = 0;
+  for (const [binding, instances] of byBinding) {
+    const name = identifier(pascal(binding));
+    const formatted = instances.some(member => member.messageText !== undefined);
+    let value = 'value ?? ""';
+    let getter = `${instances[0]!.ref}.text`;
+    let store = "";
+    if (formatted) {
+      let backing: string;
+      do { backing = `textValue${++backingOrdinal}`; } while (taken.has(backing));
+      taken.add(backing);
+      members.push(`        private string ${backing} = "";`);
+      getter = value = backing;
+      store = `${backing} = value ?? ""; `;
+    }
+    const assignments = instances.map(member => `${member.ref}.text = ${member.messageText
+      ? `${quote(member.messageText.template)}.Replace(${quote(member.messageText.placeholder)}, ${value})`
+      : value};`).join(" ");
+    members.push(`        [UxmlAttribute] public string ${name} { get => ${getter}; set { ${store}${assignments} } }`);
+    const prop = ir.styledProps.find(candidate => candidate.name === binding);
     if (prop !== undefined) {
       const literal = defaultLiteral(ir, prop);
       if (literal !== undefined && typeof literal === "string") defaults.push(`${name} = ${literal};`);

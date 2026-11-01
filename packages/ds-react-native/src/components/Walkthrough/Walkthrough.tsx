@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createWalkthroughStyles } from "./Walkthrough.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -88,7 +89,7 @@ export function Walkthrough({
           style={styles.title}
           accessibilityLabel={label}
         >
-          {slots?.title}
+          {renderTextChildren(slots?.title)}
         </View>
         <RNText
           style={styles.description}

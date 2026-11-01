@@ -10,6 +10,4118 @@
   },
   "entries": [
     {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-caption-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-legal-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-caption-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-legal-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:canary:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:corporate:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:default:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-caption-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-legal-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-caption-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-meta-legal-font-family",
+      "value": "var(--fsds-core-typography-font-family-monaspace)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:developer:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:fintech:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-serif)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-emphasized-in)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-soft-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:forest:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-serif)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-standard)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:marketplace:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-serif)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-linear)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:monochrome:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-serif)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:orion:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-soft-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-bounce)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-floating)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:quickserve:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-default",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-dialog",
+      "value": "var(--fsds-core-elevation-level-5)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-flat",
+      "value": "var(--fsds-core-elevation-level-0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-floating",
+      "value": "var(--fsds-core-elevation-level-3)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-overlay",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-popover",
+      "value": "var(--fsds-core-elevation-level-4)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-elevation-surface-raised",
+      "value": "var(--fsds-core-elevation-level-2)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-focus-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-hover-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-interaction-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-modal-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-press-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-enter-easing",
+      "value": "var(--fsds-core-motion-easing-quick-enter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-motion-tooltip-exit-easing",
+      "value": "var(--fsds-core-motion-easing-quick-exit)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-default",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-far",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-near",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-shape-card-elevation-none",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-body",
+      "value": "var(--fsds-core-typography-font-family-inter)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "(theme)",
+      "sourceKey": "brand:streaming:dark",
+      "part": "",
+      "property": "--fsds-semantic-typography-semantic-family-heading",
+      "value": "var(--fsds-core-typography-font-family-sans)",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Accordion",
       "sourceKey": ".accordion--disabled",
       "part": "root",
@@ -119,6 +4231,22 @@
     {
       "component": "Accordion",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "brand:default:dark",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "border-radius",
       "value": "12px",
@@ -531,6 +4659,22 @@
     },
     {
       "component": "Badge",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
       "sourceKey": "brand:developer",
       "part": "root",
       "property": "border-radius",
@@ -739,6 +4883,14 @@
     },
     {
       "component": "Breadcrumbs",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
       "sourceKey": "brand:developer",
       "part": "root",
       "property": "border-radius",
@@ -868,6 +5020,22 @@
     {
       "component": "Button",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "font-weight",
       "value": "500",
@@ -1388,6 +5556,54 @@
     {
       "component": "Card",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default:dark",
+      "part": "media",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "padding",
       "value": "20px",
@@ -2259,6 +6475,14 @@
     },
     {
       "component": "Chip",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
       "sourceKey": "brand:developer",
       "part": "root",
       "property": "border-radius",
@@ -2532,6 +6756,30 @@
     {
       "component": "CodeBlock",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default:dark",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "padding",
       "value": "20px",
@@ -3180,6 +7428,14 @@
     },
     {
       "component": "Dialog",
+      "sourceKey": "brand:default:dark",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
       "sourceKey": "brand:developer",
       "part": "modal",
       "property": "border-radius",
@@ -3470,14 +7726,6 @@
       "component": "Image",
       "sourceKey": "root",
       "part": "root",
-      "property": "max-width",
-      "value": "100%",
-      "reason": "uss-scalar"
-    },
-    {
-      "component": "Image",
-      "sourceKey": "root",
-      "part": "root",
       "property": "object-fit",
       "value": "var(--fsds-image-prop-object-fit, fill)",
       "reason": "uss-property"
@@ -3496,14 +7744,6 @@
       "part": "root",
       "property": "width",
       "value": "revert-layer",
-      "reason": "uss-scalar"
-    },
-    {
-      "component": "Image",
-      "sourceKey": "structure",
-      "part": "root",
-      "property": "max-width",
-      "value": "100%",
       "reason": "uss-scalar"
     },
     {
@@ -3557,6 +7797,14 @@
     {
       "component": "Input",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "border-radius",
       "value": "8px",
@@ -3697,14 +7945,6 @@
       "property": "cursor",
       "value": "not-allowed",
       "reason": "uss-scalar"
-    },
-    {
-      "component": "Links",
-      "sourceKey": "disabled",
-      "part": "root",
-      "property": "pointer-events",
-      "value": "none",
-      "reason": "uss-property"
     },
     {
       "component": "Links",
@@ -4380,6 +8620,38 @@
     },
     {
       "component": "Popover",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
       "sourceKey": "brand:developer",
       "part": "content",
       "property": "border-radius",
@@ -4715,6 +8987,14 @@
       "reason": "uss-property"
     },
     {
+      "component": "Postcard",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "reason": "uss-property"
+    },
+    {
       "component": "Progress",
       "sourceKey": "fill",
       "part": "fill",
@@ -4965,6 +9245,46 @@
     {
       "component": "Select",
       "sourceKey": "brand:default",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default:dark",
+      "part": "option",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default:dark",
       "part": "trigger",
       "property": "border-radius",
       "value": "8px",
@@ -5958,6 +10278,14 @@
     },
     {
       "component": "Table",
+      "sourceKey": ".table[data-responsive=\"false\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Table",
       "sourceKey": "caption",
       "part": "caption",
       "property": "text-align",
@@ -6056,6 +10384,14 @@
     {
       "component": "Tabs",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tabs",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "border-radius",
       "value": "0px",
@@ -6520,6 +10856,14 @@
     },
     {
       "component": "Toast",
+      "sourceKey": "brand:default:dark",
+      "part": "item",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
       "sourceKey": "brand:developer",
       "part": "item",
       "property": "border-radius",
@@ -6736,6 +11080,14 @@
     },
     {
       "component": "Tooltip",
+      "sourceKey": "brand:default:dark",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
       "sourceKey": "brand:developer",
       "part": "content",
       "property": "border-radius",
@@ -6905,6 +11257,14 @@
     {
       "component": "Walkthrough",
       "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:default:dark",
       "part": "root",
       "property": "border-radius",
       "value": "14px",

@@ -1,5 +1,6 @@
 // @generated:start imports
 import { type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Table.css";
 // @generated:end
 
@@ -16,8 +17,9 @@ import "./Table.css";
 // @custom:end
 
 // @generated:start props
-export interface TableProps extends Omit<HTMLAttributes<HTMLDivElement>, "ariaLabel" | "children" | "className" | "data-testid" | "responsive"> {
+export interface TableProps extends Omit<HTMLAttributes<HTMLDivElement>, "ariaLabel" | "children" | "className" | "contentLabel" | "data-testid" | "responsive"> {
   responsive?: boolean;
+  contentLabel?: string;
   ariaLabel?: string;
   className?: string;
   "data-testid"?: string;
@@ -249,14 +251,19 @@ export function TableCell({
 // @generated:end
 
 // @generated:start component
+const TableMessages = { content: "Table content" };
+
 export function Table({
   className,
   "data-testid": testId,
   children,
-  responsive: _responsive,
+  responsive = true,
+  contentLabel: contentLabelProp,
   ariaLabel,
   ...rest
 }: TableProps) {
+  const fsdsMessages = useFsdsMessages("Table", TableMessages);
+  const contentLabel = contentLabelProp ?? fsdsMessages.content;
   const classNames = [
     "table",
     className,
@@ -265,7 +272,7 @@ export function Table({
     .join(" ");
 
   return (
-  <div className={`${classNames}`} data-testid={testId} data-fsds-component="table" data-fsds-box="" {...rest}>
+  <div className={`${classNames}`} role="region" data-responsive={(responsive ? "true" : "false")} tabIndex={(responsive ? 0 : -1)} aria-label={contentLabel} data-testid={testId} data-fsds-component="table" data-fsds-box="" {...rest}>
     <table className="table__container" aria-label={ariaLabel}>
       {children}
     </table>

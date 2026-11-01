@@ -939,6 +939,10 @@ export interface DomNodeIR {
   nativeRadioChannel?: string;
   /** Normalized host activation; emitters only lower framework syntax. */
   activation?: ActivationIR;
+  /** An ARIA-disabled anchor retains discovery while suppressing native navigation.
+   * Source fact: authored aria-disabled on an HTML anchor; applies by host capability.
+   * Realization keeps href absent while disabled and guards activation callbacks. */
+  disabledActivation?: { disabled: BindingExpression };
   /** Bind the rendered content host to the focus-scope behavior. */
   focusContainer?: boolean;
   /**
@@ -1494,6 +1498,8 @@ export function nativeRootClipping(ir: ComponentIR, platform: "ios" | "android")
 }
 
 export interface RootSemanticsIR {
+  /** Plain string label for an unconditionally exposed root region. */
+  persistentRegionLabel?: ResolvedPropIR;
   /** Resolved root HTML element for the component. */
   element: string;
   /** Role explicitly declared on the contract. */
@@ -2065,6 +2071,23 @@ function domTreeOwnsRole(
   return node.children.some((child) => domTreeOwnsRole(child, role));
 }
 
+/**
+ * Contract role, visibility and binding facts describe a persistent named region.
+ * Targets decide which content archetypes can realize that region and how to
+ * preserve their children; this fact does not classify a native emitter path.
+ */
+function derivePersistentRegionLabel(
+  root: DomNodeIR | null | undefined,
+  props: ResolvedPropIR[],
+): ResolvedPropIR | undefined {
+  if (!root || root.attrs.role !== "region") return undefined;
+  if (root.ifProp !== undefined || root.ifSlot !== undefined || root.attrs.hidden !== undefined || root.bindings.hidden) return undefined;
+  if (root.bindings.role || root.bindings["aria-hidden"] || root.attrs["aria-hidden"] === "true") return undefined;
+  const label = root.bindings["aria-label"];
+  if (label?.kind !== "prop" || (label.path?.length ?? 0) > 0) return undefined;
+  return props.find(prop => (prop.name === label.prop || prop.safeName === label.prop) && prop.type === "string");
+}
+
 export function buildComponentIR(
   contract: ComponentContract,
   options?: BuildComponentIROptions,
@@ -2105,7 +2128,7 @@ export function buildComponentIR(
     ...binding,
     selector: binding.selectorKey === "root" ? `.${cssPrefix}` : guardInteractionSelector(
       expandStylesKey(binding.selectorKey, cssPrefix, expandOptionsForContract(contract, cssPrefix)),
-      suppressionGuardFor(contract),
+      suppressionGuardFor(contract, cssPrefix),
     ),
   }));
   const tokenScopes = buildTokenScopes(contract, cssPrefix);
@@ -2241,6 +2264,7 @@ export function buildComponentIR(
 
   const messages = buildMessages(contract);
   validateMessages(contract, messages, dom, styledProps, motion.sequence);
+  const persistentRegionLabel = derivePersistentRegionLabel(dom, styledProps);
 
   return {
     name: contract.name,
@@ -2260,6 +2284,7 @@ export function buildComponentIR(
     states,
     classRecipe,
     root: {
+      ...(persistentRegionLabel ? { persistentRegionLabel } : {}),
       element: rootElement,
       explicitRole,
       implicitRole,
@@ -3827,6 +3852,17 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
         `\`cssVariableBindings\`.`,
     );
   }
+  const disabledActivation: DomNodeIR["disabledActivation"] = !componentRef && node.tag === "a" && (bindings["aria-disabled"] || node.attrs?.["aria-disabled"] !== undefined)
+    ? { disabled: bindings["aria-disabled"] ?? { kind: "literal", value: node.attrs!["aria-disabled"] } }
+    : undefined;
+  let attrs = node.attrs ?? {};
+  if (disabledActivation && attrs.href !== undefined) {
+    // Static and dynamic destinations share the same omission law. Keep the
+    // contract immutable and prefer an explicitly authored dynamic binding.
+    bindings.href ??= { kind: "literal", value: attrs.href };
+    attrs = { ...attrs };
+    delete attrs.href;
+  }
   return {
     // A componentRef node carries its component name on `componentRef` and a
     // normalized empty `tag`; emitters discriminate on `componentRef !==
@@ -3837,8 +3873,9 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
     // each framework emitter can render the matching named-slot idiom.
     slotName: node.tag === "slot" ? node.name : undefined,
     part: node.part,
-    attrs: node.attrs ?? {},
+    attrs,
     bindings,
+    disabledActivation,
     propertyBindings,
     events,
     content,
@@ -3850,6 +3887,10 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
     generatedIdSlug: undefined,
     idRefAttrs: [],
   };
+}
+
+export function hasDisabledActivation(node: DomNodeIR | undefined): boolean {
+  return node !== undefined && (node.disabledActivation !== undefined || node.children.some(hasDisabledActivation));
 }
 
 /**
@@ -6394,7 +6435,7 @@ export function computeCssBlocks(
   // through the Pressable's own disabled handling, not a selector, so it needs
   // no guard here.
   const interactionGuard =
-    platformTarget === "web" ? suppressionGuardFor(contract) : undefined;
+    platformTarget === "web" ? suppressionGuardFor(contract, cssPrefix) : undefined;
 
   // Reserved `@starting-style` key: entry states for enter/exit transition
   // pairs. The resting declarations of a state live under its regular
@@ -6417,7 +6458,7 @@ export function computeCssBlocks(
     typeof startingStyles === "object"
   ) {
     for (const [key, rawBlock] of Object.entries(startingStyles)) {
-      const selector = expandStylesKey(key, cssPrefix, expandOptions);
+      const selector = guardInteractionSelector(expandStylesKey(key, cssPrefix, expandOptions), interactionGuard);
       const declarations = renderStyleBlock(rawBlock, cssPrefix, platformTarget);
       if (Object.keys(declarations).length === 0) continue;
       blocks.push({ selector, declarations, startingStyle: true });
@@ -6761,8 +6802,7 @@ const NATIVE_DISABLEABLE_TAGS = new Set([
 ]);
 
 /**
- * Derive the guard that excludes a contract's suppressed state, or undefined
- * when the contract declares no interaction suppression.
+ * Derive guards for each source and its resolved suppressed state selectors.
  *
  * The FORM has to follow the element, or the guard is decorative: `:disabled`
  * only matches native form controls, so emitting `.chip:not(:disabled)` on a
@@ -6776,47 +6816,98 @@ const NATIVE_DISABLEABLE_TAGS = new Set([
  *   3. the ARIA attribute form, which is how a non-form-control root can carry
  *      a disabled state at all.
  */
-function suppressionGuardFor(contract: ComponentContract): string | undefined {
-  const dimensions = contract.states?.dimensions;
-  if (!dimensions || typeof dimensions !== "object") return undefined;
+type InteractionSuppressionGuard = { pseudos: string[]; guard: string; nativeSubjects: string[] };
 
-  for (const dim of Object.values(dimensions)) {
-    if (!dim.suppresses?.categories?.includes("interaction")) continue;
+function suppressionGuardFor(contract: ComponentContract, cssPrefix: string): InteractionSuppressionGuard[] {
+  const dimensions = contract.states?.dimensions;
+  if (!dimensions || typeof dimensions !== "object") return [];
+
+  const guards: InteractionSuppressionGuard[] = [];
+  for (const [source, dim] of Object.entries(dimensions)) {
+    const categories = dim.suppresses?.categories ?? [];
+    const names = dim.suppresses?.names ?? [];
+    for (const name of names) {
+      if (!Object.prototype.hasOwnProperty.call(dimensions, name)) {
+        throw new Error(`[STATE_SUPPRESSION_UNKNOWN_DIMENSION] ${contract.name}.${source} suppresses unknown dimension "${name}"`);
+      }
+    }
+    const targets = Object.entries(dimensions).filter(([name, target]) =>
+      name !== source && (names.includes(name) || categories.includes(target.category)),
+    );
+    // Category suppression predates dimensional target declarations in some
+    // contracts. Preserve its full interaction taxonomy while named relations
+    // only cover values of the dimension they name.
+    const pseudos = new Set<string>(categories.includes("interaction") ? INTERACTION_PSEUDOS : []);
+    for (const [, target] of targets) {
+      for (const value of target.values ?? []) {
+        const pseudo = DERIVABLE_STATE_TO_PSEUDO[String(value)];
+        if (pseudo) pseudos.add(pseudo);
+      }
+    }
+    if (pseudos.size === 0) continue;
 
     const values = dim.values ?? [];
     const initial = dim.initial ?? values[0];
-    const suppressedValue = values.find((v) => v !== initial);
-    if (!suppressedValue) return undefined;
-
-    if (dim.a11y?.attribute) {
-      const attrValue = dim.a11y.values?.[suppressedValue] ?? "true";
-      return `:not([${dim.a11y.attribute}="${String(attrValue)}"])`;
-    }
-
     const anatomy = contract.anatomy;
     const rootTag =
       anatomy && !Array.isArray(anatomy) ? anatomy.dom?.tag : undefined;
-    if (rootTag && NATIVE_DISABLEABLE_TAGS.has(rootTag)) return ":not(:disabled)";
-    return `:not([aria-disabled="true"])`;
+    for (const suppressedValue of values.filter((v) => v !== initial)) {
+      const guard = dim.a11y?.attribute
+        ? `:not([${dim.a11y.attribute}="${String(dim.a11y.values?.[suppressedValue] ?? "true")}"])`
+        : rootTag && NATIVE_DISABLEABLE_TAGS.has(rootTag)
+          ? ":not(:disabled)"
+          : `:not([aria-disabled="true"])`;
+      const nativeSubjects: string[] = [];
+      if (suppressedValue === "disabled") {
+        const prop = dim.derivesFrom?.[suppressedValue]?.prop ?? suppressedValue;
+        const visit = (node: ContractDomNode | undefined): void => {
+          if (!node) return;
+          if (NATIVE_DISABLEABLE_TAGS.has(node.tag ?? "") && node.bindings?.disabled === `prop:${prop}` && node.part) {
+            nativeSubjects.push(node.part === "root" ? `.${cssPrefix}` : `.${cssPrefix}__${node.part}`);
+          }
+          for (const child of node.children ?? []) visit(child);
+        };
+        visit(anatomy && !Array.isArray(anatomy) ? anatomy.dom : undefined);
+      }
+      guards.push({ pseudos: [...pseudos], guard, nativeSubjects });
+    }
   }
-  return undefined;
+  return guards;
 }
 
 /**
  * Append the suppression guard to an interaction selector.
  *
- * Only selectors ENDING in an interaction pseudo are guarded: a variant
+ * Only selectors whose subject carries a suppressed state are guarded: a variant
  * modifier or an anatomy part carries no interaction semantics, and guarding
  * those would change the cascade for rules the contract never claimed to
  * suppress. Note this raises specificity by the guard's own weight — for
  * `:not(:disabled)` that is (0,1,0) — which is why the framework suites and the
  * rail run over the regenerated corpus rather than the emitter alone.
  */
-function guardInteractionSelector(selector: string, guard: string | undefined): string {
-  if (!guard) return selector;
-  if (!INTERACTION_PSEUDOS.some((pseudo) => selector.endsWith(pseudo))) return selector;
-  if (selector.includes(guard)) return selector; // already guarded by the author
-  return `${selector}${guard}`;
+function guardInteractionSelector(selector: string, guards: InteractionSuppressionGuard[] | undefined): string {
+  if (!guards?.length) return selector;
+  return selector.split(/,(?![^()]*\))/).map((branch) => {
+    // Authored exclusion guards may already follow the state pseudo. Ignore
+    // those when identifying the terminal state, then add only missing guards.
+    const stateSelector = branch.replace(/:[\w-]+\([^()]*\)/g, "").trimEnd();
+    const subjects = stateSelector.split(/\s*[>+~]\s*|\s+(?![^[]*\])/);
+    const subject = subjects[subjects.length - 1] ?? "";
+    let guarded = branch.trimEnd();
+    for (const { pseudos, guard, nativeSubjects } of guards) {
+      const guardedSubjects = guarded.split(/\s*[>+~]\s*|\s+(?![^[]*\])/);
+      const guardedSubject = guardedSubjects[guardedSubjects.length - 1] ?? "";
+      // A native part bound to this same source can already exclude the
+      // suppressed state through its authored native guard (e.g. input hover).
+      if (nativeSubjects.some((native) => guardedSubject.startsWith(`${native}:`) && guardedSubject.includes(":not(:disabled)"))) continue;
+      if (pseudos.some((pseudo) => pseudo.startsWith(":")
+        ? new RegExp(`${pseudo}(?![A-Za-z-])`).test(subject)
+        : subject.includes(pseudo)) && !guardedSubject.includes(guard)) {
+        guarded += guard;
+      }
+    }
+    return guarded;
+  }).join(",");
 }
 
 /**

@@ -54,6 +54,24 @@ function propKind(ir: ComponentIR, name: string): PropKind {
   return 'other';
 }
 
+/**
+ * Source fact: anchor host + normalized disabled activation / callback payload.
+ * Applies by: host capability, never component or callback spelling.
+ * Removable when: GPUI can carry a cancellable anchor event and navigation.
+ */
+function unsupportedAnchorCallbacks(ir: ComponentIR): Set<string> {
+  const unsupported = new Set<string>();
+  for (const node of nodesOf(ir.dom)) {
+    const click = node.events.click;
+    if (node.tag !== 'a' || click?.kind !== 'prop') continue;
+    const prop = ir.styledProps.find(candidate => candidate.name === click.prop);
+    if (node.disabledActivation || prop?.propType.kind === 'callback' && prop.propType.params.length > 0) unsupported.add(click.prop);
+  }
+  return unsupported;
+}
+
+const ANCHOR_ACTIVATION_REASON = 'GPUI ActionHandlerFn carries only window/app access; it has no cancellable anchor event, navigation default action or keyboard-discoverable disabled-link policy. The callback and pointer/keyboard activation are withheld.';
+
 function boundaryReason(boundary: GpuiBoundary, ruleId: string, fallback: string): { reason: string; boundary: string; disposition: string } {
   const rule = boundary.rules.find(candidate => candidate.id === ruleId);
   return {
@@ -251,6 +269,7 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   const bindingRule = (key: string): string => {
     if (key === 'disabled') return 'anatomy-disabled-binding';
     if (key === 'aria-label') return 'anatomy-aria-label-binding';
+    if (key.startsWith('aria-')) return 'anatomy-aria-binding';
     if (['checked','open','expanded','value','index','month','search'].includes(key)) return 'anatomy-channel-binding';
     if (key === 'placeholder') return 'anatomy-placeholder-binding';
     if (['href','target','rel'].includes(key)) return 'anatomy-navigation-binding';
@@ -276,6 +295,10 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   for (const key of Object.keys(copy.events)) {
     const binding = copy.events[key];
     if (key === 'click' && binding?.kind === 'prop' && state.wiredCallbacks.has(binding.prop)) continue;
+    if (key === 'click' && copy.tag === 'a' && binding?.kind === 'prop') {
+      omit(state, { kind: 'event', source: `${copy.part ?? 'root'}/${key}`, reason: ANCHOR_ACTIVATION_REASON, boundary: 'anatomy-anchor-activation-event', disposition: 'pending' });
+      continue;
+    }
     const rule = key === 'click' ? 'anatomy-click-event' : ['keydown','keyup','keypress'].includes(key) ? 'anatomy-keyboard-event' : 'anatomy-focus-event';
     omit(state, { kind: 'event', source: `${copy.part ?? 'root'}/${key}`, ...boundaryReason(state.boundary, rule, `${key} event is not consumed by the GPUI projection`) });
   }
@@ -283,6 +306,7 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
   for (const key of Object.keys(copy.attrs)) {
     const rule = key.startsWith('aria-') ? 'anatomy-dom-attrs-aria'
       : key === 'role' ? 'anatomy-dom-attrs-role'
+      : key === 'tabindex' ? 'anatomy-focus-binding'
       : key.startsWith('data-') ? 'anatomy-dom-attrs-data'
       : ['fill','xmlns'].includes(key) ? 'anatomy-glyph-svg-attrs'
       : ['type','inputmode','autocomplete','spellcheck','scope'].includes(key) ? 'anatomy-dom-attrs-dom'
@@ -503,10 +527,16 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   }
 
   // Callback props are consumer handlers: stored, and invoked by wired events.
-  // The contract's event payload is narrowed to window/app access.
+  // Anchor event payloads cannot be narrowed without losing cancellation.
   const callbacks: GpuiCallbackPlan[] = [];
+  const unsupportedAnchors = unsupportedAnchorCallbacks(ir);
   for (const prop of ir.styledProps) {
     if (prop.propType.kind !== 'callback') continue;
+    if (unsupportedAnchors.has(prop.name)) {
+      omittedProps.push(prop.name);
+      omit(state, { kind: 'prop', source: prop.name, reason: ANCHOR_ACTIVATION_REASON, boundary: 'prop-anchor-activation-callback', disposition: 'pending' });
+      continue;
+    }
     const method = identifier(prop.name);
     if (!method) {
       omit(state, omissionFor(prop.name, 'callback prop name cannot be projected onto a Rust identifier'));

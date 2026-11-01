@@ -1,0 +1,73 @@
+id: PREVIEW-REQUIRED-ALIAS-SAMPLES-01
+title: 'Derive valid required alias samples for component previews'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Landed build-side required alias fixtures with isolated JSON samples, twenty five-framework preview observations, AX and passing build/checks; global release and newly audited passive-component blockers remain open.'
+created_at: '2026-11-01T21:15:04.284Z'
+updated_at: '2026-11-01T21:54:20.136Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Build-side required-prop sample projection and five-framework Postcard preview initialization'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/preview-prop-samples.ts'
+    - 'packages/ds-codegen/src/preview-prop-samples.test.ts'
+    - 'vite-plugin-fsds-data.ts'
+    - 'src/types/data.ts'
+    - 'src/runtime/demos.ts'
+    - 'src/runtime/demos.test.ts'
+  out: []
+invariants:
+  - 'Keep public required props and component semantics unchanged; no component-name sampling branches or compiler runtime in browser'
+  - 'No publication, disabled gates, added allowances, or claim of complete Postcard media/avatar qualification'
+acceptance:
+  - id: A1
+    given: 'required scalar object and named alias inputs'
+    when: 'the build-side projection resolves supported types'
+    then: 'constructible JSON samples preserve required field identities and unsupported or cyclic required objects are refused without evaluation'
+  - id: A2
+    given: 'the real Postcard contract and bundle'
+    when: 'each of five web previews initializes and receives valid config updates'
+    then: 'a named article author handle timestamp and all three labeled counts render without runtime errors and updates replace values'
+  - id: A3
+    given: 'defaults variants optional fields and browser consumers'
+    when: 'the sample projection is consumed'
+    then: 'defaults and explicit overrides retain precedence optional props are not fabricated and only JSON values enter the client without TypeScript runtime imports'
+  - id: A4
+    given: 'the bounded preview candidate'
+    when: 'relevant checks independent review and governed landing finish'
+    then: 'evidence is retained and broader component release obligations remain explicit'
+observability:
+  - 'Retain raw before/after tests and five-framework browser content error and screenshot evidence in canonical ignored release evidence'
+rollback:
+  - 'Revert the isolated preview projection and bundle integration without modifying component contracts or generated packages'
+non_functional: {}
+contracts:
+  - name: 'preview-inputs'
+    type: behavior
+    path: 'src/runtime/demos.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Candidate d83c0f950: inspected new preview-prop-samples.ts and 24 executed AST/projection cases in projection-focused-final.log (53 total with demos/config). Real Postcard author/stats fields and zero values, ordered union choice, nested literal/alias fields, independent sibling recursion tracking and bounded recursive/unsupported required objects. Complete required objects are absent on unsupported fields; optional unknown fields are omitted. Parsed syntax is never evaluated; malformed code-like input is rejected. Original contract bytes and required author/stats are preserved. Primary retained evidence under .caws/state/release-evidence/PREVIEW-REQUIRED-ALIAS-SAMPLES-01. CLI verify checks committed candidate existence/reachability only; primary source and execution evidence were inspected independently."
+    recorded_at: "2026-11-01T21:46:51.344Z"
+    commit_sha: d83c0f9505e8774e9baee0910af2a5bfef5cc9ab
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected browser-provenance.json, browser-{initial,updated,formatted-rtl,restored}.json, browser-capture.js, browser-formatted-AX.json and five-preview-formatted-rtl.png. Clean source d83c0f950. Twenty real preview observations (4 phases x5 frameworks) require actual named articles, exact author/handle/ISO visible+datetime and three labels, positive geometry and no errors. Valid image variant configs update distinct counts then Arabic formatted strings with inherited RTL/ar, then restore zeros without stale content. Before browser-before.json records all5 broken defaults, including false-ready empty Angular. Readiness alone is explicitly not proof. No full media/avatar or native AT qualification. Primary retained evidence under .caws/state/release-evidence/PREVIEW-REQUIRED-ALIAS-SAMPLES-01. CLI verify checks committed candidate existence/reachability only; primary source and execution evidence were inspected independently."
+    recorded_at: "2026-11-01T21:46:59.901Z"
+    commit_sha: d83c0f9505e8774e9baee0910af2a5bfef5cc9ab
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected producer integration in vite-plugin-fsds-data.ts and import type in src/types/data.ts. Projection contains JSON values only; defaultPropsFromContract uses own-key fallback only for required unresolved inputs and clones nested data. Two before UI regressions fail; 20 demo tests now preserve authored defaults, variants, optional exclusions, caller overrides and independent mutations. Browser resource observations in all20 phases contain no sampler/TypeScript runtime; production build passes and emitted JS contains no sampler/createSourceFile/parser-limit code. The four live middleware paths ignore legacy demo strings; their object-serialization limitations have no demonstrated release consumer. Eight publishable package diff from base98768a2a is empty. Primary retained evidence under .caws/state/release-evidence/PREVIEW-REQUIRED-ALIAS-SAMPLES-01. CLI verify checks committed candidate existence/reachability only; primary source and execution evidence were inspected independently."
+    recorded_at: "2026-11-01T21:47:08.262Z"
+    commit_sha: d83c0f9505e8774e9baee0910af2a5bfef5cc9ab
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Candidate d83c0f950 landed via CAWS merge 187b792c64abf3f6f584f3907d664ef35641545d. Inspected checks/d83c0f950-Mzv9wx/receipt.json and raw logs: root5718/framework suites/all types/lint/production build/rail/token/doc/icon/other realization/Godot/GPUI/generated/policy checks pass; only identical53 parent Unity variant rows fail, with no allowance or waiver. Independent peer source/log review found no confirmed defect; apparent legacy-builder consumer claim was traced and withdrawn because live pipelines bypass those strings. A1-A3 primary tests and20 live browser phases plusAX were inspected independently. Entire8-package release remains incomplete: Postcard media/avatar/type/compound, passive-component-probe findings (RN Stat numeric children, Blockquote cite, Breadcrumbs separator/Angular list semantics/hints), uninspected Card/CodeSnippet/List/Markdown/NavList/NavTree/ProfileFlag, retained Field/Angular compound/ToggleSwitch and historical interaction checks, native device/peer-version qualification and npm auth remain root-owned. Next priority is valid RN numeric child realization, with Postcard remaining explicit. Evidence under canonical .caws/state/release-evidence/PREVIEW-REQUIRED-ALIAS-SAMPLES-01 and NPM-RELEASE-PAYLOAD-01/passive-component-probe. No push/publication; CLI verify checks candidate reachability only."
+    recorded_at: "2026-11-01T21:53:35.117Z"
+    commit_sha: d83c0f9505e8774e9baee0910af2a5bfef5cc9ab

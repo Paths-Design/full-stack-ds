@@ -3,16 +3,16 @@
   "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
   "boundary": {
     "schema": "godot-support-boundary.v1",
-    "rules": 163,
+    "rules": 167,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8915,
-      "pending": 0,
-      "refused": 8586
+      "lowered": 8925,
+      "pending": 13,
+      "refused": 8633
     },
     "deadRules": []
   },
-  "variances": 182,
+  "variances": 183,
   "components": [
     {
       "component": "Accordion",
@@ -393,11 +393,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 289,
-          "pending": 0,
+          "lowered": 286,
+          "pending": 3,
           "refused": 319
         },
-        "digest": "215395b1ccbc3835bd63f714354b8878344650191a186060ace5b2f2eef3f71e"
+        "digest": "7dc1e78c4af779b97862f36929f7c34c6f30d1847b042ebf2250949a415bd1ed"
       }
     },
     {
@@ -777,11 +777,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 212,
-          "pending": 0,
+          "lowered": 211,
+          "pending": 1,
           "refused": 159
         },
-        "digest": "867dbd04ec71a6fd58e11d60eb1fdbc9d5297f2bdab923d520f137268edd985d"
+        "digest": "ac3b5702a16ee145604e56038346c9487f25fcb2bf568f61c68f189a88ccebb5"
       }
     },
     {
@@ -1136,10 +1136,10 @@
       "emitted": true,
       "operation": "anatomy",
       "diagnostic": null,
-      "contractSha256": "9f852bf43e9218d3d23aff06b5e0a379d44f61169917507f5670c12e23d3d0f0",
+      "contractSha256": "091751c6f7c274c90725cd23315911846d803eabd0735279611df36af726e88b",
       "sidecarSha256": {
         "tokens": "8c2f580fdd7c895a51cd55743fcb1cade05033804500a03532368a5d26f5f057",
-        "styles": "dd9b8d3dc3852285579ca468cfa21c7f2af02e4fbb80f3739e0ee62d4b68a541"
+        "styles": "03f3d112f1f6e1c48c8797b71955c372cab57c1ba5b83fd182727dd1f2cbe198"
       },
       "receipt": {
         "operation": "anatomy",
@@ -1147,24 +1147,29 @@
           "href",
           "target",
           "rel",
-          "disabled"
+          "disabled",
+          "onClick"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 17
+        "nonClaimCount": 20
       },
       "variance": [
         {
           "prop": "disabled",
           "rule": "prop-boolean-state"
+        },
+        {
+          "prop": "onClick",
+          "rule": "prop-action-callback"
         }
       ],
       "boundary": {
         "counts": {
-          "lowered": 125,
-          "pending": 0,
-          "refused": 85
+          "lowered": 127,
+          "pending": 8,
+          "refused": 86
         },
-        "digest": "8e9612db7aac66aa0c9e5d3a9c27947da06ea3993d712bfb95efa68b81b9b4ff"
+        "digest": "ff3b7cd2fa3f996400ca8a1287797d976aaacd35eabdd057271550e1b36a67af"
       }
     },
     {
@@ -1579,10 +1584,10 @@
       "emitted": true,
       "operation": "anatomy",
       "diagnostic": null,
-      "contractSha256": "241c34f946f28e5c70b8c13860b68753adab31c3a085e8082dc84409ef07843a",
+      "contractSha256": "ce79bbaad7cc5e74df8565a08ac2fab8a58f3380cbc123ac616a61f91cc9fef3",
       "sidecarSha256": {
         "tokens": "b7e1571e337e707e58449697852926f981c7978e7a21da2aa12c5a82a9e0c4cb",
-        "styles": "929618f45830265bac718d0fa943c462a15b25b6bbfc4d476f4337d0075a7474"
+        "styles": "2415675a5f0663af287e3e2ba1439c89b00b5364a962a9853f4e769a00217c44"
       },
       "receipt": {
         "operation": "anatomy",
@@ -1594,7 +1599,7 @@
           "embed"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 50
+        "nonClaimCount": 65
       },
       "variance": [
         {
@@ -1604,11 +1609,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 196,
+          "lowered": 208,
           "pending": 0,
-          "refused": 174
+          "refused": 208
         },
-        "digest": "f7e8f9183012919ec8ac97cce8b4faa3397f814c01350fb87f67a1979488b38d"
+        "digest": "b24aaa2f3f987ef48dd93e709eb2d17c5199d66bb42329998c479c888427a831"
       }
     },
     {
@@ -1823,11 +1828,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 333,
-          "pending": 0,
+          "lowered": 332,
+          "pending": 1,
           "refused": 380
         },
-        "digest": "d678955d3d6e12525e58c936e232ae485c23e7a3f031e53b87a31f253cd6df7e"
+        "digest": "a1c6ee4c3a1900b1100ec6eda6825019f2b8af81e0c8f8e8e7f28b8840279157"
       }
     },
     {
@@ -2155,19 +2160,20 @@
       "emitted": true,
       "operation": "anatomy",
       "diagnostic": null,
-      "contractSha256": "213c7dd4ae003dfefaff43c364fdcc63592578681f3f99a099afa353ed479833",
+      "contractSha256": "a696c86c43e397fa5afedc290ce93afacacd3806ac480b197f22b78b195910f0",
       "sidecarSha256": {
         "tokens": "a29ec4fe479bff29db03fd30627d2ef8369e778d17d433e644285f4adefc5d4c",
-        "styles": "343f0dafc3ff822e927e247d9b886b61c32491eb8d794ac6c47019564cc55e2a"
+        "styles": "39488aacbd7158f7d81f1e6e0aac786be92dc95974bde1706239df0eba21e392"
       },
       "receipt": {
         "operation": "anatomy",
         "excluded": [
           "responsive",
+          "contentLabel",
           "ariaLabel"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 30
+        "nonClaimCount": 35
       },
       "variance": [
         {
@@ -2177,11 +2183,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 169,
+          "lowered": 170,
           "pending": 0,
-          "refused": 110
+          "refused": 122
         },
-        "digest": "24e63ce50451bcca9f268cef14907ad8797affa241cdf0eaa7db251eb393953c"
+        "digest": "9e40e970a33022771e0bd93ab1d5d2f1e71ba948c4e3be33b2df7eeeff6d50ce"
       }
     },
     {

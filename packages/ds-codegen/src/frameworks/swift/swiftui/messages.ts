@@ -10,9 +10,11 @@
  * exposed through a computed `<name>` that applies explicit-value-first
  * precedence; archetype bodies keep referring to `<name>` unchanged.
  */
-import type { ComponentIR } from "../../../ir.js";
+import type { BindingExpression, ComponentIR } from "../../../ir.js";
+import { metadataInput, type NativeMetadataTextPlan } from "../../../native-metadata-text.js";
+import { findMessage } from "../../../messages.js";
 import type { MessageIR } from "../../../messages.js";
-import { propMessage, requireNativeParams } from "../../native-messages.js";
+import { nativeMessageParams, propMessage, requireNativeParams } from "../../native-messages.js";
 import { swiftLiteral } from "./icon-glyph.js";
 
 export const SWIFT_MESSAGES_ENVIRONMENT = "@Environment(\\.fsdsMessages) private var fsdsMessages";
@@ -27,6 +29,17 @@ export function swiftMessage(ir: ComponentIR, message: MessageIR, params: Record
   return `fsdsMessages.string(${args.join(", ")})`;
 }
 
+/** Lower one validated metadata source into an actual Swift String expression. */
+export function swiftMetadataText(ir: ComponentIR, plan: NativeMetadataTextPlan, source: BindingExpression): string {
+  if (source.kind === "literal") return swiftLiteral(source.value);
+  if (source.kind === "prop") return `\`${metadataInput(plan, source).name}\``;
+  if (source.kind === "message") {
+    const ref = { message: findMessage(ir, source.key), params: source.params };
+    return swiftMessage(ir, ref.message, nativeMessageParams(ir, ref, value => swiftMetadataText(ir, plan, value)));
+  }
+  throw new Error(`Unsupported native metadata text: ${source.kind}`);
+}
+
 /**
  * Declaration pieces for an optional String prop. A `defaultMessage` prop
  * stores `<name>Prop` and adds a computed `<name>: String`; any other prop
@@ -39,21 +52,21 @@ export interface SwiftStringProp {
   accessor: string[];
 }
 
-export function swiftStringProp(ir: ComponentIR, name: string, indent: string): SwiftStringProp {
+export function swiftStringProp(ir: ComponentIR, name: string, indent: string, identifier = name): SwiftStringProp {
   const message = propMessage(ir, name);
   if (message) {
     return {
       stored: `${indent}private let ${name}Prop: String?`,
-      param: `${name}: String? = nil,`,
-      assign: `${indent}${indent}self.${name}Prop = ${name}`,
-      accessor: [`${indent}private var ${name}: String { ${name}Prop ?? ${swiftMessage(ir, message)} }`],
+      param: `${identifier}: String? = nil,`,
+      assign: `${indent}${indent}self.${name}Prop = ${identifier}`,
+      accessor: [`${indent}private var ${identifier}: String { ${name}Prop ?? ${swiftMessage(ir, message)} }`],
     };
   }
   const authored = ir.styledProps.find((p) => p.safeName === name)?.defaultExpr?.replace(/^["']|["']$/g, "");
   return {
-    stored: `${indent}private let ${name}: String?`,
-    param: `${name}: String? = ${authored ? swiftLiteral(authored) : "nil"},`,
-    assign: `${indent}${indent}self.${name} = ${name}`,
+    stored: `${indent}private let ${identifier}: String?`,
+    param: `${identifier}: String? = ${authored ? swiftLiteral(authored) : "nil"},`,
+    assign: `${indent}${indent}self.${identifier} = ${identifier}`,
     accessor: [],
   };
 }

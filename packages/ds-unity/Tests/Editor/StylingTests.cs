@@ -10,9 +10,9 @@ using UnityEngine.UIElements;
 
 namespace FullStackDS.Tests
 {
-    /// <summary>Resolved styles under the generated Controls.uss. Every literal is a token-graph value read from
-    /// packages/ds-tokens/generated/resolved.tokens.json (theme named beside it; brand values from the
-    /// brand layer the token build composes), so a drift between the projection and the graph fails here.
+    /// <summary>Resolved styles under the generated Controls.uss. Expected literals follow the built token CSS
+    /// in the named theme/brand scope, including the default brand when no brand class is set.
+    /// Graph aliases are resolved in that scope rather than taken from the flattened graph alone.
     ///
     /// USS behaviour these witnesses depend on, observed with resolvedStyle / ICustomStyle probes on Unity
     /// 6000.5.3f1 (none of it produces an importer warning, so GeneratedStyleSheetImportsCleanly cannot see it):
@@ -180,7 +180,12 @@ namespace FullStackDS.Tests
             ColorIs(content.resolvedStyle.backgroundColor, "#ffffff", "light content"); // semantic.color.background.elevated (light)
             ColorIs(content.resolvedStyle.borderTopColor, "#d0d0d0", "light content border"); // semantic.color.border.subtle (light)
             Assert.That(content.resolvedStyle.borderTopWidth, Is.EqualTo(1)); // popover content border width (contract literal)
-            Assert.That(content.resolvedStyle.borderTopLeftRadius, Is.EqualTo(6)); // semantic.shape.control.radius.default
+            Assert.That(content.resolvedStyle.borderTopLeftRadius, Is.EqualTo(8)); // default brand: semantic.shape.control.radius.default
+            Theme.SetBrand(dark, "default"); yield return Frames(3);
+            Assert.That(content.resolvedStyle.borderTopLeftRadius, Is.EqualTo(8)); // explicit Default equals an unbranded scope
+            ColorIs(content.resolvedStyle.backgroundColor, "#ffffff", "explicit default content");
+            Theme.SetBrand(dark, null); yield return Frames(3);
+            Assert.That(content.resolvedStyle.borderTopLeftRadius, Is.EqualTo(8)); // clearing the brand keeps Default
         }
 
         [UnityTest] public IEnumerator EditorControlsHaveExplicitTypographySpacingAndFocus()
@@ -216,7 +221,7 @@ namespace FullStackDS.Tests
             control.Trigger.Focus(); yield return Frames(2);
             Assert.That(control.ClassListContains("is-focus"), Is.True);
             Assert.That(track.resolvedStyle.borderLeftWidth, Is.EqualTo(2)); // semantic.focus.ring.width
-            ColorIs(track.resolvedStyle.borderLeftColor, "#0566fe", "focus ring"); // semantic.focus.ring.color (light)
+            ColorIs(track.resolvedStyle.borderLeftColor, "#d92d2e", "focus ring"); // default-brand semantic.focus.ring.color (light)
             control.Trigger.Blur(); yield return Frames(2);
             Assert.That(track.resolvedStyle.borderLeftWidth, Is.EqualTo(1));
             // The colour change is animated by the contract's motion token.

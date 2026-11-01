@@ -207,10 +207,16 @@ export function planFigmaStateSurface(
     // component's dimensions — never a layer deletion. Only the categories the
     // dimension declares (interaction, in practice) are suppressed; semantic
     // dimensions (selection/openness/loading/validation) are never collateral.
-    if (dim.suppresses?.categories?.length) {
-      const cats = dim.suppresses.categories;
+    if (dim.suppresses?.categories?.length || dim.suppresses?.names?.length) {
+      const cats = dim.suppresses.categories ?? [];
+      const names = dim.suppresses.names ?? [];
+      for (const target of names) {
+        if (!Object.prototype.hasOwnProperty.call(dims, target)) {
+          throw new Error(`[STATE_SUPPRESSION_UNKNOWN_DIMENSION] ${component}.${name}: ${target}`);
+        }
+      }
       const suppressedDimensions = dimNames.filter(
-        (other) => other !== name && cats.includes(dims[other].category),
+        (other) => other !== name && (cats.includes(dims[other].category) || names.includes(other)),
       );
       suppressions.push({
         sourceDimension: name,

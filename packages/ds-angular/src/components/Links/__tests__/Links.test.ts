@@ -72,4 +72,30 @@ function classTokens(component: { classes: () => string }): string[] {
 
 // @custom:start tests
 
+describe("Links — optional navigation metadata", () => {
+  it("omits absent attributes and restores omission after explicit values", () => {
+    TestBed.configureTestingModule({ imports: [LinksComponent] });
+    const fixture = TestBed.createComponent(LinksComponent);
+    fixture.componentRef.setInput("href", "#destination");
+    fixture.detectChanges();
+    const anchor = fixture.nativeElement.querySelector("a") as HTMLAnchorElement;
+    expect(anchor.getAttribute("href")).toBe("#destination");
+    expect(anchor.getAttribute("target")).toBeNull();
+    expect(anchor.getAttribute("rel")).toBeNull();
+    for (const target of ["", "_self", "_blank"]) {
+      fixture.componentRef.setInput("target", target);
+      fixture.componentRef.setInput("rel", "noopener noreferrer");
+      fixture.detectChanges();
+      expect(anchor.getAttribute("target")).toBe(target);
+      expect(anchor.getAttribute("rel")).toBe("noopener noreferrer");
+    }
+    fixture.componentRef.setInput("target", undefined);
+    fixture.componentRef.setInput("rel", undefined);
+    fixture.detectChanges();
+    expect(anchor.getAttribute("target")).toBeNull();
+    expect(anchor.getAttribute("rel")).toBeNull();
+    expect(anchor.getAttribute("href")).toBe("#destination");
+  });
+});
+
 // @custom:end

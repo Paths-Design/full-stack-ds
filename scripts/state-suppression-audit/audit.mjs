@@ -9,10 +9,10 @@
  *                     "suppresses": { "categories": ["interaction"] } }
  *
  * That is a claim about rendered behaviour: while disabled, no interaction-state
- * styling applies. The generated CSS honours it only if every property set under
- * an interaction pseudo is either (a) also set in the suppressing state's block,
- * so the later, equal-specificity rule wins it back, or (b) guarded so the
- * interaction selector cannot match a suppressed element at all.
+ * styling applies. This static rail credits selector guards or a bounded
+ * exact-root reset proof: a later declaration of sufficient importance in the
+ * same cascade layer, under conditions no stronger than the source rule's.
+ * This is not value validation or a general CSS cascade/visual proof.
  *
  * WHY THIS NEEDS ITS OWN RAIL. The pseudo-state audit asks "is `disabled`
  * realized at all?" — for Button the answer is yes, a `:disabled` block exists,
@@ -43,8 +43,15 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 import { diffLedger, loadLedger, reportRatchet } from "../lib/ledger-ratchet.mjs";
+import { DERIVABLE_STATE_TO_PSEUDO } from "../pseudo-state-audit/audit.mjs";
+import { getCssPrefix } from "../../packages/ds-codegen/dist/contract.js";
+
+// Use the codegen workspace's declared, pinned PostCSS dependency, also used
+// by its css-token-consumption source utility. No root transitive resolution.
+const postcss = createRequire(new URL("../../packages/ds-codegen/package.json", import.meta.url))("postcss");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
@@ -54,7 +61,7 @@ const OUT_DIR = resolve(REPO, "docs/internal/state-suppression-audit");
 const LEDGER_PATH = resolve(HERE, "known-leaks.json");
 
 /** Interaction pseudos the codegen can emit, per DERIVABLE_STATE_TO_PSEUDO. */
-const INTERACTION_PSEUDOS = [":hover", ":active", ":focus-visible", ":focus"];
+const INTERACTION_PSEUDOS = [":hover", ":active", ":focus-visible", ":focus-within", ":focus"];
 
 /**
  * Elements for which `disabled` is a native attribute. Only on these can a
@@ -115,29 +122,83 @@ export function suppressionLeakId(row) {
 }
 
 /**
- * Properties declared directly inside blocks introduced by `selector`.
- *
- * Brace-matched rather than regex-sliced so a nested block (a media query, a
- * `:has()` inside the state block) doesn't truncate the scan at the first `}`.
+ * Parse declarations without interpreting punctuation inside quoted values.
+ * Keep conditional/layer ancestry and declaration priority for bounded reset
+ * proof. PostCSS parses syntax; it does not validate property values.
  */
-export function propertiesUnder(css, selector) {
-  const found = new Set();
-  const opener = new RegExp(`&?${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{`, "g");
-  for (const match of css.matchAll(opener)) {
-    let index = match.index + match[0].length;
-    let depth = 1;
-    const start = index;
-    while (depth > 0 && index < css.length) {
-      if (css[index] === "{") depth += 1;
-      else if (css[index] === "}") depth -= 1;
-      index += 1;
+function cssRules(css, rootSelector) {
+  const rules = [];
+  const conditional = new Set(["media", "supports", "container"]);
+  let contextIdentity = 0;
+  function visit(container, parents = [], context = { conditions: [], layers: [], barriers: [] }, nesting = [], inherited = false, parentRuleSelectors) {
+    const enclosingRule = container.type === "rule" ? container.selectors : parentRuleSelectors;
+    const declarations = new Map();
+    for (const node of container.nodes ?? []) {
+      if (node.type !== "decl") continue;
+      const property = node.prop.startsWith("--") ? node.prop : node.prop.toLowerCase();
+      const declaration = { important: Boolean(node.important), order: node.source.start.offset, value: node.value };
+      const previous = declarations.get(property);
+      if (!previous || declaration.important || !previous.important) declarations.set(property, declaration);
     }
-    const body = css.slice(start, index - 1);
-    // Only top-level declarations of this block: strip nested blocks first.
-    const flattened = body.replace(/\{[^{}]*\}/g, "");
-    for (const decl of flattened.matchAll(/(^|[;{\s])([a-z-]+)\s*:/g)) found.add(decl[2]);
+    if (parents.length && declarations.size) {
+      rules.push({
+        selectors: parents, declarations, properties: new Set(declarations.keys()), context, inherited,
+        // Native nesting takes the maximum parent-list specificity. Only a
+        // singleton root class (or identity &) has the simple proof we need.
+        nestingSafe: nesting.every((selectors) => selectors.length === 1 && (selectors[0] === rootSelector || selectors[0] === "&")),
+      });
+    }
+    for (const node of container.nodes ?? []) {
+      if (node.type === "rule") {
+        const selectors = node.selectors.flatMap((selector) => parents.length
+          ? parents.map((parent) => selector.includes("&") ? selector.replaceAll("&", parent) : `${parent} ${selector}`)
+          : [selector]);
+        visit(node, selectors, context, enclosingRule ? [...nesting, enclosingRule] : nesting);
+      } else if (node.type === "atrule" && node.nodes) {
+        const name = node.name.toLowerCase();
+        const identity = `${name}:${node.params.trim()}`;
+        const next = {
+          conditions: conditional.has(name) ? [...context.conditions, identity] : context.conditions,
+          layers: name === "layer" ? [...context.layers, node.params.trim() || `anonymous:${contextIdentity++}`] : context.layers,
+          // Unknown conditional/scoping mechanisms require the very same
+          // enclosing block. We do not infer their applicability from text.
+          barriers: !conditional.has(name) && name !== "layer" ? [...context.barriers, contextIdentity++] : context.barriers,
+        };
+        visit(node, parents, next, nesting, true, enclosingRule);
+      }
+    }
   }
-  return found;
+  visit(postcss.parse(css));
+  return rules;
+}
+
+/** Sufficient reset proof, deliberately smaller than the CSS cascade:
+ * exact-root selectors have equal specificity; reset conditions must be a
+ * subset of the source's; layer/barrier ancestry must match; the effective
+ * reset declaration must be at least as important and occur later. We do not
+ * infer query implication, layer precedence, arbitrary nesting specificity,
+ * shorthand expansion, value validity, or adequacy of the reset value.
+ */
+function resetDischarges(source, reset, property) {
+  if (!source.nestingSafe || !reset.nestingSafe) return false;
+  const same = (left, right) => left.length === right.length && left.every((entry, index) => entry === right[index]);
+  if (!same(source.context.layers, reset.context.layers) || !same(source.context.barriers, reset.context.barriers)) return false;
+  if (!reset.context.conditions.every((condition) => source.context.conditions.includes(condition))) return false;
+  const from = source.declarations.get(property);
+  const to = reset.declarations.get(property);
+  return to && to.value.trim() !== "" && (!from.important || to.important) && to.order > from.order;
+}
+
+const withoutGuards = (selector) => selector.replace(/:not\([^()]*\)/g, "");
+const hasState = (selector, state) => {
+  const plain = withoutGuards(selector);
+  return state.startsWith(":")
+    ? new RegExp(`${state}(?![A-Za-z-])`).test(plain)
+    : plain.includes(state);
+};
+
+export function propertiesUnder(css, selector) {
+  return new Set(cssRules(css).filter((rule) => !rule.inherited && rule.selectors.some((s) => hasState(s, selector))).flatMap((rule) => [...rule.properties]));
 }
 
 /** Does the sheet guard interaction selectors against the suppressed state? */
@@ -145,41 +206,94 @@ export function guardsAgainstDisabled(css) {
   return /:not\(\s*:disabled\s*\)|:not\(\s*\[disabled\]\s*\)|:not\(\s*\[aria-disabled=/.test(css);
 }
 
-export function auditComponent(component) {
-  const contract = readJSON(resolve(CONTRACTS, component, `${component}.contract.json`));
+/** Native source carriers must be bound to the same disabled prop; a random
+ * input or a guard on another part cannot discharge this relation. */
+function nativeDisabledCarriers(contract, root, dim, active) {
+  if (active !== "disabled") return [];
+  const prop = dim.derivesFrom?.[active]?.prop ?? active;
+  const carriers = [];
+  function visit(node) {
+    if (!node || typeof node !== "object") return;
+    if (NATIVE_DISABLEABLE.has(node.tag) && node.bindings?.disabled === `prop:${prop}`) {
+      carriers.push(node.part === "root" ? root : `${root}__${node.part}`);
+    }
+    for (const child of node.children ?? []) visit(child);
+  }
+  visit(contract.anatomy?.dom);
+  return carriers;
+}
+
+export function auditComponentCss(component, contract, css) {
   const dimensions = contract?.states?.dimensions;
   if (!dimensions || typeof dimensions !== "object") return null;
-
-  const suppressing = Object.entries(dimensions).find(([, dim]) =>
-    (dim?.suppresses?.categories ?? []).includes("interaction"),
-  );
-  if (!suppressing) return null;
-
-  const css = readText(resolve(REACT, component, `${component}.css`));
-  if (!css) return null;
-
+  const sources = Object.entries(dimensions).filter(([, dim]) => dim.suppresses?.categories?.length || dim.suppresses?.names?.length);
+  if (!sources.length || !css) return null;
   const rootTag = contract?.anatomy?.dom?.tag;
   const rootAttrs = contract?.anatomy?.dom?.attrs ?? {};
   const hasTabIndex = "tabindex" in rootAttrs || "tabIndex" in rootAttrs;
-  const guarded = guardsAgainstDisabled(css);
-  const suppressedProps = propertiesUnder(css, ":disabled");
-
+  const root = `.${getCssPrefix(contract)}`;
+  const rules = cssRules(css, root);
+  let guarded = true;
+  const suppressedProps = new Set();
   const leaks = [];
-  for (const pseudo of INTERACTION_PSEUDOS) {
-    for (const property of propertiesUnder(css, pseudo)) {
-      if (suppressedProps.has(property)) continue; // won back by the later rule
-      if (guarded) continue; // selector cannot match a suppressed element
-      leaks.push({
-        component,
-        dimension: suppressing[0],
-        pseudo,
-        property,
-        rootTag: rootTag ?? "unknown",
-        reachability: leakReachability(pseudo, rootTag, hasTabIndex),
-      });
+  const nativeExclusions = [];
+  for (const [source, dim] of sources) {
+    const categories = dim.suppresses.categories ?? [];
+    const names = dim.suppresses.names ?? [];
+    for (const name of names) {
+      if (!Object.hasOwn(dimensions, name)) throw new Error(`[STATE_SUPPRESSION_UNKNOWN_DIMENSION] ${component}.${source}: ${name}`);
+    }
+    const pseudos = new Set(categories.includes("interaction") ? INTERACTION_PSEUDOS : []);
+    for (const [name, target] of Object.entries(dimensions)) {
+      if (name === source || (!names.includes(name) && !categories.includes(target.category))) continue;
+      for (const value of target.values ?? []) {
+        const pseudo = DERIVABLE_STATE_TO_PSEUDO[value];
+        if (pseudo) pseudos.add(pseudo);
+      }
+    }
+    for (const active of (dim.values ?? []).filter((value) => value !== (dim.initial ?? dim.values[0]))) {
+      const state = dim.a11y?.attribute
+        ? `[${dim.a11y.attribute}="${String(dim.a11y.values?.[active] ?? "true")}"]`
+        : NATIVE_DISABLEABLE.has(rootTag) ? ":disabled" : '[aria-disabled="true"]';
+      const guard = `:not(${state})`;
+      const nativeCarriers = nativeDisabledCarriers(contract, root, dim, active);
+      const resets = rules.filter((rule) => rule.selectors.includes(`${root}${state}`));
+      for (const reset of resets) for (const property of reset.properties) suppressedProps.add(property);
+      for (const rule of rules) for (const selector of rule.selectors) for (const pseudo of pseudos) {
+        if (!hasState(selector, pseudo)) continue;
+        // A guard on a different rule, selector-list branch, or ancestor does
+        // not protect this state-bearing selector's subject.
+        const subject = selector.split(/\s*[>+~]\s*|\s+(?![^[]*\])/).at(-1);
+        if (subject.includes(guard)) continue;
+        const nativeGuard = nativeCarriers.some((carrier) => subject.startsWith(`${carrier}:`) && subject.includes(":not(:disabled)"));
+        if (nativeGuard) continue;
+        // Native disabled controls cannot focus or activate. A relational
+        // :has() rule testing that exact source carrier is excluded by the UA,
+        // independently of the painted descendant's tag.
+        const nativeExcluded = [":focus", ":focus-visible", ":active"].includes(pseudo) && nativeCarriers.some((carrier) =>
+          withoutGuards(selector).includes(`:has(${carrier}${pseudo})`) || withoutGuards(subject) === `${carrier}${pseudo}`,
+        );
+        if (nativeExcluded) {
+          nativeExclusions.push({ dimension: source, selector, pseudo, reason: "native-disabled-source-cannot-match" });
+          continue;
+        }
+        guarded = false;
+        for (const property of rule.properties) {
+          const rootState = selector === `${root}${pseudo}`;
+          if (rootState && resets.some((reset) => resetDischarges(rule, reset, property))) continue;
+          const leak = { component, dimension: source, pseudo, property, rootTag: rootTag ?? "unknown", reachability: leakReachability(pseudo, rootTag, hasTabIndex) };
+          if (!leaks.some((row) => suppressionLeakId(row) === suppressionLeakId(leak))) leaks.push(leak);
+        }
+      }
     }
   }
-  return { component, rootTag, guarded, suppressedProps: [...suppressedProps], leaks };
+  return { component, rootTag, guarded, suppressedProps: [...suppressedProps], nativeExclusions, leaks };
+}
+
+export function auditComponent(component) {
+  const contract = readJSON(resolve(CONTRACTS, component, `${component}.contract.json`));
+  const css = readText(resolve(REACT, component, `${component}.css`));
+  return auditComponentCss(component, contract, css);
 }
 
 export function runAudit() {
@@ -219,7 +333,9 @@ if (RUN_DIRECTLY) {
   const md = [
     "# State-suppression matrix",
     "",
-    "`RAIL-STATE-SUPPRESSION-01` — read-only. A contract that declares `suppresses.categories: [\"interaction\"]` claims that no interaction-state styling applies while suppressed. The CSS honours it only if every property set under an interaction pseudo is also set in the suppressing block (winning it back at equal specificity) or the interaction selector is guarded against the suppressed state.",
+    "`RAIL-STATE-SUPPRESSION-01` — read-only. Declared category/name suppression is checked per state-bearing selector. An exact-root reset receives credit only when its effective declaration occurs later, has sufficient importance, shares the source's layer/scoping ancestry, and has conditions no stronger than the source's. Selector guards and bound native-source exclusions are checked separately.",
+    "",
+    "**Reset proof boundary.** This static rail assumes browser-valid declaration values. It does not establish reset-value adequacy, arbitrary selector/cascade equivalence, query implication, cross-layer precedence, shorthand effects, or arbitrary nesting specificity. Unsupported reset relationships remain obligations rather than receiving inferred credit.",
     "",
     "Independent of the pseudo-state rail: a dimension can be **realized** (a `:disabled` block exists) and its suppression contract **violated** at the same time, which is why this is its own axis.",
     "",

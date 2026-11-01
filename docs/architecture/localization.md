@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
-updated: 2026-10-30
-verified_at_commit: f8ccd3c9555b06f33345bb7a536dc5ee79a49510
+updated: 2026-11-01
+verified_at_commit: 4480a9840
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -125,6 +125,15 @@ lambdas are not composable. Android string resource names cannot contain
 Native string literals escape quotes, backslashes, Kotlin template dollars
 and every control character, so a multiline message default stays one
 literal.
+
+Static SwiftUI and Compose metadata projection retains ordered scalar text
+around the consumer body and resolves message parameters from their exact
+prop/path sources. The native API exposes defaulted String inputs such as
+`authorName` and `statsLikes`; body-only calls remain valid. These inputs carry
+display text, including consumer-formatted numbers. They do not provide an
+object/media API or automatic numeric, plural, or date formatting. Catalog
+lookups render the metadata and root accessible name; generated scope names,
+ambiguous paths, and conditional metadata are rejected.
 
 Figma descriptors carry `messages` and each prop's `defaultMessage` as
 metadata. The Godot pilot has no catalog: its configuration carries the

@@ -42,6 +42,7 @@ import type {
   PropTypeIR,
 } from "../../ir.js";
 import {
+  hasDisabledActivation,
   TABLE_COMPOSITION_TAGS,
   canonicalTsType,
   composeBindingProjectionExpression,
@@ -1700,7 +1701,7 @@ function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: 
     const names = ["FsdsMessagesController", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction${hasDisabledActivation(ir.dom) ? ", isActivationDisabled" : ""} } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) lines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
@@ -2771,6 +2772,12 @@ function renderLitDomNode(
   // callback props. ifDefined() would wrap the listener-producing
   // function itself, breaking listener installation.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderLitBindingValue(node.disabledActivation.disabled, ctx);
+      const callback = renderLitBindingValue(expr, ctx);
+      attrs.push(`@click=\${(e: MouseEvent) => { if (canActivateInteraction(e, false, isActivationDisabled(${disabled}))) (${callback})?.(e); }}`);
+      continue;
+    }
     if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
       const channel = node.nativeTextChannel;
       attrs.push(`@${eventName}=\${(e: Event) => requestNativeTextChange(e, () => this.behavior.set${capitalizeLit(channel)}((e.currentTarget as HTMLInputElement).value), () => this.behavior.${channel})}`);
@@ -2793,6 +2800,11 @@ function renderLitDomNode(
       : renderLitEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderLitBindingValue(node.disabledActivation.disabled, ctx);
+    attrs.push(`@click=\${(e: MouseEvent) => { canActivateInteraction(e, false, isActivationDisabled(${disabled})); }}`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2831,6 +2843,11 @@ function renderLitDomNode(
     (node.componentInstance?.bindings ?? []).map((b) => [b.sourceAttr, b]),
   );
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderLitBindingValue(node.disabledActivation.disabled, ctx);
+      attrs.push(`href=\${ifDefined(isActivationDisabled(${disabled}) ? undefined : ${renderLitBindingValue(expr, ctx)})}`);
+      continue;
+    }
     // Dual-pathway dedup: parseDomNode mirrored `bindings.onX` into
     // `events.<x>` for back-compat. Skip the legacy attribute pass.
     if (/^on[A-Z]/.test(key)) {

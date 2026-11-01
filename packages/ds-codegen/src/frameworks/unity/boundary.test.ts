@@ -31,6 +31,20 @@ const boundaryOf = (rules: Record<string, unknown>[]): Boundary => validateBound
 const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Unity support boundary", () => {
+  it("classifies a renamed root anchor callback as pending while retaining native disabled support", () => {
+    const contract = load("Links");
+    contract.name = "DestinationControl";
+    delete contract.styles;
+    delete contract.tokens;
+    contract.props!.designed!.members!.find(prop => prop.name === "onClick")!.name = "onActivate";
+    const dom = (contract.anatomy as { dom: { events: Record<string, string> } }).dom;
+    dom.events.click = "prop:onActivate";
+    const leaves = classifyContract(contract);
+    expect(leaves.find(leaf => leaf.pointer === "/anatomy/dom/events/click")).toMatchObject({ rule: "anatomy-anchor-activation-event", disposition: "pending" });
+    expect(leaves.find(leaf => leaf.keyed.endsWith("anchor-activation:onActivate/name"))).toMatchObject({ rule: "prop-anchor-activation-callback", disposition: "pending" });
+    expect(leaves.find(leaf => leaf.keyed.endsWith("plain:disabled/name"))).toMatchObject({ rule: "prop-disabled", disposition: "lowered" });
+    expect(classifyContract(load("Button")).find(leaf => leaf.pointer === "/anatomy/dom/events/click")).toMatchObject({ rule: "anatomy-action-event-click", disposition: "lowered" });
+  });
   it("classifies every leaf of the live corpus and its sidecars with no dead rules", () => {
     const audit = auditBoundary(root);
     // The audit is the P1 exit condition: zero unclassified, no allowlisted
@@ -99,7 +113,19 @@ describe("Unity support boundary", () => {
     // The generic anatomy-bindings catch-all is retired: every allowlisted binding
     // family now carries its own rule, so an unknown shape stays unclassified.
     expect(shape("/anatomy/dom/children/x/bindings/href", "channel:open.onChange")).toEqual({ rule: null, disposition: "unclassified", phase: undefined });
+    expect(shape("/anatomy/dom/bindings/tabindex", "conditional:prop:responsive|literal:0|literal:-1")).toEqual({ rule: "anatomy-dom-tab-order-binding", disposition: "refused", phase: undefined });
   }, CORPUS_TIMEOUT_MS);
+
+  it("refuses a content-region label only when its ARIA consumer exists", () => {
+    const contract = load("Table");
+    const labels = () => classifyContract(contract).filter(leaf => leaf.keyed.startsWith("/props/styled/members/plain:contentLabel/"));
+    expect(labels().map(leaf => leaf.keyed.split("/").at(-1)).sort()).toEqual(["defaultMessage", "description", "name", "type"]);
+    expect(labels().every(leaf => leaf.rule === "prop-content-region-label" && leaf.disposition === "refused")).toBe(true);
+    const anatomy = contract.anatomy;
+    if (!anatomy || Array.isArray(anatomy) || !anatomy.dom?.bindings) throw new Error("Table fixture must declare DOM bindings");
+    delete anatomy.dom.bindings["aria-label"];
+    expect(labels().every(leaf => leaf.rule === "props-unadjudicated")).toBe(true);
+  });
 
   it("admits every allowlisted component and refuses nothing it carries today", () => {
     for (const name of unityAllowlist(root)) {

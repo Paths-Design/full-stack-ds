@@ -136,3 +136,18 @@ export function requireNativeParams(ir: ComponentIR, message: MessageIR, supplie
     );
   }
 }
+
+/** Bind a native catalog call from the reference's source-bearing parameters. */
+export function nativeMessageParams(
+  ir: ComponentIR,
+  ref: NativeMessageRef,
+  resolve: (binding: BindingExpression) => string,
+): Record<string, string> {
+  const supplied: Record<string, string> = {};
+  for (const param of ref.params) {
+    if (Object.prototype.hasOwnProperty.call(supplied, param.name)) throw new Error(`[MESSAGE_INVALID] ${ir.name}: duplicate native parameter '${param.name}'`);
+    supplied[param.name] = resolve(param.value);
+  }
+  requireNativeParams(ir, ref.message, supplied);
+  return supplied;
+}

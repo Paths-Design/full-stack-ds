@@ -17,6 +17,16 @@ const completeFixture = (name: string) => loadContractWithSidecars(root, name) a
 const emit = (contract: ComponentContract) => createUnityEmitter().emitComponent(buildComponentIR(contract), { componentsRoot: "", contractsRoot })[0]!.contents;
 
 describe("Unity capability lowering", () => {
+  it("retains destination requests and native disabling while withholding cancellable anchor callbacks", () => {
+    const contract = fixture("Links");
+    contract.name = "DestinationControl";
+    const source = emit(contract);
+    expect(source).toContain("public event Action<string> Activated");
+    expect(source).toContain("public bool Disabled");
+    expect(source).toContain("set => SetEnabled(!value)");
+    expect(source).not.toContain("OnClick");
+    expect(source).not.toContain("LinkActivationEvent");
+  });
   it.each([
     ["Switch", "BooleanControl"], ["Accordion", "ItemGroup"], ["Tabs", "ItemGroup"], ["Popover", "AnchoredSurface"],
   ])("%s survives identity substitution with the same attached behavior", (name, expected) => {
@@ -588,6 +598,24 @@ describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
     delete collides.anatomy.details.tail;
     collides.anatomy.dom.children[3].part = "control";
     expect(() => emit(collides as unknown as ComponentContract)).toThrow("UNITY_IDENTIFIER_COLLISION: Lamp Lamp declares Control twice");
+  });
+
+  it("refuses repeated behavior-owned hosts instead of attaching an arbitrary occurrence", () => {
+    const repeated = fixture("Details") as unknown as Record<string, any>;
+    repeated.anatomy.details.summary.multiple = true;
+    // Keep only the trigger itself: the existing content binding otherwise
+    // repeats too and would mask which behavior reference is ambiguous.
+    repeated.anatomy.dom.children.push({ tag: "summary", part: "summary" });
+    expect(() => emit(repeated as unknown as ComponentContract))
+      .toThrow("UNITY_UNSUPPORTED_ANATOMY: Details repeated part summary must declare multiple static text leaves on a static projection host");
+  });
+
+  it("keeps genuine identifier collisions between distinct semantic parts refused", () => {
+    const collides = lamp() as unknown as Record<string, any>;
+    collides.anatomy.parts.push("Tail");
+    collides.anatomy.details.Tail = { tag: "span", role: "decoration", multiple: true };
+    collides.anatomy.dom.children.push({ tag: "span", part: "Tail" });
+    expect(() => emit(collides as unknown as ComponentContract)).toThrow("UNITY_IDENTIFIER_COLLISION: Lamp Lamp declares Tail twice");
   });
 });
 

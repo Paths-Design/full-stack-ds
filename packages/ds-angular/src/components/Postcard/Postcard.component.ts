@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { formatFsdsMessage, injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 // @generated:end
 
@@ -10,7 +11,8 @@ import { StackComponent } from "../../primitives/index.js";
 
 // @generated:start types
 export type PostcardAuthor = { name: string; handle: string; avatar: string };
-export type PostcardStats = { likes: number; replies: number; reposts: number };
+export type PostcardStatValue = number | string;
+export type PostcardStats = { likes: PostcardStatValue; replies: PostcardStatValue; reposts: PostcardStatValue };
 export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
 // @generated:end
 
@@ -19,12 +21,14 @@ export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; as
 // @custom:end
 
 // @generated:start component
+const PostcardMessages = { postLabel: "Post by {name}", likes: "Likes: {count}", replies: "Replies: {count}", reposts: "Reposts: {count}" };
+
 @Component({
   selector: "fsds-postcard",
   standalone: true,
   imports: [NgClass],
   host: { "data-fsds-component": "postcard" },
-  template: `<article [ngClass]="classes()" data-fsds-box="">
+  template: `<article [ngClass]="classes()" [attr.aria-label]="formatFsdsMessage(fsdsMessages().postLabel, { name: author.name })" data-fsds-box="">
   <div [ngClass]="'postcard__header'">
     <div [ngClass]="'postcard__userInfo'">
       <span [ngClass]="'postcard__displayName'">
@@ -44,7 +48,13 @@ export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; as
   <div [ngClass]="'postcard__footer'">
     <div [ngClass]="'postcard__stats'">
       <span [ngClass]="'postcard__stat'">
-        {{ stats.likes }}
+        {{ formatFsdsMessage(fsdsMessages().likes, { count: stats.likes }) }}
+      </span>
+      <span [ngClass]="'postcard__stat'">
+        {{ formatFsdsMessage(fsdsMessages().replies, { count: stats.replies }) }}
+      </span>
+      <span [ngClass]="'postcard__stat'">
+        {{ formatFsdsMessage(fsdsMessages().reposts, { count: stats.reposts }) }}
       </span>
     </div>
   </div>
@@ -52,6 +62,8 @@ export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; as
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostcardComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("Postcard", PostcardMessages);
+  protected readonly formatFsdsMessage = formatFsdsMessage;
   @Input() postId!: string;
   @Input() author!: PostcardAuthor;
   @Input() timestamp!: string;

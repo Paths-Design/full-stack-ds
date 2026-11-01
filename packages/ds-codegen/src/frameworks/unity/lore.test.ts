@@ -203,7 +203,7 @@ describe("Unity emitter lowers facts, not names (R11)", () => {
 
   it("the unity emitter sources compare no part, channel, prop or slot identity to a corpus literal", () => {
     expect(names.size).toBeGreaterThan(100);
-    expect(sourceFiles.map(f => f.name).sort()).toEqual(["behaviors.ts", "boundary.ts", "capabilities.ts", "factory.ts", "glyph-catalog.ts", "glyph-path.ts", "glyph-plan.ts", "uss.ts", "walker.ts"]);
+    expect(sourceFiles.map(f => f.name).sort()).toEqual(["behaviors.ts", "boundary.ts", "capabilities.ts", "factory.ts", "glyph-catalog.ts", "glyph-path.ts", "glyph-plan.ts", "token-sources.ts", "uss.ts", "walker.ts"]);
     const findings = sourceFiles.flatMap(f => identityPredicates(f.name, f.text, names));
     expect(findings).toEqual([]);
   });

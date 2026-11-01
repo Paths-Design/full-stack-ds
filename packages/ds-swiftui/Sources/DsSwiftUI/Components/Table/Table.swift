@@ -25,15 +25,18 @@ enum TableNativeTextRules {
         .init(part: "root", predicates: [], declarations: [.init(property: "table.color.text", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "table.text.size", value: "14px", token: "semantic.typography.body.03")]),
         .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "table.color.text", designSlot: "table.design.root.foreground.color"), .init(property: "font-size", value: "14px", token: "table.text.size", designSlot: "table.design.root.typography.size")]),
     ]
-    static let omissions: [String] = ["selected: selector outside normalized native grammar"]
+    static let omissions: [String] = [".table[data-responsive=\"false\"]: selector outside normalized native grammar", "selected: selector outside normalized native grammar"]
 }
 
 /// Emitted through the static-content path: passive div root with a single consumer content region.
 /// SwiftUI reserves the `Table` type name; this target exports it as `FsdsTable`.
 public struct FsdsTable<Content: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         TableTokens.scopes
     }
+    private let contentLabelProp: String?
+    private var `contentLabel`: String { contentLabelProp ?? fsdsMessages.string("Table.content", default: "Table content") }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
     private var nativeTextStyle: FsdsResolvedNativeTextStyle {
@@ -46,8 +49,10 @@ public struct FsdsTable<Content: View>: View {
     }
 
     public init(
+        `contentLabel`: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
+        self.contentLabelProp = `contentLabel`
         self.content = content()
     }
 
@@ -82,6 +87,8 @@ public struct FsdsTable<Content: View>: View {
             .padding(.horizontal, inlinePadding)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .foregroundStyle(nativeTextStyle.color ?? Color.primary)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(SwiftUI.Text(verbatim: `contentLabel`))
     }
 }
 // @generated:end

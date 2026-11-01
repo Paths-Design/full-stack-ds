@@ -24,6 +24,18 @@ function buildSequenceFixture(c = sequenceFixture()) {
   return buildComponentIR(c, { allContracts: new Map([[c.name, c], ["Pagination", pagination], ["Icon", fixture("Icon")]]) });
 }
 describe("Godot bounded lowering", () => {
+  it("withholds the cancellable anchor callback and reports its actual API omission", () => {
+    const ir = buildComponentIR(fixture("Links"));
+    ir.name = "DestinationControl";
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") });
+    const script = files.find(file => file.relativePath === "DestinationControl/DestinationControl.gd")!.contents;
+    expect(script).not.toContain("func set_on_click");
+    expect(script).not.toContain("LinkActivationEvent");
+    const receipt = JSON.parse(files.find(file => file.relativePath === "DestinationControl/capabilities.json")!.contents);
+    expect(receipt.excludedProps).toContain("onClick");
+    expect(receipt.omissions).toContain("onClick: callback surface has no native signal projection");
+    expect(receipt.omissions).toContain("disabled: bound to the aria-disabled attribute; native attribute projection unverified");
+  });
   it("projects a static nested componentRef from renamed item anatomy", () => {
     const source = fixture("Accordion");
     const ir = buildComponentIR(source, { allContracts: new Map([["Accordion", source], ["Icon", fixture("Icon")]]) });
@@ -169,6 +181,24 @@ describe("Godot bounded lowering", () => {
     // than becoming a silent exclusion.
     const c=fixture("Switch"); c.props!.designed!.members!.push({name:"futureBehavior",propType:{kind:"boolean"}});
     expect(()=>godotPlan(buildComponentIR(c))).toThrow("GODOT_UNCLASSIFIED_PROP: Switch.futureBehavior");
+  });
+  it("keeps renamed Table content composition while excluding Web viewport metadata", () => {
+    const source = styledFixture("Table");
+    const ir = buildComponentIR(source);
+    ir.name = "RenamedViewport";
+    const plan = godotPlan(ir);
+    expect(plan.operation).toBe("anatomy");
+    if (!("projectedProps" in plan)) throw new Error("Expected the passive content plan");
+    expect(plan.parts).toEqual(["container"]);
+    expect(plan.contentPart).toBe("container");
+    expect(plan.excluded).toEqual(expect.arrayContaining(["responsive", "contentLabel", "ariaLabel"]));
+    expect(plan.projectedProps).not.toContain("contentLabel");
+    expect(plan.omissions).toContain("contentLabel: bound to the aria-label attribute; native attribute projection unverified");
+    expect(plan.omissions.some(value => /attribute bindings.*tabindex/.test(value))).toBe(true);
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") });
+    const receipt = JSON.parse(files.find(file => file.relativePath === "RenamedViewport/capabilities.json")!.contents);
+    expect(receipt.excludedProps).toContain("contentLabel");
+    expect(receipt.contentPart).toBe("container");
   });
   it("plans a wider presence surface with named omissions instead of refusing", () => {
     const plan = godotPlan(buildComponentIR(fixture("Dialog")));

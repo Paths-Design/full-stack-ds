@@ -43,9 +43,16 @@ enum PostcardNativeTextRules {
 
 /// Emitted through the static-content path: passive article root with a single consumer content region.
 public struct Postcard<Content: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         PostcardTokens.scopes
     }
+    private let `authorName`: String
+    private let `authorHandle`: String
+    private let `timestamp`: String
+    private let `statsLikes`: String
+    private let `statsReplies`: String
+    private let `statsReposts`: String
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
     private var nativeTextStyle: FsdsResolvedNativeTextStyle {
@@ -58,8 +65,20 @@ public struct Postcard<Content: View>: View {
     }
 
     public init(
+        `authorName`: String = "",
+        `authorHandle`: String = "",
+        `timestamp`: String = "",
+        `statsLikes`: String = "",
+        `statsReplies`: String = "",
+        `statsReposts`: String = "",
         @ViewBuilder content: () -> Content
     ) {
+        self.`authorName` = `authorName`
+        self.`authorHandle` = `authorHandle`
+        self.`timestamp` = `timestamp`
+        self.`statsLikes` = `statsLikes`
+        self.`statsReplies` = `statsReplies`
+        self.`statsReposts` = `statsReposts`
         self.content = content()
     }
 
@@ -90,7 +109,17 @@ public struct Postcard<Content: View>: View {
     private var minHeight: CGFloat { pxSlot("min-height") ?? 0 }
 
     public var body: some View {
-        content
+        VStack(alignment: .leading, spacing: 0) {
+            SwiftUI.Text(verbatim: `authorName`)
+            SwiftUI.Text(verbatim: `authorHandle`)
+            SwiftUI.Text(verbatim: `timestamp`)
+            content
+            SwiftUI.Text(verbatim: fsdsMessages.string("Postcard.likes", default: "Likes: {count}", params: ["count": `statsLikes`]))
+            SwiftUI.Text(verbatim: fsdsMessages.string("Postcard.replies", default: "Replies: {count}", params: ["count": `statsReplies`]))
+            SwiftUI.Text(verbatim: fsdsMessages.string("Postcard.reposts", default: "Reposts: {count}", params: ["count": `statsReposts`]))
+        }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(SwiftUI.Text(verbatim: fsdsMessages.string("Postcard.postLabel", default: "Post by {name}", params: ["name": `authorName`])))
             .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
             .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
