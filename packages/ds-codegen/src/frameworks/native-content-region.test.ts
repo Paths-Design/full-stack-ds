@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { corpusIR } from "./corpus-fixtures.js";
-import { parseBindingExpression, type ComponentIR } from "../ir.js";
+import { corpusIR, loadCorpusContract } from "./corpus-fixtures.js";
+import { buildComponentIR, parseBindingExpression, type ComponentIR } from "../ir.js";
 import { generateSwiftUIComponentSource } from "./swift/swiftui/component-source.js";
 import { generateJetpackComposeComponentSource } from "./jetpack-compose/component-source.js";
 
@@ -29,6 +29,7 @@ function region(message = true, fallback = false, name = "class"): ComponentIR {
 
 describe("native named content regions", () => {
   it("renders the Table catalog label without merging or clearing consumer controls", () => {
+    expect(corpusIR("Table").root.persistentRegionLabel).toMatchObject({ name: "contentLabel", type: "string", defaultMessage: "content" });
     const swift = generateSwiftUIComponentSource(corpusIR("Table"));
     const compose = generateJetpackComposeComponentSource(corpusIR("Table"));
     expect(swift).toContain('contentLabelProp ?? fsdsMessages.string("Table.content", default: "Table content")');
@@ -82,18 +83,25 @@ describe("native named content regions", () => {
   });
 
   it.each(["hidden", "dynamic-role", "non-region", "conditional-content", "hidden-attribute", "hidden-binding"])("does not expose %s content as a named region", kind => {
-    const ir = region();
-    if (kind === "hidden") ir.dom!.bindings["aria-hidden"] = parseBindingExpression("prop:responsive");
-    if (kind === "dynamic-role") ir.dom!.bindings.role = parseBindingExpression("prop:contentLabel");
-    if (kind === "non-region") ir.dom!.attrs.role = "presentation";
-    if (kind === "conditional-content") ir.dom!.ifProp = "responsive";
-    if (kind === "hidden-attribute") ir.dom!.attrs.hidden = "";
-    if (kind === "hidden-binding") ir.dom!.bindings.hidden = parseBindingExpression("prop:responsive");
+    const contract = loadCorpusContract("Table");
+    if (!contract.anatomy || Array.isArray(contract.anatomy) || !contract.anatomy.dom) {
+      throw new Error("Table fixture must declare DOM anatomy");
+    }
+    const root = contract.anatomy.dom;
+    if (kind === "hidden") root.bindings!["aria-hidden"] = "prop:responsive";
+    if (kind === "dynamic-role") root.bindings!.role = "prop:contentLabel";
+    if (kind === "non-region") root.attrs!.role = "presentation";
+    if (kind === "conditional-content") root.if = "responsive";
+    if (kind === "hidden-attribute") root.attrs!.hidden = "";
+    if (kind === "hidden-binding") root.bindings!.hidden = "prop:responsive";
+    const ir = buildComponentIR(contract);
+    expect(ir.root.persistentRegionLabel).toBeUndefined();
     expect(generateSwiftUIComponentSource(ir)).not.toContain(".accessibilityElement(children: .contain)");
     expect(generateJetpackComposeComponentSource(ir)).not.toContain("contentDescription");
   });
 
   it("leaves the decorative Skeleton boundary intact", () => {
+    expect(corpusIR("Skeleton").root.persistentRegionLabel).toBeUndefined();
     expect(generateSwiftUIComponentSource(corpusIR("Skeleton"))).not.toContain(".accessibilityElement(children: .contain)");
     expect(generateJetpackComposeComponentSource(corpusIR("Skeleton"))).not.toContain("contentDescription");
   });

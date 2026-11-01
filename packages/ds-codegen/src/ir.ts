@@ -1494,6 +1494,8 @@ export function nativeRootClipping(ir: ComponentIR, platform: "ios" | "android")
 }
 
 export interface RootSemanticsIR {
+  /** Plain string label for an unconditionally exposed root region. */
+  persistentRegionLabel?: ResolvedPropIR;
   /** Resolved root HTML element for the component. */
   element: string;
   /** Role explicitly declared on the contract. */
@@ -2065,6 +2067,23 @@ function domTreeOwnsRole(
   return node.children.some((child) => domTreeOwnsRole(child, role));
 }
 
+/**
+ * Contract role, visibility and binding facts describe a persistent named region.
+ * Targets decide which content archetypes can realize that region and how to
+ * preserve their children; this fact does not classify a native emitter path.
+ */
+function derivePersistentRegionLabel(
+  root: DomNodeIR | null | undefined,
+  props: ResolvedPropIR[],
+): ResolvedPropIR | undefined {
+  if (!root || root.attrs.role !== "region") return undefined;
+  if (root.ifProp !== undefined || root.ifSlot !== undefined || root.attrs.hidden !== undefined || root.bindings.hidden) return undefined;
+  if (root.bindings.role || root.bindings["aria-hidden"] || root.attrs["aria-hidden"] === "true") return undefined;
+  const label = root.bindings["aria-label"];
+  if (label?.kind !== "prop" || (label.path?.length ?? 0) > 0) return undefined;
+  return props.find(prop => (prop.name === label.prop || prop.safeName === label.prop) && prop.type === "string");
+}
+
 export function buildComponentIR(
   contract: ComponentContract,
   options?: BuildComponentIROptions,
@@ -2241,6 +2260,7 @@ export function buildComponentIR(
 
   const messages = buildMessages(contract);
   validateMessages(contract, messages, dom, styledProps, motion.sequence);
+  const persistentRegionLabel = derivePersistentRegionLabel(dom, styledProps);
 
   return {
     name: contract.name,
@@ -2260,6 +2280,7 @@ export function buildComponentIR(
     states,
     classRecipe,
     root: {
+      ...(persistentRegionLabel ? { persistentRegionLabel } : {}),
       element: rootElement,
       explicitRole,
       implicitRole,

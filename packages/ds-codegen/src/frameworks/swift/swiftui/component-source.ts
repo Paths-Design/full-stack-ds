@@ -64,7 +64,6 @@ import {
   isSelectionControl,
   isSequencePager,
   isStaticContent,
-  staticContentRegionLabel,
   isValueChannelControl,
   isVisualOnlyLeaf,
   soleValueChannel,
@@ -3266,7 +3265,7 @@ function emitDisclosureComponent(ir: ComponentIR): string {
 
 function emitStaticContentComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
-  const regionLabel = staticContentRegionLabel(ir);
+  const regionLabel = ir.root.persistentRegionLabel;
   const regionLabelName = regionLabel ? `\`${regionLabel.safeName}\`` : undefined;
   const regionLabelDecl = regionLabel ? swiftStringProp(ir, regionLabel.safeName, INDENT, regionLabelName) : undefined;
   const chrome = resolveChrome(ir);

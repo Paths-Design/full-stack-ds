@@ -7,7 +7,7 @@ import { collectVariantAxes, emitAxisSlotLookup, emitChromeModifier, emitChromeV
 import { emitComponentReference, referenceImports, referenceNodes, referenceParameterLines } from "../references.js";
 import type { ComponentIR } from "../../../ir.js";
 import { kotlinStringDefault } from "../messages.js";
-import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalProp, orientationEnumValues, staticContentRegionLabel } from "../../native-emission-class.js";
+import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalProp, orientationEnumValues } from "../../native-emission-class.js";
 
 /**
  * Static-content composable: a passive root whose content is the consumer's
@@ -18,7 +18,7 @@ import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalPro
  */
 export function emitStaticContent(ir: ComponentIR): string {
   const name = ir.name;
-  const regionLabel = staticContentRegionLabel(ir);
+  const regionLabel = ir.root.persistentRegionLabel;
   const regionLabelName = regionLabel ? kotlinParamName(regionLabel.safeName) : undefined;
   const regionLabelDefault = kotlinStringDefault(ir, regionLabel);
   const regionModifier = !regionLabel ? "" : regionLabelDefault === null
