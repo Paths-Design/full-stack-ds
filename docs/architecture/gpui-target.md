@@ -107,6 +107,18 @@ its reason. Two rules keep the projection honest:
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
 
+### Expansion state
+
+A boolean channel with a **declared trigger** generalizes presence beyond
+surfaces: ShowMore's `expanded`/`defaultExpanded` on its trigger state realizes a
+prop-named expansion API (`expanded(..)`, `default_expanded(..)`,
+`set_expanded(..)`, `is_expanded()`), a generated `toggle_open` wired to the
+trigger part's pointer/Space/Enter activation, and a `ChangeRequest` emission so
+a controlled owner accepts the request. The receipt names what expansion does
+not carry: text-measurement clamping (the substrate has no text-shaping
+truncation channel), so collapsed content is rendered unmeasured rather than
+clamped.
+
 ### Collection open value
 
 A contract that exposes a string-valued disclosure channel toggled by a declared
