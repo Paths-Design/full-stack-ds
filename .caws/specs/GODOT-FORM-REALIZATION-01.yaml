@@ -1,9 +1,11 @@
 id: GODOT-FORM-REALIZATION-01
 title: 'Godot form-control family realization: Select, Checkbox, ToggleSwitch, Input, TextField, Field, OTP, RadioGroup, Shuttle pending-ledger closure'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Form-control family completed: nine components at zero pending leaves with validation state and aria labeling projected structurally on both runtimes, and the tri-state/OTP-runtime/data-driven/binding/transfer facts refused with written reasons'
 created_at: '2026-11-01T09:44:07.932Z'
-updated_at: '2026-11-01T09:44:11.231Z'
+updated_at: '2026-11-01T09:55:54.547Z'
 created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
 blast_radius:
   modules:
