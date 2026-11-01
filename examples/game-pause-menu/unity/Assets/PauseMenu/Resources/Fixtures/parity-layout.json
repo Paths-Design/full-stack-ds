@@ -49,7 +49,7 @@
     "ghost": 160
   },
   "style": {
-    "panelBorder": 1,
+    "panelBorder": 2,
     "radius": 0,
     "shadow": "none"
   },

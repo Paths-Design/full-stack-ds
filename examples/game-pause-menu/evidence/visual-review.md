@@ -1,6 +1,6 @@
 # Visual review record — Orion N5 pause menu
 
-**Status: restyle pass 2 complete; human re-review pending.** The human
+**Status: restyle pass 3 complete; human re-review pending.** The human
 review decision was “require the Orion style restyle first”, so this record now
 covers both the original gap and the first restyle pass.
 
@@ -105,6 +105,16 @@ Authority-driven changes:
 - shell and footer `ruleStrong` steel field, keeping charcoal panel housings;
 - GPUI gained the full-viewport ink/0.78 remap-modal scrim Unity and Godot
   already had — the brighter chrome exposed that as a genuine cross-engine gap.
+
+## Restyle pass 3 (2026-11-01)
+
+- panel housings use 2 px frames in all three lanes (Unity lane class, GPUI
+  panel widget, Godot frame width from the authority); the abilities detail
+  edge probe moves inside the thicker border;
+- this is the industrial-frame part of the restyle only. The requested
+  per-tab mint/grey field conversion of abilities/settings is **not done**;
+  those remain dark charcoal bodies under the mint header/footer and orange
+  band. That gap is the next restyle item.
 
 ## Restyle pass 2 (2026-11-01)
 
