@@ -48,3 +48,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "reference bindings whose expression is a realized parent prop or a literal are applied through the child's generated setter every render (e.g. Alert.dismiss receives set_aria_label(self.dismiss_label.clone()); Button.spinner receives set_inline/set_aria_hidden from self.loading; Chip.action receives set_disabled/set_aria_label); pinned by the composition codegen test"
+    recorded_at: "2026-11-01T10:51:56.446Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Chip/Chip.rs
+    commit_sha: "542de0370"
