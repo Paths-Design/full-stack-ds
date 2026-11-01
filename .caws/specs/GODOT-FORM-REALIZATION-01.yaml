@@ -55,3 +55,7 @@ evidence:
     status: pass
     evidence_ref: "form-family pending probe (node tmp/family3-pending.mjs) prints no component rows -> all nine form controls at 0 pending; family counts pending 0 / lowered 1698 / refused 1573; pnpm run audit:godot-boundary exit 0 ('every leaf classified, ... inventory matches a fresh regen') with ledger 158 rules, lowered 8906 / pending 244 / refused 8351, 0 unclassified"
     recorded_at: "2026-11-01T09:55:45.402Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:godot row form-aria-validation: Checkbox (control shape) projects aria_required/aria_invalid from the required/invalid props and wires accessibility_labeled_by_nodes from the aria_labelledby path; Input (anatomy shape) does the same through set_contract_prop; the anatomy/control runtimes share the accessibility-facts projection module"
+    recorded_at: "2026-11-01T09:55:47.691Z"
