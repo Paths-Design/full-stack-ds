@@ -36,7 +36,7 @@ const classes = $derived(
 // @custom:end
 </script>
 
-<div class={classes} role="region" data-responsive={(responsive ? "true" : "false")} tabindex={(responsive ? "0" : "-1")} aria-label={contentLabel} data-fsds-component="table" data-fsds-box="">
+<div class={classes} role="region" data-responsive={(responsive ? "true" : "false")} tabindex={(responsive ? 0 : -1)} aria-label={contentLabel} data-fsds-component="table" data-fsds-box="">
   <table class={'table__container'} aria-label={ariaLabel}>
     {@render children?.()}
   </table>

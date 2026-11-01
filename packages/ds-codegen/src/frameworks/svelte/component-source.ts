@@ -2572,17 +2572,27 @@ function renderSvelteTextChildExpression(
   }
 }
 
+const NUMERIC_SVELTE_ATTRS = new Set([
+  "tabindex", "maxlength", "minlength", "size", "rowspan", "colspan",
+  "min", "max", "step", "rows", "cols", "span", "start",
+  "aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-level",
+  "aria-posinset", "aria-setsize", "aria-colcount", "aria-colindex",
+  "aria-colspan", "aria-rowcount", "aria-rowindex", "aria-rowspan",
+]);
+
 /**
  * Lower a BindingExpression to a bare Svelte template expression (no
  * `attr={...}` scaffolding). Used by callers that splice the expression
  * into a surrounding template construct — `cssVarBindings` ->
  * `style:--fsds-foo={<expr>}`, future `{#each}` source expressions, etc.
+ * Numeric DOM slots retain integer literal types through conditionals.
  * Returns null for binding kinds that can't appear in an expression
  * position (e.g. channel events).
  */
 function renderSvelteBindingValue(
   expr: BindingExpression,
   ctx: SvelteRenderContext,
+  numericLiterals = false,
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
@@ -2591,7 +2601,9 @@ function renderSvelteBindingValue(
     case "prop":
       return appendPath(sveltePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
-      return JSON.stringify(expr.value);
+      return numericLiterals && /^-?\d+$/.test(expr.value)
+        ? String(Number(expr.value))
+        : JSON.stringify(expr.value);
     case "message":
       return composeMessageExpression("fsdsMessages.current", expr, (value) => renderSvelteBindingValue(value, ctx));
     case "iterationLocal": {
@@ -2630,8 +2642,8 @@ function renderSvelteBindingValue(
       return renderSveltePredicate(expr, ctx);
     case "conditional": {
       const condition = renderSvelteBindingValue(expr.condition, ctx);
-      const whenTrue = renderSvelteBindingValue(expr.whenTrue, ctx);
-      const whenFalse = renderSvelteBindingValue(expr.whenFalse, ctx);
+      const whenTrue = renderSvelteBindingValue(expr.whenTrue, ctx, numericLiterals);
+      const whenFalse = renderSvelteBindingValue(expr.whenFalse, ctx, numericLiterals);
       if (condition === null || whenTrue === null || whenFalse === null) return null;
       return `(${condition} ? ${whenTrue} : ${whenFalse})`;
     }
@@ -2812,7 +2824,7 @@ function renderSvelteBinding(
       return lowered === null ? null : `${attr}={${lowered}}`;
     }
     case "conditional": {
-      const lowered = renderSvelteBindingValue(expr, ctx);
+      const lowered = renderSvelteBindingValue(expr, ctx, NUMERIC_SVELTE_ATTRS.has(attr.toLowerCase()));
       return lowered === null ? null : `${attr}={${lowered}}`;
     }
   }
