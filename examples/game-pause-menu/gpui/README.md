@@ -206,7 +206,12 @@ OFL) through `TextSystem::add_fonts` and pins the root family to `Inter`; this r
 earlier `.SystemUIFont` fallback. Two weights are requested (400 regular / 700 bold) with the
 authority's sizes and zero tracking; the retired 600/800 requests collapse to regular/bold. Text
 weights are applied through the generated `Text` weight variants plus token overrides, and the
-root `font_family` propagates into generated components.
+root `font_family` propagates into generated components. The lane also writes
+`AppleFontSmoothing = 0` into its own application preferences domain before GPUI
+initialises: the pinned `gpui_macos` renderer otherwise applies
+CoreGraphics-style glyph dilation to light-on-dark text, which made the same
+Inter Bold read ~40 % heavier than Unity/Godot. This is a per-app preference,
+not a global font setting.
 
 ### Permitted differences (recorded)
 

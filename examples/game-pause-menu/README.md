@@ -78,6 +78,19 @@ the design system's "pill" is a token value rather than a geometry contract:
   package-level USS clamp removes the Unity manifestation for every consumer;
   the GPUI/Godot lanes pin their composite/icon realizations.
 
+### Design-token provenance
+
+The authority is token-aware rather than a parallel palette: all 19 colours
+carry a `colorTokens` entry (semantic token + `dark`/`light`/`both` mode) and
+all 20 type values carry a `typeTokens` entry. Eleven colours resolve through
+existing Orion semantic tokens in dark mode, five use the brand's light-mode
+values for the light content surfaces embedded in the dark chrome, and the
+three graphic status/surface hues (`moss`, `alert`, `clear`) are new Orion brand
+tokens. The three app-specific type sizes (11/13/28 px) are new Orion
+`typography.graphic.size.*` tokens; the rest map to the core typography ramp and
+zero tracking token. `node scripts/game-pause-token-provenance.mjs` fails if any
+excerpted value drifts from `resolved.tokens.json` + `orion.tokens.json`.
+
 ### Icon art
 
 The first parity montage still showed two glyph languages (Unity/Godot catalog
@@ -113,13 +126,21 @@ copied into `res://fonts` by `setup.sh`.
   wrapped body copy is top-aligned at its pinned y, chip labels are centred,
   and the footer hint string uses `white-space: pre` on Unity so UI Toolkit
   does not collapse its triple-space separators.
+- **GPUI stroke weight.** The pinned gpui_macos renderer dilates glyphs while
+  macOS font smoothing is enabled, so GPUI's Inter Bold read heavier than the
+  other two engines even at identical widths. The GPUI lane now sets
+  `AppleFontSmoothing = 0` in its own preferences domain before the text system
+  starts (no global setting touched); row-label ink coverage moved from 0.479
+  to 0.343 against Unity 0.332 / Godot 0.342. The checker's ink-coverage probe
+  makes the weight comparable and fails on regression.
 - **Verification:** the shared checker measures **39 pinned text strings × 3
-  engines = 117 bbox measurements** per run (wordmark, stat labels/values, tab
-  labels, panel titles/metas, row labels/secondaries, field note, footer hints,
-  nav target, drawer title/tagline/body, chips, dossier, card/detail copy,
-  settings labels and values) and fails on >±4 px x/y or >±6/±5 px w/h deltas.
-  The final run reports **0 failures**, with Unity's dynamic-font rasterisation
-  the widest residual (≤4 px on 10 px labels).
+  engines = 117 bbox + ink-coverage measurements** per run (wordmark, stat
+  labels/values, tab labels, panel titles/metas, row labels/secondaries, field
+  note, footer hints, nav target, drawer title/tagline/body, chips, dossier,
+  card/detail copy, settings labels and values) and fails on >±4 px x/y,
+  >±6/±5 px w/h or >25 % ink-coverage deltas. The final run reports
+  **0 failures**, with Unity's dynamic-font rasterisation the widest geometric
+  residual (≤4 px on 10 px labels).
 
 ## The app
 

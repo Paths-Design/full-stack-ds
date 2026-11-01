@@ -64,6 +64,7 @@
     "tokens:check-usage:gate": "pnpm --filter @full-stack-ds/tokens run check-usage:gate",
     "tokens:write-usage-baseline": "pnpm --filter @full-stack-ds/tokens run write-usage-baseline",
     "tokens:check-brand-refs": "pnpm --filter @full-stack-ds/tokens run check-brand-refs",
+    "tokens:check:game-pause-authority": "node scripts/game-pause-token-provenance.mjs",
     "swiftui:semantic-defaults": "node scripts/generate-swiftui-semantic-defaults.mjs",
     "swiftui:semantic-defaults:check": "node scripts/generate-swiftui-semantic-defaults.mjs --check",
     "test": "vitest run",
