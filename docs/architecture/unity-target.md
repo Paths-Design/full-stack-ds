@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
-updated: 2026-10-31
-verified_at_commit: ae899bf96
+updated: 2026-11-01
+verified_at_commit: 7ffa7e6d
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
