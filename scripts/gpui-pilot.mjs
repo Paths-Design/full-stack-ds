@@ -32,6 +32,7 @@ const requiredEngineTests = [
   "mounted_button_action_callback_pointer_and_keyboard",
   "mounted_alert_reference_action_forwards_to_parent_callback",
   "mounted_page_navigator_nested_reference_children_render",
+  "mounted_details_disclosure_toggles_from_trigger_click_and_keyboard",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 // Every admitted component carries one generated mount witness. This is a

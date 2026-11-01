@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Divider, PageNavigator, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Details, Divider, PageNavigator, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -409,4 +409,21 @@ fn mounted_page_navigator_nested_reference_children_render(cx: &mut TestAppConte
     let (_view, cx) = cx.add_window_view(|_, _| PageNavigator::default());
     cx.debug_bounds("page-navigator-previous").expect("retained previous button must render");
     cx.debug_bounds("icon-root").expect("nested icon reference must render inside the retained button");
+}
+
+#[gpui::test]
+fn mounted_details_disclosure_toggles_from_trigger_click_and_keyboard(cx: &mut TestAppContext) {
+    let (view, cx) = cx.add_window_view(|_, _| Details::default());
+    assert!(!view.read_with(cx, |details, _| details.state.value()), "closed by default");
+    assert!(cx.debug_bounds("details-content").is_none(), "closed disclosure renders no content");
+    let trigger = cx.debug_bounds("details-summary").expect("summary trigger must render");
+    cx.simulate_click(trigger.center(), Modifiers::default());
+    assert!(view.read_with(cx, |details, _| details.state.value()), "click opens the disclosure");
+    assert!(cx.debug_bounds("details-content").is_some(), "open disclosure renders content");
+    let focused = view.read_with(cx, |details, _| details.focus_handle.clone().unwrap());
+    assert!(cx.update(|window, _| focused.is_focused(window)), "activation focuses the trigger");
+    tap_key(cx, "space");
+    assert!(!view.read_with(cx, |details, _| details.state.value()), "Space closes the disclosure");
+    tap_key(cx, "enter");
+    assert!(view.read_with(cx, |details, _| details.state.value()), "Enter opens the disclosure");
 }
