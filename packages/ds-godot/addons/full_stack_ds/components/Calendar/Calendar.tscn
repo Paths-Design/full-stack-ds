@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Calendar/Calendar.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Calendar/theme.tres" id="2"]
+
+[node name="Calendar" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="header" type="VBoxContainer" parent="."]
+[node name="nav" type="Button" parent="header"]
+text = "‹"
+[node name="caption" type="Label" parent="header"]
+[node name="nav_2" type="Button" parent="header"]
+text = "›"
+[node name="grid" type="VBoxContainer" parent="."]
+[node name="weekday" type="PanelContainer" parent="grid"]
+[node name="day" type="PanelContainer" parent="grid"]

@@ -72,5 +72,8 @@
   "excludedProps": [
     "decorative"
   ],
+  "omissions": [
+    "decorative: declined by the rule shape; no native realization on this target"
+  ],
   "proof": "requires-runtime-witness"
 }

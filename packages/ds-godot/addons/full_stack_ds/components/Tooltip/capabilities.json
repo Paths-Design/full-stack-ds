@@ -1,0 +1,47 @@
+{
+  "operation": "surface",
+  "anchor": "part",
+  "modality": "non-blocking",
+  "openTriggers": [
+    "hover",
+    "focus"
+  ],
+  "defaults": {
+    "closeOnEscape": "true",
+    "closeOnBlur": "true"
+  },
+  "excludedProps": [
+    "defaultOpen",
+    "placement",
+    "disabled",
+    "closeOnEscape",
+    "closeOnBlur"
+  ],
+  "omissions": [
+    "modality: non-blocking surface input isolation and modality state have no native mapping",
+    "dismissal: escape, blur and pointer-leave closing unlowered",
+    "dismissal: closeOnEscape and closeOnBlur gating unlowered",
+    "stacking: overlay order and host layer unverified; declared tooltip layering, body mount target not projected",
+    "anchor: tooltip positioning relative to its trigger unlowered",
+    "anchor: declared anchored, describedby relation, flip-shift collision and placement prop not projected",
+    "transience: ephemeral tooltip dismissal scheduling unlowered",
+    "content: the content subtree is not projected into a native scene; consumers mount surface content",
+    "anatomy: 2 compound parts (trigger and content) have no native hosts",
+    "focus: declared none focus strategy has no native focus policy",
+    "a11y: the tooltip role has no native accessibility projection",
+    "a11y: aria-describedby labeling has no native accessibility projection",
+    "state: defaultOpen initial open value unlowered",
+    "trigger: hover and focus opening has no native pointer or focus binding",
+    "interaction: open trigger on part trigger unlowered",
+    "interaction: disabled gating unlowered",
+    "presence: unmount content presence is not modeled; open/close only toggles the host",
+    "defaultOpen: no executable native surface realization",
+    "placement: no executable native surface realization",
+    "disabled: no executable native surface realization",
+    "closeOnEscape: no executable native surface realization",
+    "closeOnBlur: no executable native surface realization"
+  ],
+  "theme": "source-bearing surface style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; overlay stacking is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

@@ -27,8 +27,17 @@ export function godotGlyphPlan(ir: ComponentIR): GodotGlyphPlan | undefined {
   const entries = collectIconGlyphNodes(ir.dom);
   if (!entries.length) return undefined;
   const root = ir.dom;
-  if (!root || entries.length !== 1 || root.children.length !== 1 || root.children[0] !== entries[0]!.node) unsupported(ir.name, "expected one direct glyph child");
-  if (ir.behavior.normalizedChannels.length || ir.interaction || ir.formControl || ir.surface || ir.compoundParts.length || ir.motion.sequence) unsupported(ir.name, "interactive or compound anatomy");
+  if (!root) return undefined;
+  // The pure single-glyph host this runtime renders: exactly one glyph node,
+  // and it is the root's only child. Wider shapes — a glyph nested inside a
+  // heading row or a list scaffold (NavTree), a tree carrying several glyph
+  // nodes, or an interactive/compound/surface/form host — belong to the
+  // generic anatomy planner, which can project the surrounding parts. This
+  // planner declines those shapes instead of refusing the whole component.
+  const pureGlyphHost = entries.length === 1 && root.children.length === 1 && root.children[0] === entries[0]!.node &&
+    ir.behavior.normalizedChannels.length === 0 && !ir.interaction && !ir.formControl && !ir.surface &&
+    !ir.compoundParts.length && !ir.motion.sequence;
+  if (!pureGlyphHost) return undefined;
   const glyphNode = entries[0]!.node;
   if (hasUnloweredNodeFact(root) || hasUnloweredNodeFact(glyphNode) || glyphNode.part ||
       root.content || root.componentRef || root.iteration || root.ifProp || root.ifSlot ||

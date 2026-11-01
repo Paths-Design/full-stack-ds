@@ -375,6 +375,32 @@ func _ready() -> void:
 	var saved_pixel: Color = frame.get_pixelv(Vector2i(saved_card.chrome.global_position + Vector2(5, 5)))
 	check(saved_pixel.is_equal_approx(Color("#334455")), "Reloaded Card token override did not paint expected viewport pixel")
 	rows.append({"id":"saved-composed-pixel","color":saved_pixel.to_html(false)})
+	# Catalog load: every admitted component scene must exist, parse and
+	# instantiate. This is a structural admission witness only — it proves the
+	# generated scene tree is loadable, not that its behavior is realized.
+	var catalog_script = load("res://addons/full_stack_ds/components/catalog.gd")
+	var admitted: Array = []
+	if catalog_script != null:
+		admitted = catalog_script.get_script_constant_map().get("COMPONENTS", [])
+	var load_failures: Array = []
+	for component in admitted:
+		var scene_path := "res://addons/full_stack_ds/components/%s/%s.tscn" % [component, component]
+		if not ResourceLoader.exists(scene_path):
+			load_failures.append(component + ":missing-scene")
+			continue
+		var packed = load(scene_path)
+		if packed == null:
+			load_failures.append(component + ":unparseable")
+			continue
+		var instance = packed.instantiate()
+		if instance == null:
+			load_failures.append(component + ":uninstantiable")
+			continue
+		add_child(instance)
+		await get_tree().process_frame
+		instance.queue_free()
+	check(load_failures.is_empty(), "Catalog load failed: " + ", ".join(load_failures))
+	rows.append({"id":"catalog-load","admitted":admitted.size(),"failures":load_failures})
 	frame.save_png(out.path_join("godot.png"))
 	var file := FileAccess.open(out.path_join("godot.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify({"runId":OS.get_environment("FSDS_ENGINE_RUN"),"engine":"godot","version":Engine.get_version_info().string,"exported":OS.has_feature("template"),"passed":not failed,"rows":rows}))

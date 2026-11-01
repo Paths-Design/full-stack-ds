@@ -1,0 +1,33 @@
+{
+  "operation": "boolean",
+  "excluded": [
+    "size",
+    "defaultChecked",
+    "indeterminate",
+    "name",
+    "value",
+    "ariaLabel",
+    "ariaLabelledby"
+  ],
+  "omissions": [
+    "indeterminate: the declared behaviour is not realised by the shared runtime yet (boundary prop-runtime-behaviour)",
+    "ariaLabel: lowered (boundary prop-aria-label)",
+    "ariaLabelledby: ARIA state/relationship exposure is not realised by the shared runtime yet (boundary prop-aria)",
+    "size: declined by the boolean shape; no native realization on this target",
+    "defaultChecked: declined by the boolean shape; no native realization on this target",
+    "name: declined by the boolean shape; no native realization on this target",
+    "value: declined by the boolean shape; no native realization on this target"
+  ],
+  "theme": "unconditional foreground fallback only",
+  "otherStyling": "unsupported",
+  "excludedProps": [
+    "size",
+    "defaultChecked",
+    "indeterminate",
+    "name",
+    "value",
+    "ariaLabel",
+    "ariaLabelledby"
+  ],
+  "proof": "requires-runtime-witness"
+}

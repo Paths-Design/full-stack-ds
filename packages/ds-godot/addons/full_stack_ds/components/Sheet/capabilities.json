@@ -1,0 +1,48 @@
+{
+  "operation": "surface",
+  "anchor": "none",
+  "modality": "blocking",
+  "openTriggers": [],
+  "defaults": {
+    "side": "\"right\"",
+    "modal": "true"
+  },
+  "excludedProps": [
+    "defaultOpen",
+    "side",
+    "modal",
+    "ariaLabel",
+    "ariaLabelledby",
+    "ariaDescribedby"
+  ],
+  "omissions": [
+    "modality: blocking backdrop and focus containment unlowered",
+    "modality: modal prop gate does not downgrade blocking behaviour",
+    "dismissal: escape, outside-click and close-button closing unlowered",
+    "stacking: overlay order and host layer unverified; declared modal layering, body mount target, backdrop enabled not projected",
+    "positioning: viewport-edge placement (side prop) unlowered",
+    "content: the content subtree is not projected into a native scene; consumers mount surface content",
+    "content: content is declared interactive; no native focusable content host exists",
+    "anatomy: 6 compound parts (content, header, title, description, body and footer) have no native hosts",
+    "focus: focus trapping and containment unlowered",
+    "focus: initial focus on part content unlowered",
+    "focus: focus restoration to part trigger unlowered",
+    "focus: body scroll lock has no native mapping",
+    "a11y: the dialog role has no native accessibility projection",
+    "a11y: aria-label, aria-labelledby and aria-describedby labeling has no native accessibility projection",
+    "a11y: aria-hidden (static), aria-modal (modal prop), aria-label (ariaLabel prop) and aria-label (message binding) attributes are not projected",
+    "state: defaultOpen initial open value unlowered",
+    "interaction: close trigger on part close unlowered",
+    "interaction: the declared focus container has no native focus ownership",
+    "presence: unmount content presence is not modeled; open/close only toggles the host",
+    "defaultOpen: no executable native surface realization",
+    "side: no executable native surface realization",
+    "modal: no executable native surface realization",
+    "ariaLabel: no executable native surface realization",
+    "ariaLabelledby: no executable native surface realization",
+    "ariaDescribedby: no executable native surface realization"
+  ],
+  "theme": "source-bearing surface style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; overlay stacking is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

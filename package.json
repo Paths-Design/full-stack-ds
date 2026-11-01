@@ -2,7 +2,7 @@
   "name": "full-stack-design-system",
   "version": "1.0.0",
   "private": true,
-  "description": "Full Stack DS — a falsifiable claim about contract-governed compositional systems",
+  "description": "Full Stack DS \u2014 a falsifiable claim about contract-governed compositional systems",
   "type": "module",
   "packageManager": "pnpm@10.14.0",
   "scripts": {
@@ -140,7 +140,9 @@
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
     "dev:gpui": "node scripts/gpui-gallery.mjs",
-    "test:package:release": "node scripts/release-package-check/verify.mjs"
+    "test:package:release": "node scripts/release-package-check/verify.mjs",
+    "audit:godot-boundary": "pnpm --filter @full-stack-ds/codegen build && node packages/ds-codegen/dist/frameworks/godot/capabilities.js . --check",
+    "write:godot-boundary": "pnpm --filter @full-stack-ds/codegen build && node packages/ds-codegen/dist/frameworks/godot/capabilities.js . --write"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",

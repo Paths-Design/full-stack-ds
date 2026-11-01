@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: Godot comparative pilot
 owner: "@darianrosebrook"
-updated: 2026-10-30
+updated: 2026-11-01
 governs:
   - packages/ds-codegen/src/frameworks/godot/
   - packages/ds-godot/
@@ -35,3 +35,17 @@ The passive fixture also saves and reloads Text and Divider in the fresh project
 Card's `title` slot has no normalized compound-part carrier, and its interactive link/focus behavior and authored shadow/motion declarations are unlowered. Badge does not synthesize the prose-described status glyph; `showStatusIcon` is excluded until the contract supplies an executable default-glyph fact. Root role and labeling projection, arbitrary nested Button content, screen-reader delivery for Icon, and cross-platform visual fidelity remain open. The composite capability receipts enumerate each unsupported selector, declaration and prop; that accounting is not itself semantic or visual proof.
 
 At source `62f37334`, comparison run `5af9bd21-83b8-4e79-ad7c-6fa825ccc9a2` passed the frozen cases against Unity 6000.5.3f1 and Godot 4.7.2. The Godot macOS export used the matching export template, Compatibility rendering, and ETC2/ASTC texture import. Run evidence includes `comparison.json`, per-engine receipts, editor serialization logs and an exported screenshot. Source trees and the trace file are hashed in the comparison receipt. The default `standalone` feature-name assumption was rejected during harness development; the exported witness uses Godot's `template` feature tag.
+
+## Corpus-wide admission and the support boundary (GODOT-UNITY-COMPONENT-PARITY-01)
+
+The registry allowlist now matches the Unity target's component set: all 55 corpus contracts emit GDScript, PackedScene and Theme resources. Widening admission from ten components to the corpus was a capability slice, not a registry edit — the emitter gained two planning shapes and a boundary discipline.
+
+**Planning shapes.** The bounded shapes stay first in dispatch and are unchanged for the components that already used them (sequence, bounded glyph, composite, projected action, narrow static text/rule, narrow anchored surface, boolean/select/toggle-item control). Three additions sit behind them:
+
+- **Generic anatomy** (`walker.ts`, `runtime/anatomy.gd`): lowers an arbitrary `ir.dom` / `ir.parts` / `ir.compoundParts` tree into named part hosts and a flattened scene, projecting the style declarations it can map and naming every fact it cannot. It declines any shape a bounded planner already claims, and declines `ir.surface` so overlays keep their presence semantics.
+- **Wider presence surfaces** (`surface-plan.ts`, `runtime/surface.gd`): blocking modals, viewport-edge sheets, transient toasts, selector-anchored coachmarks and hover/focus tooltips that the narrow anchored shape could not represent. The runtime realises presence only — an open flag, `open_changed`, inert declared-prop projection and plan-fact getters. It deliberately implements no backdrop, focus containment, dismissal gesture, anchoring, stacking or timer, and each missing behaviour is named in the receipt.
+- **Prop boundary** (`boundary.ts`, `support-boundary.json`): a committed, ordered ledger that classifies every contract and sidecar leaf as `lowered`, `pending` or `refused`, ending in a catch-all so an unadjudicated family fails generation instead of becoming a silent exclusion.
+
+**Discipline.** Every generated component carries a `capabilities.json` receipt naming its exclusions and omissions; `pnpm run audit:godot-boundary` (script `write:godot-boundary` regenerates the inventory) enforces three separate obligations: ledger totality (no admitted component may rely on an unadjudicated leaf), receipt totality (every excluded prop is named in that component's own omissions or fidelity gaps), and inventory drift (the committed `packages/ds-godot/verification/capability-inventory.json` must match a fresh regeneration). Where a shape legitimately declines a fact the target lowers elsewhere — a presence-only surface cannot lower a dismiss timer — the audit records a shape variance rather than failing, so the disagreement between per-target ledger and per-shape capability stays visible and reviewable.
+
+**What this does not claim.** Emission parity is not behavioural parity. The anatomy shape emits a loadable scene tree, projected style subset and inert declared props; data-driven iteration emits one host and names the repeats, componentRef instances emit an empty host, and channels, focus, validation, formatting, motion, keyframes, messages, a11y roles/labeling and CSS layout semantics are omissions in the receipts, not realisations. The pilot's `catalog-load` row proves every admitted scene exists, parses and instantiates — it is a structural admission witness, not a behaviour witness. Typography and glyph rendering keep the approximations recorded above. The Godot target remains outside the TypeScript admission rail and CI drift diff; this slice adds a local boundary audit, not rail admission.

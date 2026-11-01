@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Select/Select.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Select/theme.tres" id="2"]
+
+[node name="Select" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="trigger" type="Button" parent="."]
+[node name="text" type="Label" parent="trigger"]
+[node name="content" type="VBoxContainer" parent="."]
+[node name="search" type="PanelContainer" parent="content"]
+[node name="searchInput" type="LineEdit" parent="content/search"]
+[node name="options" type="PanelContainer" parent="content"]
+[node name="option" type="Button" parent="content/options"]
+[node name="emptyState" type="PanelContainer" parent="content"]
