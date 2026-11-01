@@ -5,8 +5,8 @@ import type { ComponentIR, DomNodeIR } from '../../ir.js';
 import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import type { NativeStyleDeclarationIR, NativeStyleRuleIR } from '../../native-style-rules.js';
-import { gpuiAnatomyPlan, gpuiAnatomyStylePlan } from './anatomy.js';
-import type { GpuiPlan, GpuiRefPlan, GpuiStylePlan } from './plan-types.js';
+import { collectRefs, gpuiAnatomyPlan, gpuiAnatomyStylePlan, type AnatomyState } from './anatomy.js';
+import type { GpuiOmission, GpuiPlan, GpuiRefPlan, GpuiStylePlan } from './plan-types.js';
 import { supported, validScalar } from './style-vocabulary.js';
 /** Encode characters directly so literal backslash sequences stay literal. */
 function q(value: string): string {
@@ -33,10 +33,41 @@ function nodesOf(ir: ComponentIR): DomNodeIR[] {
 /** Source facts: normalized control, anatomy and variant capability.
  * Applies by: Boolean channels or static native/slot anatomy, never identity.
  * Removable when: additional native capabilities are independently admitted. */
+/**
+ * Disclosure contracts expose an `interaction` boolean channel toggled by a
+ * click on a trigger part, with no form control. They reuse the bounded
+ * channel machinery through a synthetic control host whose part is the trigger.
+ * Applies by: normalized interaction-channel facts, never component identity.
+ */
+function disclosureControl(ir: ComponentIR): ComponentIR['formControl'] {
+ if (ir.formControl) return undefined;
+ const interaction = ir.interaction as { channel?: {
+  name: string; valueProp: string; defaultValueProp?: string; changeHandlerProp?: string;
+  valueType: string; callbackKind?: string; enabledByProp?: string; isDisclosureChannel?: boolean;
+ } } | undefined;
+ const channel = interaction?.channel;
+ if (!channel || channel.valueType !== 'boolean' || !channel.isDisclosureChannel) return undefined;
+ let triggerPart: string | undefined;
+ const visit = (node: DomNodeIR): void => {
+  const click = node.events?.click;
+  if (click?.kind === 'channel' && click.channel === channel.name) triggerPart ??= node.part ?? 'root';
+  node.children.forEach(visit);
+ };
+ if (ir.dom) visit(ir.dom);
+ if (!triggerPart) return undefined;
+ return {
+  part: { name: triggerPart },
+  valueModel: 'boolean',
+  commit: 'activation',
+  channel,
+  activationKeys: ['Space', 'Enter'],
+ } as unknown as NonNullable<ComponentIR['formControl']>;
+}
+
 export function gpuiPlan(ir: ComponentIR): GpuiPlan {
- const nodes = nodesOf(ir), control = ir.formControl;
+ const nodes = nodesOf(ir), disclosure = disclosureControl(ir), control = ir.formControl ?? disclosure;
  if (ir.dom?.tag==='children'||ir.dom?.tag==='slot') throw new Error(`GPUI_UNSUPPORTED_ROOT_INSERTION: ${ir.name}`);
- if (!ir.dom || ir.surface || ir.interaction || ir.compositeControl || ir.pagedSet || ir.motion.sequence || nodes.some(node => node.componentRef || node.iteration || node.iconGlyph || node.cssVarBindings.length || node.content && 'transform' in node.content)) throw new Error(`GPUI_UNSUPPORTED_SHAPE: ${ir.name}`);
+ if (!ir.dom || ir.surface || (ir.interaction && !disclosure) || ir.compositeControl || ir.pagedSet || ir.motion.sequence || nodes.some(node => (node.componentRef && !disclosure) || node.iteration || node.iconGlyph || node.cssVarBindings.length || node.content && 'transform' in node.content)) throw new Error(`GPUI_UNSUPPORTED_SHAPE: ${ir.name}`);
  if (control && (control.valueModel !== 'boolean' || !['change','activation'].includes(control.commit))) throw new Error(`GPUI_UNSUPPORTED_SHAPE: ${ir.name}`);
  if (control && (control.channel.valueType !== 'boolean' || control.channel.callbackKind !== 'value' || control.channel.enabledByProp || ir.behavior.normalizedChannels.length !== 1)) throw new Error(`GPUI_UNSUPPORTED_CHANNEL: ${ir.name}`);
  if (control && !control.activationKeys?.length) throw new Error(`GPUI_UNSUPPORTED_ACTIVATION_HOST: ${ir.name}`);
@@ -69,16 +100,28 @@ export function gpuiPlan(ir: ComponentIR): GpuiPlan {
   boolProps.add(node.ifProp);
  }
  if (mixedProp) boolProps.add(mixedProp);
+ const refOmissions: GpuiOmission[] = [];
+ const refs = disclosure && ir.dom
+  ? collectRefs(ir.dom, refOmissions, {
+      boundary: undefined as never,
+      wiredCallbacks: new Set<string>(),
+      omissions: refOmissions,
+      realizedText: new Set(textProps),
+      realizedBoolean: new Set(boolProps),
+      realizedAxes: new Set(axes.map(axis => axis.propName)),
+      realizedSlots: slots,
+    } satisfies AnatomyState)
+  : [];
  if (control) { boolProps.delete(control.channel.valueProp); if (disabledProp) boolProps.delete(disabledProp); }
  const channel = control?.channel, valueMethod = channel ? snake(channel.valueProp) : undefined;
  const defaultMethod = channel?.defaultValueProp ? snake(channel.defaultValueProp) : undefined, disabledMethod = disabledProp ? snake(disabledProp) : undefined;
  const realized = new Set<string | undefined>([channel?.valueProp,channel?.defaultValueProp,channel?.changeHandlerProp,disabledProp,...axes.map(axis => axis.propName),...boolProps,...textProps]);
  const omitted = new Set(['name','value','ariaLabel','ariaDescribedby','ariaLabelledby','idBase','as','showStatusIcon','decorative','thickness','title','truncate']);
- for (const prop of ir.styledProps) if (!realized.has(prop.name) && !omitted.has(prop.name)) throw new Error(`GPUI_UNSUPPORTED_PROP: ${ir.name}.${prop.name}`);
+ for (const prop of ir.styledProps) if (!realized.has(prop.name) && !omitted.has(prop.name) && !disclosure) throw new Error(`GPUI_UNSUPPORTED_PROP: ${ir.name}.${prop.name}`);
  const methods = [valueMethod,defaultMethod,disabledMethod,...axes.map(axis => axis.method),...Array.from(boolProps).map(snake),...Array.from(textProps).map(snake)].filter(Boolean);
  if (new Set(methods).size !== methods.length) throw new Error(`GPUI_IDENTIFIER_COLLISION: ${ir.name}`);
  if (!/^[A-Z][A-Za-z0-9]*$/.test(ir.name)) throw new Error(`GPUI_UNSUPPORTED_IDENTIFIER: ${ir.name}`);
- return { channel,part:control?.part.name,valueMethod,defaultMethod,disabledMethod,mixedProp,axes,boolProps:Array.from(boolProps),textProps:Array.from(textProps),childContent,slots,slotVariants,defaultValue:booleanDefault(ir,channel?.defaultValueProp),disabledDefault:booleanDefault(ir,disabledProp),keys:control?.activationKeys ?? [],excludedProps:ir.styledProps.filter(prop => !realized.has(prop.name)).map(prop => prop.name),refs:[],callbacks:[],activations:[],omissions:[] };
+ return { channel,part:control?.part.name,valueMethod,defaultMethod,disabledMethod,mixedProp,axes,boolProps:Array.from(boolProps),textProps:Array.from(textProps),childContent,slots,slotVariants,defaultValue:booleanDefault(ir,channel?.defaultValueProp),disabledDefault:booleanDefault(ir,disabledProp),keys:control?.activationKeys ?? [],excludedProps:ir.styledProps.filter(prop => !realized.has(prop.name)).map(prop => prop.name),refs,callbacks:[],activations:[],omissions:refOmissions };
 }
 export function gpuiStylePlan(ir: ComponentIR): GpuiStylePlan {
  if (!ir.nativeStyleRules) throw new Error(`GPUI_MISSING_STYLE_FACTS: ${ir.name}`);
@@ -157,6 +200,7 @@ function tree(ir: ComponentIR, plan: Plan, styles: Styles, node: DomNodeIR, refC
  }
  const activation = node === ir.dom ? undefined : plan.activations.find(candidate => candidate.part === part);
  if (activation) result += `.id(${q(ir.cssPrefix+'-'+part+'-action')})${pointerActivation(activation.handler)}`;
+ if (plan.channel && node !== ir.dom && part === channelHostPart(ir, plan)) result += `.id(${q(ir.cssPrefix+'-'+part+'-trigger')})${channelChain()}`;
  for (const pseudo of ['before','after']) if (styles.rules.some(rule => rule.part === part && rule.pseudo === pseudo)) result += `.child(render_pseudo(${q(part+'::'+pseudo)},Self::STYLE_RULES,&style_state,&theme))`;
  if (node === ir.dom && !node.content && node.tag !== 'hr' && (!node.children.length || plan.channel && !nodesOf(ir).some(child=>child.tag==='children'||child.tag==='slot'))) result += labelChild(ir);
  return result;
@@ -240,7 +284,7 @@ impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel
  ${plan.refs.length?plan.refs.map(retained=>refEmission(retained)).join('\n ')+'\n ':''}let root=${tree(ir,plan,styles,ir.dom!,{index:0})}.id(${q(ir.cssPrefix)});
  let root=apply_interaction_style(root,${q(ir.dom!.part ?? 'root')},Self::STYLE_RULES,&style_state,&theme);
  ${plan.activations.filter(activation=>activation.keyboard).map(activation=>`let root=root${pointerActivation(activation.handler)}.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(true).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,true){cx.stop_propagation();crate::callback::invoke(&this.${activation.handler},window,cx);}}));`).join('\n ')}
- ${plan.channel?`let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}));`:''}
+ ${plan.channel && channelHostPart(ir, plan) === (ir.dom!.part ?? 'root') ? 'let root=root'+channelChain()+';' : ''}
  root.into_any_element()
 }}
 `;
@@ -259,6 +303,25 @@ function moduleSnake(name: string): string {
  * bounded planners keep is untouched: a style-value defect on an admitted shape
  * still fails generation, it does not silently become an omission. */
 /** Pointer activation chain. The receiver must be a Stateful element. */
+/** Channel activation chain (pointer, focus, keyboard). Requires a Stateful element. */
+/** Part that carries the channel interaction chain. */
+function channelHostPart(ir: ComponentIR, plan: GpuiPlan): string {
+ const rootPart = ir.dom?.part ?? 'root';
+ if (!plan.part || plan.part === rootPart) return rootPart;
+ let rendered = false;
+ const visit = (node: DomNodeIR): void => {
+  if (node.part === plan.part && node.tag !== 'input') rendered = true;
+  node.children.forEach(visit);
+ };
+ if (ir.dom) visit(ir.dom);
+ return rendered ? plan.part : rootPart;
+}
+
+function channelChain(): string {
+ return `.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}))`;
+
+}
+
 function pointerActivation(handler: string): string {
  return `.on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();this.active=true;if let Some(handle)=this.focus_handle.clone(){window.focus(&handle,cx);}cx.notify();})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,window,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();crate::callback::invoke(&this.${handler},window,cx);}}))`;
 }

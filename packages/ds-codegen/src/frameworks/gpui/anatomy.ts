@@ -109,7 +109,7 @@ function projectedRefAttrs(instance: NonNullable<DomNodeIR['componentInstance']>
 }
 
 /** Retained ref plans in anatomy pre-order (the Rust tree walk consumes them in the same order). */
-function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomyState): GpuiRefPlan[] {
+export function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomyState): GpuiRefPlan[] {
   const refs: GpuiRefPlan[] = [];
   const used = new Set<string>();
   const visit = (node: DomNodeIR): void => {
@@ -174,7 +174,7 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomySt
   return refs;
 }
 
-interface AnatomyState {
+export interface AnatomyState {
   boundary: GpuiBoundary;
   /** Callback props realized as stored handlers; their click events are wired. */
   wiredCallbacks: Set<string>;
