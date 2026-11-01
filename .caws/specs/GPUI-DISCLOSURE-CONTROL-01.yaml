@@ -53,3 +53,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/src/components/Details/Details.rs
     commit_sha: d314cf175
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_details_disclosure_toggles_from_trigger_click_and_keyboard passes: closed by default with no content bounds, a summary click opens (state true, content renders) and focuses the trigger, Space closes and Enter opens; the pilot requires that witness by name alongside all prior witnesses (GPUI_NATIVE_PASS)"
+    recorded_at: "2026-11-01T11:44:31.309Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: d314cf175
