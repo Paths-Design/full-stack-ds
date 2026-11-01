@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 560c2ab99
+verified_at_commit: 180593234
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -17,6 +17,8 @@ governs:
 `UNITY-INTERACTIVE-COMPONENTS-01` adds a registered Unity generation target with a bounded component allowlist and a local UPM package. Read [the package README](../../packages/ds-unity/README.md) for installation, supported behavior, commands and limitations.
 
 The anchor scaffold retains its native `Disabled` property and destination-bearing `Activated` event. It does not provide the contract's cancellable anchor callback, browser navigation, ARIA state, or authored DOM tab order; the support boundary records those capabilities separately. `SetEnabled` suppresses native activation but does not establish the Web disabled-link discovery policy.
+
+The passive walker omits root HTML `cite` bindings as document metadata. The support boundary classifies the binding and its source prop as refused because UI Toolkit has no implemented citation carrier; the generated container exposes no `Cite` property. Consumer content and carrier-backed axes retain their existing projection. Unhandled passive bindings such as `title` and `href` remain generation errors, as exercised by the citation case in `walker.test.ts`.
 
 The `ProjectedText` path preserves repeated static label parts declared `multiple`: the first public part accessor remains stable, and later occurrences receive distinct identifiers while retaining their semantic name, style class, and parent. Repeated behavior-owned parts require explicit instance addressing and are refused. A message on a projected label may contain one declared prop or prop-path parameter. Its generated string attribute stores the raw value and updates every associated label using the contract's source-language fallback. This does not supply a Unity translation catalog. A message-only host without the existing projected-property shape remains unsupported.
 

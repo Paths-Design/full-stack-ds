@@ -2,6 +2,41 @@
   "spec": "RAIL-CUSTOM-REGION-GATE-01",
   "gaps": [
     {
+      "file": "packages/ds-angular/src/components/Blockquote/__tests__/Blockquote.test.ts",
+      "label": "tests",
+      "kind": "test",
+      "spec": "NPM-BLOCKQUOTE-CITATION-01",
+      "note": "Handwritten citation URL update, omission, empty-value and Unicode content regressions preserved through generation."
+    },
+    {
+      "file": "packages/ds-lit/src/components/Blockquote/__tests__/Blockquote.test.ts",
+      "label": "tests",
+      "kind": "test",
+      "spec": "NPM-BLOCKQUOTE-CITATION-01",
+      "note": "Handwritten citation URL update, omission, empty-value and slotted Unicode content regressions preserved through generation."
+    },
+    {
+      "file": "packages/ds-react/src/components/Blockquote/__tests__/Blockquote.test.tsx",
+      "label": "tests",
+      "kind": "test",
+      "spec": "NPM-BLOCKQUOTE-CITATION-01",
+      "note": "Handwritten citation URL update, omission, empty-value and Unicode content regressions preserved through generation."
+    },
+    {
+      "file": "packages/ds-svelte/src/components/Blockquote/__tests__/Blockquote.test.ts",
+      "label": "tests",
+      "kind": "test",
+      "spec": "NPM-BLOCKQUOTE-CITATION-01",
+      "note": "Handwritten citation URL update, omission, empty-value and Unicode snippet content regressions preserved through generation."
+    },
+    {
+      "file": "packages/ds-vue/src/components/Blockquote/__tests__/Blockquote.test.ts",
+      "label": "tests",
+      "kind": "test",
+      "spec": "NPM-BLOCKQUOTE-CITATION-01",
+      "note": "Handwritten citation URL update, omission, empty-value and Unicode slot content regressions preserved through generation."
+    },
+    {
       "file": "packages/ds-angular/src/components/Accordion/__tests__/Accordion.test.ts",
       "label": "tests",
       "kind": "test",
