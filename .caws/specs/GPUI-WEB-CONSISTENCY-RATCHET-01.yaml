@@ -49,3 +49,10 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "scripts/gpui-web-consistency-audit.mjs derives, per component and target, anatomy-part, prop, behavior and a11y realization from contract/IR facts and generated artifacts; --check prints react/vue/svelte/gpui aggregates (web parts 213/214, props 379/379, behavior 30/30, a11y 41/41/40; gpui 166/214, 229/379, 3/30, 0/44) and writes the matrix under docs/internal/gpui-web-consistency/. Baseline committed at packages/ds-gpui/web-consistency-baseline.json"
+    recorded_at: "2026-11-01T10:24:15.436Z"
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: "8215ab6ad"
