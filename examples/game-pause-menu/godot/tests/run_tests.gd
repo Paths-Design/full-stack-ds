@@ -151,6 +151,13 @@ func key_event(keycode: int) -> InputEventKey:
 	return event
 
 
+func joy_button_event(button: int, pressed: bool) -> InputEventJoypadButton:
+	var event := InputEventJoypadButton.new()
+	event.button_index = button
+	event.pressed = pressed
+	return event
+
+
 ## Dispatch a key the way the platform would. Returns "viewport_push_input" when
 ## the SceneTree delivered the event to the app's `_unhandled_key_input`; on
 ## headless runs that do not route OS input, falls back to calling the same handler
@@ -660,6 +667,20 @@ func test_i13() -> void:
 	check(app.remap_bindings["vehicleBoost"] == "SHIFT", "I13 cancel leaves binding unchanged", app.remap_bindings["vehicleBoost"])
 	check(not app.modal_layer.visible, "I13 modal hidden after cancel")
 
+	app.open_remap("interact")
+	await wait_frames(2)
+	get_viewport().push_input(joy_button_event(JOY_BUTTON_X, false))
+	await wait_frames(2)
+	check(app.remap_action == "interact", "I13 gamepad release does not capture")
+	check(app.remap_bindings["interact"] == "F", "I13 release preserves binding")
+	get_viewport().push_input(joy_button_event(JOY_BUTTON_X, true))
+	await wait_frames(2)
+	check(app.remap_action == "", "I13 gamepad press closes modal")
+	check(app.remap_bindings["interact"] == "PAD %d" % JOY_BUTTON_X, "I13 gamepad button binds action", str(app.remap_bindings["interact"]))
+	check(not app.modal_layer.visible, "I13 gamepad modal hidden after capture")
+	get_viewport().push_input(joy_button_event(JOY_BUTTON_X, false))
+	await wait_frames(2)
+
 
 # --- I14: audio, languages, subtitle picker ---------------------------------
 
@@ -716,6 +737,60 @@ func test_i15() -> void:
 		await wait_frames(1)
 	check(app.marker_popover.value == "false", "I15 escape closes popover")
 	check(app.nav_target == nav_before, "I15 popover cancel leaves nav target unchanged")
+
+	app.open_marker_popover("relay-01")
+	await wait_frames(6)
+	check(app.marker_popover.value == "true", "I15 marker popover opens before tab click")
+	var tab_press := InputEventMouseButton.new()
+	tab_press.button_index = MOUSE_BUTTON_LEFT
+	tab_press.pressed = true
+	tab_press.position = Vector2(500, 130)
+	tab_press.global_position = tab_press.position
+	get_viewport().push_input(tab_press, true)
+	var tab_release := InputEventMouseButton.new()
+	tab_release.button_index = MOUSE_BUTTON_LEFT
+	tab_release.pressed = false
+	tab_release.position = tab_press.position
+	tab_release.global_position = tab_press.position
+	get_viewport().push_input(tab_release, true)
+	await wait_frames(3)
+	check(app.active_tab == "progress", "I15 tab click activates Progress", app.active_tab)
+	check(app.marker_popover.value == "false", "I15 tab click dismisses map popover")
+	check(not is_instance_valid(app.marker_popover.overlay), "I15 map popover overlay is released after tab click")
+	app.select_tab("map")
+	app.open_marker_popover("relay-01")
+	await wait_frames(2)
+	var outside_press := InputEventMouseButton.new()
+	outside_press.button_index = MOUSE_BUTTON_LEFT
+	outside_press.pressed = true
+	outside_press.position = Vector2(1200, 300)
+	outside_press.global_position = outside_press.position
+	get_viewport().push_input(outside_press, true)
+	var outside_release := InputEventMouseButton.new()
+	outside_release.button_index = MOUSE_BUTTON_LEFT
+	outside_release.pressed = false
+	outside_release.position = outside_press.position
+	outside_release.global_position = outside_press.position
+	get_viewport().push_input(outside_release, true)
+	await wait_frames(2)
+	check(app.marker_popover.value == "false", "I15 bare outside click dismisses map popover")
+	app.open_marker_popover("relay-01")
+	await wait_frames(2)
+	var active_tab_press := InputEventMouseButton.new()
+	active_tab_press.button_index = MOUSE_BUTTON_LEFT
+	active_tab_press.pressed = true
+	active_tab_press.position = Vector2(160, 130)
+	active_tab_press.global_position = active_tab_press.position
+	get_viewport().push_input(active_tab_press, true)
+	var active_tab_release := InputEventMouseButton.new()
+	active_tab_release.button_index = MOUSE_BUTTON_LEFT
+	active_tab_release.pressed = false
+	active_tab_release.position = active_tab_press.position
+	active_tab_release.global_position = active_tab_press.position
+	get_viewport().push_input(active_tab_release, true)
+	await wait_frames(2)
+	check(app.active_tab == "map", "I15 active tab click preserves Map")
+	check(app.marker_popover.value == "false", "I15 active tab click dismisses map popover")
 
 	# Drawer cancellation returns to the list with data unchanged.
 	app.select_tab("progress")

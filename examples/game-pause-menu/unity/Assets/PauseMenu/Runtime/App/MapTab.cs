@@ -122,6 +122,7 @@ namespace GamePauseMenu
             content.Add(close);
             MarkerPopover.Add(content);
             PopoverHost.Add(MarkerPopover);
+            ApplyAll();
         }
 
         public Switch VisibilitySwitch(string iconId) => visibilitySwitches[iconId];

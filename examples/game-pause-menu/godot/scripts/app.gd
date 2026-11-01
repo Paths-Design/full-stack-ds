@@ -279,6 +279,9 @@ func _tabs_height() -> float:
 
 
 func _on_tab_value_changed(next: String) -> void:
+	if next != active_tab:
+		close_marker_popover()
+		close_ability_popover()
 	active_tab = next
 
 
@@ -756,8 +759,24 @@ func apply_capture_state(state_name: String) -> void:
 
 # --- input -------------------------------------------------------------------
 
-func _unhandled_key_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+		if popover_open(marker_popover) and not _point_in_surface(marker_popover, (event as InputEventMouseButton).position):
+			if not _point_in_other_tab((event as InputEventMouseButton).position):
+				close_marker_popover()
+		elif popover_open(ability_popover) and not _point_in_surface(ability_popover, (event as InputEventMouseButton).position):
+			if not _point_in_other_tab((event as InputEventMouseButton).position):
+				close_ability_popover()
 	if not remap_action.is_empty():
+		if event is InputEventKey:
+			var key_event := event as InputEventKey
+			if not key_event.pressed or key_event.echo:
+				return
+		elif event is InputEventJoypadButton:
+			if not (event as InputEventJoypadButton).pressed:
+				return
+		else:
+			return
 		if event.is_action_pressed("ui_cancel"):
 			cancel_remap()
 			get_viewport().set_input_as_handled()
@@ -765,6 +784,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		if capture_binding(event):
 			get_viewport().set_input_as_handled()
 		return
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if popover_open(marker_popover):
 			close_marker_popover()
@@ -785,6 +807,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			close_marker_popover()
 		elif popover_open(ability_popover) and not _point_in_surface(ability_popover, (event as InputEventMouseButton).position):
 			close_ability_popover()
+
+
+func _point_in_other_tab(point: Vector2) -> bool:
+	if tabs == null:
+		return false
+	for item in tabs.items:
+		if item.key != active_tab and item.button.get_global_rect().has_point(point):
+			return true
+	return false
 
 
 func _point_in_surface(node, point: Vector2) -> bool:
