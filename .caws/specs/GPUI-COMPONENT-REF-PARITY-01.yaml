@@ -56,3 +56,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/src/components/PageNavigator/PageNavigator.rs
     commit_sha: "94652ada7"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "static literal attrs are projected onto the child builders (e.g. Icon.name/size, Button.variant, Pagination.presentation); dynamic bindings, child events and unprojectable attrs are receipted as ref-binding/ref-event/ref-attr; pinned by the new codegen test 'retains by-reference child components and receipts the facts it cannot project' (44/44 gpui codegen tests pass)"
+    recorded_at: "2026-11-01T10:40:01.373Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "94652ada7"
