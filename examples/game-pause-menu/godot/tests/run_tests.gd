@@ -774,6 +774,23 @@ func test_i15() -> void:
 	get_viewport().push_input(outside_release, true)
 	await wait_frames(2)
 	check(app.marker_popover.value == "false", "I15 bare outside click dismisses map popover")
+	app.open_marker_popover("relay-01")
+	await wait_frames(2)
+	var active_tab_press := InputEventMouseButton.new()
+	active_tab_press.button_index = MOUSE_BUTTON_LEFT
+	active_tab_press.pressed = true
+	active_tab_press.position = Vector2(160, 130)
+	active_tab_press.global_position = active_tab_press.position
+	get_viewport().push_input(active_tab_press, true)
+	var active_tab_release := InputEventMouseButton.new()
+	active_tab_release.button_index = MOUSE_BUTTON_LEFT
+	active_tab_release.pressed = false
+	active_tab_release.position = active_tab_press.position
+	active_tab_release.global_position = active_tab_press.position
+	get_viewport().push_input(active_tab_release, true)
+	await wait_frames(2)
+	check(app.active_tab == "map", "I15 active tab click preserves Map")
+	check(app.marker_popover.value == "false", "I15 active tab click dismisses map popover")
 
 	# Drawer cancellation returns to the list with data unchanged.
 	app.select_tab("progress")

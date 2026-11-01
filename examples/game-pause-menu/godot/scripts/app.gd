@@ -762,10 +762,10 @@ func apply_capture_state(state_name: String) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
 		if popover_open(marker_popover) and not _point_in_surface(marker_popover, (event as InputEventMouseButton).position):
-			if not _point_in_tabs((event as InputEventMouseButton).position):
+			if not _point_in_other_tab((event as InputEventMouseButton).position):
 				close_marker_popover()
 		elif popover_open(ability_popover) and not _point_in_surface(ability_popover, (event as InputEventMouseButton).position):
-			if not _point_in_tabs((event as InputEventMouseButton).position):
+			if not _point_in_other_tab((event as InputEventMouseButton).position):
 				close_ability_popover()
 	if not remap_action.is_empty():
 		if event is InputEventKey:
@@ -809,11 +809,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			close_ability_popover()
 
 
-func _point_in_tabs(point: Vector2) -> bool:
+func _point_in_other_tab(point: Vector2) -> bool:
 	if tabs == null:
 		return false
 	for item in tabs.items:
-		if item.button.get_global_rect().has_point(point):
+		if item.key != active_tab and item.button.get_global_rect().has_point(point):
 			return true
 	return false
 
