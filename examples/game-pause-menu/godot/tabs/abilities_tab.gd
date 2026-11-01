@@ -138,6 +138,7 @@ func _add_ability_card(ability: Dictionary, x: float, y: float, card_w: float, c
 		content_area.custom_minimum_size = Vector2(0, float(cards_data["installedY"]) - float(cards_data["nameY"]))
 		content_part.add_child(content_area)
 		var name_label := UI.label(str(ability.get("name", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		UI.place(name_label, 8, 0, card_w - 16, 16)
 		content_area.add_child(name_label)
 		var size_row := UI.hbox(4)
@@ -220,7 +221,7 @@ func _build_detail() -> void:
 	var content_width := rect.size.x - padding * 2.0
 	var data: Dictionary = app.parity.abilities
 	ability_title = UI.title("", app.parity.type_size("title"), "boneBright")
-	UI.place(ability_title, padding, float(data["abilityTitleY"]) - 176.0, content_width, 34)
+	UI.place(ability_title, padding, float(data["abilityTitleY"]) - 180.0, content_width, 34)
 	_detail_panel.add_child(ability_title)
 
 	ability_chips = UI.hbox(8)

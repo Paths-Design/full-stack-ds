@@ -73,7 +73,7 @@ impl Menu {
                 &layout.colors.bone_bright,
                 row.label.clone(),
                 panel.x + padding,
-                row_y + (row_h - layout.type_scale.row_label) / 2.0,
+                row_y + 4.0,
             ));
             children.push(self.text_at(
                 cx,
@@ -82,7 +82,7 @@ impl Menu {
                 &layout.colors.muted,
                 row.description.clone(),
                 panel.x + padding,
-                row_y + (row_h - layout.type_scale.row_label) / 2.0 + 16.0,
+                row_y + 20.0,
             ));
             let switch = self
                 .general_switches
@@ -175,9 +175,9 @@ impl Menu {
                 row.value_label(),
                 Rect {
                     x: value_x,
-                    y: row_y + (row_h - layout.type_scale.value) / 2.0,
+                    y: row_y + 4.0,
                     w: value_w,
-                    h: layout.type_scale.value,
+                    h: layout.type_scale.value + 2.0,
                 },
             ));
             children.push(self.rule(
@@ -212,7 +212,7 @@ impl Menu {
                 &layout.colors.bone_bright,
                 row.label.clone(),
                 panel.x + padding,
-                row_y + (row_h - layout.type_scale.row_label) / 2.0,
+                row_y + 4.0,
             ));
             let binding = self.text(
                 cx,
@@ -279,7 +279,7 @@ impl Menu {
                 &layout.colors.bone_bright,
                 row.label.clone(),
                 panel.x + padding,
-                row_y + (row_h - layout.type_scale.row_label) / 2.0,
+                row_y + 4.0,
             ));
             let value_x = panel.right() - padding - layout.settings.slider.w - 68.0;
             let slider_x = panel.right() - padding - layout.settings.slider.w;

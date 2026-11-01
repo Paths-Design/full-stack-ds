@@ -43,8 +43,9 @@
     "body": 13,
     "micro": 10,
     "footer": 11,
-    "letterSpacingMicro": 1.2,
-    "letterSpacingTab": 1.2
+    "letterSpacingMicro": 0,
+    "letterSpacingTab": 0,
+    "drawerTitle": 28
   },
   "style": {
     "panelBorder": 1,
@@ -592,9 +593,19 @@
       "borderWidth": 1,
       "radius": 0,
       "fontSize": 8,
-      "weight": 800,
+      "weight": 700,
       "text": "boneBright",
-      "source": "first two letters of the fixture icon catalog name, uppercased"
+      "source": "explicit fixture-icon \u2192 code table above",
+      "codes": {
+        "Info": "IN",
+        "Placeholder": "PL",
+        "Home": "HO",
+        "Baseline": "BL",
+        "Alarm": "AL",
+        "CircleDot": "CD",
+        "ChevronRight": "CR",
+        "User": "US"
+      }
     },
     "cardTile": {
       "size": 40,
@@ -603,9 +614,425 @@
       "borderWidth": 1,
       "radius": 0,
       "fontSize": 12,
-      "weight": 800,
+      "weight": 700,
       "text": "boneBright",
-      "source": "first two letters of the ability name, uppercased"
+      "source": "first two alphanumeric characters of the ability name, uppercased"
+    }
+  },
+  "typography": {
+    "$note": "Inter is the Orion brand face. Two static weights and zero tracking are pinned because the pinned GPUI renderer has no variable-axis or letter-spacing channel; all three lanes load the same bytes from fonts/inter/.",
+    "family": "Inter",
+    "weights": {
+      "regular": 400,
+      "bold": 700
+    },
+    "files": {
+      "regular": "fonts/inter/Inter-Regular.ttf",
+      "bold": "fonts/inter/Inter-Bold.ttf",
+      "license": "fonts/inter/OFL.txt"
+    },
+    "lineHeight": {
+      "label": 1.0,
+      "body": 1.2
+    },
+    "letterSpacing": 0,
+    "probes": [
+      {
+        "state": "map",
+        "id": "wordmark",
+        "color": "boneBright",
+        "x": 28,
+        "y": 12,
+        "w": 300,
+        "h": 56,
+        "text": "ORION"
+      },
+      {
+        "state": "map",
+        "id": "mission",
+        "color": "muted",
+        "x": 30,
+        "y": 66,
+        "w": 380,
+        "h": 20,
+        "text": "MARS EXPEDITION // COMMANDER D3SO"
+      },
+      {
+        "state": "map",
+        "id": "stat-label",
+        "color": "muted",
+        "x": 606,
+        "y": 22,
+        "w": 96,
+        "h": 14,
+        "text": "RANKING"
+      },
+      {
+        "state": "map",
+        "id": "stat-value",
+        "color": "boneBright",
+        "x": 606,
+        "y": 38,
+        "w": 210,
+        "h": 28,
+        "text": "PATHFINDER III"
+      },
+      {
+        "state": "map",
+        "id": "stat-sub",
+        "color": "muted",
+        "x": 606,
+        "y": 64,
+        "w": 220,
+        "h": 14,
+        "text": "LV 12 \u00b7 GLOBAL #95 \u00b7 TOP 5%"
+      },
+      {
+        "state": "map",
+        "id": "tab-active",
+        "color": "onSignal",
+        "x": 30,
+        "y": 116,
+        "w": 120,
+        "h": 28,
+        "text": "MAP"
+      },
+      {
+        "state": "map",
+        "id": "tab-inactive",
+        "color": "textSecondary",
+        "x": 350,
+        "y": 116,
+        "w": 170,
+        "h": 28,
+        "text": "PROGRESS"
+      },
+      {
+        "state": "map",
+        "id": "panel-title",
+        "color": "boneBright",
+        "x": 38,
+        "y": 180,
+        "w": 300,
+        "h": 20,
+        "text": "ARES BASIN // SECTOR 07"
+      },
+      {
+        "state": "map",
+        "id": "panel-meta",
+        "color": "muted",
+        "x": 790,
+        "y": 180,
+        "w": 92,
+        "h": 20,
+        "text": "SCALE 1:40K"
+      },
+      {
+        "state": "map",
+        "id": "row-label",
+        "color": "boneBright",
+        "x": 950,
+        "y": 230,
+        "w": 200,
+        "h": 20,
+        "text": "RELAY TOWER 01"
+      },
+      {
+        "state": "map",
+        "id": "row-sub",
+        "color": "muted",
+        "x": 950,
+        "y": 232,
+        "w": 180,
+        "h": 22,
+        "text": "ONLINE \u00b7 4.8 KM"
+      },
+      {
+        "state": "map",
+        "id": "field-note",
+        "color": "ink",
+        "x": 46,
+        "y": 680,
+        "w": 720,
+        "h": 16,
+        "text": "MARKERS 7/8 VISIBLE \u00b7 CLICK A MARKER FOR DETAIL \u00b7 ORANGE = NAV TARGET"
+      },
+      {
+        "state": "map",
+        "id": "footer-hints",
+        "color": "muted",
+        "x": 22,
+        "y": 762,
+        "w": 450,
+        "h": 18,
+        "text": "ESC BACK \u00b7 TAB FOCUS \u00b7 CLICK SELECT \u00b7 1\u20134 TABS"
+      },
+      {
+        "state": "map",
+        "id": "nav-label",
+        "color": "muted",
+        "x": 1070,
+        "y": 750,
+        "w": 120,
+        "h": 16,
+        "text": "NAV TARGET"
+      },
+      {
+        "state": "map",
+        "id": "nav-value",
+        "color": "signal",
+        "x": 1100,
+        "y": 762,
+        "w": 160,
+        "h": 20,
+        "text": "SUPPLY CACHE 02"
+      },
+      {
+        "state": "map",
+        "id": "icon-title",
+        "color": "boneBright",
+        "x": 926,
+        "y": 180,
+        "w": 130,
+        "h": 20,
+        "text": "ICON VISIBILITY"
+      },
+      {
+        "state": "map",
+        "id": "icon-meta",
+        "color": "muted",
+        "x": 1160,
+        "y": 180,
+        "w": 96,
+        "h": 18,
+        "text": "7/8 PLOTTED"
+      },
+      {
+        "state": "progress",
+        "id": "drawer-title",
+        "color": "ink",
+        "x": 46,
+        "y": 226,
+        "w": 440,
+        "h": 40,
+        "text": "ARES LOGISTICS GUILD"
+      },
+      {
+        "state": "progress",
+        "id": "drawer-tagline",
+        "color": "paperMuted",
+        "x": 46,
+        "y": 266,
+        "w": 440,
+        "h": 16,
+        "text": "FREIGHT, FUEL AND THE ROADS BETWEEN"
+      },
+      {
+        "state": "progress",
+        "id": "drawer-body",
+        "color": "ink",
+        "x": 46,
+        "y": 326,
+        "w": 486,
+        "h": 14,
+        "text": "The guild owns every viable freight lane in the basin."
+      },
+      {
+        "state": "progress",
+        "id": "roster-name",
+        "color": "boneBright",
+        "x": 54,
+        "y": 230,
+        "w": 320,
+        "h": 20,
+        "text": "ARES LOGISTICS GUILD"
+      },
+      {
+        "state": "progress",
+        "id": "roster-tagline",
+        "color": "muted",
+        "x": 54,
+        "y": 250,
+        "w": 280,
+        "h": 14,
+        "text": "FREIGHT, FUEL AND THE ROADS BETWEEN"
+      },
+      {
+        "state": "progress",
+        "id": "list-title",
+        "color": "boneBright",
+        "x": 38,
+        "y": 180,
+        "w": 240,
+        "h": 20,
+        "text": "FACTION ROSTER"
+      },
+      {
+        "state": "progress",
+        "id": "status-chip",
+        "color": "onSignal",
+        "x": 1085,
+        "y": 242,
+        "w": 66,
+        "h": 16,
+        "text": "ACCESS"
+      },
+      {
+        "state": "progress",
+        "id": "dossier",
+        "color": "signal",
+        "x": 1170,
+        "y": 242,
+        "w": 90,
+        "h": 16,
+        "text": "OPEN \u2192"
+      },
+      {
+        "state": "abilities",
+        "id": "grid-title",
+        "color": "boneBright",
+        "x": 38,
+        "y": 180,
+        "w": 300,
+        "h": 20,
+        "text": "ABILITY CATALOG"
+      },
+      {
+        "state": "abilities",
+        "id": "grid-meta",
+        "color": "muted",
+        "x": 560,
+        "y": 180,
+        "w": 270,
+        "h": 18,
+        "text": "10 MODULES \u00b7 SELECT ONE, THEN A SLOT"
+      },
+      {
+        "state": "abilities",
+        "id": "card-name",
+        "color": "boneBright",
+        "x": 38,
+        "y": 302,
+        "w": 156,
+        "h": 20,
+        "text": "THREADING"
+      },
+      {
+        "state": "abilities",
+        "id": "detail-title",
+        "color": "boneBright",
+        "x": 862,
+        "y": 180,
+        "w": 230,
+        "h": 20,
+        "text": "ABILITY DETAIL"
+      },
+      {
+        "state": "abilities",
+        "id": "ability-name",
+        "color": "boneBright",
+        "x": 862,
+        "y": 226,
+        "w": 260,
+        "h": 32,
+        "text": "OVERCLOCK"
+      },
+      {
+        "state": "abilities",
+        "id": "ability-body",
+        "color": "bone",
+        "x": 862,
+        "y": 290,
+        "w": 378,
+        "h": 30,
+        "text": "Relays output draw 40% for six seconds"
+      },
+      {
+        "state": "settings",
+        "id": "general-title",
+        "color": "boneBright",
+        "x": 38,
+        "y": 180,
+        "w": 110,
+        "h": 18,
+        "text": "GENERAL"
+      },
+      {
+        "state": "settings",
+        "id": "general-meta",
+        "color": "muted",
+        "x": 470,
+        "y": 180,
+        "w": 146,
+        "h": 16,
+        "text": "PERSONAL PREFERENCES"
+      },
+      {
+        "state": "settings",
+        "id": "row-label",
+        "color": "boneBright",
+        "x": 38,
+        "y": 214,
+        "w": 220,
+        "h": 22,
+        "text": "AUTO-SAVE"
+      },
+      {
+        "state": "settings",
+        "id": "row-sub",
+        "color": "muted",
+        "x": 38,
+        "y": 236,
+        "w": 330,
+        "h": 18,
+        "text": "Write a checkpoint on every pad handshake."
+      },
+      {
+        "state": "settings",
+        "id": "controller-label",
+        "color": "boneBright",
+        "x": 662,
+        "y": 216,
+        "w": 280,
+        "h": 22,
+        "text": "LOOK SENSITIVITY"
+      },
+      {
+        "state": "settings",
+        "id": "controller-value",
+        "color": "boneBright",
+        "x": 1170,
+        "y": 216,
+        "w": 90,
+        "h": 24,
+        "text": "45%"
+      },
+      {
+        "state": "settings",
+        "id": "audio-label",
+        "color": "boneBright",
+        "x": 662,
+        "y": 494,
+        "w": 200,
+        "h": 18,
+        "text": "MASTER"
+      },
+      {
+        "state": "settings",
+        "id": "remap-label",
+        "color": "boneBright",
+        "x": 38,
+        "y": 498,
+        "w": 200,
+        "h": 22,
+        "text": "INTERACT"
+      }
+    ],
+    "probeTolerance": {
+      "x": 4,
+      "y": 4,
+      "w": 6,
+      "h": 5
     }
   }
 }

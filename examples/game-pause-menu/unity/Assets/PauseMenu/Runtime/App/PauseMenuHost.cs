@@ -29,6 +29,8 @@ namespace GamePauseMenu
                 mount.Clear();
                 mount.style.flexGrow = 1;
                 mount.Add(App.Root);
+                App.ApplyParityTypography();
+
                 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("FSDS_PAUSE_EVIDENCE")))
                     gameObject.AddComponent<CaptureHarness>().Bind(this);
             }

@@ -77,6 +77,9 @@ namespace GamePauseMenu
         }
 
         public TabsTab TabButton(string tabId) => tabButtons[tabId];
+
+        /// <summary>Typography parity: project generated-component text onto Inter.</summary>
+        public void ApplyParityTypography() => Ui.ApplyParityFonts(Root);
         public TabsPanel TabPanel(string tabId) => tabPanels[tabId];
 
         public void SelectTab(string tabId)
@@ -251,6 +254,7 @@ namespace GamePauseMenu
                 tab.style.unityFontStyleAndWeight = FontStyle.Bold;
                 tab.style.letterSpacing = (float)Layout.Size("letterSpacingTab");
                 tab.style.unityTextAlign = TabLabelAlign();
+                Ui.UseFont(tab, true);
                 tab.style.paddingLeft = (float)Layout.TabBar.LabelInset;
                 tab.style.whiteSpace = WhiteSpace.NoWrap;
                 if (i > 0)

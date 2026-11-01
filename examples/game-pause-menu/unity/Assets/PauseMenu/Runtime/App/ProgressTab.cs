@@ -191,8 +191,8 @@ namespace GamePauseMenu
             StyleChipLabel(status, locked);
             row.Add(status);
 
-            var dossier = Ui.MakeText(layout, "OPEN →", "rowSub", "textSecondary", true);
-            Ui.Point(dossier, rowsLayout.DossierX - rowsLayout.X, rowsLayout.DossierY);
+            var dossier = Ui.MakeText(layout, "OPEN →", "micro", "signal", true);
+            Ui.Point(dossier, rowsLayout.DossierX - rowsLayout.X, rowsLayout.DossierY - 4);
             row.Add(dossier);
 
             Ui.PassThroughChildren(row);
@@ -232,7 +232,7 @@ namespace GamePauseMenu
             Ui.BorderColor(closeButton, paperMuted);
             drawer.Add(closeButton);
 
-            drawerName = Ui.MakeText(layout, string.Empty, "title", ink, true,
+            drawerName = Ui.MakeText(layout, string.Empty, "drawerTitle", ink, true,
                 new LayoutRect(24, drawerLayout.TitleY - rect.Y, 440, 34));
             drawer.Add(drawerName);
             drawerTagline = Ui.MakeText(layout, string.Empty, "rowSub", paperMuted, false,
@@ -244,11 +244,11 @@ namespace GamePauseMenu
 
             drawer.Add(SectionLabel("BRIEF", 24, drawerLayout.BriefLabelY - rect.Y, paperMuted));
             drawerDescription = Ui.MakeText(layout, string.Empty, "body", ink, false,
-                new LayoutRect(24, drawerLayout.BriefBodyY - rect.Y, 512, 48), wrap: true);
+                new LayoutRect(24, drawerLayout.BriefBodyY - rect.Y, 512, 48), align: TextAnchor.UpperLeft, wrap: true);
             drawer.Add(drawerDescription);
             drawer.Add(SectionLabel("HISTORY", 24, drawerLayout.HistoryLabelY - rect.Y, paperMuted));
             drawerHistory = Ui.MakeText(layout, string.Empty, "body", ink, false,
-                new LayoutRect(24, drawerLayout.HistoryBodyY - rect.Y, 512, 40), wrap: true);
+                new LayoutRect(24, drawerLayout.HistoryBodyY - rect.Y, 512, 40), align: TextAnchor.UpperLeft, wrap: true);
             drawer.Add(drawerHistory);
             drawer.Add(SectionLabel("PERKS", 24, drawerLayout.PerksLabelY - rect.Y, paperMuted));
             perksList = Ui.MakeBox("drawer-perks");
@@ -281,19 +281,20 @@ namespace GamePauseMenu
         /// (the pinned layout samples the chip fill at its centre, so the label stays at the edge).</summary>
         private void StyleChipLabel(Badge chip, bool locked)
         {
-            chip.style.justifyContent = Justify.FlexStart;
+            chip.style.justifyContent = Justify.Center;
             var content = chip.Q<VisualElement>(className: "badge__content");
             if (content == null) return;
-            content.style.justifyContent = Justify.FlexStart;
-            content.style.flexGrow = 0;
+            content.style.justifyContent = Justify.Center;
+            content.style.flexGrow = 1;
             content.style.width = Length.Percent(100);
             var label = content.Q<Text>();
             if (label == null) return;
             content.style.alignItems = Align.Center;
-            label.style.fontSize = 9;
-            label.style.unityFontStyleAndWeight = FontStyle.Normal;
+            label.style.fontSize = (float)layout.Size("chip");
+            label.style.flexGrow = 1;
             label.style.letterSpacing = 0;
-            label.style.unityTextAlign = TextAnchor.MiddleLeft;
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            Ui.UseFont(label, true);
             label.style.color = layout.Color(locked
                 ? layout.StatusChip.LockedText : layout.StatusChip.AccessText);
         }
@@ -305,7 +306,7 @@ namespace GamePauseMenu
             var label = Ui.MakeText(layout, locked ? "LOCKED" : "ACCESS", "chip",
                 locked ? layout.Color(layout.StatusChip.LockedText) : layout.Color(layout.StatusChip.AccessText),
                 true, align: TextAnchor.MiddleCenter);
-            label.style.letterSpacing = 1.1f;
+            label.style.letterSpacing = 0;
             if (content != null) content.Add(label);
             DrawerStatus.style.backgroundColor = locked ? Color.clear : layout.Color(layout.StatusChip.AccessBackground);
             Ui.BorderWidth(DrawerStatus, locked ? 1 : 0);

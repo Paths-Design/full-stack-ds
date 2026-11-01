@@ -47,11 +47,13 @@ may not.
   - icon row: name + `STATUS · N.N KM` secondary line
 - **Colours** come only from the JSON `colors` map (Orion palette). No lane
   invents a hue.
-- **Type sizes** come only from the JSON `type` map. Uppercase for labels,
-  tabs, panel titles, row labels, chips and buttons; sentence case for body
-  copy. Letter-spacing is applied where the engine supports it; if an engine
-  cannot express letter-spacing, note it in the lane README (permitted
-  difference).
+- **Type** is pinned by the JSON `typography` block: the Orion brand face
+  **Inter**, two static weights (400 regular / 700 bold), sizes from the `type`
+  map, line heights label 1.0 / body 1.2 and **zero tracking everywhere**.
+  Uppercase for labels, tabs, panel titles, row labels, chips and buttons;
+  sentence case for body copy. The pinned GPUI renderer has no letter-spacing
+  channel, so tracking is zero in all three engines rather than a permitted
+  divergence. See "Typography parity" below.
 - **No shadows, no rounded panels.** `radius: 0` everywhere except the switch
   pill. Panel borders are 1px `rule`.
 - **Generated components stay the realization** where the target admits them
@@ -240,10 +242,12 @@ Per lane, after rework:
 
 ## Permitted differences
 
-- Font family/fallback and glyph rasterisation; letter-spacing where the engine
-  cannot express it; line-break positions inside body copy if the font substitution
-  forces them.
-- Anti-aliasing at rect edges; sub-pixel rounding of text baselines.
+- Glyph anti-aliasing/hinting and sub-pixel rounding of text baselines. Family,
+  weights, sizes, tracking and line heights are pinned and matched, so body-copy
+  line breaks are expected to match; a line-break difference is a fidelity bug,
+  not a permitted difference.
+- Rect-edge anti-aliasing. Native focus/hover decorations are not part of the
+  captured states; when a capture triggers one it must be dismissed/unchanged.
 - Native focus/hover decorations are not part of the captured states; when a
   capture triggers one it must be dismissed/unchanged.
 
@@ -275,8 +279,15 @@ Godot lanes; they are binding for all three lanes:
 - **Panel meta lines** are shortened in the JSON (`LOOK, AIM, FEEL`,
   `CLICK A BINDING, THEN A KEY`, `MIX, LANGUAGE, SUBTITLES`) so they never clip
   at the panel's right padding.
-- **Header**: wordmark `ORION` and `N5` are both 40 px / 800; mission line is
+- **Header**: wordmark `ORION` and `N5` are both 40 px / 700; mission line is
   exactly `MARS EXPEDITION // COMMANDER D3SO` (no colon after EXPEDITION).
+- **Typography pins from this slice** (see "Typography parity" below):
+  drawer title is the `drawerTitle` type key (28 px / 700); status-chip labels
+  are centred 10 px / 700 (no edge tags); the roster dossier affordance is
+  10 px / 700 `signal` left-aligned at x = 1180; drawer body copy is 13 px ink
+  with the first brief/history line top-aligned (`BriefBodyY`), ability body
+  copy is 13 px `bone` top-aligned; footer hints use `white-space: pre` so the
+  triple-space separators survive target text processing.
 - **Map field** draws 12 px corner ticks at all four corners; grid lines are
   1 px `#141412` at 12% opacity.
 
@@ -294,15 +305,55 @@ two-letter code language so the interfaces match:
   `ruleStrong` border, square corners, containing the pinned code from
   `iconArt.rowTile.codes` (Info → `IN`, Placeholder → `PL`, Home → `HO`,
   Baseline → `BL`, Alarm → `AL`, CircleDot → `CD`, ChevronRight → `CR`,
-  User → `US`; explicit table, not a naive first-two rule), 8 px / 800
+  User → `US`; explicit table, not a naive first-two rule), 8 px / 700
   `boneBright`, centred.
 - **Ability-card art**: a 40 × 40 square with the same fill/border/corners,
   containing the first two alphanumeric characters of the ability name
   uppercased (THREADING → `TH`, OVERCLOCK → `OV`, ION DRILL → `IO`, …),
-  12 px / 800 `boneBright`, centred.
+  12 px / 700 `boneBright`, centred.
   The selected-card outline stays signal.
 
 Generated `Icon` remains the realization anywhere else a target admits it; on
 these two parity surfaces the code tile is the shared art. This is an
 app-authority decision (see `fixtures/parity-layout.json` `iconArt`), not a
 package change.
+
+## Typography parity — the Inter pin
+
+The three lanes use the same Inter faces, weights, sizes, tracking and line
+heights. Fonts are vendored at [`fonts/`](fonts/README.md):
+
+| Role | Face | Weight | Notes |
+|---|---|---|---|
+| Wordmark, values, tabs, labels, titles, chips, buttons | `fonts/inter/Inter-Bold.ttf` | 700 | uppercase copy |
+| Body, row secondaries, metadata, hints | `fonts/inter/Inter-Regular.ttf` | 400 | sentence case |
+
+- **Sizes** come from the JSON `type` map. The two extra sizes that are not in
+  the map (9 px rarity/installed chips, 28 px drawer title) are pinned in the
+  lane sources and are the same numbers in all three lanes.
+- **Tracking is zero everywhere.** `type.letterSpacingMicro` and
+  `type.letterSpacingTab` are pinned to 0 because the pinned GPUI renderer
+  exposes no letter-spacing channel; matching tracking by removing it is
+  stricter than documenting a per-engine divergence. Lane code may keep the
+  authority read but must not apply a positive tracking offset.
+- **Line heights**: labels 1.0, body 1.2 (`typography.lineHeight`). Single-line
+  text is vertically centred inside its pinned rect; body copy wraps at the
+  pinned panel width.
+- **Weight mapping**: GPUI requests `FontWeight(700)` / `400`; Godot selects
+  `Inter-Bold.ttf` / `Inter-Regular.ttf` by numeric weight (weight < 600 →
+  regular); Unity uses distinct `Font` assets `Inter-Bold` / `Inter-Regular`
+  with `FontStyle.Normal` so no synthetic bold is applied. The 600/800 weights
+  the first pass used are retired: every role is 400 or 700.
+- **No synthetic styling**: no faux bold, no faux italic, no tracking offset,
+  no text shadows. Fallbacks are disabled where the engine allows it; Inter
+  covers every glyph in the fixture copy.
+- **Verification**: `parity-check.mjs` measures the pixel bounding box of 39
+  pinned text strings (wordmark, stat values, tab labels, panel titles, row
+  labels/secondaries, field note, footer hints, nav target, drawer copy, chips,
+  card/detail copy, settings labels/values) in each engine's captures — 117
+  bbox measurements per run — and fails when a pairwise delta exceeds ±4 px in
+  x/y or ±6/±5 px in w/h. The mask is a 30 % colour-distance transparency, so
+  antialiased glyph edges are included consistently. This is a metric probe,
+  not a raster-equality claim; the remaining difference is glyph
+  anti-aliasing/hinting (Unity dynamic-font rasterisation is the widest
+  residual, up to ~4 px on 10 px labels).

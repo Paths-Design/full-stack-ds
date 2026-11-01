@@ -84,7 +84,7 @@ namespace GamePauseMenu
             var bodyY = detail.Y + layout.Panels.HeaderHeight + 16;
 
             abilityTitle = Ui.MakeText(layout, "NO MODULE SELECTED", "title", "boneBright", true,
-                new LayoutRect(bodyX, layout.Abilities.AbilityTitleY, 376, 30));
+                new LayoutRect(bodyX, layout.Abilities.AbilityTitleY - 4, 376, 30));
             Root.Add(abilityTitle);
             abilityRarity = Ui.MakeBadge(layout, "RARE", "chip", new LayoutRect(bodyX, layout.Abilities.AbilityChipsY, 64, 18),
                 layout.Color("signal"), layout.Color("onSignal"), false, Color.clear);
@@ -93,8 +93,8 @@ namespace GamePauseMenu
                 new LayoutRect(bodyX + 72, layout.Abilities.AbilityChipsY, 64, 18),
                 layout.Color("graphite"), layout.Color("boneBright"), false, Color.clear);
             Root.Add(abilitySize);
-            abilityBody = Ui.MakeText(layout, string.Empty, "body", "textSecondary", false,
-                new LayoutRect(bodyX, layout.Abilities.AbilityBodyY, 376, 64), wrap: true);
+            abilityBody = Ui.MakeText(layout, string.Empty, "body", "bone", false,
+                new LayoutRect(bodyX, layout.Abilities.AbilityBodyY, 376, 64), align: TextAnchor.UpperLeft, wrap: true);
             Root.Add(abilityBody);
 
             var statRowY = layout.Abilities.StatRowY;

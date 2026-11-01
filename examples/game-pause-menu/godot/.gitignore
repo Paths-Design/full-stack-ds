@@ -13,3 +13,6 @@ export/
 # Sampled-state captures (evidence). Committed sources only; the Lead collects
 # the PNGs from here.
 evidence/
+
+# Inter faces are copied from ../fonts by setup.sh (committed single source).
+fonts/

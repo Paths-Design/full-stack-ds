@@ -175,8 +175,8 @@ impl Menu {
         let dossier = self.text_at(
             cx,
             format!("faction:{}:dossier", faction.id),
-            style::micro(&layout.type_scale),
-            &layout.colors.muted,
+            style::dossier(),
+            &layout.colors.signal,
             rows.dossier_text.clone(),
             rows.dossier_x - rows.x,
             rows.dossier_y,
@@ -263,7 +263,7 @@ impl Menu {
         let tagline = self.text_at(
             cx,
             "drawer:tagline",
-            style::copy(&layout.type_scale),
+            style::row_sub(&layout.type_scale),
             &layout.colors.paper_muted,
             faction.tagline.clone(),
             padding,

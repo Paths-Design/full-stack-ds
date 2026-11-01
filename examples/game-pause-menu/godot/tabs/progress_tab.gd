@@ -133,11 +133,9 @@ func _add_faction_row(faction: Dictionary, row_x: float, row_y: float, width: fl
 	row.add_child(status)
 	DSFactory.prepare_chip(status)
 
-	var dossier := UI.label(str(rows_data.get("dossierText", "OPEN →")), 11, 700, "signal", 0.4)
-	dossier.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	var row_right := float(rows_data["x"]) + width - panel_origin.x
-	var dossier_x := float(rows_data["dossierX"]) - panel_origin.x
-	UI.place(dossier, dossier_x, float(rows_data["dossierY"]), row_right - dossier_x, 14)
+	var dossier := UI.label(str(rows_data.get("dossierText", "OPEN →")), app.parity.type_size("micro"), 700, "signal", 0.0)
+	var dossier_x := float(rows_data["dossierX"]) - float(rows_data["x"])
+	UI.place(dossier, dossier_x, float(rows_data["dossierY"]), 96, 14)
 	row.add_child(dossier)
 	UI.ignore_mouse(row)
 
@@ -217,7 +215,7 @@ func _populate_drawer(faction: Dictionary) -> void:
 	var title := UI.title(str(faction.get("name", "")), 28, "ink")
 	UI.place(title, padding, float(drawer_data["titleY"]) - 176.0, 512, 36)
 	drawer_body.add_child(title)
-	var tagline := UI.label(str(faction.get("tagline", "")), app.parity.type_size("rowSub"), 600, "paperMuted", app.orion.micro_spacing())
+	var tagline := UI.label(str(faction.get("tagline", "")), app.parity.type_size("rowSub"), 400, "paperMuted", app.orion.micro_spacing())
 	UI.place(tagline, padding, float(drawer_data["taglineY"]) - 176.0, 512, 14)
 	drawer_body.add_child(tagline)
 	var rule := UI.rule("paperMuted", 1)

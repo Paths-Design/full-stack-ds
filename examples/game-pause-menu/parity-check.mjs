@@ -41,6 +41,8 @@ const root = resolve(arg('root', join(here, '../../../tmp/game-pause-menu')));
 const out = resolve(arg('out', join(root, 'parity')));
 const maxRmse = Number(arg('max-rmse', '0.14'));
 const tolerance = Number(arg('tolerance', '18'));
+const typographyFuzz = Number(arg('type-fuzz', '30'));
+const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
 const hexToRgb = (hex) => [
@@ -175,6 +177,41 @@ function rmse(a, b) {
   return Number(match[1]);
 }
 
+/** Trimmed pixel bounding box of one pinned text string, or null when absent. */
+function textBBox(file, probe) {
+  const hex = color(probe.color);
+  const result = run([
+    file,
+    '-crop', `${probe.w}x${probe.h}+${probe.x}+${probe.y}`, '+repage',
+    '-fuzz', `${typographyFuzz}%`,
+    '-transparent', hex,
+    '-alpha', 'extract', '-negate',
+    '-bordercolor', 'black', '-border', '1',
+    '-trim', '-format', '%wx%h%O', 'info:',
+  ]);
+  const match = /^(\d+)x(\d+)\+(-?\d+)\+(-?\d+)$/.exec(result.stdout.trim());
+  if (!match) return null;
+  const w = parseInt(match[1], 10);
+  const h = parseInt(match[2], 10);
+  if (w <= 1 && h <= 1) return null;
+  // -border 1 shifts the reported page offset by 1; undo it to stay in image space.
+  return {
+    x: probe.x + parseInt(match[3], 10) - 1,
+    y: probe.y + parseInt(match[4], 10) - 1,
+    w,
+    h,
+  };
+}
+
+function bboxDelta(a, b) {
+  return {
+    x: Math.abs(a.x - b.x),
+    y: Math.abs(a.y - b.y),
+    w: Math.abs(a.w - b.w),
+    h: Math.abs(a.h - b.h),
+  };
+}
+
 const failures = [];
 const results = [];
 mkdirSync(out, { recursive: true });
@@ -198,6 +235,42 @@ for (const state of STATES) {
         failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
       }
     });
+  }
+
+  // Typography parity: measure the pixel bbox of every pinned text string in
+  // this state and require the three engines to agree on x/y/w/h within the
+  // authority tolerance. This is a metric probe; glyph anti-aliasing may differ.
+  const stateTypeProbes = typography.probes.filter((probe) => probe.state === state);
+  const typeTolerance = typography.probeTolerance ?? {};
+  const boxesByProbe = new Map();
+  for (let i = 0; i < LANES.length; i++) {
+    const lane = LANES[i];
+    for (const probe of stateTypeProbes) {
+      const bbox = textBBox(join(root, lane, `${state}.png`), probe);
+      results.push({ state, lane, kind: 'typography', probe: probe.id, text: probe.text, bbox });
+      if (!bbox) {
+        failures.push(`${state}/typography/${lane}: no pixels for ${probe.id} (${JSON.stringify(probe.text)}) in region ${probe.x},${probe.y} ${probe.w}x${probe.h}`);
+        continue;
+      }
+      if (!boxesByProbe.has(probe.id)) boxesByProbe.set(probe.id, []);
+      boxesByProbe.get(probe.id).push({ lane, bbox });
+    }
+  }
+  for (const probe of stateTypeProbes) {
+    const boxes = boxesByProbe.get(probe.id) ?? [];
+    if (boxes.length !== LANES.length) continue;
+    const [first, ...rest] = boxes;
+    for (const other of rest) {
+      const delta = bboxDelta(first.bbox, other.bbox);
+      const limits = { x: typeTolerance.x ?? 3, y: typeTolerance.y ?? 3, w: typeTolerance.w ?? 4, h: typeTolerance.h ?? 4 };
+      const bad = Object.entries(delta).filter(([axis, value]) => value > limits[axis]);
+      if (bad.length) {
+        failures.push(
+          `${state}/typography/${probe.id}: ${first.lane} ${JSON.stringify(first.bbox)} vs ${other.lane} ${JSON.stringify(other.bbox)} ` +
+          `exceeds ${bad.map(([axis, value]) => `${axis}+${value}>${limits[axis]}`).join(', ')} (${JSON.stringify(probe.text)})`,
+        );
+      }
+    }
   }
 
   const labelled = LANES.flatMap((lane) => ['-label', lane, join(root, lane, `${state}.png`)]);
@@ -228,7 +301,8 @@ for (const state of STATES) {
 
 writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ root, out, maxRmse, tolerance, results, failures }, null, 2));
 const probeCount = results.filter((r) => 'description' in r).length;
-console.log(`parity: ${probeCount} probe(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
+const typeCount = results.filter((r) => r.kind === 'typography').length;
+console.log(`parity: ${probeCount} colour probe(s), ${typeCount} typography bbox measurement(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
 console.log(`report: ${join(out, 'parity-report.json')}`);
 console.log(`montages: ${out}`);
 if (failures.length) {
