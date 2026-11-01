@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: links-disabled-activation
 created_at: '2026-11-01T16:17:38.248Z'
-updated_at: '2026-11-01T16:18:08.352Z'
+updated_at: '2026-11-01T16:34:19.266Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -67,6 +67,7 @@ scope:
     - 'packages/ds-godot/addons/full_stack_ds/components/Links'
     - 'packages/ds-godot/verification/capability-inventory.json'
     - 'packages/ds-gpui/src/components/Links'
+    - scripts/public-types-consumer/fixtures.mjs
   out: []
 invariants:
   - 'Enabled web links preserve native navigation, target/rel and modified activation; no component-name special cases or audit allowances'
