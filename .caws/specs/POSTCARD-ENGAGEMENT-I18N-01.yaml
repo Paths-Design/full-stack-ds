@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: postcard-engagement-i18n
 created_at: '2026-11-01T19:07:23.492Z'
-updated_at: '2026-11-01T19:43:49.526Z'
+updated_at: '2026-11-01T19:59:06.167Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -40,6 +40,14 @@ scope:
     - docs/architecture/unity-target.md
     - docs/architecture/design/component-design-bindings.md
     - packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
+    - packages/ds-codegen/src/native-metadata-text.ts
+    - packages/ds-codegen/src/native-metadata-text.test.ts
+    - packages/ds-codegen/src/native-messages.ts
+    - packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts
+    - packages/ds-codegen/src/frameworks/swift/swiftui/messages.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/emitters/content.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/messages.ts
+    - packages/ds-codegen/src/frameworks/native-message-reach.test.ts
   out: []
 invariants:
   - 'Keep required author and stats inputs and existing public media/avatar props; this slice does not close omitted media/avatar or preview-fixture obligations'
