@@ -23,6 +23,7 @@ StyleRule {part:"root",conditions:&[StyleCondition::Variant {axis:"variant",valu
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
@@ -57,9 +58,11 @@ impl Render for List{fn render(&mut self,window:&mut Window,cx:&mut Context<Self
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
+
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"list-root".to_string()).children(self.render_content(window,cx)).id("list");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
+
 
  root.into_any_element()
 }}

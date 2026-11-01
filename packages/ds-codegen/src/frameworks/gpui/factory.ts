@@ -78,7 +78,7 @@ export function gpuiPlan(ir: ComponentIR): GpuiPlan {
  const methods = [valueMethod,defaultMethod,disabledMethod,...axes.map(axis => axis.method),...Array.from(boolProps).map(snake),...Array.from(textProps).map(snake)].filter(Boolean);
  if (new Set(methods).size !== methods.length) throw new Error(`GPUI_IDENTIFIER_COLLISION: ${ir.name}`);
  if (!/^[A-Z][A-Za-z0-9]*$/.test(ir.name)) throw new Error(`GPUI_UNSUPPORTED_IDENTIFIER: ${ir.name}`);
- return { channel,part:control?.part.name,valueMethod,defaultMethod,disabledMethod,mixedProp,axes,boolProps:Array.from(boolProps),textProps:Array.from(textProps),childContent,slots,slotVariants,defaultValue:booleanDefault(ir,channel?.defaultValueProp),disabledDefault:booleanDefault(ir,disabledProp),keys:control?.activationKeys ?? [],excludedProps:ir.styledProps.filter(prop => !realized.has(prop.name)).map(prop => prop.name),refs:[],omissions:[] };
+ return { channel,part:control?.part.name,valueMethod,defaultMethod,disabledMethod,mixedProp,axes,boolProps:Array.from(boolProps),textProps:Array.from(textProps),childContent,slots,slotVariants,defaultValue:booleanDefault(ir,channel?.defaultValueProp),disabledDefault:booleanDefault(ir,disabledProp),keys:control?.activationKeys ?? [],excludedProps:ir.styledProps.filter(prop => !realized.has(prop.name)).map(prop => prop.name),refs:[],callbacks:[],activations:[],omissions:[] };
 }
 export function gpuiStylePlan(ir: ComponentIR): GpuiStylePlan {
  if (!ir.nativeStyleRules) throw new Error(`GPUI_MISSING_STYLE_FACTS: ${ir.name}`);
@@ -155,6 +155,8 @@ function tree(ir: ComponentIR, plan: Plan, styles: Styles, node: DomNodeIR, refC
   else insertion = `.child(${tree(ir,plan,styles,child,refCursor)})`;
   result += condition ? `.when(${condition},|node|node${insertion})` : insertion;
  }
+ const activation = node === ir.dom ? undefined : plan.activations.find(candidate => candidate.part === part);
+ if (activation) result += `.id(${q(ir.cssPrefix+'-'+part+'-action')})${pointerActivation(activation.handler)}`;
  for (const pseudo of ['before','after']) if (styles.rules.some(rule => rule.part === part && rule.pseudo === pseudo)) result += `.child(render_pseudo(${q(part+'::'+pseudo)},Self::STYLE_RULES,&style_state,&theme))`;
  if (node === ir.dom && !node.content && node.tag !== 'hr' && (!node.children.length || plan.channel && !nodesOf(ir).some(child=>child.tag==='children'||child.tag==='slot'))) result += labelChild(ir);
  return result;
@@ -203,19 +205,21 @@ function source(ir: ComponentIR, plan: Plan, styles: Styles): string {
  ` : '';
  return `// Generated from ${ir.name} normalized contract IR. Do not hand-edit.
 use std::collections::BTreeMap;
-use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle${plan.channel?',EventEmitter,MouseButton,Subscription':''}};
+use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle${plan.channel?',EventEmitter':''}${plan.channel||plan.activations.length?',MouseButton,Subscription':''}};
 ${nativeContent?'use crate::content::NativeContent;':''}
 ${plan.channel?'use crate::control::{BooleanState,ChangeRequest};':''}
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style${styles.rules.some(rule=>rule.pseudo)?',render_pseudo':''}};
 ${slotEnum}
-pub struct ${ir.name}{${plan.channel?'pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.childContent?'content:Option<NativeContent>,':''}${plan.slots.length?`slots:BTreeMap<${slotType},NativeContent>,`:''}${plan.refs.map(ref=>`${ref.field}:Option<gpui::Entity<crate::components::${ref.refType}>>,`).join('')}pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,${fields.join('')}}
-impl Default for ${ir.name}{fn default()->Self {let mut variants=BTreeMap::new();${axisDefaults}${plan.channel?`let mut state=BooleanState::new(${plan.defaultValue});state.disabled=${plan.disabledDefault};`:''}Self{${plan.channel?'state,hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.childContent?'content:None,':''}${plan.slots.length?'slots:BTreeMap::new(),':''}${plan.refs.map(ref=>`${ref.field}:None,`).join('')}label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,${initial.join('')}}}}
+pub struct ${ir.name}{${plan.channel?'pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.callbacks.map(callback=>`pub ${callback.field}:Option<crate::callback::ActionHandler>,`).join('')}${!plan.channel&&plan.activations.length?'pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}${plan.childContent?'content:Option<NativeContent>,':''}${plan.slots.length?`slots:BTreeMap<${slotType},NativeContent>,`:''}${plan.refs.map(ref=>`${ref.field}:Option<gpui::Entity<crate::components::${ref.refType}>>,`).join('')}pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,${fields.join('')}}
+impl Default for ${ir.name}{fn default()->Self {let mut variants=BTreeMap::new();${axisDefaults}${plan.channel?`let mut state=BooleanState::new(${plan.defaultValue});state.disabled=${plan.disabledDefault};`:''}Self{${plan.channel?'state,hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.callbacks.map(callback=>`${callback.field}:None,`).join('')}${!plan.channel&&plan.activations.length?'hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}${plan.childContent?'content:None,':''}${plan.slots.length?'slots:BTreeMap::new(),':''}${plan.refs.map(ref=>`${ref.field}:None,`).join('')}label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,${initial.join('')}}}}
 impl ${ir.name}{
  pub const STYLE_RULES:&'static [StyleRule]=&[${rustRules(styles.rules)}];
  pub fn label(mut self,value:impl Into<SharedString>)->Self{self.label=value.into();self}
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+ ${plan.callbacks.map(callback=>`pub fn ${callback.field}(mut self,handler:impl Fn(&mut gpui::Window,&mut gpui::App)+'static)->Self{self.${callback.field}=Some(std::rc::Rc::new(handler));self}
+ pub fn set_${callback.field}(&mut self,handler:impl Fn(&mut gpui::Window,&mut gpui::App)+'static,cx:&mut Context<Self>){self.${callback.field}=Some(std::rc::Rc::new(handler));cx.notify();}`).join('\n ')}
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
   let state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':plan.disabledMethod?'self.'+plan.disabledMethod:'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel?'self.hovered':'false'},active:${plan.channel?'self.active':'false'},focused:self.focused};
@@ -224,16 +228,18 @@ impl ${ir.name}{
  ${axisMethods}\n${fieldMethods}\n${controls}\n${contentMethods}\n${slotMethods}
 }
 ${plan.channel?`impl EventEmitter<ChangeRequest> for ${ir.name}{}`:''}
-impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel||nativeContent||plan.refs.length?'cx':'_cx'}:&mut Context<Self>)->impl IntoElement{
+impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel||nativeContent||plan.refs.length||plan.activations.length?'cx':'_cx'}:&mut Context<Self>)->impl IntoElement{
  ${nativeContent?`NativeContent::assert_unique_views(${plan.childContent?'self.content.iter()':''}${plan.childContent&&plan.slots.length?'.chain(self.slots.values())':plan.slots.length?'self.slots.values()':''});`:''}
  ${guard(plan,ir.dom!)?`if !(${guard(plan,ir.dom!)}){return gpui::Empty.into_any_element();}`:''}
  ${plan.channel?'if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}self.focus_handle=self.focus_handle.take().map(|handle|handle.tab_index(0).tab_stop(!self.state.disabled));':''}
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
- let style_state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':plan.disabledMethod?'self.'+plan.disabledMethod:'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel?'self.hovered':'false'},active:${plan.channel?'self.active':'false'},focused:self.focused};
+ ${plan.activations.some(activation=>activation.keyboard)?`if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}`:''}
+ let style_state=StyleState{variants:&variants,checked:${plan.channel?'self.state.value()':'false'},disabled:${plan.channel?'self.state.disabled':plan.disabledMethod?'self.'+plan.disabledMethod:'false'},indeterminate:${plan.mixedProp?'self.'+snake(plan.mixedProp):'false'},hovered:${plan.channel||plan.activations.length?'self.hovered':'false'},active:${plan.channel||plan.activations.length?'self.active':'false'},focused:self.focused};
  ${plan.refs.length?plan.refs.map(ref=>{const locals=ref.dynamic.map(d=>`let ${ref.field}__${d.setter}=${d.expr};`).join('\n ');const update=ref.dynamic.length?`${ref.field}.update(cx,|child,cx|{${ref.dynamic.map(d=>`child.${d.setter}(${ref.field}__${d.setter},cx);`).join('')}});`:'';return [`let ${ref.field}=self.${ref.field}.get_or_insert_with(||cx.new(|_|crate::components::${ref.refType}::default()${ref.attrs.map(attr=>`.${snake(attr.prop)}(${attr.literal})`).join('')})).clone();`,locals,update].filter(Boolean).join('\n ');}).join('\n ')+'\n ':''}let root=${tree(ir,plan,styles,ir.dom!,{index:0})}.id(${q(ir.cssPrefix)});
  let root=apply_interaction_style(root,${q(ir.dom!.part ?? 'root')},Self::STYLE_RULES,&style_state,&theme);
+ ${plan.activations.filter(activation=>activation.keyboard).map(activation=>`let root=root${pointerActivation(activation.handler)}.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(true).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,true){cx.stop_propagation();crate::callback::invoke(&this.${activation.handler},window,cx);}}));`).join('\n ')}
  ${plan.channel?`let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}));`:''}
  root.into_any_element()
 }}
@@ -252,6 +258,11 @@ function moduleSnake(name: string): string {
 /** Refusals the generic anatomy projection may take over. Strictness the
  * bounded planners keep is untouched: a style-value defect on an admitted shape
  * still fails generation, it does not silently become an omission. */
+/** Pointer activation chain. The receiver must be a Stateful element. */
+function pointerActivation(handler: string): string {
+ return `.on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();this.active=true;if let Some(handle)=this.focus_handle.clone(){window.focus(&handle,cx);}cx.notify();})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,window,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();crate::callback::invoke(&this.${handler},window,cx);}}))`;
+}
+
 const SHAPE_REFUSALS = [
  'GPUI_UNSUPPORTED_SHAPE','GPUI_UNSUPPORTED_ROOT_INSERTION','GPUI_UNSUPPORTED_PROP','GPUI_UNSUPPORTED_DEFAULT',
  'GPUI_UNSUPPORTED_CHANNEL','GPUI_UNSUPPORTED_ACTIVATION_HOST','GPUI_UNSUPPORTED_CONTENT_GUARD','GPUI_UNSUPPORTED_CONTENT',
@@ -292,6 +303,8 @@ function anatomyFiles(ir: ComponentIR) {
   omittedFacts:omitted,
   omittedFactKinds:[...new Set(omitted.map(omission=>omission.kind))].sort(),
   refs:plan.refs.map(ref=>({field:ref.field,refType:ref.refType,projectedAttrs:ref.attrs.map(attr=>attr.prop),dynamicProps:ref.dynamic.map(entry=>entry.prop),omissions:ref.omissions})),
+  callbacks:plan.callbacks.map(callback=>callback.prop),
+  activations:plan.activations.map(activation=>({part:activation.part,handler:activation.handler,keyboard:activation.keyboard})),
   omissions:['control-semantics','accessibility','form-submission','field-association','motion','compound-composition','overlay-behaviour','iteration','content-transform','glyph-rendering','duplicate-view-placement','complete-cross-platform-parity'],
   proof:'requires-real-gpui-engine-tests-and-render-witness; outside-admission-rail',
  };

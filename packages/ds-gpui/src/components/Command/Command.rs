@@ -33,6 +33,7 @@ StyleRule {part:"separator",conditions:&[],declarations:&[StyleDeclaration {prop
  pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
  pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
  pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+
  pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
   let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
@@ -66,10 +67,12 @@ impl Render for Command{fn render(&mut self,window:&mut Window,cx:&mut Context<S
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
+
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let ref_search_icon=self.ref_search_icon.get_or_insert_with(||cx.new(|_|crate::components::Icon::default().name("search").size("sm"))).clone();
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-root".to_string()).child(apply_part_style(div(),"overlay",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-overlay".to_string())).child(apply_part_style(div(),"dialog",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-dialog".to_string()).child(apply_part_style(div(),"inputWrapper",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-inputWrapper".to_string()).child(apply_part_style(div(),"searchIcon",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-searchIcon".to_string()).child(ref_search_icon.clone())).child(apply_part_style(div(),"input",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-input".to_string()))).child(apply_part_style(div(),"list",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-list".to_string()).child(apply_part_style(div(),"empty",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-empty".to_string())).children(self.render_slot(Self::slot_key("items"),window,cx)).child(apply_part_style(div(),"separator",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"command-separator".to_string())))).id("command");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
+
 
  root.into_any_element()
 }}
