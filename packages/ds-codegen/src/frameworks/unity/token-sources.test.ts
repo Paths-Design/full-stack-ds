@@ -19,8 +19,8 @@ describe("Unity token source CSS", () => {
       @layer brand {
         :where(:root) { --fsds-default: 4px; }
         :where(${dark}) { --fsds-default: 5px; }
-        [data-brand="probe"] { --fsds-b: 6px; }
-        ${branded("light")} { --fsds-b: 6px; }
+        [data-brand="probe"] { --fsds-b: 6px; --fsds-default: 4px; }
+        ${branded("light")} { --fsds-b: 6px; --fsds-default: 4px; }
         ${branded("dark")} { --fsds-default: 7px; }
         @media (prefers-color-scheme: dark) {
           [data-brand="probe"] { --fsds-default: 7px; }
@@ -34,7 +34,7 @@ describe("Unity token source CSS", () => {
     expect([...parsed.defaults.light]).toEqual([["--fsds-default", "4px"]]);
     expect([...parsed.defaults.dark]).toEqual([["--fsds-default", "5px"]]);
     expect(parsed.brands.map(brand => brand.id)).toEqual(["probe"]);
-    expect([...parsed.brands[0]!.light]).toEqual([["--fsds-b", "6px"]]);
+    expect([...parsed.brands[0]!.light]).toEqual([["--fsds-b", "6px"], ["--fsds-default", "4px"]]);
     expect([...parsed.brands[0]!.dark]).toEqual([["--fsds-default", "7px"]]);
   });
 
