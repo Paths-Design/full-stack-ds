@@ -1,7 +1,7 @@
 {
   "schema": "game-pause-menu.goldens.v1",
   "claim": "Lossless image goldens for the eight captured 1280x800 states; a regression baseline, not proof of pixel identity or unbounded parity.",
-  "captures": "/tmp/restyle4-evidence",
+  "captures": "/tmp/parity-main-restyle",
   "authority": {
     "path": "examples/game-pause-menu/fixtures/parity-layout.json",
     "sha256": "4549eb64e0b4fd2d826bf0c3382e2e2e3ec57f9dcdaf41c83d6b3c4858d4ca79"
@@ -301,12 +301,12 @@
       "width": 1280,
       "height": 800,
       "sourcePng": {
-        "sha256": "8b33730823a535a67f8cccb279fb90ab0a47141c5ac9eaa85542404171556e53",
-        "bytes": 87109
+        "sha256": "e9c1aafa49b15923de8b2c38b72d2aecf0b62d9e9b2f08be8a050fff1dab8ccf",
+        "bytes": 97758
       },
       "golden": {
-        "sha256": "ab72d26896f85e296fefafc7bc5271a62ad351ff5ee008157cdda90ec4da99b8",
-        "bytes": 29788
+        "sha256": "021034f6f27609590c9f54274be0a0d6f51332f2a2793fab64d7f92217331275",
+        "bytes": 33640
       }
     },
     {

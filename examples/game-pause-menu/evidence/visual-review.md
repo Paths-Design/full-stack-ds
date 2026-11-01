@@ -1,8 +1,9 @@
 # Visual review record — Orion N5 pause menu
 
-**Status: restyle pass 4 complete; human re-review pending.** The human
-review decision was “require the Orion style restyle first”, so this record now
-covers both the original gap and the first restyle pass.
+**Status: human review accepted; bounded claim recorded.** The first human
+review decision was “require the Orion style restyle first”; passes 1–4
+implemented that request, and the second human review accepted the bounded claim
+(see the sign-off block below).
 
 This record separates three questions that are often conflated:
 
@@ -162,6 +163,7 @@ used:
       host; eight states; no a11y/usability claim) is the intended claim.
 - [ ] The Unity “ledgered migration started” wording is acceptable.
 
-Reviewer: ____________________  Date: ____________  Decision: ____________ (first review recorded 2026-11-01: restyle required)
+Reviewer: session user (Darian Rosebrook)  Date: 2026-11-01  Decision: accepted bounded claim
+(first review: restyle required; second review: accept pass 4 and sign off)
 
 Notes:
