@@ -2,7 +2,6 @@ id: GODOT-UNITY-COMPONENT-PARITY-01
 title: 'Godot component parity with Unity: all 55 corpus components emitted under a checked support boundary'
 mode: feature
 lifecycle_state: active
-worktree: godot-unity-parity
 created_at: '2026-11-01T07:07:45.011Z'
 updated_at: '2026-11-01T07:58:29.259Z'
 created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
