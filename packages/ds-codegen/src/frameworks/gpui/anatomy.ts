@@ -122,6 +122,7 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomySt
       used.add(field);
       const attrs = instance ? projectedRefAttrs(instance) : [];
       const dynamic: GpuiRefPlan['dynamic'] = [];
+      const events: GpuiRefPlan['events'] = [];
       const refOmissions: GpuiOmission[] = [];
       for (const binding of instance?.bindings ?? []) {
         const setter = typeof binding.targetProp === 'string' ? identifier(binding.targetProp) : undefined;
@@ -144,7 +145,16 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomySt
         omitted(`binding expression '${expression.kind}' has no parent-state lowering in this projection`);
       }
       for (const event of instance?.events ?? []) {
-        refOmissions.push({ kind: 'ref-event', source: `${field}.${event.targetHandlerProp}`, reason: 'child event wiring is not projected (behaviour parity is a later class)', boundary: 'anatomy-component-ref-dynamic', disposition: 'pending' });
+        const targetHandler = typeof event.targetHandlerProp === 'string' ? identifier(event.targetHandlerProp) : undefined;
+        const expression = event.expr;
+        if (targetHandler && expression.kind === 'prop' && typeof expression.prop === 'string' && state.wiredCallbacks.has(expression.prop)) {
+          const parentField = identifier(expression.prop);
+          if (parentField) {
+            events.push({ targetHandlerProp: String(event.targetHandlerProp), setter: `set_${targetHandler}`, parentField });
+            continue;
+          }
+        }
+        refOmissions.push({ kind: 'ref-event', source: `${field}.${event.targetHandlerProp}`, reason: `child event expression '${expression.kind}' has no parent-callback forwarding`, boundary: 'anatomy-component-ref-dynamic', disposition: 'pending' });
       }
       for (const entry of instance?.attrs ?? []) {
         const projected = entry.kind === 'prop' && typeof entry.value === 'string' && typeof entry.targetProp === 'string' && Boolean(identifier(entry.targetProp));
@@ -154,7 +164,7 @@ function collectRefs(dom: DomNodeIR, omissions: GpuiOmission[], state: AnatomySt
       }
       if (!instance) refOmissions.push({ kind: 'ref-instance', source: field, reason: 'component instance facts were unavailable at IR build time', boundary: 'anatomy-component-ref', disposition: 'pending' });
       omissions.push(...refOmissions);
-      refs.push({ field, refType: node.componentRef, attrs, dynamic, omissions: refOmissions });
+      refs.push({ field, refType: node.componentRef, attrs, dynamic, events, omissions: refOmissions });
       return;
     }
     for (const child of node.children) visit(child);

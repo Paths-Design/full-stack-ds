@@ -40,6 +40,8 @@ export interface GpuiRefPlan {
   attrs: Array<{ prop: string; literal: string }>;
   /** Parent-state-driven props updated through the child's generated setters each render. */
   dynamic: Array<{ prop: string; setter: string; expr: string }>;
+  /** Reference events forwarded to a realized parent callback. */
+  events: Array<{ targetHandlerProp: string; setter: string; parentField: string }>;
   /** Facts of the reference that the projection does not realize. */
   omissions: GpuiOmission[];
 }

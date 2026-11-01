@@ -110,9 +110,13 @@ applied every render through the child's generated setter, so the child tracks
 the parent's state (`Alert.dismiss` receives `set_aria_label(self.dismiss_label)`,
 `Button.spinner` receives `set_inline(self.loading)`). Expressions with no
 parent-state lowering in this projection — `paged`, `channel`, `valueMap` and
-`message` — remain named `ref-binding` omissions, as do child event wiring
-(`ref-event`) and props with no projected builder (a reserved name such as `type`,
-or a non-literal value — `ref-attr`). Consumer children nested inside a
+`message` — remain named `ref-binding` omissions, as do props with no projected
+builder (a reserved name such as `type`, or a non-literal value — `ref-attr`).
+Reference **events** are forwarded when their expression is a realized parent
+callback: the child's callback setter receives a closure that invokes the parent
+handler (`Alert.dismiss` → parent `onDismiss`, Chip's action/dismiss triggers), so
+a retained child action reaches the owning component. Events whose expression is
+not a parent callback (paged/selection actions) stay `ref-event` omissions. Consumer children nested inside a
 reference are named as `ref-children`: they would need the referenced
 component's content API, so they are receipted rather than dropped.
 ```

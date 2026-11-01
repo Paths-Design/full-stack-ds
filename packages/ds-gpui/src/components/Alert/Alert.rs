@@ -67,6 +67,8 @@ impl Render for Alert{fn render(&mut self,window:&mut Window,cx:&mut Context<Sel
  let ref_dismiss=self.ref_dismiss.get_or_insert_with(||cx.new(|_|crate::components::Button::default())).clone();
  let ref_dismiss__set_aria_label=self.dismiss_label.clone();
  ref_dismiss.update(cx,|child,cx|{child.set_aria_label(ref_dismiss__set_aria_label,cx);});
+ let ref_dismiss__set_on_click=self.on_dismiss.clone();
+ ref_dismiss.update(cx,|child,ctx|child.set_on_click(move |window,cx|{if let Some(handler)=ref_dismiss__set_on_click.clone(){handler(window,cx);}},ctx));
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"alert-root".to_string()).child(apply_part_style(div(),"icon",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"alert-icon".to_string())).children(self.render_content(window,cx)).when(self.dismissible,|node|node.child(apply_part_style(div(),"dismiss",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"alert-dismiss".to_string()).child(ref_dismiss.clone()))).id("alert");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
 

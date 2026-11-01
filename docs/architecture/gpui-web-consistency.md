@@ -46,7 +46,7 @@ Aggregates over the 55-component corpus (214 declared parts, 379 declared props,
 | React | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
 | Vue | 213/214 | 379/379 | 30/30 | 41/44 | 20/20 |
 | Svelte | 213/214 | 379/379 | 30/30 | 40/44 | 20/20 |
-| GPUI | 180/214 | 249/379 | 5/30 | 0/44 | 18/20 |
+| GPUI | 180/214 | 249/379 | 7/30 | 0/44 | 18/20 |
 
 All five dimensions are measured from the committed generated source; the audit
 does not read the regenerated, gitignored `capabilities.json` receipts, so a
@@ -68,15 +68,16 @@ three emitters). GPUI is consistent on **component identity** (55/55), partial o
   single web-side miss of one Toast part.
 - **Props**: 10 components project the full web prop surface, 5 at 80–99%,
   28 at 50–79%, 10 at 1–49%, 2 at 0%. The web targets project every declared prop.
-- **Behavior**: 5 of 30 behavior-bearing components realize an interaction —
-  three value channels (Switch, ToggleSwitch, Checkbox) and two action controls
+- **Behavior**: 7 of 30 behavior-bearing components realize an interaction —
+  three value channels (Switch, ToggleSwitch, Checkbox), two action controls
   (Button's root click, AlertNotice's dismiss trigger) that invoke a stored
-  callback from pointer and keyboard activation. The remaining 25 are mounts
-  only — disclosure (Accordion/Details/Tabs/ShowMore), surfaces
+  callback from pointer and keyboard activation, and two reference-event
+  forwarders (Alert and Chip forward their retained trigger's click to the
+  parent's dismiss/action callback). The remaining 23 are mounts only —
+  disclosure (Accordion/Details/Tabs/ShowMore), surfaces
   (Dialog/Sheet/Toast/Tooltip/Popover/Command/Walkthrough), composite and
   collection state (Select/RadioGroup/OTP/Calendar/Shuttle/Pagination/Carousel),
-  reference events (Alert/Chip dismissal), text input (Input/TextField/Field)
-  and truncation (Truncate).
+  text input (Input/TextField/Field) and truncation (Truncate).
 - **A11y**: 0 of 44. This is the documented GPUI non-claim, not an accident of
   this measurement.
 - **References**: 18 of 20 declared `componentRef` nodes are realized as retained
