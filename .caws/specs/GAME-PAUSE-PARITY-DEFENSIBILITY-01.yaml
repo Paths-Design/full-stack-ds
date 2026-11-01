@@ -53,3 +53,10 @@ contracts:
   - name: 'pause-menu-parity-spec'
     type: behavior
     path: 'examples/game-pause-menu/parity.md'
+evidence:
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node scripts/game-pause-token-consumption.mjs: 11 lane contract checks pass; GPUI tests/parity.rs loaded_palette_consumes_every_authority_colour_token; Godot 209/209 includes all-role provenance checks; Unity EditMode 37/37 includes TokenConsumptionTests.PanelSurfaceResolvesThroughTheOrionBrandTokenChannel (dark/light brand-scope resolved style)"
+    recorded_at: "2026-11-01T07:57:49.943Z"
+    command: node scripts/game-pause-token-consumption.mjs
+    exit_code: 0
