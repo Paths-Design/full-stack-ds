@@ -1,14 +1,16 @@
 id: TABLE-WEB-RESPONSIVE-01
 title: 'Honor Table scrolling policy and keyboard viewport access'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: table-web-responsive
 created_at: '2026-11-01T03:24:18.913Z'
-updated_at: '2026-11-01T03:24:18.913Z'
+updated_at: '2026-11-01T03:53:41.771Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
     - 'Table contract styles and web consumer scrolling'
     - 'Generic React numeric conditional attribute lowering'
+    - 'Preserve structural Unity Table with explicit refusal of web-only keyboard and content-label metadata'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -27,6 +29,11 @@ scope:
     - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Table/'
     - 'packages/ds-unity/Runtime/Components/Table/'
     - 'scripts/release-package-check/'
+    - packages/ds-swiftui/Localization/FsdsComponents.xcstrings
+    - packages/ds-codegen/src/frameworks/unity/
+    - packages/ds-unity/Runtime/Resources/FullStackDS/Controls.unsupported.json
+    - docs/architecture/unity-target.md
+    - e2e/lit-table-composition.spec.ts
   out: []
 invariants:
   - 'Native Table sections cells metadata and composed node identity remain intact through live policy updates'
