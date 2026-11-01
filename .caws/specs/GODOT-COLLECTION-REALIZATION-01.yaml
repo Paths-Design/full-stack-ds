@@ -50,3 +50,8 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "collection-family pending probe (node tmp/coll-pending.mjs) prints no component rows -> Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel all at 0 pending; pnpm run audit:godot-boundary exit 0 with ledger 161 rules, pending 74 corpus-wide, 0 unclassified, inventory matching a fresh regen"
+    recorded_at: "2026-11-01T10:06:38.428Z"
