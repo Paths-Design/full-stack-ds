@@ -72,3 +72,11 @@ evidence:
     exit_code: 0
     artifact_path: scripts/gpui-pilot.mjs
     commit_sha: "94652ada7"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "consistency audit rebaselined: GPUI anatomy parts 166/214 -> 180/214 and components with a part gap 24 -> 20, with no dimension regression (audit reports improvements only and check passes on main after merge)"
+    recorded_at: "2026-11-01T10:40:04.370Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: "68805d651"
