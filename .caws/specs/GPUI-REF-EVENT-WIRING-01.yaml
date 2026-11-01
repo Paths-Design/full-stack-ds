@@ -1,9 +1,10 @@
 id: GPUI-REF-EVENT-WIRING-01
 title: 'Wire by-reference events to parent callbacks'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: gpui-ref-event-wiring
 created_at: '2026-11-01T11:10:01.492Z'
-updated_at: '2026-11-01T11:10:01.492Z'
+updated_at: '2026-11-01T11:10:03.943Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
