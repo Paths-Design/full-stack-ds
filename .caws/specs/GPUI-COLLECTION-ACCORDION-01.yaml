@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Accordion plans a string open-value channel from its declared interaction trigger: generated source carries open_value:Option<SharedString>, value/set_value/default_value/is_open builders, a generated toggle_open, the trigger part's pointer+Space+Enter activation and the content part wrapped in when(self.open_value.is_some()); receipt records valueChannel triggerPart/gatedPart and names the non-carried opens (multi-open array, item identities, collapsible suppression); only Accordion regenerates"
+    recorded_at: "2026-11-01T12:17:57.628Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Accordion/Accordion.rs
+    commit_sha: "172d1e806"
