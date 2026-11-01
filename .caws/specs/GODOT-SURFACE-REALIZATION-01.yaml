@@ -55,3 +55,7 @@ evidence:
     status: pass
     evidence_ref: "surface-family pending probe (node tmp/surface-pending.mjs) prints no component rows -> Dialog, Sheet, Toast, Command, Tooltip, Walkthrough all at 0 pending leaves; pnpm run audit:godot-boundary -> exit 0 with 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; corpus ledger 157 rules, lowered 8896 / pending 295 / refused 8310, 0 unclassified"
     recorded_at: "2026-11-01T09:43:37.330Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:godot row surface-aria-labeling: the declared ariaLabelledby and ariaDescribedby props wire accessibility_labeled_by_nodes / accessibility_described_by_nodes from a NodePath, and Dialog still reports its declared blocking modality fact; the presence runtime applies declared prop defaults and plan-fact getters (anchor_mode/modality/open_triggers)"
+    recorded_at: "2026-11-01T09:43:39.278Z"
