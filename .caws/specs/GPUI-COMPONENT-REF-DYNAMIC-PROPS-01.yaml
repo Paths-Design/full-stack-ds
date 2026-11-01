@@ -57,3 +57,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/src/components/Chip/Chip.rs
     commit_sha: "542de0370"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "paged/channel/valueMap/message expressions stay named ref-binding omissions with their reason; the codegen test asserts PageNavigator's refs carry a ref-binding omission whose reason names the 'paged' expression kind"
+    recorded_at: "2026-11-01T10:51:57.895Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "9e7091643"
