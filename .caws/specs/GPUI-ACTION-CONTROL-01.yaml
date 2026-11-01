@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "generated components store every callback-typed prop as crate::callback::ActionHandler; a part whose click event binds one invokes it on activation. Button's root adds a focus handle, tab stop and Space/Enter activation (generated source shows on_click with crate::callback::invoke plus track_focus/on_key_down); part actions (AlertNotice.dismiss, Walkthrough skip/prev/next) get an id-scoped stateful element with pointer activation. Receipts list callbacks and activations"
+    recorded_at: "2026-11-01T11:09:24.802Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Button/Button.rs
+    commit_sha: "3d7206129"
