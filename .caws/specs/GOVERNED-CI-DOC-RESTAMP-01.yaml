@@ -23,3 +23,12 @@ acceptance:
     then: 'given the governed surface changed at merge 4e9b9e19e (package.json); when docs:check-claims runs after the restamp; then governed-ci.md is fresh and no stale stamp remains'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs:check-claims on main after the restamp: 81 marked claims match derived values and governed-ci.md is fresh (16 verified stamps fresh, 5 ledgered stale). The doc was re-verified against d3e66f3e8 before moving the stamp: governed:rail/governed:rail:changed/governed:rail:react-native compositions match package.json, validate-cli still accepts its three flags, and committed-tree-check is wired in pre-push and the CI gate + GPUI jobs."
+    recorded_at: "2026-11-01T08:23:25.491Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/specifications/governed-ci.md
+    commit_sha: "4164da43a"
