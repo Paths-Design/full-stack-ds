@@ -9,6 +9,36 @@
     "unmountInactive",
     "idBase"
   ],
+  "omissions": [
+    "tab--active: selector outside normalized native grammar",
+    "--pills __tab--active: selector outside normalized native grammar",
+    "root.display: platform web only",
+    "root.flex-direction: platform web only",
+    "root.gap: no Godot control style mapping",
+    "root.padding: no Godot control style mapping",
+    "root.border-radius: no Godot control style mapping",
+    "list: part list is not hosted by the control runtime",
+    "tab: part tab is not hosted by the control runtime",
+    ".tabs__tab:hover: part tab is not hosted by the control runtime",
+    ".tabs__tab:disabled: part tab is not hosted by the control runtime",
+    "indicator: part indicator is not hosted by the control runtime",
+    "panel: part panel is not hosted by the control runtime",
+    "--underline __list: part list is not hosted by the control runtime",
+    "--underline __indicator: part indicator is not hosted by the control runtime",
+    "--vertical: state/variant-conditioned styling has no native selector in the control shape",
+    "--vertical __list: part list is not hosted by the control runtime",
+    "--vertical __indicator: part indicator is not hosted by the control runtime",
+    "--pills __list: part list is not hosted by the control runtime",
+    "--pills __tab: part tab is not hosted by the control runtime",
+    "--pills __indicator: part indicator is not hosted by the control runtime",
+    "defaultValue: declined by the select shape; no native realization on this target",
+    "orientation: declined by the select shape; no native realization on this target",
+    "appearance: declined by the select shape; no native realization on this target",
+    "activationMode: declined by the select shape; no native realization on this target",
+    "loop: declined by the select shape; no native realization on this target",
+    "unmountInactive: declined by the select shape; no native realization on this target",
+    "idBase: declined by the select shape; no native realization on this target"
+  ],
   "disclosure": {
     "focus": {
       "strategy": "roving",
@@ -31,15 +61,6 @@
     "loop",
     "unmountInactive",
     "idBase"
-  ],
-  "omissions": [
-    "defaultValue: declined by the select shape; no native realization on this target",
-    "orientation: declined by the select shape; no native realization on this target",
-    "appearance: declined by the select shape; no native realization on this target",
-    "activationMode: declined by the select shape; no native realization on this target",
-    "loop: declined by the select shape; no native realization on this target",
-    "unmountInactive: declined by the select shape; no native realization on this target",
-    "idBase: declined by the select shape; no native realization on this target"
   ],
   "proof": "requires-runtime-witness"
 }

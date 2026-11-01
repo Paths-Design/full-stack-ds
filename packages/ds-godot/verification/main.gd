@@ -462,6 +462,22 @@ func _ready() -> void:
 	disclosure_popover.queue_free()
 	await get_tree().process_frame
 
+	# Projected control styles: the contract's unconditional typography is applied
+	# to the native trigger and to the text the consumer mounts under an item body.
+	var styled_accordion = make_control("Accordion")
+	add_child(styled_accordion)
+	var styled_body := Label.new()
+	styled_body.text = "Styled body"
+	styled_accordion.add_item("one", "One", styled_body)
+	await get_tree().process_frame
+	check(styled_accordion.trigger.get_theme_font_size("font_size") == 16, "Projected font size did not reach the trigger")
+	check(styled_accordion.trigger.get_theme_color("font_color").is_equal_approx(Color("#141414")), "Projected text color did not reach the trigger")
+	check(styled_accordion.items[0].button.get_theme_font_size("font_size") == 16, "Projected font size did not reach the item button")
+	check(styled_body.get_theme_constant("line_spacing") == 29, "Projected content line height did not reach the item body text")
+	rows.append({"id":"disclosure-style-projection","fontSize":16,"lineSpacing":29,"color":"#141414"})
+	styled_accordion.queue_free()
+	await get_tree().process_frame
+
 	# Catalog load: every admitted component scene must exist, parse and
 	# instantiate. This is a structural admission witness only — it proves the
 	# generated scene tree is loadable, not that its behavior is realized.

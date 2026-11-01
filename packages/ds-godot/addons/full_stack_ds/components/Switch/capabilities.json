@@ -6,6 +6,33 @@
     "name",
     "value"
   ],
+  "omissions": [
+    ".switch:dir(rtl) .switch__track: selector outside normalized native grammar",
+    "root.display: platform web only",
+    "root.align-items: platform web only",
+    "root.cursor: platform web only",
+    "root.position: platform web,ios,android only",
+    "track: part track is not hosted by the control runtime",
+    "thumb: part thumb is not hosted by the control runtime",
+    "input: part input is not hosted by the control runtime",
+    ".switch:has(.switch__input:checked) .switch__track: part track is not hosted by the control runtime",
+    ".switch:has(.switch__input:checked) .switch__thumb: part thumb is not hosted by the control runtime",
+    ".switch:has(.switch__input:disabled) .switch__track: part track is not hosted by the control runtime",
+    "--sm: state/variant-conditioned styling has no native selector in the control shape",
+    "--md: state/variant-conditioned styling has no native selector in the control shape",
+    "--lg: state/variant-conditioned styling has no native selector in the control shape",
+    ".switch--sm .switch__track: part track is not hosted by the control runtime",
+    ".switch--sm .switch__thumb: part thumb is not hosted by the control runtime",
+    ".switch--sm:has(.switch__input:checked) .switch__thumb: part thumb is not hosted by the control runtime",
+    ".switch--lg .switch__track: part track is not hosted by the control runtime",
+    ".switch--lg .switch__thumb: part thumb is not hosted by the control runtime",
+    ".switch--lg:has(.switch__input:checked) .switch__thumb: part thumb is not hosted by the control runtime",
+    ".switch:has(.switch__input:focus-visible) .switch__track: part track is not hosted by the control runtime",
+    "defaultChecked: declined by the boolean shape; no native realization on this target",
+    "size: declined by the boolean shape; no native realization on this target",
+    "name: declined by the boolean shape; no native realization on this target",
+    "value: declined by the boolean shape; no native realization on this target"
+  ],
   "disclosure": {
     "focus": {
       "strategy": "auto",
@@ -21,12 +48,6 @@
     "size",
     "name",
     "value"
-  ],
-  "omissions": [
-    "defaultChecked: declined by the boolean shape; no native realization on this target",
-    "size: declined by the boolean shape; no native realization on this target",
-    "name: declined by the boolean shape; no native realization on this target",
-    "value: declined by the boolean shape; no native realization on this target"
   ],
   "proof": "requires-runtime-witness"
 }

@@ -8,6 +8,7 @@ import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
 import { godotActionPlan } from "./action-plan.js";
 import { classifyProp, loadBoundary } from "./boundary.js";
+import { godotControlStyles } from "./control-styles.js";
 import { anatomyFiles, surfaceFiles } from "./plan-emission.js";
 import { godotSurfacePlan } from "./surface-plan.js";
 import { godotAnatomyPlan } from "./walker.js";
@@ -232,12 +233,15 @@ export function godotPlan(ir: ComponentIR) {
   const excludedProps = ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p => p.name);
   for (const name of boundary.excluded) if (!excludedProps.includes(name)) excludedProps.push(name);
   const disclosure = disclosureFacts(ir);
+  const styleProjection = godotControlStyles(ir);
+  const omissions = [...boundary.omissions, ...styleProjection.omissions];
   return {
     operation,
     excluded: excludedProps,
-    ...(boundary.omissions.length ? { omissions: boundary.omissions } : {}),
+    ...(omissions.length ? { omissions } : {}),
     ...(refs.length ? { itemButtonRefs: refs } : {}),
     ...(Object.keys(disclosure).length ? { disclosure } : {}),
+    ...(styleProjection.styles.length ? { styles: styleProjection.styles } : {}),
   };
 }
 /** Source fact: normalized sequence, channel and label bindings.
@@ -328,10 +332,12 @@ export function createGodotEmitter(): FrameworkEmitter {
       // strategy, dismissal triggers + gates, portal layering, surface modality
       // and the structural ARIA bindings). The receipt keeps the full plan.
       const disclosure = "disclosure" in plan ? (plan as { disclosure?: Record<string, unknown> }).disclosure : undefined;
+      const controlStyles = "styles" in plan ? (plan as { styles?: unknown[] }).styles : undefined;
       const controlConfig = {
         operation: plan.operation,
         ...(controlRefs.length ? { itemButtonRefs: controlRefs } : {}),
         ...(disclosure && Object.keys(disclosure).length ? { disclosure } : {}),
+        ...(controlStyles && controlStyles.length ? { styles: controlStyles } : {}),
       };
       const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : controlConfig), defaults, theme_color: themeColor(ir) };
       const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : isComposite ? "composite" : isGlyph ? "glyph" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction || isComposite || isGlyph ? "" : `\tlabel = ${q(ir.name)}\n`}`;

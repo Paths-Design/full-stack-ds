@@ -38,6 +38,10 @@ var overlay: CanvasLayer
 var operation: String
 var collapsible := true
 var disclosure: Dictionary = {}
+## Projected native style declarations from the contract (typography, focus ring,
+## opacity, cursor, hit testing). Applied to the trigger, the item buttons and the
+## text nodes consumer content mounts under an item body.
+var style_facts: Dictionary = {}
 ## Whether focus has entered the revealed surface since it opened; blur dismissal
 ## only fires after that, so opening a surface from an unrelated focus owner does
 ## not close it on the first frame.
@@ -71,6 +75,9 @@ func _ready() -> void:
 	else:
 		value = "false" if value.is_empty() else value
 	if operation == "surface": content.hide()
+	style_facts = _collect_style_facts()
+	_apply_style_facts()
+	_apply_focus_ring()
 	_refresh()
 
 ## Read a declared default expression as a boolean, falling back when the
@@ -80,6 +87,95 @@ func _default_bool(prop: String, fallback: bool) -> bool:
 	if raw == null: return fallback
 	var parsed = JSON.parse_string(raw)
 	return parsed if parsed is bool else fallback
+
+
+## Collect the projected control style declarations, keyed by the part they
+## address: the runtime hosts `root`/`trigger` (the trigger and item buttons) and
+## `content`/`contentInner` (the text under an item body). Rules for other parts
+## are omitted by the planner, never dropped here.
+func _collect_style_facts() -> Dictionary:
+	var facts := {}
+	for rule in configuration.get("styles", []):
+		if not (rule.get("predicates", []) as Array).is_empty(): continue
+		var part: String = rule.get("part", "root")
+		var table: Dictionary = facts.get(part, {})
+		for declaration in rule.get("declarations", []):
+			table[declaration.get("property", "")] = declaration.get("value", "")
+		facts[part] = table
+	return facts
+
+func _px(value: String) -> float:
+	var parsed := value.trim_suffix("px")
+	return float(parsed) if parsed.is_valid_float() else -1.0
+
+## Apply the collected directives to the trigger and any mounted item buttons.
+func _apply_style_facts() -> void:
+	var control_table: Dictionary = style_facts.get("trigger", style_facts.get("root", {}))
+	for item in items: _apply_control_style(item.button, control_table)
+	_apply_control_style(trigger, control_table)
+	for item in items:
+		_apply_text_style(item.body, style_facts.get("contentInner", style_facts.get("content", {})))
+
+func _apply_style_to(node: Control) -> void:
+	if not is_instance_valid(node): return
+	_apply_control_style(node, style_facts.get("trigger", style_facts.get("root", {})))
+
+func _apply_control_style(node: Control, table: Dictionary) -> void:
+	if not is_instance_valid(node) or table.is_empty(): return
+	var font_size := _px(table.get("font-size", ""))
+	if font_size > 0: node.add_theme_font_size_override("font_size", int(font_size))
+	var color: String = table.get("color", "")
+	if color.begins_with("#"): node.add_theme_color_override("font_color", Color(color))
+	var opacity: String = table.get("opacity", "")
+	if opacity.is_valid_float(): node.modulate.a = float(opacity)
+	match table.get("cursor", ""):
+		"pointer": node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		"not-allowed": node.mouse_default_cursor_shape = Control.CURSOR_FORBIDDEN
+		"text": node.mouse_default_cursor_shape = Control.CURSOR_IBEAM
+		"default": node.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	if table.get("pointer-events", "") == "none":
+		node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+## Text-level directives apply to the label nodes under a hosted content part:
+## line spacing and horizontal alignment have no Control-level property.
+func _apply_text_style(node: Node, table: Dictionary) -> void:
+	if not is_instance_valid(node): return
+	if node is Label and not table.is_empty():
+		var spacing := _px(table.get("line-height", ""))
+		if spacing > 0: node.add_theme_constant_override("line_spacing", int(spacing))
+		var color: String = table.get("color", "")
+		if color.begins_with("#"): node.add_theme_color_override("font_color", Color(color))
+		var size := _px(table.get("font-size", ""))
+		if size > 0: node.add_theme_font_size_override("font_size", int(size))
+		match table.get("text-align", ""):
+			"center": node.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			"right": node.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			"left": node.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+			"justify": node.horizontal_alignment = HORIZONTAL_ALIGNMENT_FILL
+	for child in node.get_children(): _apply_text_style(child, table)
+
+## Focus ring: the contract's outline declarations become the native focus
+## StyleBox. Width/color/offset only — outline-style is not differentiated.
+func _apply_focus_ring() -> void:
+	if not is_instance_valid(trigger): return
+	var table: Dictionary = style_facts.get("trigger", style_facts.get("root", {}))
+	var width := _px(table.get("outline-width", ""))
+	if width <= 0: return
+	var ring := StyleBoxFlat.new()
+	ring.draw_center = false
+	var color: String = table.get("outline-color", "#ffffff")
+	ring.border_color = Color(color) if color.begins_with("#") else Color("#ffffff")
+	ring.border_width_left = int(width)
+	ring.border_width_top = int(width)
+	ring.border_width_right = int(width)
+	ring.border_width_bottom = int(width)
+	var offset := _px(table.get("outline-offset", ""))
+	if offset > 0:
+		ring.expand_margin_left = offset
+		ring.expand_margin_top = offset
+		ring.expand_margin_right = offset
+		ring.expand_margin_bottom = offset
+	trigger.add_theme_stylebox_override("focus", ring)
 
 func _refresh() -> void:
 	if not is_instance_valid(trigger): return
@@ -156,6 +252,8 @@ func add_item(key: String, text: String, body: Control, locked := false) -> void
 	panel.add_child(body)
 	button.pressed.connect(activate.bind(key))
 	items.append({"key":key,"label":text,"body":panel,"button":button,"disabled":locked})
+	_apply_style_to(button)
+	_apply_text_style(panel, style_facts.get("contentInner", style_facts.get("content", {})))
 	if operation == "select" and value.is_empty() and not locked: value = key
 	_refresh()
 

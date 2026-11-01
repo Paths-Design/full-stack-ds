@@ -766,20 +766,29 @@
       "reason": "native text clamping is not realised by the shared runtime yet"
     },
     {
+      "id": "motion-sequence-facts",
+      "match": [
+        "contract:/motion/sequenceTransition/**",
+        "contract:/motion/progress/**"
+      ],
+      "disposition": "lowered",
+      "via": "the sequence runtime lowers the declared transition duration/easing tokens and the progress driver facts"
+    },
+    {
       "id": "motion",
       "match": [
         "contract:/motion/**"
       ],
-      "disposition": "pending",
-      "reason": "motion/animation is not realised by the shared runtime beyond the bounded sequence adapter"
+      "disposition": "refused",
+      "reason": "beyond the sequence transition/progress facts, the motion vocabulary has no target motion to lower: reduced-motion alternatives, pulse/shimmer/countdown loops and their keyframes are not replayed, and state changes apply immediately."
     },
     {
       "id": "keyframes",
       "match": [
         "contract:/keyframes/**"
       ],
-      "disposition": "pending",
-      "reason": "CSS keyframe motion has no native mapping in the shared runtime"
+      "disposition": "refused",
+      "reason": "CSS keyframes have no native equivalent on this target; no keyframe timeline is authored or replayed."
     },
     {
       "id": "state-machine",
@@ -1503,8 +1512,8 @@
         "styles:/*::*/**",
         "styles:/**/*::*/**"
       ],
-      "disposition": "pending",
-      "reason": "pseudo-element surfaces have no native mapping in the shared runtime"
+      "disposition": "refused",
+      "reason": "native controls have no pseudo-element nodes; ::before/::after content boxes are not synthesized."
     },
     {
       "id": "styles-starting-style",
@@ -1559,8 +1568,8 @@
         "styles:/**/rotate/**",
         "styles:/**/will-change/**"
       ],
-      "disposition": "pending",
-      "reason": "motion and animation are not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "Godot Controls have no CSS transitions, animations or transforms; state changes apply immediately, so transition/animation/transform declarations are not approximated."
     },
     {
       "id": "styles-focus-ring",
@@ -1578,8 +1587,8 @@
       "match": [
         "styles:/**/box-shadow/**"
       ],
-      "disposition": "pending",
-      "reason": "elevation/shadow painting is not part of the shared painted style vocabulary"
+      "disposition": "refused",
+      "reason": "box-shadow blur/spread has no StyleBox mapping in this projection; elevation is not approximated."
     },
     {
       "id": "styles-effects",
@@ -1608,8 +1617,8 @@
         "styles:/**/left/**",
         "styles:/**/z-index/**"
       ],
-      "disposition": "pending",
-      "reason": "content-layer layout is not realised by the shared runtime"
+      "disposition": "refused",
+      "reason": "position/inset/z-index describe CSS layout and stacking; native containers own layout and the overlay layer owns stacking, so these declarations are not projected."
     },
     {
       "id": "styles-interaction-affordance",
@@ -1623,11 +1632,27 @@
       "reason": "pointer/selection affordances are not realised by the shared runtime"
     },
     {
-      "id": "styles-typography",
+      "id": "styles-typography-line",
       "match": [
         "styles:/**/line-height/**",
-        "styles:/**/letter-spacing/**",
+        "styles:/**/line-height"
+      ],
+      "disposition": "lowered",
+      "via": "projected into the control configuration and applied as integer native line spacing on the text nodes under the hosted part"
+    },
+    {
+      "id": "styles-typography-align",
+      "match": [
         "styles:/**/text-align/**",
+        "styles:/**/text-align"
+      ],
+      "disposition": "pending",
+      "reason": "the runtime can set native horizontal alignment, but the corpus declares text-align only under state/variant selectors the control shape does not host yet."
+    },
+    {
+      "id": "styles-typography",
+      "match": [
+        "styles:/**/letter-spacing/**",
         "styles:/**/text-transform/**",
         "styles:/**/text-decoration/**",
         "styles:/**/text-decoration-line/**",
@@ -1654,8 +1679,8 @@
         "styles:/**/line-clamp/**",
         "styles:/**/-webkit-box-orient/**"
       ],
-      "disposition": "pending",
-      "reason": "CSS typography and text-formatting machinery is not projected by the shared painted style vocabulary"
+      "disposition": "refused",
+      "reason": "CSS text layout with no Godot Label/Button equivalent in this projection: letter spacing, font family/style, text decoration, list styling, generated content, bidi direction, line clamping, white-space and hyphenation are not approximated."
     },
     {
       "id": "styles-media-fit",
