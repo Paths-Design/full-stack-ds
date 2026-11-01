@@ -51,3 +51,8 @@ contracts:
   - name: 'corpus-component-contracts'
     type: contract-test
     path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "node tmp/family-pending.mjs Accordion,Tabs,Popover,Details -> pending 0 for all four (Accordion 206 lowered/231 refused, Details 212/159, Popover 136/137, Tabs 201/276); pnpm run audit:godot-boundary -> exit 0, 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; ledger 156 rules, lowered 8876 / pending 534 / refused 8091 corpus-wide, 0 unclassified"
+    recorded_at: "2026-11-01T09:35:21.064Z"
