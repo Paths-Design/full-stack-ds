@@ -78,11 +78,11 @@ const TAB_X = { map: 0, progress: 320, abilities: 640, settings: 960 };
 function tabProbes(state) {
   const x = TAB_X[state];
   const probes = [
-    [x + 3, 107, 'signal', 'active tab top-left fill'],
-    [x + 317, 157, 'signal', 'active tab bottom-right fill'],
+    [x + 3, 107, 'signalDeep', 'active tab top-left fill'],
+    [x + 317, 157, 'signalDeep', 'active tab bottom-right fill'],
   ];
   const neighbour = x === 0 ? 323 : x - 3;
-  probes.push([neighbour, 132, 'charcoal', 'inactive tab background beside active tab']);
+  probes.push([neighbour, 132, 'signal', 'inactive tab background beside active tab']);
   return probes;
 }
 
@@ -92,14 +92,14 @@ const SETTING_SWITCH_ON = { x: 552, y: 222 };
 
 const COMMON = [
   [4, 4, 'charcoal', 'header background'],
-  [4, 780, 'ink', 'footer background'],
+  [4, 780, 'ruleStrong', 'footer background'],
 ];
 
 const PROBES = {
   map: [
     ...COMMON,
     ...tabProbes('map'),
-    [900, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [900, 150, 'signal', 'inactive tab background (opposite side)'],
     // Map field: filled sage exactly from (40,232) to (880,712).
     [48, 240, 'sage', 'map field top-left fill'],
     [872, 704, 'sage', 'map field bottom-right fill'],
@@ -122,12 +122,12 @@ const PROBES = {
   progress: [
     ...COMMON,
     ...tabProbes('progress'),
-    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [100, 150, 'signal', 'inactive tab background (opposite side)'],
     // Drawer paper ground (24,176,560,552).
-    [25, 177, 'paper', 'drawer top-left fill'],
-    [582, 726, 'paper', 'drawer bottom-right fill'],
-    [16, 168, 'ink', 'outside drawer top-left'],
-    [584, 730, 'ink', 'outside drawer bottom-right'],
+    [25, 177, 'sage', 'drawer top-left fill'],
+    [582, 726, 'sage', 'drawer bottom-right fill'],
+    [16, 168, 'ruleStrong', 'outside drawer top-left'],
+    [584, 730, 'ruleStrong', 'outside drawer bottom-right'],
     [960, 200, 'charcoal', 'roster panel background'],
     // ACCESS chip (1080,240,76,22).
     [1082, 242, 'signal', 'ACCESS chip top-left fill'],
@@ -138,27 +138,27 @@ const PROBES = {
   abilities: [
     ...COMMON,
     ...tabProbes('abilities'),
-    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [100, 150, 'signal', 'inactive tab background (opposite side)'],
     [42, 226, 'charcoal', 'grid panel background'],
     [850, 178, 'charcoal', 'detail panel background'],
     [1254, 200, 'charcoal', 'detail panel inside right edge'],
-    [1258, 200, 'ink', 'outside detail panel right edge'],
-    [300, 730, 'ink', 'content gap below panels'],
+    [1258, 200, 'ruleStrong', 'outside detail panel right edge'],
+    [300, 730, 'ruleStrong', 'content gap below panels'],
   ],
   settings: [
     ...COMMON,
     ...tabProbes('settings'),
-    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [100, 150, 'signal', 'inactive tab background (opposite side)'],
     // GENERAL panel (24,176,608,268) and CONTROLLER panel (648,...).
     [26, 178, 'charcoal', 'GENERAL panel top-left fill'],
     [629, 300, 'charcoal', 'GENERAL panel inside right edge'],
-    [634, 300, 'ink', 'gap between top panels'],
-    [300, 446, 'ink', 'gap below GENERAL panel'],
+    [634, 300, 'ruleStrong', 'gap between top panels'],
+    [300, 446, 'ruleStrong', 'gap below GENERAL panel'],
     [650, 178, 'charcoal', 'CONTROLLER panel top-left fill'],
     // REMAP (24,460) and AUDIO (648,460) panels.
     [26, 462, 'charcoal', 'REMAP panel top-left fill'],
     [650, 462, 'charcoal', 'AUDIO panel top-left fill'],
-    [300, 730, 'ink', 'gap below bottom panels'],
+    [300, 730, 'ruleStrong', 'gap below bottom panels'],
     // General switch ON at (552,222,64,32).
     [SETTING_SWITCH_ON.x + 2, SETTING_SWITCH_ON.y + 2, 'charcoal', 'settings switch corner outside pill'],
     [SETTING_SWITCH_ON.x + 12, SETTING_SWITCH_ON.y + 2, 'signal', 'settings switch stadium arc filled'],

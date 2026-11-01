@@ -1,7 +1,7 @@
 # Post-merge run receipt — main
 
-**Status: lane and capture rerun complete; root suite not yet idle-machine green.**
-This receipt records what was actually run on `main` after merge commit
+**Status: pre-restyle receipt; lane and capture rerun complete; root suite not yet idle-machine green.**
+The restyle pass changes the authority/captures, so these results describe the pre-restyle `main`; a post-restyle idle rerun is still required. This receipt records what was actually run on `main` after merge commit
 `5ae968ac6ee44208ad06ca1edc3104e8b18edd62`.
 
 ## Environment

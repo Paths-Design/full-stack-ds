@@ -704,9 +704,9 @@ impl Menu {
                 _ => Tab::Map,
             };
             let label_color = if active {
-                layout.colors.on_signal.clone()
+                layout.color(&layout.tab_bar.active_text).to_string()
             } else {
-                layout.colors.text_secondary.clone()
+                layout.color(&layout.tab_bar.inactive_text).to_string()
             };
             let key = format!("tab:{}:{}", tab.id, if active { "active" } else { "idle" });
             let label = self.text(cx, key, style::tab(&layout.type_scale), &label_color, tab.label.clone());
@@ -765,14 +765,14 @@ impl Menu {
             cx,
             "footer:hints",
             style::footer_hint(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             layout.footer.hints.text.clone(),
         );
         let nav_label = self.text(
             cx,
             "footer:label",
             style::footer_label(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             layout.footer.nav_target.label.clone(),
         );
         let target = self
@@ -783,7 +783,7 @@ impl Menu {
         let value_color = if self.state.nav_target().is_some() {
             layout.colors.signal.clone()
         } else {
-            layout.colors.muted.clone()
+            layout.colors.text_secondary.clone()
         };
         let value = self.text(
             cx,
@@ -800,7 +800,7 @@ impl Menu {
         };
         children.push(
             widgets::rect_box(footer)
-                .bg(colors::paint(&layout.colors.ink))
+                .bg(colors::paint(&layout.colors.rule_strong))
                 .child(
                     div()
                         .absolute()
@@ -986,7 +986,7 @@ impl Render for Menu {
             .relative()
             .w(px(viewport.width))
             .h(px(viewport.height))
-            .bg(colors::paint(&self.layout.colors.ink))
+            .bg(colors::paint(&self.layout.colors.rule_strong))
             .font_family("Inter")
             .text_color(colors::paint(&self.layout.colors.bone_bright))
             .track_focus(&self.focus)

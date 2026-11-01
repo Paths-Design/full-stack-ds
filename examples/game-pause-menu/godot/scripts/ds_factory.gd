@@ -58,9 +58,13 @@ static func tabs():
 static func style_tabs(node) -> void:
 	var tab_type := parity.type_size("tab")
 	var label_inset := float(parity.tab_bar.get("labelInset", 32))
-	var inactive := _tab_style(orion.color("charcoal"), Color.TRANSPARENT, label_inset)
-	var hover := _tab_style(orion.color("graphite"), Color.TRANSPARENT, label_inset)
-	var active := _tab_style(orion.color("signal"), orion.color("signal"), label_inset)
+	var tab_background := str(parity.tab_bar["background"])
+	var active_background := str(parity.tab_bar["activeBackground"])
+	var inactive_text := str(parity.tab_bar["inactiveText"])
+	var active_text := str(parity.tab_bar["activeText"])
+	var inactive := _tab_style(orion.color(tab_background), Color.TRANSPARENT, label_inset)
+	var hover := _tab_style(orion.color("signalHot"), Color.TRANSPARENT, label_inset)
+	var active := _tab_style(orion.color(active_background), orion.color(active_background), label_inset)
 	# Ops: pinned tab label inset (parity.tabBar.labelInset).
 	for style in [inactive, hover, active]:
 		style.content_margin_left = 32
@@ -79,9 +83,9 @@ static func style_tabs(node) -> void:
 		button.add_theme_stylebox_override("pressed", active)
 		button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.add_theme_color_override("font_color", orion.color("textSecondary"))
-		button.add_theme_color_override("font_hover_color", orion.color("boneBright"))
-		button.add_theme_color_override("font_pressed_color", orion.color("onSignal"))
+		button.add_theme_color_override("font_color", orion.color(inactive_text))
+		button.add_theme_color_override("font_hover_color", orion.color(active_text))
+		button.add_theme_color_override("font_pressed_color", orion.color(active_text))
 		button.add_theme_font_override("font", orion.font(tab_type, 700))
 		button.add_theme_font_size_override("font_size", tab_type)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT

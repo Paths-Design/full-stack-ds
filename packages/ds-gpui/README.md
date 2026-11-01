@@ -1,10 +1,13 @@
 # Full Stack DS GPUI native target
 
 Generated Rust views for the registry's
-<!-- target-component-count:gpui -->7-component allowlist: Switch, ToggleSwitch,
-Checkbox, Text, Badge, Divider and Stat. Normalized contract/IR facts drive native
-parts, supported styling, variants, token overrides, controlled requests and
-retained native content. Stat adds prominent size/trend styling.
+<!-- target-component-count:gpui -->55-component allowlist — the whole contract
+corpus. Normalized contract/IR facts drive native parts, supported styling,
+variants, token overrides, controlled requests and retained native content. A
+bounded control/static planner keeps strict shapes (Switch, ToggleSwitch, Checkbox,
+Text, Badge, Divider, Stat); every other component projects through a generic
+anatomy view whose `capabilities.json` receipt names each fact the target cannot
+realize yet. The committed support boundary adjudicates those facts.
 See the [target contract and exact limitations](../../docs/architecture/gpui-target.md).
 
 ```sh

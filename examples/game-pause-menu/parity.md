@@ -64,6 +64,28 @@ matrix and the conditions for a stronger claim are in
   fails when an authority colour or type size loses its resolvable token
   provenance.
 
+## Orion restyle pass
+
+A human review of the first parity evidence chose the restyle branch before
+accepting a bounded claim. The first restyle pass is authority-driven:
+
+- the tab bar ground is `signal` with a `signalDeep` active tab and
+  `boneBright`/`onSignal` labels, creating the reference's orange band;
+- the progress dossier ground is `sage` instead of warm `paper`, and the map
+  field remains `sage`;
+- the shell and footer use `ruleStrong` as the steel field, while panels keep
+  the charcoal housing;
+- GPUI gained the full-viewport ink/0.78 remap-modal scrim that Unity and Godot
+  already painted, which the brighter chrome exposed as a real parity gap.
+
+The source-design oracle audit dropped from 90 composition violations / 0 clean
+observations to **36 violations / 9 clean** (map, map-popover and progress now
+meet the reference bands). Abilities and settings still exceed the ink band and
+fall below the mint band, and the reference's oversized grey display type and
+industrial framing are still absent; those remain explicit non-claims until the
+next restyle pass. See [`evidence/visual-review.md`](evidence/visual-review.md)
+and [`evidence/oracle-report.json`](evidence/oracle-report.json).
+
 ## Global rules
 
 - **Absolute 1280 × 800 layout.** Every region is placed from the JSON rects.
@@ -181,7 +203,7 @@ Pinned so the three engines cannot drift on "reasonable" choices:
   JSON `markerColors`, 11 px / 800 monogram from `markerMonograms` in `ink`
   (or `boneBright` when the fill is `onSignal`). Nav target: 3 px `signal`
   outline around the marker.
-- **Drawer** — `paper` ground with `ink` text: micro-labels 10 px / 700
+- **Drawer** — `sage` ground with `ink` text: micro-labels 10 px / 700
   letter-spaced `paperMuted`, title 28 px / 800, body 13 px / 400, perks and
   parts 11 px.
 - **Header** — stat labels 10 px / 700 letter-spaced `muted`; values 20 px /
@@ -219,7 +241,7 @@ front; the drawer/popover/modal are overlays on top of their tab content.
    `progress.rows`: 3 px accent bar, name, tagline, 200 × 6 reputation bar with
    `REPUTATION 68 / 100` label, status chip (`ACCESS` signal fill / `LOCKED`
    alert outline) and `OPEN DOSSIER →`.
-2. When a faction is selected, the drawer rect `progress.drawer` (paper ground,
+2. When a faction is selected, the drawer rect `progress.drawer` (sage ground,
    ink text) overlays the left side of the list and renders: dossier meta +
    `CLOSE`, title, tagline, rule, BRIEF, HISTORY, PERKS bullets, PARTS table
    (PART / COST / RARITY / SIZE) and the `SHOP PARTS` button (disabled with the
@@ -254,7 +276,8 @@ Settings is fully visible without scrolling at 1280 × 800 in this layout.
 ## Header, tab bar, footer
 
 Exactly as in the JSON. Header stats are fixed to the fixture values; tab bar
-tabs are equal 320 px columns, active tab signal fill with on-signal text; footer
+tabs are equal 320 px columns on a signal-orange band, active tab `signalDeep`
+with `boneBright` text and idle tabs `onSignal`; footer
 shows control hints left and `NAV TARGET` + the fixture-selected target right
 (em dash when none).
 

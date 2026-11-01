@@ -1,9 +1,11 @@
 id: SVELTE-NPM-PEER-FLOOR-01
 title: 'Require the Svelte compiler API floor used by published components'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Svelte peer >=5.20 is qualified by compiler counterexamples strict declarations and isolated Chromium consumers.'
 created_at: '2026-11-01T03:28:06.522Z'
-updated_at: '2026-11-01T03:29:39.688Z'
+updated_at: '2026-11-01T08:31:17.923Z'
 created_by_session: '01a18e6c-feec-7162-83fe-0a60125b9b40'
 blast_radius:
   modules:
@@ -41,3 +43,19 @@ contracts:
   - name: 'svelte-package-peer'
     type: api
     path: 'packages/ds-svelte/package.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Manual primary-artifact inspection: the peer floor commit f5befc357335e18bce9b3897f7672f04ae01d372 is merged by 8639e6fb70ba4bf0c18a452a09bef64c38436f1a. Retained compile-5.19.0.json under .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/dependency-qualification/svelte-5.20.0 records 18 rune_invalid_name failures for props.id. Current UQAu76 packed manifest requires >=5.20.0; TABLE-WEB-RESPONSIVE-01/svelte-minimum-current/compile-5.20.0.json records all 350 client/server compilations passing with verified compiler5.20.0. Commit verification checks identity; behavior was inspected in the raw artifacts."
+    recorded_at: "2026-11-01T08:21:41.499Z"
+    commit_sha: f5befc357335e18bce9b3897f7672f04ae01d372
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Manual primary-artifact inspection: .caws/state/release-evidence/TABLE-WEB-RESPONSIVE-01/svelte-minimum-current/types-5.20.0-public-nodenext.json and types-5.20.0-all-declarations-bundler.json report zero diagnostics with TypeScript6.0.3, skipLibCheck=false and exact Svelte5.20 types, with no foreign Svelte program files. Current payload/compiler provenance is retained beside them. .caws/state/svelte-peer-floor-frozen.log records the frozen lock consistency check; f5befc357335e18bce9b3897f7672f04ae01d372 changes only the peer floor and no dependency resolution. Commit verification checks identity; raw command outcomes were inspected separately."
+    recorded_at: "2026-11-01T08:24:55.993Z"
+    commit_sha: f5befc357335e18bce9b3897f7672f04ae01d372
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Manual primary runtime inspection: .caws/state/release-evidence/TABLE-WEB-RESPONSIVE-01/svelte-minimum-current/runtime-evidence/runtime.json plus field-association.json and PNGs record exact compiler/runtime5.20.0 with installed UQAu76 package bytes. Button activation count=1; two visible Fields have distinct c1/c2 control IDs, correct label.control and description endpoints; Dialog opens and closes; no browser exceptions. The probe hash-checks transformed package inputs and all83 selected Svelte runtime modules. Button/Field/Dialog sources are unchanged by the peer-only floor commit; later Table scrolling has supplementary observations. This is Chromium client execution, not hydration, OS accessibility or the entire open-ended peer range."
+    recorded_at: "2026-11-01T08:24:58.563Z"
+    commit_sha: f5befc357335e18bce9b3897f7672f04ae01d372

@@ -92,17 +92,18 @@ namespace GamePauseMenu
             Root = Ui.MakeBox("pause-footer");
             Root.name = "footer";
             Ui.At(Root, footer.Rect);
+            Root.style.backgroundColor = layout.Color("ruleStrong");
             Root.style.borderTopWidth = (float)layout.PanelBorder;
             Root.style.borderTopColor = layout.Color(footer.RuleTop);
 
-            Hints = Ui.MakeText(layout, footer.HintsText, "footer", "muted", false);
+            Hints = Ui.MakeText(layout, footer.HintsText, "footer", "textSecondary", false);
             // Typography parity: UI Toolkit collapses runs of spaces by default;
             // the pinned hint string uses triple-space separators.
             Hints.style.whiteSpace = WhiteSpace.Pre;
             Ui.Point(Hints, footer.Hints.X, footer.Hints.Y - footer.Rect.Y);
             Root.Add(Hints);
 
-            NavLabel = Ui.MakeText(layout, footer.NavLabelText, "statLabel", "muted", true,
+            NavLabel = Ui.MakeText(layout, footer.NavLabelText, "statLabel", "textSecondary", true,
                 letterSpacing: layout.Size("letterSpacingMicro"));
             Ui.Point(NavLabel, footer.NavLabel.X, footer.NavLabel.Y - footer.Rect.Y);
             Root.Add(NavLabel);

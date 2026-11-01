@@ -1,6 +1,8 @@
 # Visual review record — Orion N5 pause menu
 
-**Status: agent review complete; human sign-off pending.**
+**Status: first restyle pass complete; human re-review pending.** The human
+review decision was “require the Orion style restyle first”, so this record now
+covers both the original gap and the first restyle pass.
 
 This record separates three questions that are often conflated:
 
@@ -37,6 +39,15 @@ This record separates three questions that are often conflated:
   artifacts derived from the reviewed capture set, not regression baselines;
   the goldens are the baselines.
 
+## Human review decision
+
+On 2026-11-01 the human reviewer selected **“Require the Orion style restyle
+first”** rather than accepting the bounded claim with the known composition gap.
+The first restyle pass is therefore part of the evidence, and a second human
+review is required before any stronger claim is recorded.
+
+## Agent findings — original evidence (pre-restyle)
+
 ## Agent findings
 
 ### What matches
@@ -51,18 +62,20 @@ This record separates three questions that are often conflated:
 
 ### Where the reference is not met
 
-The oracle audit records **90 composition-band violations across 24
-lane/state observations, with zero clean observations**. The family shares are
-recorded in [`oracle-report.json`](oracle-report.json); representative values:
+The original oracle audit recorded **90 composition-band violations across 24
+lane/state observations, with zero clean observations**. After the first restyle
+pass it records **36 violations with 9 clean observations** (map, map-popover
+and progress meet the bands in all three lanes). Representative post-restyle
+values:
 
 | Screen | Ink | Mint | Grey | Orange | Cream |
 |---|---:|---:|---:|---:|---:|
 | Reference style board | .400 | .279 | .179 | .108 | .000 |
 | Reference orbital panel | .426 | .217 | .275 | .066 | .000 |
-| `map` (GPUI) | .552 | .387 | .021 | .025 | .002 |
-| `progress` (GPUI) | .658 | .036 | .013 | .027 | .242 |
-| `abilities` (GPUI) | .909 | .003 | .059 | .021 | .001 |
-| `settings` (GPUI) | .887 | .002 | .077 | .026 | .003 |
+| `map` (GPUI) | .358 | .387 | .162 | .059 | .002 |
+| `progress` (GPUI) | .472 | .255 | .157 | .062 | .001 |
+| `abilities` (GPUI) | .733 | .002 | .168 | .058 | .001 |
+| `settings` (GPUI) | .703 | .001 | .199 | .062 | .003 |
 
 1. **Surface hierarchy is inverted.** The reference uses large mint and grey
    fields with orange bands; the app is 55–91 % near-black and confines mint to
@@ -80,9 +93,27 @@ recorded in [`oracle-report.json`](oracle-report.json); representative values:
    lockups (`95%`, `7250`, `75.2%`, `32 days`); the app distributes small HUD
    labels and rows.
 
-This is enough to say the app applies the Orion **palette** but not the Orion
-**composition**. The docs now state that explicitly; see
-[`../README.md`](../README.md) and [`../parity.md`](../parity.md).
+This showed that the app applied the Orion **palette** but not the Orion
+**composition**.
+
+## Restyle pass 1 (2026-11-01)
+
+Authority-driven changes:
+
+- tab bar ground `signal`, active tab `signalDeep`, labels `boneBright` /
+  `onSignal`: a full-width orange band instead of small state accents;
+- progress dossier ground `sage` instead of warm `paper`;
+- shell and footer `ruleStrong` steel field, keeping charcoal panel housings;
+- GPUI gained the full-viewport ink/0.78 remap-modal scrim Unity and Godot
+  already had — the brighter chrome exposed that as a genuine cross-engine gap.
+
+The oracle now reports **36 composition violations / 9 clean observations**,
+down from 90 / 0. Map, map-popover and progress now meet the bands in all lanes.
+Abilities and settings still fail the ink/mint balance (roughly 70 % ink, ~0 %
+mint) and the reference's oversized grey display type, industrial framing and
+orange data plates are still absent. Those remain explicit non-claims; the docs
+describe the bounded claim; see [`../README.md`](../README.md) and
+[`../parity.md`](../parity.md).
 
 ## Human review checklist
 
@@ -92,12 +123,13 @@ used:
 - [ ] Palette and typography parity across the eight captured states is
       visually acceptable, including the Unity body-copy weight residual.
 - [ ] The map screen is accepted as the strongest on-brand screen.
-- [ ] The composition/oracle gaps above are accepted as non-claims, or a
-      restyle is requested.
+- [ ] Restyle pass 1 (orange band, mint dossier, steel shell/footer, GPUI modal
+      scrim) moves the result far enough toward the reference to accept the
+      remaining composition non-claims, or a second restyle is requested.
 - [ ] The bounded claim (not full/pixel parity; 1× 1280 × 800; pinned macOS
       host; eight states; no a11y/usability claim) is the intended claim.
 - [ ] The Unity “ledgered migration started” wording is acceptable.
 
-Reviewer: ____________________  Date: ____________  Decision: ____________
+Reviewer: ____________________  Date: ____________  Decision: ____________ (first review recorded 2026-11-01: restyle required)
 
 Notes:

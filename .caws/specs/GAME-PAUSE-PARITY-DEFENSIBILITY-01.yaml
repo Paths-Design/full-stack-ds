@@ -3,7 +3,7 @@ title: 'Pause-menu parity defensibility: goldens, oracle, consumption gates and 
 mode: feature
 lifecycle_state: active
 created_at: '2026-11-01T06:52:37.699Z'
-updated_at: '2026-11-01T07:34:29.575Z'
+updated_at: '2026-11-01T08:23:12.307Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
@@ -18,6 +18,8 @@ scope:
     - 'packages/ds-unity'
     - 'examples/README.md'
     - 'docs/architecture/unity-target.md'
+    - packages/ds-tokens/src/brands/orion.tokens.json
+    - packages/ds-tokens/generated
   out: []
   support:
     - docs/specifications/governed-ci.md

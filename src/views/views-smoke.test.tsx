@@ -40,7 +40,9 @@ describe("showcase views — render smoke", () => {
     expect(document.body.textContent).not.toContain("no component package yet");
     const gpui = bundle.census?.targets.find(t => t.id === "gpui");
     expect(gpui?.componentsShipped).toBe(targetRegistry.targets.find(t => t.id === "gpui")?.components?.length);
-    expect(gpui?.sourceCoverage).toBe("partial");
+    // GPUI now emits the whole corpus (bounded anatomy projection), so its
+    // source coverage is full while it remains outside the admission rail.
+    expect(gpui?.sourceCoverage).toBe("full");
     expect(gpui?.railAdmitted).toBe(false);
     expect(bundle.census?.targets.find((t) => t.id === "figma")?.family).toBe("descriptor");
   });

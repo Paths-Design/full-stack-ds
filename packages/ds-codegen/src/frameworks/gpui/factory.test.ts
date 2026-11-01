@@ -74,8 +74,17 @@ describe("GPUI native style and control lowering", () => {
     expect(source).not.toContain("pub fn checked(");
   });
 
-  it.each(["Tabs", "Popover", "Button", "Card", "Progress"])("refuses unsupported %s shapes", name => {
-    expect(() => emitter.emitComponent(buildComponentIR(fixture(name)), options)).toThrow("GPUI_UNSUPPORTED_SHAPE");
+  it.each(["Tabs", "Popover", "Button", "Card", "Progress"])("projects %s through the generic anatomy path with named omissions", name => {
+    const ir = buildComponentIR(fixture(name));
+    // The bounded planner still refuses the shape; the corpus component is
+    // admitted by the anatomy projection instead of failing generation.
+    expect(() => gpuiPlan(ir)).toThrow("GPUI_UNSUPPORTED_SHAPE");
+    const files = emitter.emitComponent(ir, options);
+    const receipt = JSON.parse(files[1]!.contents) as { operation: string; omittedFacts: unknown[]; omittedFactKinds: string[] };
+    expect(files[0]!.contents).toContain(`impl Render for ${name}`);
+    expect(receipt.operation).toBe("generic-anatomy");
+    expect(receipt.omittedFacts.length).toBeGreaterThan(0);
+    expect(receipt.omittedFactKinds.length).toBeGreaterThan(0);
   });
 
   it("refuses event callbacks, extra props, nonboolean defaults and identifier collisions", () => {
@@ -110,7 +119,28 @@ describe("GPUI native style and control lowering", () => {
     expect(target.admittedComponents).toEqual(configured.components);
     expect(target.railFrameworkId).toBeUndefined();
     expect(target.componentsRoot).toBe(path.join(root, "packages/ds-gpui/src/components"));
-    expect(emitter.emitBarrel(["ToggleSwitch", "Switch"])).toBe('#[path = "Switch/Switch.rs"]\nmod switch;\npub use switch::*;\n#[path = "ToggleSwitch/ToggleSwitch.rs"]\nmod toggle_switch;\npub use toggle_switch::*;\n');
+    expect(emitter.emitBarrel(["ToggleSwitch", "Switch"])).toBe(
+      '#[path = "Switch/Switch.rs"]\nmod switch;\npub use switch::*;\n'
+      + '#[path = "ToggleSwitch/ToggleSwitch.rs"]\nmod toggle_switch;\npub use toggle_switch::*;\n'
+      + '#[cfg(test)]\n#[path = "Switch/Switch.test.rs"]\nmod switch_mount;\n'
+      + '#[cfg(test)]\n#[path = "ToggleSwitch/ToggleSwitch.test.rs"]\nmod toggle_switch_mount;\n',
+    );
+  });
+  it('emits an executed mount witness for every admitted component', () => {
+    for (const name of ["Switch", "Dialog", "Select", "Icon", "Markdown"]) {
+      const ir = buildComponentIR(fixture(name));
+      const files = emitter.emitTests(ir, options);
+      expect(files).toHaveLength(1);
+      expect(files[0]!.relativePath).toBe(`${name}/${name}.test.rs`);
+      expect(files[0]!.contents).toContain("#[gpui::test]");
+      expect(files[0]!.contents).toContain("add_window_view");
+      // A witness that never asserts anything cannot fail; every component
+      // either asserts its root reached layout or (content-guarded root) runs
+      // the render and parks.
+      expect(
+        files[0]!.contents.includes("debug_bounds") || files[0]!.contents.includes("run_until_parked"),
+      ).toBe(true);
+    }
   });
   it.each(['Switch','ToggleSwitch','Checkbox','Text','Badge','Divider','Stat'])('emits %s with actual authored styles and mounted setters', name => {
     const ir=buildComponentIR(fixture(name));

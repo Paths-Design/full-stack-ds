@@ -17,9 +17,14 @@ governs:
 
 GPUI is a registered Rust target with a bounded macOS realization. The allowlist
 in [`fsds.targets.json`](../../fsds.targets.json) admits
-<!-- target-component-count:gpui -->7 components: Switch, ToggleSwitch, Checkbox,
-Text, Badge, Divider and Stat. Full-corpus generation selects that allowlist; explicit
-requests for unsupported shapes fail with `GPUI_UNSUPPORTED_*` diagnostics.
+<!-- target-component-count:gpui -->55 components — the whole contract corpus, so
+GPUI coverage matches the Unity admission set. Two planner families serve it: the
+bounded control/static planners admit a narrow set of shapes with strict
+diagnostics, and the generic anatomy projection emits every other shape with a
+capability receipt naming each fact it does not realize. A fact the emitter cannot
+carry is adjudicated in the committed
+[support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json);
+an unadjudicated fact fails the boundary audit. Emission is not realization:
 GPUI has no admission descriptor and remains outside the TypeScript admission rail.
 
 ## Contract and style authority
@@ -49,6 +54,48 @@ Unset overrides use authored fallback values, currently the light appearance.
 There is no automatic system-dark response or loader for the complete brand
 override graph. Generic native font aliases map to macOS fonts; this does not
 establish identical Web font metrics.
+
+## Support boundary and generic anatomy projection
+
+The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json)
+classifies every contract and sidecar leaf the target can see as `lowered`,
+`pending` or `refused`, by pointer FAMILY and never by component identity: identity,
+anatomy structure, token bindings, variant axes and the admitted style vocabulary
+are lowered; DOM bindings/events/attrs, iteration, component references, content
+transforms, glyph rendering, surface behaviour, motion, accessibility, forms and
+cross-component semantics are `pending`; authoring/CSS-only metadata is `refused`.
+The ledger is ordered and terminal, so an unadjudicated family is refused rather
+than silently supported. The [boundary audit](../../packages/ds-codegen/src/frameworks/gpui/boundary.test.ts)
+fails an admitted component that relies on that catch-all, which is what forces an
+explicit disposition when the allowlist or a contract grows.
+
+The [generic anatomy projection](../../packages/ds-codegen/src/frameworks/gpui/anatomy.ts)
+serves every component the bounded planners decline. It lowers the part tree,
+retained content, typed named slots, variant builders, boolean/text value fields
+and the admitted style declarations; everything else is written into that
+component's `capabilities.json` as a named omission carrying the boundary rule and
+its reason. Two rules keep the projection honest:
+
+- A fact the ledger says the target **lowers** cannot be silently dropped. The
+  bounded planners keep their strict value-level diagnostics, so a malformed
+  admitted scalar still fails generation instead of becoming an omission.
+- The receipt, not the ledger, is the per-component truth. A `pending` family that
+  a particular component does not carry is simply absent from its omission list.
+
+What the projection does **not** claim: an interactive, accessible or
+pixel-equivalent realization of the pending families.
+
+The witness boundary is two-tier and stated per tier. **Every** admitted component
+carries a generated mount witness (`<Name>/<Name>.test.rs`, declared behind
+`#[cfg(test)]` by the generated barrel): it constructs the default view with every
+realized boolean set true, renders it in GPUI's test window, and asserts the root
+part reached layout — or, where the contract guards the root on consumer-supplied
+content, that the default view renders without panicking. That proves the
+component mounts and renders; it does not prove interaction, styling correctness or
+pixels. The **seven** bounded control/static components additionally carry the
+hand-written interaction witnesses (owner requests, focus, disabled suppression,
+variants, retained content, slots). The other 48 are mount-witnessed only, with
+their unrealized semantics named in the receipt.
 
 ## Input and owner updates
 
@@ -157,9 +204,13 @@ The [native check script](../../scripts/gpui-pilot.mjs) runs
 Its `fsds.gpui-native-checks.v2` receipt records command logs, toolchain/platform,
 revision, resolved renderer sources/features, required named engine tests and
 source hashes before/after execution.
-Changed inputs or missing required engine witnesses fail the lane. Receipts live
-under ignored `tmp/gpui-pilot/<timestamp>/`; their hashes do not confer the
-admission rail's four-rung binding.
+Changed inputs or missing required engine witnesses fail the lane. The lane also
+enforces the [mount-witness ratchet](../../scripts/gpui-pilot.mjs): for every
+allowlisted component it requires the generated `<Name>/<Name>.test.rs` and its
+executed `components::<module>_mount::mounts` test, so an allowlist change without a
+witness (or a swallowed witness) fails the run. Receipts live under ignored
+`tmp/gpui-pilot/<timestamp>/`; their hashes do not confer the admission rail's
+four-rung binding.
 
 [Mounted tests](../../packages/ds-gpui/tests/native_runtime.rs) dispatch pointer
 and keyboard events through GPUI's test engine and inspect generated entities,

@@ -46,7 +46,7 @@ namespace GamePauseMenu
             Ui.StripBox(Root);
             Root.style.width = (float)Layout.ViewportWidth;
             Root.style.height = (float)Layout.ViewportHeight;
-            Root.style.backgroundColor = Layout.Color("ink");
+            Root.style.backgroundColor = Layout.Color("ruleStrong");
             Root.style.overflow = Overflow.Hidden;
 
             Header = new HeaderBand(fixtures, Layout, Palette);

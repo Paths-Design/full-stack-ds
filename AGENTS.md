@@ -377,8 +377,11 @@ When reasoning or writing docs/comments, do not over-claim:
 ### GPUI native target
 
 `packages/ds-gpui` is a Cargo package excluded from pnpm workspace discovery.
-`pnpm run generate:gpui` emits its registry <!-- target-component-count:gpui -->7-component
-allowlist: Switch, ToggleSwitch, Checkbox, Text, Badge, Divider and Stat.
+`pnpm run generate:gpui` emits its registry <!-- target-component-count:gpui -->55-component
+allowlist — the whole corpus, matching Unity. A bounded control/static planner keeps
+strict shapes; the generic anatomy projection emits the rest with a capability
+receipt naming each fact the target cannot realize, adjudicated by the committed
+`packages/ds-codegen/src/frameworks/gpui/support-boundary.json` ledger.
 `pnpm run test:gpui` runs GPUI 0.2.2 compilation and mounted engine input/layout/style
 tests; the native lane pins Zed revision `a38fc8c` and Rust 1.94.1 on macOS with Xcode/Metal.
 `pnpm run dev:gpui` builds and opens a fresh native gallery app. Normalized IR

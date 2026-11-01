@@ -90,7 +90,7 @@ used directly and only y is offset.
 | Region | Geometry (JSON) | Realization |
 |---|---|---|
 | Header band | `0,0,1280,104`; wordmark at 32,18 (40 px); mission at 32,72; stats at x=608/800/992; PAUSED chip `1184,40,64,24` | native band chrome; wordmark/stats native labels; PAUSED = generated **Badge** |
-| Tab bar | `0,104,1280,56`; four `320`-wide tabs at x=0/320/640/960; labels left-aligned with a `32` px inset (`labelAlign=left` / `labelInset=32`); active `signal` fill + `onSignal` text; inactive `textSecondary`; 1 px `rule` separators | generated **Tabs** (`add_item` content slots) with per-trigger geometry/style overrides |
+| Tab bar | `0,104,1280,56`; four `320`-wide tabs at x=0/320/640/960; labels left-aligned with a `32` px inset (`labelAlign=left` / `labelInset=32`); signal-orange tab band (`signal`); active `signalDeep` fill + `boneBright` text; inactive `onSignal`; 1 px `signalDeep` separators | generated **Tabs** (`add_item` content slots) with per-trigger geometry/style overrides |
 | Content region | `24,176,1232,552` (tab body 1280×552) | generated Tabs body panel |
 | Footer band | `0,744,1280,56`; hints at `24,770`; NAV TARGET label at `1096,758`, target value right-aligned to `x=1256`, baseline `y=770`, 13 px/700 `signal`; every capture state carries `navTarget=cache-02` | native band chrome + labels |
 | MAP | map panel `24,176,872,552`; field `40,232,840,480` (sage, 60 px grid, 12 px ticks, 24 px markers); icon panel `912,176,344,552`; 8 rows at `firstY=224,rowH=48`, switch `x=1176,y=row+8`; popover `392,272,360,232` | panel chrome/plot/markers native; 8 generated **Switch**; parity 16×16 code-tile row art (IN/PL/HO/BL/AL/CD/CR/US); top-left/title native labels |

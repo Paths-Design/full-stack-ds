@@ -111,7 +111,7 @@ func _apply_initial_state() -> void:
 
 func _build_shell() -> void:
 	var background := ColorRect.new()
-	background.color = orion.color("ink")
+	background.color = orion.color("ruleStrong")
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(background)
@@ -293,7 +293,7 @@ func _build_footer() -> Control:
 	var band := Control.new()
 	band.name = "FooterBand"
 	UI.place_rect(band, rect)
-	var ground := UI.rect_node("ink")
+	var ground := UI.rect_node("ruleStrong")
 	ground.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	band.add_child(ground)
 	var rule_top := UI.rect_node(str(footer_data.get("ruleTop", "rule")))
@@ -301,13 +301,13 @@ func _build_footer() -> Control:
 	band.add_child(rule_top)
 
 	var hints_data: Dictionary = footer_data["hints"]
-	var hints := UI.label(str(hints_data["text"]), orion.type_size("footer"), 400, "muted", 0.0)
+	var hints := UI.label(str(hints_data["text"]), orion.type_size("footer"), 400, "textSecondary", 0.0)
 	UI.place(hints, float(hints_data["x"]), float(hints_data["y"]) - rect.position.y, 820, 16)
 	band.add_child(hints)
 
 	var nav_data: Dictionary = footer_data["navTarget"]
 	var value_right := float(nav_data["valueRight"])
-	var nav_label := UI.micro(str(nav_data["label"]), "muted")
+	var nav_label := UI.micro(str(nav_data["label"]), "textSecondary")
 	nav_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	UI.place(nav_label, float(nav_data["labelX"]), float(nav_data["labelY"]) - 1.0 - rect.position.y, 160, 14)
 	band.add_child(nav_label)
@@ -324,7 +324,7 @@ func _update_nav_target_footer() -> void:
 	var nav_data: Dictionary = parity.footer["navTarget"]
 	if nav_target.is_empty():
 		nav_target_label.text = str(nav_data["empty"])
-		nav_target_label.add_theme_color_override("font_color", orion.color("muted"))
+		nav_target_label.add_theme_color_override("font_color", orion.color("textSecondary"))
 		return
 	var icon := fixtures.icon_by_id(nav_target)
 	nav_target_label.text = str(icon.get("label", ""))
