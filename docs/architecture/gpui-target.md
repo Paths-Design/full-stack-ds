@@ -212,6 +212,12 @@ witness (or a swallowed witness) fails the run. Receipts live under ignored
 `tmp/gpui-pilot/<timestamp>/`; their hashes do not confer the admission rail's
 four-rung binding.
 
+`pnpm run audit:gpui-web-consistency` measures this target against the
+React/Vue/Svelte realizations of the same contracts and ratchets the result: no
+component may lose a realized anatomy part, prop, behavior channel or
+accessibility fact against the committed baseline. The measurement, its current
+matrix and its limits are in [GPUI ↔ web consistency](gpui-web-consistency.md).
+
 [Mounted tests](../../packages/ds-gpui/tests/native_runtime.rs) dispatch pointer
 and keyboard events through GPUI's test engine and inspect generated entities,
 styles and layout. They cover owner refusal/acceptance, disabled suppression,
