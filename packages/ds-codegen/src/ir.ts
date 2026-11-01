@@ -3852,6 +3852,17 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
         `\`cssVariableBindings\`.`,
     );
   }
+  const disabledActivation: DomNodeIR["disabledActivation"] = !componentRef && node.tag === "a" && (bindings["aria-disabled"] || node.attrs?.["aria-disabled"] !== undefined)
+    ? { disabled: bindings["aria-disabled"] ?? { kind: "literal", value: node.attrs!["aria-disabled"] } }
+    : undefined;
+  let attrs = node.attrs ?? {};
+  if (disabledActivation && attrs.href !== undefined) {
+    // Static and dynamic destinations share the same omission law. Keep the
+    // contract immutable and prefer an explicitly authored dynamic binding.
+    bindings.href ??= { kind: "literal", value: attrs.href };
+    attrs = { ...attrs };
+    delete attrs.href;
+  }
   return {
     // A componentRef node carries its component name on `componentRef` and a
     // normalized empty `tag`; emitters discriminate on `componentRef !==
@@ -3862,11 +3873,9 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
     // each framework emitter can render the matching named-slot idiom.
     slotName: node.tag === "slot" ? node.name : undefined,
     part: node.part,
-    attrs: node.attrs ?? {},
+    attrs,
     bindings,
-    disabledActivation: !componentRef && node.tag === "a" && (bindings["aria-disabled"] || node.attrs?.["aria-disabled"] !== undefined)
-      ? { disabled: bindings["aria-disabled"] ?? { kind: "literal", value: node.attrs!["aria-disabled"] } }
-      : undefined,
+    disabledActivation,
     propertyBindings,
     events,
     content,

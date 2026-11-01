@@ -9,7 +9,7 @@ import { generateSvelteComponentSource } from "./frameworks/svelte/component-sou
 import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
 import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
 
-function fixture(tag = "a", callback = true): ComponentContract {
+function fixture(tag = "a", callback = true, staticHref?: string): ComponentContract {
   const contract = JSON.parse(readFileSync(resolve(__dirname, "../../ds-contracts/components/Links/Links.contract.json"), "utf8"));
   contract.name = "RouteProbe";
   const rename: Record<string, string> = { disabled: "unavailable", href: "destination", onClick: "onNavigate" };
@@ -19,6 +19,10 @@ function fixture(tag = "a", callback = true): ComponentContract {
   contract.anatomy.dom.bindings.href = "prop:destination";
   contract.anatomy.dom.bindings["aria-disabled"] = "prop:unavailable";
   contract.anatomy.dom.events = callback ? { click: "prop:onNavigate" } : {};
+  if (staticHref !== undefined) {
+    contract.anatomy.dom.attrs.href = staticHref;
+    delete contract.anatomy.dom.bindings.href;
+  }
   return contract;
 }
 
@@ -36,6 +40,14 @@ describe("disabled anchor host facts", () => {
     const anatomy = contract.anatomy as { dom: { bindings: Record<string, string> } };
     delete anatomy.dom.bindings["aria-disabled"];
     expect(buildComponentIR(contract).dom?.disabledActivation).toBeUndefined();
+  });
+  it("normalizes a static destination without mutating its contract source", () => {
+    const contract = fixture("a", true, "https://example.test/docs");
+    const ir = buildComponentIR(contract);
+    expect(ir.dom?.attrs.href).toBeUndefined();
+    expect(ir.dom?.bindings.href).toEqual({ kind: "literal", value: "https://example.test/docs" });
+    const anatomy = contract.anatomy as { dom: { attrs: Record<string, string> } };
+    expect(anatomy.dom.attrs.href).toBe("https://example.test/docs");
   });
   it.each([
     ["React", (ir: ComponentIR) => generateReactComponentSource(ir, "../../primitives/stack"), "unavailable", "undefined", "onNavigate"],
@@ -57,5 +69,7 @@ describe("disabled anchor host facts", () => {
     const withoutCallback = generate(buildComponentIR(fixture("a", false)));
     expect(withoutCallback).toContain("canActivateInteraction");
     expect(withoutCallback).not.toContain(`(${callback})?.(`);
+    const staticDestination = generate(buildComponentIR(fixture("a", true, "https://example.test/docs")));
+    expect(staticDestination).toContain(`isActivationDisabled(${disabled}) ? ${missing} :`);
   });
 });

@@ -1213,7 +1213,7 @@ function generateCompoundPartComponent(
     `  selector: "fsds-${selector}",`,
     `  standalone: true,`,
     `  imports: [NgClass, StackComponent],`,
-    `  template: \`${template}\`,`,
+    `  template: \`${escapeAngularTemplateLiteral(template)}\`,`,
     `  changeDetection: ChangeDetectionStrategy.OnPush,`,
     `})`,
     `export class ${className} {`,
@@ -1280,7 +1280,7 @@ function generateComponent(ir: ComponentIR): string {
     `  standalone: true,`,
     `  imports: [NgClass, StackComponent],`,
     `  host: { "data-fsds-component": "${ir.cssPrefix}" },`,
-    `  template: \`${template}\`,`,
+    `  template: \`${escapeAngularTemplateLiteral(template)}\`,`,
     `  changeDetection: ChangeDetectionStrategy.OnPush,`,
     `})`,
     `export class ${className} {`,
@@ -1956,7 +1956,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`  providers: [FieldAssociationService],`);
   }
   lines.push(`  host: { "data-fsds-component": "${ir.cssPrefix}" },`);
-  lines.push(`  template: \`${template}\`,`);
+  lines.push(`  template: \`${escapeAngularTemplateLiteral(template)}\`,`);
   lines.push(`  changeDetection: ChangeDetectionStrategy.OnPush,`);
   lines.push(`})`);
   // When the dom tree has a children guard, the class implements AfterContentInit
@@ -3555,13 +3555,11 @@ function defaultAwareAngularTemplatePropAccessor(
  * verbatim prematurely closes that attribute (confirmed via a runtime
  * probe: OTP's `[attr.aria-label]="(label ?? "One-time password")"`
  * broke the Angular JIT compiler with "Opening tag not terminated").
- * This is the exact defect class `renderAngularBindingValue`'s `literal`
- * case already works around (DOM-PROPERTY-REFLECTION-IR-CHECKBOX-
- * INDETERMINATE-01) — swap every `"` for `'`. JSON strings never contain
+ * This default-expression path swaps every `"` for `'`. JSON strings never contain
  * a raw (unescaped) `"` internally, so this is a safe 1:1 substitution
  * for the string/array shapes `defaultExpr` can take; boolean/number
- * defaultExprs contain no quotes and pass through unchanged. Known limit
- * (shared with the `literal` case): a default value containing an
+ * defaultExprs contain no quotes and pass through unchanged. Known limit:
+ * a default value containing an
  * apostrophe would still break — no corpus default does today.
  */
 function angularTemplateSafeDefaultExpr(defaultExpr: string): string {
@@ -3790,20 +3788,7 @@ function renderAngularBindingValue(
     case "prop":
       return appendPath(angularPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
-      // Single-quoted, not JSON.stringify's double-quoted form: this
-      // result gets spliced into `[attr]="..."` (conditional/predicate/
-      // style callers), a "-delimited Angular template attribute. A
-      // double-quoted literal would prematurely close that attribute for
-      // Angular's template lexer, which reads attribute values with an
-      // HTML-attribute tokenizer BEFORE parsing the expression inside —
-      // confirmed via a runtime probe on Checkbox's aria-checked
-      // conditional (the first literal-string operand used in attribute
-      // position): the "false"-branch silently evaluated wrong because
-      // `&quot;` inside the parsed expression is literal entity text, not
-      // a quote character (DOM-PROPERTY-REFLECTION-IR-CHECKBOX-
-      // INDETERMINATE-01). Single quotes have no such collision in any
-      // of this function's call sites.
-      return `'${expr.value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
+      return angularExpressionString(expr.value);
     case "message":
       // `fsdsMessages` is a computed signal member; `formatFsdsMessage` is
       // exposed on the class when any message takes params.
@@ -3970,7 +3955,25 @@ function mapJsxEventToAngular(attr: string): string {
 }
 
 function escapeAngularAttr(s: string): string {
-  return s.replace(/"/g, "&quot;");
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+/** Keep expression literals intact through Angular's HTML attribute lexer. */
+function angularExpressionString(s: string): string {
+  return `'${s
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/"/g, "\\u0022")
+    .replace(/&/g, "\\u0026")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/\r/g, "\\r")
+    .replace(/\n/g, "\\n")}'`;
+}
+
+/** Decorator template text must survive TypeScript template-literal cooking. */
+function escapeAngularTemplateLiteral(s: string): string {
+  return s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
 }
 
 function formatAngularAttrs(attrs: string[]): string {

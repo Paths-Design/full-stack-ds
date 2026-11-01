@@ -2869,13 +2869,19 @@ function formatVueAttrs(attrs: string[]): string {
 }
 
 function escapeAttrString(s: string): string {
-  return s.replace(/"/g, "&quot;");
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 }
 
 function singleQuotedJsString(s: string): string {
   return `'${s
     .replace(/\\/g, "\\\\")
     .replace(/'/g, "\\'")
+    // The expression is nested in a double-delimited HTML attribute. JS
+    // escapes preserve the value without exposing quotes or entities to HTML.
+    .replace(/"/g, "\\u0022")
+    .replace(/&/g, "\\u0026")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
     .replace(/\r/g, "\\r")
     .replace(/\n/g, "\\n")}'`;
 }

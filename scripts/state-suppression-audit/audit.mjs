@@ -9,10 +9,10 @@
  *                     "suppresses": { "categories": ["interaction"] } }
  *
  * That is a claim about rendered behaviour: while disabled, no interaction-state
- * styling applies. The generated CSS honours it only if every property set under
- * an interaction pseudo is either (a) also set in the suppressing state's block,
- * so the later, equal-specificity rule wins it back, or (b) guarded so the
- * interaction selector cannot match a suppressed element at all.
+ * styling applies. This static rail credits selector guards or a bounded
+ * exact-root reset proof: a later declaration of sufficient importance in the
+ * same cascade layer, under conditions no stronger than the source rule's.
+ * This is not value validation or a general CSS cascade/visual proof.
  *
  * WHY THIS NEEDS ITS OWN RAIL. The pseudo-state audit asks "is `disabled`
  * realized at all?" — for Button the answer is yes, a `:disabled` block exists,
@@ -43,10 +43,15 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 import { diffLedger, loadLedger, reportRatchet } from "../lib/ledger-ratchet.mjs";
 import { DERIVABLE_STATE_TO_PSEUDO } from "../pseudo-state-audit/audit.mjs";
 import { getCssPrefix } from "../../packages/ds-codegen/dist/contract.js";
+
+// Use the codegen workspace's declared, pinned PostCSS dependency, also used
+// by its css-token-consumption source utility. No root transitive resolution.
+const postcss = createRequire(new URL("../../packages/ds-codegen/package.json", import.meta.url))("postcss");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
@@ -117,41 +122,71 @@ export function suppressionLeakId(row) {
 }
 
 /**
- * Properties declared directly inside blocks introduced by `selector`.
- *
- * Brace-matched rather than regex-sliced so a nested block (a media query, a
- * `:has()` inside the state block) doesn't truncate the scan at the first `}`.
+ * Parse declarations without interpreting punctuation inside quoted values.
+ * Keep conditional/layer ancestry and declaration priority for bounded reset
+ * proof. PostCSS parses syntax; it does not validate property values.
  */
-function cssRules(css, parents = [], rules = [], inherited = false) {
-  const text = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  let statement = "";
-  const own = { selectors: parents, properties: new Set(), order: rules.length, inherited };
-  if (parents.length) rules.push(own);
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i];
-    if (char === ";") {
-      const declaration = statement.trim().match(/^([a-z-]+)\s*:/);
-      if (declaration) own.properties.add(declaration[1]);
-      statement = "";
-    } else if (char === "{") {
-      const header = statement.trim();
-      statement = "";
-      const start = i + 1;
-      let depth = 1;
-      while (depth && ++i < text.length) {
-        if (text[i] === "{") depth += 1;
-        if (text[i] === "}") depth -= 1;
-      }
-      const selectors = header.startsWith("@") ? parents : header.split(/,(?![^()]*\))/).flatMap((part) => {
-        const selector = part.trim();
-        return parents.length ? parents.map((parent) => selector.includes("&") ? selector.replaceAll("&", parent) : `${parent} ${selector}`) : [selector];
+function cssRules(css, rootSelector) {
+  const rules = [];
+  const conditional = new Set(["media", "supports", "container"]);
+  let contextIdentity = 0;
+  function visit(container, parents = [], context = { conditions: [], layers: [], barriers: [] }, nesting = [], inherited = false, parentRuleSelectors) {
+    const enclosingRule = container.type === "rule" ? container.selectors : parentRuleSelectors;
+    const declarations = new Map();
+    for (const node of container.nodes ?? []) {
+      if (node.type !== "decl") continue;
+      const property = node.prop.startsWith("--") ? node.prop : node.prop.toLowerCase();
+      const declaration = { important: Boolean(node.important), order: node.source.start.offset, value: node.value };
+      const previous = declarations.get(property);
+      if (!previous || declaration.important || !previous.important) declarations.set(property, declaration);
+    }
+    if (parents.length && declarations.size) {
+      rules.push({
+        selectors: parents, declarations, properties: new Set(declarations.keys()), context, inherited,
+        // Native nesting takes the maximum parent-list specificity. Only a
+        // singleton root class (or identity &) has the simple proof we need.
+        nestingSafe: nesting.every((selectors) => selectors.length === 1 && (selectors[0] === rootSelector || selectors[0] === "&")),
       });
-      cssRules(text.slice(start, i), selectors, rules, header.startsWith("@"));
-    } else statement += char;
+    }
+    for (const node of container.nodes ?? []) {
+      if (node.type === "rule") {
+        const selectors = node.selectors.flatMap((selector) => parents.length
+          ? parents.map((parent) => selector.includes("&") ? selector.replaceAll("&", parent) : `${parent} ${selector}`)
+          : [selector]);
+        visit(node, selectors, context, enclosingRule ? [...nesting, enclosingRule] : nesting);
+      } else if (node.type === "atrule" && node.nodes) {
+        const name = node.name.toLowerCase();
+        const identity = `${name}:${node.params.trim()}`;
+        const next = {
+          conditions: conditional.has(name) ? [...context.conditions, identity] : context.conditions,
+          layers: name === "layer" ? [...context.layers, node.params.trim() || `anonymous:${contextIdentity++}`] : context.layers,
+          // Unknown conditional/scoping mechanisms require the very same
+          // enclosing block. We do not infer their applicability from text.
+          barriers: !conditional.has(name) && name !== "layer" ? [...context.barriers, contextIdentity++] : context.barriers,
+        };
+        visit(node, parents, next, nesting, true, enclosingRule);
+      }
+    }
   }
-  const declaration = statement.trim().match(/^([a-z-]+)\s*:/);
-  if (declaration) own.properties.add(declaration[1]);
+  visit(postcss.parse(css));
   return rules;
+}
+
+/** Sufficient reset proof, deliberately smaller than the CSS cascade:
+ * exact-root selectors have equal specificity; reset conditions must be a
+ * subset of the source's; layer/barrier ancestry must match; the effective
+ * reset declaration must be at least as important and occur later. We do not
+ * infer query implication, layer precedence, arbitrary nesting specificity,
+ * shorthand expansion, value validity, or adequacy of the reset value.
+ */
+function resetDischarges(source, reset, property) {
+  if (!source.nestingSafe || !reset.nestingSafe) return false;
+  const same = (left, right) => left.length === right.length && left.every((entry, index) => entry === right[index]);
+  if (!same(source.context.layers, reset.context.layers) || !same(source.context.barriers, reset.context.barriers)) return false;
+  if (!reset.context.conditions.every((condition) => source.context.conditions.includes(condition))) return false;
+  const from = source.declarations.get(property);
+  const to = reset.declarations.get(property);
+  return to && to.value.trim() !== "" && (!from.important || to.important) && to.order > from.order;
 }
 
 const withoutGuards = (selector) => selector.replace(/:not\([^()]*\)/g, "");
@@ -197,7 +232,7 @@ export function auditComponentCss(component, contract, css) {
   const rootAttrs = contract?.anatomy?.dom?.attrs ?? {};
   const hasTabIndex = "tabindex" in rootAttrs || "tabIndex" in rootAttrs;
   const root = `.${getCssPrefix(contract)}`;
-  const rules = cssRules(css);
+  const rules = cssRules(css, root);
   let guarded = true;
   const suppressedProps = new Set();
   const leaks = [];
@@ -245,7 +280,7 @@ export function auditComponentCss(component, contract, css) {
         guarded = false;
         for (const property of rule.properties) {
           const rootState = selector === `${root}${pseudo}`;
-          if (rootState && resets.some((reset) => reset.order > rule.order && reset.properties.has(property))) continue;
+          if (rootState && resets.some((reset) => resetDischarges(rule, reset, property))) continue;
           const leak = { component, dimension: source, pseudo, property, rootTag: rootTag ?? "unknown", reachability: leakReachability(pseudo, rootTag, hasTabIndex) };
           if (!leaks.some((row) => suppressionLeakId(row) === suppressionLeakId(leak))) leaks.push(leak);
         }
@@ -298,7 +333,9 @@ if (RUN_DIRECTLY) {
   const md = [
     "# State-suppression matrix",
     "",
-    "`RAIL-STATE-SUPPRESSION-01` — read-only. A contract that declares `suppresses.categories: [\"interaction\"]` claims that no interaction-state styling applies while suppressed. The CSS honours it only if every property set under an interaction pseudo is also set in the suppressing block (winning it back at equal specificity) or the interaction selector is guarded against the suppressed state.",
+    "`RAIL-STATE-SUPPRESSION-01` — read-only. Declared category/name suppression is checked per state-bearing selector. An exact-root reset receives credit only when its effective declaration occurs later, has sufficient importance, shares the source's layer/scoping ancestry, and has conditions no stronger than the source's. Selector guards and bound native-source exclusions are checked separately.",
+    "",
+    "**Reset proof boundary.** This static rail assumes browser-valid declaration values. It does not establish reset-value adequacy, arbitrary selector/cascade equivalence, query implication, cross-layer precedence, shorthand effects, or arbitrary nesting specificity. Unsupported reset relationships remain obligations rather than receiving inferred credit.",
     "",
     "Independent of the pseudo-state rail: a dimension can be **realized** (a `:disabled` block exists) and its suppression contract **violated** at the same time, which is why this is its own axis.",
     "",

@@ -173,6 +173,43 @@ check("category and name obligations form a union without suppressing other dime
   assert.deepEqual(leaked('.x:hover { color: red; } .x:checked { border-color: blue; } .x:focus-visible { outline-color: black; }', contract), [":hover color", ":checked border-color"]);
 });
 
+check("an unavailable media reset cannot discharge an unconditional hover obligation", () => {
+  assert.deepEqual(leaked('.x:hover { color: red; } @media (min-width:99999px) { .x[aria-disabled="true"] { color: grey; } }'), [":hover color"]);
+});
+check("supports and nested conditional resets cannot discharge broader source rules", () => {
+  assert.deepEqual(leaked('.x:hover { color: red; } @supports (made-up: value) { .x[aria-disabled="true"] { color: grey; } }'), [":hover color"]);
+  assert.deepEqual(leaked('@media screen { .x:hover { color: red; } @supports (made-up: value) { .x[aria-disabled="true"] { color: grey; } } }'), [":hover color"]);
+  assert.deepEqual(leaked('.x { &:hover { color: red; } @media (min-width:99999px) { &[aria-disabled="true"] { color: grey; } } }'), [":hover color"]);
+});
+check("same conditional contexts and later unconditional resets remain valid controls", () => {
+  assert.deepEqual(leaked('@media screen { .x:hover { color: red; } .x[aria-disabled="true"] { color: grey; } }'), []);
+  assert.deepEqual(leaked('.x { @media screen { &:hover { color: red; } &[aria-disabled="true"] { color: grey; } } }'), []);
+  assert.deepEqual(leaked('@supports (display:grid) { @media screen { .x:hover { color: red; } } .x[aria-disabled="true"] { color: grey; } }'), []);
+  assert.deepEqual(leaked('@media screen { .x:hover { color: red; } } .x[aria-disabled="true"] { color: grey; }'), []);
+});
+check("cascade layers cannot be treated as later equal-specificity rules", () => {
+  assert.deepEqual(leaked('.x:hover { color: red; } @layer lower { .x[aria-disabled="true"] { color: grey; } }'), [":hover color"]);
+  assert.deepEqual(leaked('@layer first { .x:hover { color: red; } } @layer second { .x[aria-disabled="true"] { color: grey; } }'), [":hover color"]);
+  assert.deepEqual(leaked('@layer same { .x:hover { color: red; } } @layer same { .x[aria-disabled="true"] { color: grey; } }'), []);
+  assert.deepEqual(leaked('@layer { .x:hover { color: red; } } @layer { .x[aria-disabled="true"] { color: grey; } }'), [":hover color"]);
+});
+check("declaration priority is part of reset proof", () => {
+  assert.deepEqual(leaked('.x:hover { color: red !important; } .x[aria-disabled="true"] { color: grey; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x:hover { color: red !important; color: blue; } .x[aria-disabled="true"] { color: grey; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x:hover { color: red !important; } .x[aria-disabled="true"] { color: grey !important; }'), []);
+  assert.deepEqual(leaked('.x:hover { color: red; } .x[aria-disabled="true"] { color: grey !important; color: blue; }'), []);
+});
+check("quoted CSS punctuation cannot manufacture or hide reset declarations", () => {
+  assert.deepEqual(leaked('.x:hover { color: red; } .x[aria-disabled="true"] { content: "; color: grey;"; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x:hover { color: red; } .x[aria-disabled="true"] { content: "}"; color: grey; }'), []);
+  assert.deepEqual([...propertiesUnder('.x:hover { content: "{ fake-property: value; }"; color: red; }', ":hover")].sort(), ["color", "content"]);
+});
+check("unsupported nesting specificity and scope ancestry cannot supply reset proof", () => {
+  assert.deepEqual(leaked('.x, #other { &:hover { color: red; } } .x[aria-disabled="true"] { color: grey; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x, #other { @media screen { &:hover { color: red; } } } .x[aria-disabled="true"] { color: grey; }'), [":hover color"]);
+  assert.deepEqual(leaked('.x:hover { color: red; } @scope (.host) { .x[aria-disabled="true"] { color: grey; } }'), [":hover color"]);
+});
+
 if (failures > 0) {
   console.error(`\nstate-suppression probe FAILED (${failures})`);
   process.exit(1);
