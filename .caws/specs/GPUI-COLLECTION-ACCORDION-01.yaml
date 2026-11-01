@@ -1,0 +1,46 @@
+id: GPUI-COLLECTION-ACCORDION-01
+title: 'GPUI accordion collection state: open value and trigger toggle'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T12:06:12.961Z'
+updated_at: '2026-11-01T12:06:12.961Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI accordion: string value channel, trigger method activation, gated panel, witness'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only string-valued disclosure channels with a click trigger are admitted; other collection channels keep the anatomy fallback'
+  - 'Components without such a channel regenerate byte-identically'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract with a string openness channel and a trigger part; when generate --target=gpui runs; then the component exposes controlled open value, a trigger toggle on pointer and keyboard, and a panel gated on open'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when an Accordion is clicked and keyed; then its panel appears only while open and the value setter drives it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-collection-accordion'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
