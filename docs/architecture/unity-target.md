@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 7bf12de424cfc708c4768707a8c87ceb2f3322d0
+verified_at_commit: 11280f1a0dc1f005edad3605043001aa4b2b63d2
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -48,7 +48,7 @@ The package stylesheet `packages/ds-unity/Runtime/Resources/FullStackDS/Controls
 
 The sheet has two sections. The token section uses `resolved.tokens.json` to identify graph tokens and the built `tokens.css` to preserve source definitions and alias edges. [`token-sources.ts`](../../packages/ds-codegen/src/frameworks/unity/token-sources.ts) reads the token generator's core, semantic, explicit theme and brand scope grammar; unexpected selectors, layer order, missing explicit-light guards and divergent media/component duplicates fail generation. Resolution follows base, theme, default-brand and explicit-brand precedence on one explicitly themed root. Default-brand declarations apply without a brand class, matching `Theme.Attach` and `Theme.SetBrand`; an explicit brand's light declarations beat default-brand dark declarations, and explicit dark declarations beat that brand's light ones. This projection does not model density selection or arbitrary Web descendant inheritance.
 
-`.fsds-theme` declares consumed graph tokens and supported default-brand variables; dark and named-brand scopes restate changed values, including transitive aliases. The graph closure includes IR `resolvesTo` references and graph variables read by emitted literal declarations. Brand-only scalar roles are also available as a consumer override channel. Missing references may use a supported fallback; present unsupported values, malformed aliases and cycles produce exact source/value entries in `Controls.unsupported.json`. They do not escape as raw unresolved `var()` declarations. Brand design-slot overrides remain explicit exclusions.
+`.fsds-theme` declares consumed graph tokens and supported default-brand variables; dark and named-brand scopes restate changed values, including transitive aliases. The graph closure includes IR `resolvesTo` references and graph variables read by emitted literal declarations. Brand-only scalar roles are also available as a consumer override channel. Missing references may use a supported fallback; present unsupported values, malformed aliases and cycles produce exact source/value entries in `Controls.unsupported.json`. They do not escape as raw unresolved `var()` declarations. Omitting a refused override can leave a base value inherited in USS; that is partial support, not realization of that override. Composite declarations that require the unavailable source scalar remain refused. Brand design-slot overrides remain explicit exclusions.
 
 The component section lowers `ir.nativeStyleRules`, the same framework-neutral style facts the GPUI target reads, into one USS rule per part, variant, state and pseudo predicate. State predicates land on the runtime's state classes (`is-checked`, `is-disabled`, `is-hover`, `is-active`, `is-focus`) at the host the behavior sets them on; variant predicates land on the `<prefix>--<value>` recipe classes; floating content restates its component scope because it leaves the component's subtree; a composed-content host repeats its owner's container facts so composed children lay out as the contract describes.
 
