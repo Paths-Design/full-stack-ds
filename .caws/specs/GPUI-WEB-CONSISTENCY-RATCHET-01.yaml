@@ -56,3 +56,11 @@ evidence:
     recorded_at: "2026-11-01T10:24:15.436Z"
     artifact_path: packages/ds-gpui/web-consistency-baseline.json
     commit_sha: "8215ab6ad"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "--check fails on any per-component loss of a realized fact on GPUI or a web target, on a corpus component missing from the baseline, and on a baseline entry naming a removed component, naming the component and dimension; improvements are reported as 'ratchet can be tightened' rather than failing"
+    recorded_at: "2026-11-01T10:24:17.872Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: scripts/gpui-web-consistency-audit.mjs
+    commit_sha: "8215ab6ad"
