@@ -136,7 +136,7 @@
       "w": 1280,
       "h": 56
     },
-    "background": "charcoal",
+    "background": "signal",
     "ruleBottom": "rule",
     "tabs": [
       {
@@ -164,10 +164,10 @@
         "label": "SETTINGS"
       }
     ],
-    "activeBackground": "signal",
-    "activeText": "onSignal",
-    "inactiveText": "textSecondary",
-    "separator": "rule",
+    "activeBackground": "signalDeep",
+    "activeText": "boneBright",
+    "inactiveText": "onSignal",
+    "separator": "signalDeep",
     "labelAlign": "left",
     "labelInset": 32
   },
@@ -192,7 +192,10 @@
       "valueY": 770,
       "empty": "\u2014",
       "align": "right"
-    }
+    },
+    "background": "ruleStrong",
+    "hintsColor": "textSecondary",
+    "navLabelColor": "textSecondary"
   },
   "panels": {
     "content": {
@@ -305,7 +308,7 @@
         "w": 560,
         "h": 552
       },
-      "background": "paper",
+      "background": "sage",
       "text": "ink",
       "padding": 24,
       "headerY": 200,
@@ -690,7 +693,7 @@
       {
         "state": "map",
         "id": "tab-active",
-        "color": "onSignal",
+        "color": "boneBright",
         "x": 30,
         "y": 116,
         "w": 120,
@@ -700,7 +703,7 @@
       {
         "state": "map",
         "id": "tab-inactive",
-        "color": "textSecondary",
+        "color": "onSignal",
         "x": 350,
         "y": 116,
         "w": 170,
@@ -760,7 +763,7 @@
       {
         "state": "map",
         "id": "footer-hints",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 22,
         "y": 762,
         "w": 450,
@@ -770,7 +773,7 @@
       {
         "state": "map",
         "id": "nav-label",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 1070,
         "y": 750,
         "w": 120,

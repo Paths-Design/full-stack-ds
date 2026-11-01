@@ -111,7 +111,7 @@ Every region is an absolute rect from the layout authority. The Player log
 | paused chip | `(1184, 40, 64, 24)` |
 | remap modal panel | `(430, 300, 420, 200)` |
 
-Other pinned boxes implemented from the authority: tab cells at 320×56 (active fill signal,
+Other pinned boxes implemented from the authority: tab cells at 320×56 on a signal-orange tab band (active fill signalDeep,
 inactive text `textSecondary`, 1 px `rule` separators); map icon panel `(912, 176, 344, 552)` with
 8 rows of 48 px and switches at row x=248/y=8; roster rows at `x=40, firstY=224, h=88`; drawer
 `(24, 176, 560, 552)`; ability cards 152×240 at `firstY=224` with 12 px column/row gaps (second row

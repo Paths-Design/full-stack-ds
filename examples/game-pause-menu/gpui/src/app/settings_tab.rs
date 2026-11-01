@@ -644,28 +644,34 @@ impl Menu {
                 &layout,
                 cx.listener(|this, _, window, cx| this.cancel_remap_modal(window, cx)),
             ));
+        let viewport = layout.viewport;
+        let panel = widgets::rect_box(rect)
+            .id("remap-modal")
+            .flex()
+            .flex_col()
+            .items_center()
+            .gap(px(10.))
+            .py(px(20.))
+            .bg(colors::paint(&layout.colors.charcoal))
+            .border_2()
+            .border_color(colors::paint(&layout.colors.signal))
+            .track_focus(&focus)
+            .on_key_down(
+                cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+                    this.capture_keystroke(event, window, cx)
+                }),
+            )
+            .child(action_label)
+            .child(prompt)
+            .child(binding)
+            .child(hint)
+            .child(cancel);
+        // Parity modal scrim: Unity and Godot dim the whole viewport behind the
+        // remap panel; GPUI must carry the same ink/0.78 veil.
         Some(
-            widgets::rect_box(rect)
-                .id("remap-modal")
-                .flex()
-                .flex_col()
-                .items_center()
-                .gap(px(10.))
-                .py(px(20.))
-                .bg(colors::paint(&layout.colors.charcoal))
-                .border_2()
-                .border_color(colors::paint(&layout.colors.signal))
-                .track_focus(&focus)
-                .on_key_down(
-                    cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
-                        this.capture_keystroke(event, window, cx)
-                    }),
-                )
-                .child(action_label)
-                .child(prompt)
-                .child(binding)
-                .child(hint)
-                .child(cancel)
+            widgets::rect_box(Rect { x: 0.0, y: 0.0, w: viewport.width, h: viewport.height })
+                .bg(colors::paint_alpha(&layout.colors.ink, 199))
+                .child(panel)
                 .into_any_element(),
         )
     }
