@@ -53,3 +53,9 @@ evidence:
     recorded_at: "2026-11-01T13:09:54.332Z"
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/parent-reference-composition.log"
     commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Token build changes only four Orion heading/body references across light/dark CSS; actual packed CSS browser observations show empty/inherited monospace before and declared Inter-family resolution after in both themes. Semantic/component nested composition and font fallback assertions execute in the focused suite; source token names are unchanged."
+    recorded_at: "2026-11-01T13:10:03.890Z"
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01/packed-font/result.json"
+    commit_sha: "508b68c1caaf185e7de5ddef5d396f1b02630f8d"
