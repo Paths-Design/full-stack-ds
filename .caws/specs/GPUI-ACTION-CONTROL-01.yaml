@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: gpui-action-control
 created_at: '2026-11-01T10:57:46.802Z'
-updated_at: '2026-11-01T10:57:49.329Z'
+updated_at: '2026-11-01T11:07:22.835Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
@@ -19,6 +19,7 @@ scope:
     - 'docs/architecture/gpui-target.md'
     - 'docs/architecture/gpui-web-consistency.md'
     - 'packages/ds-gpui/web-consistency-baseline.json'
+    - scripts/gpui-web-consistency-audit.mjs
   out: []
 invariants:
   - 'Components without callback props or pointer events regenerate byte-identically apart from the shared crate module declaration'
