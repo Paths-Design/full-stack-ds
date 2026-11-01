@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: table-web-responsive
 created_at: '2026-11-01T03:24:18.913Z'
-updated_at: '2026-11-01T13:29:17.204Z'
+updated_at: '2026-11-01T13:36:31.543Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -54,6 +54,9 @@ scope:
     - packages/ds-godot/addons/full_stack_ds/components/Table/
     - docs/architecture/godot-target.md
     - packages/ds-godot/verification/capability-inventory.json
+    - packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    - packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    - packages/ds-gpui/src/components/Table/
   out: []
 invariants:
   - 'Native Table sections cells metadata and composed node identity remain intact through live policy updates'
