@@ -1,0 +1,55 @@
+id: TABLE-WEB-RESPONSIVE-01
+title: 'Honor Table scrolling policy and keyboard viewport access'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-01T03:24:18.913Z'
+updated_at: '2026-11-01T03:24:18.913Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Table contract styles and web consumer scrolling'
+    - 'Generic React numeric conditional attribute lowering'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Table/'
+    - 'packages/ds-codegen/src/frameworks/react/'
+    - 'packages/ds-react/src/components/Table/'
+    - 'packages/ds-vue/src/components/Table/'
+    - 'packages/ds-svelte/src/components/Table/'
+    - 'packages/ds-angular/src/components/Table/'
+    - 'packages/ds-lit/src/components/Table/'
+    - 'packages/ds-react-native/src/components/Table/'
+    - 'packages/ds-lit/README.md'
+    - 'packages/ds-figma-plugin/src/generated/components/Table/'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Table/'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Table/'
+    - 'packages/ds-unity/Runtime/Components/Table/'
+    - 'scripts/release-package-check/'
+  out: []
+invariants:
+  - 'Native Table sections cells metadata and composed node identity remain intact through live policy updates'
+  - 'Durable scrolling and focus semantics remain contract-owned without component-name emitter branches'
+acceptance:
+  - id: A1
+    given: 'wide composed web Tables with omitted true and false responsive policy'
+    when: 'isolated installed consumers render and update the prop in each web framework'
+    then: 'omitted and true allow actual horizontal scrolling while false exposes unscrolled overflow and native table/cell identity survives policy updates'
+  - id: A2
+    given: 'a responsive Table content viewport'
+    when: 'a keyboard user tabs to it and uses horizontal arrow keys'
+    then: 'its localizable accessible name and focus are present and native scrolling reveals content in LTR and RTL without custom row navigation'
+  - id: A3
+    given: 'generic numeric conditional attribute bindings and the Table contract'
+    when: 'all targets regenerate and required types tests and admission checks execute'
+    then: 'numeric DOM declarations compile and Table metadata composition and unrelated bindings remain intact'
+observability:
+  - 'Retain packed Chromium viewport geometry scroll offsets focus and AX observations under canonical ignored CAWS state'
+rollback:
+  - 'Revert Table contract styling generated sources and conditional numeric lowering together'
+non_functional: {}
+contracts:
+  - name: 'table-responsive'
+    type: behavior
+    path: 'packages/ds-contracts/components/Table/Table.contract.json'
