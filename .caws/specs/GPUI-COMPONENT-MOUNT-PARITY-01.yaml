@@ -1,0 +1,49 @@
+id: GPUI-COMPONENT-MOUNT-PARITY-01
+title: 'GPUI mount parity: every admitted component carries an executed mount witness'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T08:24:37.941Z'
+updated_at: '2026-11-01T08:24:37.941Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI generated mount witnesses and pilot coverage ratchet'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The seven bounded components keep their emitted semantics; only generated test modules are added to their source files'
+  - 'Every allowlisted component has exactly one generated mount witness, and the pilot fails when the allowlist and witness set diverge'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the allowlist; when generate --target=gpui runs; then every admitted component emits a mount witness module declared by the generated barrel'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the generated crate; when cargo test runs on the pinned lane; then every admitted component''s mount witness executes and asserts its root part renders'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given an allowlisted component without a witness; when the pilot runs; then it fails naming the missing witness, and vice versa'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the seven interaction witnesses; when the pilot runs; then they remain required and passing'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the target docs; when read after the slice; then the witness claim and its boundary (mount, not behaviour) are stated'
+non_functional: {}
+contracts:
+  - name: 'gpui-mount-witnesses'
+    type: contract-test
+    path: 'packages/ds-gpui/src/components'
