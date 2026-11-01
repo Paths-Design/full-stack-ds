@@ -94,3 +94,8 @@ evidence:
     evidence_ref: "At source 6362aa9c7, the same five installed browser reports and AX/screenshots show the localizable region name Contenu du tableau, real Tab focus and native arrows. LTR14/RTL6 arrow steps reveal the Arabic edit button fully inside both viewport axes from initially clipped bounds, with focus retained; disabled policy is untabbable. The authoritative harness is scripts/release-package-check/browser.mjs. Evidence is scoped to Chromium web behavior, not assistive-technology announcements or native scrolling."
     recorded_at: "2026-11-01T14:08:55.125Z"
     commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At source6362aa9c7, inspected checks/6362aa9c7-7euK5x/receipt.json and raw logs: all12 targets regenerate; six-target rail, 5553 root tests, all five framework suites, typecheck:all, lint, 7 source-browser cases, all8 packed consumers, generated drift, Godot boundary, GPUI consistency and policy pass. Swift grammar22cases and native metadata48cases pass; native exclusions remain explicit. Overall29-stage run remains RED only for parent-owned Unity18 unresolved names and53 variant findings, with no Table/Web finding; these release gates are not waived or discharged. No native accessibility/localized-label realization is claimed for GPUI API carriage. Commit verification checks identity only; executions were inspected separately."
+    recorded_at: "2026-11-01T14:09:04.765Z"
+    commit_sha: "6362aa9c7f1bc20c5b7dae0642f2d802ed0de332"
