@@ -49,3 +49,9 @@ contracts:
   - name: 'preview-inputs'
     type: behavior
     path: 'src/runtime/demos.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Candidate d83c0f950: inspected new preview-prop-samples.ts and 24 executed AST/projection cases in projection-focused-final.log (53 total with demos/config). Real Postcard author/stats fields and zero values, ordered union choice, nested literal/alias fields, independent sibling recursion tracking and bounded recursive/unsupported required objects. Complete required objects are absent on unsupported fields; optional unknown fields are omitted. Parsed syntax is never evaluated; malformed code-like input is rejected. Original contract bytes and required author/stats are preserved. Primary retained evidence under .caws/state/release-evidence/PREVIEW-REQUIRED-ALIAS-SAMPLES-01. CLI verify checks committed candidate existence/reachability only; primary source and execution evidence were inspected independently."
+    recorded_at: "2026-11-01T21:46:51.344Z"
+    commit_sha: d83c0f9505e8774e9baee0910af2a5bfef5cc9ab
