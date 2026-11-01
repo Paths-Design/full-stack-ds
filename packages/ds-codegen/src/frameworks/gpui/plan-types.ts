@@ -48,6 +48,14 @@ export interface GpuiRefPlan {
   omissions: GpuiOmission[];
 }
 
+/** A surface presence channel realized as gated open state. */
+export interface GpuiPresencePlan {
+  channelName: string;
+  valueProp: string;
+  defaultValueProp?: string;
+  changeHandlerProp?: string;
+}
+
 /** A consumer-supplied callback realized as a stored handler field. */
 export interface GpuiCallbackPlan {
   prop: string;
@@ -85,6 +93,8 @@ export interface GpuiPlan {
   callbacks: GpuiCallbackPlan[];
   /** Anatomy parts that invoke a stored callback. */
   activations: GpuiActivationPlan[];
+  /** Surface presence state, when the contract declares a presence channel. */
+  presence?: GpuiPresencePlan;
   omissions: GpuiOmission[];
 }
 
