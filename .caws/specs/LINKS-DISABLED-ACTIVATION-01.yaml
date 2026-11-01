@@ -150,3 +150,10 @@ evidence:
     command: "pnpm run audit:state-suppression"
     exit_code: 0
     commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01/checks/2d742ff53-iHsWjo/receipt.json and raw logs: rail, root5642, all framework suites, types, lint, tokens/icons, relevant audits, generated drift and fresh eight-package types/browser/Metro pass. The run exited1 for authored-test inventory plus53 Unity variants. Inventory is repaired by final8ee024b94 and final-custom-regions.log passes88/88 with zero source customizations. Package trees match tested2d742ff53. All53 variant IDs exactly match pre-Links Unity128c9b68c evidence and remain an OPEN parent release-gate blocker; no waiver or allowance added. Peer findings were reproduced/repaired and committed follow-ups inspected. This bounded Links acceptance does not qualify all components, native OS/AT, minimum peers or publication."
+    recorded_at: "2026-11-01T18:58:53.869Z"
+    command: node .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01/verify-integrated.mjs
+    exit_code: 1
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
