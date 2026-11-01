@@ -1,0 +1,46 @@
+id: GPUI-SHOWMORE-EXPANSION-01
+title: 'GPUI boolean expansion state with a declared trigger toggle'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T12:19:07.134Z'
+updated_at: '2026-11-01T12:19:07.134Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI expansion state: prop-named open API, declared-trigger toggle, witness, clamp omission'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only boolean channels with a declared interaction trigger generalize presence; surface behaviour keeps its guarded-part semantics'
+  - 'Text-measurement clamping remains a receipted omission, never a claimed realization'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract with a boolean channel and a declared trigger; when generate --target=gpui runs; then the component exposes prop-named expansion state and a trigger toggle that requests the change'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when ShowMore is clicked and keyed; then its expansion state toggles and controlled values drive it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-showmore-expansion'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
