@@ -391,7 +391,9 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   // fields (guards/styles read them) and strings as retained text.
   // Surface presence: a boolean channel whose value gates anatomy parts.
   const presenceChannel = (() => {
-    if (!ir.surface) return undefined;
+    // Surface contracts gate their parts on the presence value; other contracts
+    // generalize presence when the channel declares a trigger that toggles it.
+    if (!ir.surface && !ir.interaction?.triggers?.length) return undefined;
     const candidates = [
       ...(ir.interaction?.channel ? [ir.interaction.channel] : []),
       ...ir.behavior.normalizedChannels.filter(candidate => candidate.valueType === 'boolean' && candidate.name !== ir.interaction?.channel?.name),
@@ -404,12 +406,19 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
         if (ir.dom) visit(ir.dom);
         return found;
       })();
-      if (guarded) return channel;
+      if (guarded || (!ir.surface && channel.name === ir.interaction?.channel?.name && channel.valueType === 'boolean')) return channel;
     }
     return undefined;
   })();
+  const declaredTrigger = ir.interaction?.triggers?.[0]?.part?.name;
   const presence: GpuiPresencePlan | undefined = presenceChannel
-    ? { channelName: presenceChannel.name, valueProp: presenceChannel.valueProp, defaultValueProp: presenceChannel.defaultValueProp, changeHandlerProp: presenceChannel.changeHandlerProp }
+    ? {
+        channelName: presenceChannel.name,
+        valueProp: presenceChannel.valueProp,
+        defaultValueProp: presenceChannel.defaultValueProp,
+        changeHandlerProp: presenceChannel.changeHandlerProp,
+        ...(declaredTrigger && !ir.surface ? { triggerPart: declaredTrigger } : {}),
+      }
     : undefined;
   if (presence) state.realizedPresence.add(presence.valueProp);
   // Collection open-value channel: a string-valued disclosure toggled by a click.
@@ -548,6 +557,7 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   // Read from the original anatomy: the projection clears event maps.
   const activations: GpuiActivationPlan[] = [];
   if (valueChannel) activations.push({ part: valueChannel.triggerPart, handler: '', keyboard: true, method: 'toggle_open' });
+  if (presence?.triggerPart) activations.push({ part: presence.triggerPart, handler: '', keyboard: true, method: 'toggle_open' });
   const visitActivations = (node: DomNodeIR, isRoot: boolean): void => {
     const click = node.events?.click;
     if (click?.kind === 'prop' && state.wiredCallbacks.has(click.prop)) {
