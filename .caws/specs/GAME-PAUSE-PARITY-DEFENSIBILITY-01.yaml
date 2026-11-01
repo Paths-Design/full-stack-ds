@@ -2,7 +2,6 @@ id: GAME-PAUSE-PARITY-DEFENSIBILITY-01
 title: 'Pause-menu parity defensibility: goldens, oracle, consumption gates and bounded claims'
 mode: feature
 lifecycle_state: active
-worktree: game-pause-orion-restyle-4
 created_at: '2026-11-01T06:52:37.699Z'
 updated_at: '2026-11-01T08:23:12.307Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
