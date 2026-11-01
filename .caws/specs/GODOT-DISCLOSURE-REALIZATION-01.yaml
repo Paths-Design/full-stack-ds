@@ -64,3 +64,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot -> passed:true, 29 rows; all 21 pre-existing rows byte-identical to the slice baseline (/tmp/godot-pilot-baseline vs final receipt compared row-by-row: 0 changed, 0 missing); catalog-load admitted 55 failures []"
     recorded_at: "2026-11-01T09:35:23.887Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md disclosure section states the family ledger is closed (0 pending, 755 lowered / 803 refused) plus focus/dismissal/aria/style/accessibility claims and the non-claims (no accessibility tree, no CSS motion, mount-time focus refused, blocking modality unrealized); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; pnpm run docs:check-claims and docs:check-links pass"
+    recorded_at: "2026-11-01T09:35:25.056Z"
