@@ -163,6 +163,7 @@ if(glyphPlayer.error||glyphPlayer.status!==0||/SCRIPT ERROR|Parse Error|Assertio
 glyphReceipt(glyphPlayerLog,true);
 fs.writeFileSync(path.join(project,'project.godot'),fs.readFileSync(path.join(project,'project.godot'),'utf8').replace(
  'run/main_scene="res://verification/glyph_main.tscn"','run/main_scene="res://verification/spinner_main.tscn"'));
+run(['--headless','--editor','--import'],'spinner-import');
 const spinnerZip=path.join(out,'SpinnerPilot.zip');
 run(['--headless','--export-debug','macOS',spinnerZip],'spinner-export');
 const spinnerUnzip=spawnSync('unzip',['-q',spinnerZip,'-d',path.join(out,'spinner-exported')],{encoding:'utf8'});
