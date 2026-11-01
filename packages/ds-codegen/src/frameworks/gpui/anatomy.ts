@@ -20,7 +20,7 @@ import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import { classifyProp, loadBoundary, type GpuiBoundary } from './boundary.js';
 import { supported, validScalar } from './style-vocabulary.js';
-import type { GpuiActivationPlan, GpuiCallbackPlan, GpuiOmission, GpuiPlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan } from './plan-types.js';
+import type { GpuiActivationPlan, GpuiCallbackPlan, GpuiOmission, GpuiPlan, GpuiPresencePlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan, GpuiValueChannelPlan } from './plan-types.js';
 
 const RESERVED = new Set(['self','super','crate','type','mod','fn','match','default','new','request_change','theme','variants','label','focus_handle','request_key','content','set_content','clear_content','has_content','render_content','slot','slots','slot_key','set_slot','clear_slot','has_slot','render_slot']);
 
@@ -178,6 +178,8 @@ export interface AnatomyState {
   boundary: GpuiBoundary;
   /** Callback props realized as stored handlers; their click events are wired. */
   wiredCallbacks: Set<string>;
+  /** Presence channel values whose guards are realized by open state. */
+  realizedPresence: Set<string>;
   omissions: GpuiOmission[];
   realizedText: Set<string>;
   realizedBoolean: Set<string>;
@@ -312,6 +314,7 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
     copy.ifSlot = undefined;
   }
   if (copy.ifProp && copy.ifProp !== 'children'
+    && !state.realizedPresence.has(copy.ifProp)
     && !state.realizedBoolean.has(copy.ifProp)
     && !state.realizedText.has(copy.ifProp)
     && !state.realizedAxes.has(copy.ifProp)) {
@@ -344,7 +347,7 @@ function nodesOf(node: DomNodeIR | undefined): DomNodeIR[] {
  * consumes, and every fact the projection dropped with its boundary rule.
  */
 export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBoundary()): { ir: ComponentIR; plan: GpuiPlan; omissions: GpuiOmission[] } {
-  const state: AnatomyState = { boundary, wiredCallbacks: new Set(), omissions: [], realizedText: new Set(), realizedBoolean: new Set(), realizedAxes: new Set(), realizedSlots: [] };
+  const state: AnatomyState = { boundary, wiredCallbacks: new Set(), realizedPresence: new Set(), omissions: [], realizedText: new Set(), realizedBoolean: new Set(), realizedAxes: new Set(), realizedSlots: [] };
 
   // Realize variant axes first: guards and styles both depend on them.
   const usedMethods = new Set<string>();
@@ -386,6 +389,56 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
 
   // Realize props that carry a value this projection can hold: booleans as
   // fields (guards/styles read them) and strings as retained text.
+  // Surface presence: a boolean channel whose value gates anatomy parts.
+  const presenceChannel = (() => {
+    // Surface contracts gate their parts on the presence value; other contracts
+    // generalize presence when the channel declares a trigger that toggles it.
+    if (!ir.surface && !ir.interaction?.triggers?.length) return undefined;
+    const candidates = [
+      ...(ir.interaction?.channel ? [ir.interaction.channel] : []),
+      ...ir.behavior.normalizedChannels.filter(candidate => candidate.valueType === 'boolean' && candidate.name !== ir.interaction?.channel?.name),
+    ];
+    for (const channel of candidates) {
+      if (channel.valueType !== 'boolean') continue;
+      const guarded = (() => {
+        let found = false;
+        const visit = (node: DomNodeIR): void => { if (node.ifProp === channel.valueProp) found = true; node.children.forEach(visit); };
+        if (ir.dom) visit(ir.dom);
+        return found;
+      })();
+      if (guarded || (!ir.surface && channel.name === ir.interaction?.channel?.name && channel.valueType === 'boolean')) return channel;
+    }
+    return undefined;
+  })();
+  const declaredTrigger = ir.interaction?.triggers?.[0]?.part?.name;
+  const presence: GpuiPresencePlan | undefined = presenceChannel
+    ? {
+        channelName: presenceChannel.name,
+        valueProp: presenceChannel.valueProp,
+        defaultValueProp: presenceChannel.defaultValueProp,
+        changeHandlerProp: presenceChannel.changeHandlerProp,
+        ...(declaredTrigger && !ir.surface ? { triggerPart: declaredTrigger } : {}),
+      }
+    : undefined;
+  if (presence) state.realizedPresence.add(presence.valueProp);
+  // Collection open-value channel: a string-valued disclosure toggled by a click.
+  const valueChannel: GpuiValueChannelPlan | undefined = (() => {
+    if (!ir.dom || ir.surface || ir.formControl || ir.compositeControl) return undefined;
+    const channel = ir.interaction?.channel;
+    if (!channel || channel.valueType === 'boolean' || !/string/.test(String(channel.valueType ?? ''))) return undefined;
+    const declaredTrigger = ir.interaction?.triggers?.[0]?.part?.name;
+    let triggerPart: string | undefined = declaredTrigger;
+    let gatedPart: string | undefined;
+    const visit = (node: DomNodeIR): void => {
+      const click = node.events?.click;
+      if (!triggerPart && click?.kind === 'channel' && click.channel === channel.name) triggerPart = node.part ?? 'root';
+      if (!gatedPart && node.part === 'content') gatedPart = node.part;
+      node.children.forEach(visit);
+    };
+    visit(ir.dom);
+    if (!triggerPart || !gatedPart) return undefined;
+    return { valueProp: channel.valueProp, defaultValueProp: channel.defaultValueProp, changeHandlerProp: channel.changeHandlerProp, triggerPart, gatedPart };
+  })();
   const channelProps = channelPropNames(ir);
   const boolProps: string[] = [];
   const textProps: string[] = [];
@@ -396,7 +449,17 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   };
   for (const prop of ir.styledProps) {
     const method = identifier(prop.name);
-    if (channelProps.has(prop.name)) {
+    if (valueChannel && prop.name === valueChannel.changeHandlerProp) {
+      // The open-value change handler is a callback prop; fall through to the
+      // generic callback realization.
+    } else if (valueChannel && (prop.name === valueChannel.valueProp || prop.name === valueChannel.defaultValueProp)) {
+      continue;
+    } else if (channelProps.has(prop.name) && presence && prop.name === presence.changeHandlerProp) {
+      // The presence change handler is a callback prop; fall through so the
+      // generic callback realization stores it.
+    } else if (channelProps.has(prop.name) && presence && (prop.name === presence.valueProp || prop.name === presence.defaultValueProp)) {
+      continue;
+    } else if (channelProps.has(prop.name)) {
       omittedProps.push(prop.name);
       omit(state, omissionFor(prop.name, 'control semantics are realized only by the bounded control planner, which does not admit this component shape'));
       continue;
@@ -493,6 +556,8 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   // A native part's click event bound to a realized callback prop invokes it.
   // Read from the original anatomy: the projection clears event maps.
   const activations: GpuiActivationPlan[] = [];
+  if (valueChannel) activations.push({ part: valueChannel.triggerPart, handler: '', keyboard: true, method: 'toggle_open' });
+  if (presence?.triggerPart) activations.push({ part: presence.triggerPart, handler: '', keyboard: true, method: 'toggle_open' });
   const visitActivations = (node: DomNodeIR, isRoot: boolean): void => {
     const click = node.events?.click;
     if (click?.kind === 'prop' && state.wiredCallbacks.has(click.prop)) {
@@ -540,6 +605,8 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     refs,
     callbacks,
     activations,
+    ...(presence ? { presence } : {}),
+    ...(valueChannel ? { valueChannel } : {}),
     slots: realizedSlots,
     slotVariants,
     defaultValue: 'false',

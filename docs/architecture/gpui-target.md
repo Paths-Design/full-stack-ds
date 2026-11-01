@@ -55,15 +55,38 @@ There is no automatic system-dark response or loader for the complete brand
 override graph. Generic native font aliases map to macOS fonts; this does not
 establish identical Web font metrics.
 
+## Accessibility is a substrate non-claim
+
+Accessibility facts (`a11y`, `props.*/ariaLabel`, `ariaLabelledby`,
+`ariaDescribedby`, part roles, `aria-*` bindings and attributes, state a11y) are
+recorded with the `substrate` disposition rather than `pending`. The pinned GPUI
+revision (`zed` @ `a38fc8c8de6e4010fadcfde7dd111d90dfd66845`) exposes no
+accessibility channel: `crates/gpui/src` contains no `accesskit` integration and
+no role/label/description API, so there is no engine-side surface to project an
+ARIA fact onto. That is a stated non-claim, not deferred work — the audit's
+0/44 a11y dimension measures the gap, and the ledger explains it. If a future
+pinned revision grows an accessibility API, the families move back to `pending`
+and the probe below re-runs.
+
+Mechanical witness for the claim:
+
+```bash
+grep -rli 'accessib' ~/.cargo/git/checkouts/*/a38fc8c/crates/gpui/src
+# crates/gpui/src/{window,app,geometry}.rs — comments only, no API
+grep -rn 'accesskit' <gpui-checkout>/crates/gpui/src
+# (no matches)
+```
+
 ## Support boundary and generic anatomy projection
 
 The committed [support boundary](../../packages/ds-codegen/src/frameworks/gpui/support-boundary.json)
 classifies every contract and sidecar leaf the target can see as `lowered`,
-`pending` or `refused`, by pointer FAMILY and never by component identity: identity,
-anatomy structure, token bindings, variant axes and the admitted style vocabulary
-are lowered; DOM bindings/events/attrs, iteration, content transforms, glyph
-rendering, surface behaviour, motion, accessibility, forms and cross-component
-semantics are `pending`; authoring/CSS-only metadata is `refused`. By-reference
+`pending`, `substrate` or `refused`, by pointer FAMILY and never by component
+identity: identity, anatomy structure, token bindings, variant axes and the
+admitted style vocabulary are lowered; DOM bindings/events/attrs, iteration,
+content transforms, glyph rendering, surface behaviour, motion, forms and
+cross-component semantics are `pending`; accessibility families are `substrate`
+(see below); authoring/CSS-only metadata is `refused`. By-reference
 composition is lowered for the static facts (see below) and pending for dynamic
 child bindings and child event wiring.
 The ledger is ordered and terminal, so an unadjudicated family is refused rather
@@ -83,6 +106,43 @@ its reason. Two rules keep the projection honest:
   admitted scalar still fails generation instead of becoming an omission.
 - The receipt, not the ledger, is the per-component truth. A `pending` family that
   a particular component does not carry is simply absent from its omission list.
+
+### Expansion state
+
+A boolean channel with a **declared trigger** generalizes presence beyond
+surfaces: ShowMore's `expanded`/`defaultExpanded` on its trigger state realizes a
+prop-named expansion API (`expanded(..)`, `default_expanded(..)`,
+`set_expanded(..)`, `is_expanded()`), a generated `toggle_open` wired to the
+trigger part's pointer/Space/Enter activation, and a `ChangeRequest` emission so
+a controlled owner accepts the request. The receipt names what expansion does
+not carry: text-measurement clamping (the substrate has no text-shaping
+truncation channel), so collapsed content is rendered unmeasured rather than
+clamped.
+
+### Collection open value
+
+A contract that exposes a string-valued disclosure channel toggled by a declared
+trigger part (Accordion's `value`/`defaultValue`/`onValueChange` on `trigger`,
+gating the `content` part) realizes controlled or uncontrolled open value:
+`value(Option<SharedString>)`, `set_value(..)`, `default_value(..)`, `is_open()`,
+plus a generated `toggle_open` method wired to the trigger part's pointer, Space
+and Enter activation. The gated content part renders only while a value is set;
+the receipt names the opens that are **not** carried — multi-open array values,
+per-item identities (the anatomy projection renders one item template) and
+`collapsible` suppression. Contracts with a non-string channel keep the anatomy
+fallback.
+
+### Surface presence
+
+A surface contract whose boolean presence channel gates anatomy parts
+(`Dialog`, `Sheet`, `Toast`, `Command`) realizes the channel as controlled or
+uncontrolled open state: `open(Option<bool>)`, `default_open(bool)`,
+`set_open(..)` and `is_open()`, with the guarded backdrop and panel rendered only
+while open. The receipt names what presence does **not** carry: modality
+trapping, dismissal (backdrop click, Escape, outside-press), timing/auto-dismiss
+and layer ordering. Surfaces without a guarded boolean channel — anchored
+Tooltip/Popover and the selector-anchored Walkthrough — keep the generic anatomy
+projection and their interaction/surface facts stay pending.
 
 ### Disclosure controls
 
@@ -149,10 +209,15 @@ realized boolean set true, renders it in GPUI's test window, and asserts the roo
 part reached layout — or, where the contract guards the root on consumer-supplied
 content, that the default view renders without panicking. That proves the
 component mounts and renders; it does not prove interaction, styling correctness or
-pixels. The **seven** bounded control/static components additionally carry the
-hand-written interaction witnesses (owner requests, focus, disabled suppression,
-variants, retained content, slots). The other 48 are mount-witnessed only, with
-their unrealized semantics named in the receipt.
+pixels. **Sixteen** capability witnesses are required by name by the pilot lane:
+the bounded controls (owner requests, focus, disabled suppression, variants,
+retained content, slots) plus disclosure, surface presence, collection open value,
+expansion, root/part action callbacks, reference-event forwarding, nested
+references, focus/tab order, fractional layout and style/token reach — the
+mapping from capability to witness is the inventory in
+[GPUI ↔ web consistency](gpui-web-consistency.md#mounted-witness-inventory). The
+other 39 components are mount-witnessed only, with their unrealized semantics
+named in the receipt.
 
 ## Input and owner updates
 

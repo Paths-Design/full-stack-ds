@@ -48,6 +48,25 @@ export interface GpuiRefPlan {
   omissions: GpuiOmission[];
 }
 
+/** A collection open-value channel realized as a gated, toggleable panel. */
+export interface GpuiValueChannelPlan {
+  valueProp: string;
+  defaultValueProp?: string;
+  changeHandlerProp?: string;
+  triggerPart: string;
+  gatedPart: string;
+}
+
+/** A surface presence channel realized as gated open state. */
+export interface GpuiPresencePlan {
+  channelName: string;
+  valueProp: string;
+  defaultValueProp?: string;
+  changeHandlerProp?: string;
+  /** Declared trigger part that toggles the presence state itself. */
+  triggerPart?: string;
+}
+
 /** A consumer-supplied callback realized as a stored handler field. */
 export interface GpuiCallbackPlan {
   prop: string;
@@ -60,6 +79,8 @@ export interface GpuiActivationPlan {
   handler: string;
   /** Root hosts also take focus and keyboard activation. */
   keyboard: boolean;
+  /** Generated method invoked instead of a stored callback handler. */
+  method?: string;
 }
 
 export interface GpuiPlan {
@@ -85,6 +106,10 @@ export interface GpuiPlan {
   callbacks: GpuiCallbackPlan[];
   /** Anatomy parts that invoke a stored callback. */
   activations: GpuiActivationPlan[];
+  /** Surface presence state, when the contract declares a presence channel. */
+  presence?: GpuiPresencePlan;
+  /** Collection open-value state, when the contract declares a string channel. */
+  valueChannel?: GpuiValueChannelPlan;
   omissions: GpuiOmission[];
 }
 
