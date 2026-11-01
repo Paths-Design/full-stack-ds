@@ -26,11 +26,43 @@ copy and the same capture states.
    switch root causes, capture states and the permitted-difference list.
 3. [`spec.md`](spec.md) — app semantics and interaction contract (unchanged).
 
-Parity means: at 1280 × 800 the four captured tab states are structurally
-indistinguishable across GPUI, Unity and Godot — header, tab bar, panel
-rectangles, rows, cards, controls and switch geometry occupy the same pixels and
-use the same colours. Type **rasterisation** and anti-aliasing may differ; layout
-may not.
+**Bounded parity claim.** For the eight captured states at 1280 × 800 on the
+pinned macOS host, GPUI, Unity and Godot agree with each other within the
+checker's declared probe, typography, RMSE and image-golden tolerances: header,
+tab bar, panel rectangles, rows, cards, controls and switch geometry occupy the
+same pixels and use the same colours. Type **rasterisation** and anti-aliasing
+may differ, and the Unity body-copy weight residual is absorbed by its declared
+ink tolerance; layout and palette are the claim.
+
+This is **not** a full or pixel-identical parity claim. It does not cover a full
+state/transition matrix, other DPI/backends/OSes, physical-input behaviour,
+accessibility, usability, or source-design composition fidelity. The evidence
+matrix and the conditions for a stronger claim are in
+[`evidence/parity-matrix.md`](evidence/parity-matrix.md).
+
+## Evidence binding the claim
+
+- [`parity-check.mjs`](parity-check.mjs) requires all eight captures per lane,
+  measures 195 colour/geometry probes and 117 typography bbox/ink values across
+  the four base states, and compares 24 lane-pair RMSE images.
+- [`evidence/goldens/`](evidence/goldens/) commits 24 lossless-WebP image
+  goldens plus a manifest binding them to the authority, resolved token graph
+  and Orion brand; `pnpm parity:goldens:check` verifies the manifest, and the
+  checker fails when a fresh capture drifts beyond `--golden-rmse`.
+- [`fixtures/orion-style-oracle.json`](fixtures/orion-style-oracle.json) and
+  [`scripts/game-pause-oracle-audit.mjs`](../../scripts/game-pause-oracle-audit.mjs)
+  encode the source-design criteria. The current audit **does not meet the
+  composition bands** (90 violations across 24 lane/state observations); the
+  palette anchors match, the display typography and industrial composition do
+  not. [`evidence/visual-review.md`](evidence/visual-review.md) records the
+  review and is awaiting human sign-off.
+- [`scripts/game-pause-token-consumption.mjs`](../../scripts/game-pause-token-consumption.mjs)
+  fails when a lane stops routing rendering through its token path; the GPUI
+  all-role test, Godot all-provenance test and Unity resolved-style/brand-scope
+  test are the runtime witnesses.
+- [`scripts/game-pause-token-provenance.mjs`](../../scripts/game-pause-token-provenance.mjs)
+  fails when an authority colour or type size loses its resolvable token
+  provenance.
 
 ## Global rules
 
@@ -236,9 +268,9 @@ Per lane, after rework:
 3. Record a `parity` section in the lane README: geometry authority consumed,
    per-region DS vs fallback, switch implementation/root cause, permitted
    differences (font/letter-spacing), evidence.
-4. The slice compares the three lanes' captures per tab: same panel/row/card
-   rectangles and colours; only glyph rasterisation may differ. The comparison
-   document records the result and the remaining non-claims.
+4. The slice compares the three lanes' captures for all eight states. The
+   bounded claim covers the declared probe/tolerance/golden matrix only; the
+   coverage matrix records the remaining non-claims.
 
 ## Permitted differences
 
@@ -251,8 +283,12 @@ Per lane, after rework:
 - Native focus/hover decorations are not part of the captured states; when a
   capture triggers one it must be dismissed/unchanged.
 
-Everything else — positions, sizes, colours, copy, component shapes, switch
-geometry, active states and overlay states — is parity.
+Within the covered states and the declared tolerance/golden matrix, positions,
+sizes, colours, copy, component shapes, switch geometry, active states and
+overlay states are claimed. Outside that matrix they are not. The source-design
+oracle is a separate fidelity question: palette anchors are claimed, the
+reference's composition/display-typography/graphic-language criteria are not
+met and are recorded as non-claims.
 
 ## Corrections pinned after the first parity review round
 

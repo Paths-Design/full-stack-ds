@@ -16,14 +16,18 @@ The lane exists to answer two questions for the engine comparison:
 
 ## Design-token channels
 
-The parity lane uses the generated `Card` component's token variables
-(`--fsds-card-color-background-default`, `--fsds-card-color-border`,
-`--fsds-card-size-radius`) from the Orion brand scope instead of inline
-background/border/radius styles on parity panels and ability cards. The rest of
-the lane's 315 inline setter assignments are authority geometry and per-instance
-chrome that the current Unity UI Toolkit projection has no token consumer for;
-the classification and counts live in
-[`token-channel-ledger.md`](token-channel-ledger.md).
+**Status: ledgered migration started, not a completed token-channel migration.**
+The only generated-component token channel the parity lane currently uses is the
+`Card` surface: it sets `--fsds-card-color-background-default`,
+`--fsds-card-color-border` and `--fsds-card-size-radius` from the Orion brand
+scope instead of inline background/border/radius styles on parity panels and
+ability cards. That removes 3 direct `.style.*` writes and 6 helper invocations
+(27 effective property writes) from the construction path, leaving **315 direct
+inline `.style.*` assignments** out of the original **318**. Badge/Button radius
+token-variable overrides do not win against the generated component's own
+stylesheet token block, and design-slot/brand component overrides remain
+unsupported, so those stay inline or ledgered. The classification and counts
+live in [`token-channel-ledger.md`](token-channel-ledger.md).
 
 The generated `Controls.uss` brand scope now projects every brand-layer variable
 that resolves to a USS scalar: Orion grew from 93 light / 68 dark variables to

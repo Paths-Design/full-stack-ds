@@ -5,16 +5,20 @@ as three native consumer lanes over the repository's generated design-system
 packages: **GPUI**, **Unity UI Toolkit**, and **Godot**.
 
 This is an **app shape** in the [`examples/`](../README.md) portfolio: a
-consumer-side proving surface for engine transfer and a usability comparison,
-not a shipping game. The framework-neutral authority is
+consumer-side proving surface for engine transfer and cross-engine
+implementation comparison, not a shipping game and not a usability study. The
+framework-neutral authority is
 [`spec.md`](spec.md); every lane is a realization of it, not its own design.
 
-The menu is drawn in the **Orion N5 graphic style**: hard-edged charcoal panels
-on bone or ink grounds, a signal-orange action strip carrying near-black labels,
-mint telemetry washes, hairline rules, heavy condensed-feeling micro-label type,
-oversized numerals and no rounded corners. The style is registered as the
-`orion` brand in [`packages/ds-tokens/src/brands/orion.tokens.json`](../../packages/ds-tokens/src/brands/orion.tokens.json)
-(`data-brand="orion"`).
+The menu uses the **Orion N5 palette and HUD grammar**: hard-edged charcoal/ink
+panels, a signal-orange action strip, mint map/telemetry surfaces, hairline
+rules, uppercase Inter micro-labels and square corners. The style is registered
+as the `orion` brand in
+[`packages/ds-tokens/src/brands/orion.tokens.json`](../../packages/ds-tokens/src/brands/orion.tokens.json)
+(`data-brand="orion"`). The source reference's full composition — oversized grey
+display typography, large mint/grey fields, orange data plates and industrial
+housing graphics — is **not claimed**; the committed oracle audit and
+[`evidence/visual-review.md`](evidence/visual-review.md) record the gap.
 
 ## Portfolio entry
 
@@ -38,15 +42,25 @@ all three lanes to it:
   consumes a verbatim copy of the JSON through a typed, validating parser; no
   layout number is re-typed in app code.
 - Verification: the committed [`parity-check.mjs`](parity-check.mjs) samples 195
-  fixed pixels across the three engines' captures (layout extents, panel/tab/chip
-  boxes, switch pill geometry, thumb centres) and computes pairwise RMSE. The
-  final run reports **0 failures** for map, progress, abilities and settings;
-  labelled montages and difference images land under
-  `tmp/parity-evidence/report/`.
+  fixed pixels across the four probed states (layout extents, panel/tab/chip
+  boxes, switch pill geometry, thumb centres), measures 117 typography
+  bbox/ink values, computes 24 pairwise RMSE comparisons for all eight captured
+  states, and compares 24 committed lossless-WebP image goldens. The reviewed
+  run reports **0 failures**; labelled montages and difference images land under
+  the checker's `--out` directory.
 - Cross-engine residual after the pass: **glyph anti-aliasing/hinting and
-  sub-pixel baseline rounding on the one shared Inter face**. Family, weights,
-  sizes, tracking, line heights and copy wraps are pinned; geometry, colours,
-  copy, component states and control shapes are identical.
+  sub-pixel baseline rounding on the one shared Inter face**, plus the Unity
+  body-copy weight residual deliberately absorbed by the 45 % ink tolerance.
+  Family, weights, sizes, tracking, line heights and copy wraps are pinned;
+  geometry, colours, copy, component states and control shapes agree within the
+  declared probe/tolerance matrix.
+- **Bounded claim.** The evidence supports parity for the eight captured
+  1280 × 800 states on the pinned macOS host, within the documented tolerances,
+  with committed image goldens and a token-consumption gate. It does **not**
+  support pixel identity, a full state/transition matrix, other DPI/backends/
+  OSes, physical-input parity, accessibility or usability parity, or
+  source-design composition fidelity. The coverage matrix and conditions for a
+  stronger claim are in [`evidence/parity-matrix.md`](evidence/parity-matrix.md).
 
 ### Why the switches looked like pinched ovals — and the fix
 
@@ -98,9 +112,10 @@ the legacy `orion-appearance.json` palette copy.
 The Unity projection now emits every brand-layer variable that resolves to a USS
 scalar, growing Orion's generated brand scope from 93 light / 68 dark variables
 to 217 light / 123 dark, including the brand-only graphic surface/status roles.
-The Unity parity lane consumes the generated `Card` component's token variables
-for panel/ability-card surfaces; the remaining inline assignments and the
-channel classification are recorded in
+The Unity parity lane uses the generated `Card` component's token variables for
+panel/ability-card surfaces. This is a **ledgered migration started**, not a
+completed token-channel migration: 318 → 315 direct inline assignments, with the
+remaining writes and channel classification recorded in
 [`unity/token-channel-ledger.md`](unity/token-channel-ledger.md).
 
 ### Icon art
@@ -228,7 +243,7 @@ their engine's theme mechanism and state that in their READMEs.
 | Allowlist at the parity pass | 7: Switch, ToggleSwitch, Checkbox, Text, Badge, Divider, Stat | **48** (the `UNITY-*-01` admission series landed while the first pass was in flight) | 10: Switch, Accordion, Popover, Tabs, Text, Divider, Button, Badge, Card, Icon |
 | Generated components used by the lane | 5 of 7: Switch, Text, Badge, Divider, Stat (ToggleSwitch/Checkbox have no spec region; icon art is a pinned code tile because GPUI admits no Icon) | 11 of 48: Tabs family, Switch, Popover family, Card family, Badge, Button, Progress, Text, Divider (Icon admitted; parity icon surfaces use code tiles) | 9 of 10: Tabs, Switch ×13, Popover ×2, Button, Badge ×~27, Card ×10; Accordion unused, Text/Divider/Icon admitted-but-unused (baked scales/colours have no override channel — ledgered finding) |
 | Brand path | explicit `Theme::with_token` per instance; no brand-graph loader | generated `.fsds-brand-orion` scope via `Theme.SetDark` + `Theme.SetBrand` | lane-local Orion `Theme` built from the appearance fixture; no resolved brand projection |
-| Build / test | `cargo +1.94.1 build --locked` 0 warnings; 67 tests (70 with `--features capture`) | Unity 6000.5.3f1 EditMode: 36 tests pass; standalone Player capture `passed=true`, eight 1280 × 800 states + witness checks | Godot 4.7.2 headless: 201/201 checks pass (I1–I15 + parity geometry + icon art + fixture negatives, viewport input dispatch); setup <1 s |
+| Build / test | `cargo +1.94.1 build --locked` 0 warnings; 70 tests (73 with `--features capture`) | Unity 6000.5.3f1 EditMode: 37 tests pass; standalone Player capture `passed=true`, eight 1280 × 800 states + witness checks | Godot 4.7.2 headless: 209/209 checks pass (I1–I15 + parity geometry + icon art + fixture negatives + all-role token consumption, viewport input dispatch); setup <1 s |
 | Screenshot path | `Window::render_to_image()` behind a lane `capture` feature; 8 states | Standalone macOS Player + `ScreenCapture`; 8 states | Viewport texture capture in a windowed run; 8 states |
 | Lane evidence | `tmp/game-pause-menu/gpui/` | `tmp/game-pause-menu/unity/` | `tmp/game-pause-menu/godot/` |
 | Parity result | **pass** — 195-pixel checker, 0 failures; montage identical to Unity/Godot apart from fonts | **pass** | **pass** |
@@ -401,16 +416,16 @@ paths below; `tmp/` is not committed.
 | Lane | Evidence directory | Test/build receipts | Captures |
 |---|---|---|---|
 | GPUI | `tmp/game-pause-menu/gpui/` | `build.log`, `test.log`, `test-capture.log`, `capture.log`, `capture-manifest.json` | 8 |
-| Unity | `tmp/game-pause-menu/unity/` | `editmode-results.xml` (36/36), `editmode.log`, `player.log`, `result.json`, `build.log` | 8 |
-| Godot | `tmp/game-pause-menu/godot/` | `parity-tests.log` (201/201), `parity-capture.log` | 8 |
+| Unity | `tmp/game-pause-menu/unity/` | `editmode-results.xml` (37/37), `editmode.log`, `player.log`, `result.json`, `build.log` | 8 |
+| Godot | `tmp/game-pause-menu/godot/` | `parity-tests.log` (209/209), `parity-capture.log` | 8 |
 
 Cross-engine verification: run `node examples/game-pause-menu/parity-check.mjs
 --root tmp/parity-evidence` after pointing a `tmp/parity-evidence/{gpui,unity,godot}`
 aggregate root at the three capture directories. The committed run report,
 per-state montages and pairwise difference images are under
 `tmp/parity-evidence/report/` (`parity-report.json` records the 195 colour/geometry
-probes, 117 typography bbox measurements and 12 RMSE pairs; the final run has
-0 failures).
+probes, 117 typography bbox measurements, 24 RMSE pairs for all eight states and
+24 committed-golden comparisons; the reviewed run has 0 failures).
 
 ## How to run
 
@@ -430,7 +445,7 @@ bash scripts/capture-screenshots.sh         # standalone Player + eight captures
 # Godot (Godot 4.7.2; GODOT=/path/to/godot to override)
 cd examples/game-pause-menu/godot
 ./setup.sh                                  # copies the generated addon; copy is gitignored
-"$GODOT" --headless --path "$PWD" res://tests/test_main.tscn   # 201/201 checks
+"$GODOT" --headless --path "$PWD" res://tests/test_main.tscn   # 209/209 checks
 "$GODOT" --path "$PWD" res://tools/capture.tscn -- --out="$PWD/evidence" \
   --mirror="$PWD/../../../tmp/game-pause-menu/godot"           # 8 captures
 
@@ -453,6 +468,13 @@ node examples/game-pause-menu/parity-check.mjs --root tmp/parity-evidence --out 
 - The Orion graphic grammar is composed per lane from the palette and the
   appearance fixture; only the Unity lane resolves it through the generated
   brand scope. GPUI/Godot decoration is app-owned, not a brand-projection claim.
-- Parity checker assertions are sampled pixels and RMSE, not a visual baseline:
-  they catch geometry/colour divergence at the pinned points and coarse
-  structural drift, not every layout regression.
+- The image goldens are a regression baseline for the reviewed captures, not a
+  full visual baseline: they catch drift in those eight states at 1280 × 800,
+  not every layout regression, other states, DPI, backend or OS.
+- The source-design oracle currently **fails its composition bands** (90
+  violations across 24 lane/state observations). Palette anchors match; the
+  reference's display typography, large mint/grey fields, orange data plates and
+  industrial graphic language do not. See
+  [`evidence/oracle-report.json`](evidence/oracle-report.json) and
+  [`evidence/visual-review.md`](evidence/visual-review.md).
+- Human visual sign-off is pending; the review record carries the checklist.

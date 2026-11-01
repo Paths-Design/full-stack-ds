@@ -1,0 +1,355 @@
+{
+  "schema": "game-pause-menu.goldens.v1",
+  "claim": "Lossless image goldens for the eight captured 1280x800 states; a regression baseline, not proof of pixel identity or unbounded parity.",
+  "captures": "/tmp/token-evidence",
+  "authority": {
+    "path": "examples/game-pause-menu/fixtures/parity-layout.json",
+    "sha256": "017d05a81942552413d1b433cee3d5fa3cdc019bf494ed0e85e941e48d4141f1"
+  },
+  "resolvedTokens": {
+    "path": "packages/ds-tokens/generated/resolved.tokens.json",
+    "sha256": "26105f531afaae86aa434f05e9c0b09a47f2eee10a1acadc6c8bac2f0513bd29"
+  },
+  "orionBrand": {
+    "path": "packages/ds-tokens/src/brands/orion.tokens.json",
+    "sha256": "9277f1cfb827d2f3eaaf99a3dff68605c8e2a5d57809e0653f0c14120e464cba"
+  },
+  "entries": [
+    {
+      "lane": "gpui",
+      "state": "map",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "126e1c897c18cc63ef5734dfa68dd4962b59f4763098f014980ac87c3383d7f4",
+        "bytes": 135427
+      },
+      "golden": {
+        "sha256": "61ac3043a2b4651f2e278957664e820037551aefe6f9f90fafb458375617ae49",
+        "bytes": 29942
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "map-popover",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "9e87dcca30c70c1d0bce02e3c2d79c540f9e79579c7171a9f2f2e2700e5bdde0",
+        "bytes": 165047
+      },
+      "golden": {
+        "sha256": "1878a415b976284d630afe7949f623d6f4370c1aef466372823af38f43beb077",
+        "bytes": 38262
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "progress",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "2fc1b3c1462fede650e234820d179101044df63be8e1f5bf99e4fe7214e01f73",
+        "bytes": 160979
+      },
+      "golden": {
+        "sha256": "1acc5f50704abfafc3b15b08d5d9197c222969603ccf85b69ef146bbd61f57b5",
+        "bytes": 37382
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "abilities",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "7a8229bb49c8b8bd66b8c0d6d59a7fb02e5816a261a4acf0914e30804ea978f4",
+        "bytes": 162056
+      },
+      "golden": {
+        "sha256": "0833dd27ee1f40f60efcea84f2d533474402070933ce20e0ea38289a9ed458bd",
+        "bytes": 36376
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "abilities-hover",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "203ca7a582f8a4744cec0ce55840837db0b0345401503ce9b68d1fff336311d7",
+        "bytes": 177350
+      },
+      "golden": {
+        "sha256": "53c43e8b79efd59883e5820a6c0bac4c391e85df19a6e23d5bfb2cb19a847b2e",
+        "bytes": 37656
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "settings",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "6dea5b4c66f2feb201c429449d410a20a4da47755c7822c37d3d0bd36d6be69e",
+        "bytes": 195466
+      },
+      "golden": {
+        "sha256": "2bb3eb900b50dc966325d24573bad59942bdf8aa00fbf88c11db804b42c6779f",
+        "bytes": 40482
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-remap-modal",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "452fcaac6907bee467384cd67ab45465a7f30b4f8080c8d0508fb2b297adc132",
+        "bytes": 187482
+      },
+      "golden": {
+        "sha256": "450ced71d62ae3778e9fd9cb2b5acf3bfb8fcc49b4997996342dbbdd5f9e538d",
+        "bytes": 40760
+      }
+    },
+    {
+      "lane": "gpui",
+      "state": "settings-subtitle",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "2c40670c484eacd56d4dc44bfb61ac307ff4287ccc55c09b40bdde8421e3a6cc",
+        "bytes": 194558
+      },
+      "golden": {
+        "sha256": "5d5625453219c86a376a79d6b9cad4c2d043e90553ca93f25623adb70a0ae0c3",
+        "bytes": 40718
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "map",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "f3223edefaac71926107ab494d519fa79b780b1c68cb999d254c34b00d367b0f",
+        "bytes": 116780
+      },
+      "golden": {
+        "sha256": "43cc0f8b6cc32bf90e26b254ccef986a2f1ca2568aff8857b704c813ba25f933",
+        "bytes": 33150
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "map-popover",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "6d0b1293d89ce196a1c9aea29a9e95b1f7577c7d2dfbe7e701f6b7c7a0b5b634",
+        "bytes": 140042
+      },
+      "golden": {
+        "sha256": "c7d6f95ec87192774d427a0cf0e344b0841bd7ad861103e92e71abf2cab5d360",
+        "bytes": 42178
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "progress",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "5a7dcaf6fe7e6bb04de4bc6ca0310e19fb760813cf5c753575531046a04f3feb",
+        "bytes": 140927
+      },
+      "golden": {
+        "sha256": "dcc5e019ab7e19d962ad51e3dbd81d9eb4764df4894000904e5ef344e85dd5af",
+        "bytes": 42346
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "abilities",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "cdd98ba4d8a55256d70d124cee57121778105f1041096ec61feba832b3971e05",
+        "bytes": 127557
+      },
+      "golden": {
+        "sha256": "1556a31f0a8058cf9a45e26b6f8faf38341f4030982c75fa0f91e4ee0501921d",
+        "bytes": 39200
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "abilities-hover",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "b1f7cf29b795951b063551f1f61ded5f188c48e8b372491d7c1d6cda8f944190",
+        "bytes": 140135
+      },
+      "golden": {
+        "sha256": "01cd174b5e3cffc5c5d0eebbce3b378eb3c17ccd70ce158c7d5e9ed7adf9e1b3",
+        "bytes": 43372
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "settings",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "2000c220ea6a48d4fc51bbabcd530022218e32c742912ac6f927131e07873322",
+        "bytes": 158476
+      },
+      "golden": {
+        "sha256": "e65f44f39d845e5165b6db7e6f4706e337f5f9a9391674b5ac6eac21d447c961",
+        "bytes": 48928
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "settings-remap-modal",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "baeee248598e893bcb8bc8c7d713848c8303852ae3cce5657a3385b41d53fde1",
+        "bytes": 131448
+      },
+      "golden": {
+        "sha256": "52f047d31bc6f0c341b61423794ca2f44a7be2c7a8a298c089d63e7f3f6eb3e7",
+        "bytes": 39768
+      }
+    },
+    {
+      "lane": "unity",
+      "state": "settings-subtitle",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "341cca5067f3d2c4f6d9393311bc7995e09c006d635ff3d211c9306ec142b4af",
+        "bytes": 161324
+      },
+      "golden": {
+        "sha256": "de383b43bae707d4619e97dad166925d637be41087e5392d11b2916a6c9c3436",
+        "bytes": 50690
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "map",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "2d3f079bda8e370390b67745ec4d7f31ce811a38b04d49f5483fa175526633bd",
+        "bytes": 83846
+      },
+      "golden": {
+        "sha256": "6069cc097ac2bff17b77d072d4123f9519a3c37b450be4769156898877d347d2",
+        "bytes": 23628
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "map-popover",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "a689e2873d25e0b82f4637c6a247d9d6825b56fc7151495f948ceb3e6da4a009",
+        "bytes": 100661
+      },
+      "golden": {
+        "sha256": "cb658ea5d1a9a35cdd624b4ea220ec596e50a79ba357dfb219413e07f413ca1d",
+        "bytes": 29566
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "progress",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "2a105ef60acaf4a5c7a5a9b07ba2ae4cf886debc0336f709cbcc7fd8c4906f6e",
+        "bytes": 91318
+      },
+      "golden": {
+        "sha256": "ae7c325c0412e5eb396c345a9fbc9825e2e757ae49fbcd5d7ae2e5efbb0e0b21",
+        "bytes": 29676
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "abilities",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "d6b3fdf0bd0ac3af8e5f5c70ecaaa3c77f3594896ba8357fac3714320957f153",
+        "bytes": 85407
+      },
+      "golden": {
+        "sha256": "ea538fea11469d8b26842d5c7cf0f22a77cb50ca54ba3e84d53bad2f78fecdff",
+        "bytes": 26868
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "abilities-hover",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "3021f5269f91e9bf2eba97ac078d8fc542ed0975533c5d437c2481689dc884c4",
+        "bytes": 91328
+      },
+      "golden": {
+        "sha256": "52e17173dd68eceabde0c2dad500c8c61a10d12355c4a46cbe972577fdbc9352",
+        "bytes": 27862
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "settings",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "2d099057d79067d5f08d8ad81746c90db20efa51b2e878a9912c412cb991325b",
+        "bytes": 106678
+      },
+      "golden": {
+        "sha256": "672520cc75b1b779741948cc18477564a6086948cf7c03604e9d52bd79bfcd1a",
+        "bytes": 30126
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "settings-remap-modal",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "1ae7b9335fda83370e4459530f958263b42fa77473abe728f5d5ea1ad0036e06",
+        "bytes": 83168
+      },
+      "golden": {
+        "sha256": "3d3ef44c5848c77fa47045e1a9169f81863b3c93a84146b72551aa25ea6c0691",
+        "bytes": 25254
+      }
+    },
+    {
+      "lane": "godot",
+      "state": "settings-subtitle",
+      "width": 1280,
+      "height": 800,
+      "sourcePng": {
+        "sha256": "e428a1849c21e13993eba8f83cf96c27e3ffc5b88acdcc406103ec0e21ed6b17",
+        "bytes": 107024
+      },
+      "golden": {
+        "sha256": "fe3cc28f4d84ebc9c8e43df0133d0a41933aab36e4edb8260a4f239bba9ee0e4",
+        "bytes": 30332
+      }
+    }
+  ]
+}
