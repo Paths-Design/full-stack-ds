@@ -1,9 +1,11 @@
 id: TABLE-WEB-RESPONSIVE-01
 title: 'Honor Table scrolling policy and keyboard viewport access'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Web Table responsive policy, localized viewport keyboard access and preserved composition are verified in five installed Chromium consumers with A1-A3 recorded; generic lowering, all-target generation, root/framework/type/admission checks pass; parent Unity18 reference and53 variant release-audit failures remain open.'
 created_at: '2026-11-01T03:24:18.913Z'
-updated_at: '2026-11-01T13:36:31.543Z'
+updated_at: '2026-11-01T14:10:20.475Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
