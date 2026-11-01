@@ -46,6 +46,41 @@ function makeBundle(overrides: Partial<ComponentBundle> = {}): ComponentBundle {
 }
 
 describe("buildReactDemo", () => {
+  it("consumes build-side required alias samples without sharing mutable fixture objects", () => {
+    const payload = { author: { name: "Example", handle: "Example", avatar: "Example" }, stats: { likes: 0, replies: 0, reposts: 0 } };
+    const bundle = makeBundle({
+      name: "Bulletin",
+      contract: {
+        name: "Bulletin", layer: "compound",
+        props: { styled: { members: [
+          { name: "author", required: true, propType: { kind: "ref", to: "Author" } },
+          { name: "stats", required: true, propType: { kind: "ref", to: "Stats" } },
+          { name: "timestamp", required: true, type: "string" },
+        ] } },
+        types: { Author: { kind: "alias", alias: "{ name: string; handle: string; avatar: string }" }, Stats: { kind: "alias", alias: "{ likes: number; replies: number; reposts: number }" } },
+      },
+      previewSamples: { values: payload, unsupported: {} },
+    });
+    const props = defaultPropsFromContract(bundle);
+    expect(props).toEqual({ ...payload, timestamp: "2031-03-14T12:00:00Z" });
+    (props.stats as { likes: number }).likes = 7;
+    expect(defaultPropsFromContract(bundle).stats).toEqual({ likes: 0, replies: 0, reposts: 0 });
+    expect(buildReactDemo(bundle)).toContain('stats={{"likes":0,"replies":0,"reposts":0}}');
+  });
+
+  it("keeps defaults and variants ahead of projected samples and excludes optional sample entries", () => {
+    const bundle = makeBundle({
+      contract: { name: "Bulletin", layer: "compound", variants: { mode: ["first", "second"] }, props: {
+        styled: { members: [{ name: "mode", required: true, default: "second" }, { name: "authored", required: true, default: { value: 9 } }] },
+        designed: { members: [{ name: "payload", required: true, propType: { kind: "ref", to: "Payload" } }] },
+        constrained: { members: [{ name: "optional", propType: { kind: "ref", to: "Payload" } }] },
+      } },
+      previewSamples: { values: { mode: "wrong", authored: { value: 0 }, payload: { value: 3 }, optional: { value: 4 } }, unsupported: {} },
+    });
+    expect(defaultPropsFromContract(bundle)).toEqual({ mode: "first", authored: { value: 9 }, payload: { value: 3 } });
+    expect(buildReactDemo(bundle, { payload: { value: 11 } })).toContain('payload={{"value":11}}');
+  });
+
   it("derives preview defaults from designed required props without changing contract defaults", () => {
     const props = defaultPropsFromContract(
       makeBundle({

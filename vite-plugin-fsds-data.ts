@@ -20,6 +20,7 @@ import type {
 } from "./src/types/data";
 import { buildBoxModelSurface } from "./material-surface";
 import { deriveUsageComposition } from "./packages/ds-codegen/src/usage-composition";
+import { derivePreviewPropSamples } from "./packages/ds-codegen/src/preview-prop-samples";
 
 /**
  * Parse a `<Name>.usage.jsonl` file. One example per line; blank lines are
@@ -420,6 +421,7 @@ export async function buildBundle(rootDir: string) {
       sources,
       usage,
       usageComposition: deriveUsageComposition(contract as never),
+      previewSamples: derivePreviewPropSamples(contract as unknown as CodegenContract),
       boxModelSurface,
       designBindings,
     });

@@ -1,4 +1,5 @@
 import type { DesignBindingIR } from '../../packages/ds-codegen/src/design-properties';
+import type { PreviewPropSamples } from '../../packages/ds-codegen/src/preview-prop-samples';
 export type Framework = "react" | "vue" | "svelte" | "angular" | "lit";
 
 /** The admitted Web framework targets. Single source of truth for display
@@ -313,6 +314,8 @@ export interface BoxModelSurfaceSlot {
 }
 
 export interface ComponentBundle {
+  /** Build-side JSON fixtures for required inputs whose aliases are opaque to the browser. */
+  previewSamples?: PreviewPropSamples;
   /** Typed, independently settable design properties from the style sidecar. */
   designBindings?: DesignBindingIR[];
   name: string;
