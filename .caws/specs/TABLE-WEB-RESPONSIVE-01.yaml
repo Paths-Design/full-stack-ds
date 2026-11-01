@@ -11,6 +11,7 @@ blast_radius:
     - 'Table contract styles and web consumer scrolling'
     - 'Generic React numeric conditional attribute lowering'
     - 'Preserve structural Unity Table with explicit refusal of web-only keyboard and content-label metadata'
+    - 'Generic Svelte numeric conditional attribute lowering'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
