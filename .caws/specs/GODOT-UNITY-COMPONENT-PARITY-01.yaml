@@ -81,3 +81,7 @@ evidence:
     status: pass
     evidence_ref: "53 newly admitted components emit all four artifacts (createGodotEmitter emit sweep 55/55); audit reports 'every admitted component emitted' with Carousel emitted:true; no GODOT_UNSUPPORTED_* refusal remains for an admitted component; each declined prop is named in the component receipt (bounded shapes derive '<prop>: declined by the <operation> shape', anatomy/surface plans curate their own omission lines)"
     recorded_at: "2026-11-01T07:58:59.159Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "pnpm run generate:check -> exit 0, Validation: 55/55 component contract(s) passed; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/cli.test.ts packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 9 files, 120 tests passed, 0 failed"
+    recorded_at: "2026-11-01T07:59:01.430Z"
