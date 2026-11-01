@@ -57,3 +57,8 @@ evidence:
     evidence_ref: "Inspected GPUI mounted test: first slider cell selects minimum, master audio selects zero, every option in both language menus receives click; 8 app tests and 49 seam tests passed. Raw logs: .caws/state/game-pause-interaction-repairs/game-pause-gpui-integrated.log and game-pause-gpui-zero-test.log"
     recorded_at: "2026-11-01T23:55:57.140Z"
     commit_sha: b9118c57f640a1fc356571c793d4b206ad2a83a3
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected Unity EditMode tests: initially hidden rover-07 stays hidden until switch activation; remapped Interact modal reopens with CURRENT BINDING K. 38/38 passed. Raw XML: .caws/state/game-pause-interaction-repairs/unity-editmode-results.xml"
+    recorded_at: "2026-11-01T23:56:07.646Z"
+    commit_sha: b9118c57f640a1fc356571c793d4b206ad2a83a3
