@@ -20,7 +20,7 @@ import { hasChildrenPlaceholder } from '../../ir.js';
 import { collectDomSlots } from '../native-emission-class.js';
 import { classifyProp, loadBoundary, type GpuiBoundary } from './boundary.js';
 import { supported, validScalar } from './style-vocabulary.js';
-import type { GpuiActivationPlan, GpuiCallbackPlan, GpuiOmission, GpuiPlan, GpuiPresencePlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan } from './plan-types.js';
+import type { GpuiActivationPlan, GpuiCallbackPlan, GpuiOmission, GpuiPlan, GpuiPresencePlan, GpuiRefPlan, GpuiStyleOmission, GpuiStylePlan, GpuiValueChannelPlan } from './plan-types.js';
 
 const RESERVED = new Set(['self','super','crate','type','mod','fn','match','default','new','request_change','theme','variants','label','focus_handle','request_key','content','set_content','clear_content','has_content','render_content','slot','slots','slot_key','set_slot','clear_slot','has_slot','render_slot']);
 
@@ -412,6 +412,24 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     ? { channelName: presenceChannel.name, valueProp: presenceChannel.valueProp, defaultValueProp: presenceChannel.defaultValueProp, changeHandlerProp: presenceChannel.changeHandlerProp }
     : undefined;
   if (presence) state.realizedPresence.add(presence.valueProp);
+  // Collection open-value channel: a string-valued disclosure toggled by a click.
+  const valueChannel: GpuiValueChannelPlan | undefined = (() => {
+    if (!ir.dom || ir.surface || ir.formControl || ir.compositeControl) return undefined;
+    const channel = ir.interaction?.channel;
+    if (!channel || channel.valueType === 'boolean' || !/string/.test(String(channel.valueType ?? ''))) return undefined;
+    const declaredTrigger = ir.interaction?.triggers?.[0]?.part?.name;
+    let triggerPart: string | undefined = declaredTrigger;
+    let gatedPart: string | undefined;
+    const visit = (node: DomNodeIR): void => {
+      const click = node.events?.click;
+      if (!triggerPart && click?.kind === 'channel' && click.channel === channel.name) triggerPart = node.part ?? 'root';
+      if (!gatedPart && node.part === 'content') gatedPart = node.part;
+      node.children.forEach(visit);
+    };
+    visit(ir.dom);
+    if (!triggerPart || !gatedPart) return undefined;
+    return { valueProp: channel.valueProp, defaultValueProp: channel.defaultValueProp, changeHandlerProp: channel.changeHandlerProp, triggerPart, gatedPart };
+  })();
   const channelProps = channelPropNames(ir);
   const boolProps: string[] = [];
   const textProps: string[] = [];
@@ -422,7 +440,12 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   };
   for (const prop of ir.styledProps) {
     const method = identifier(prop.name);
-    if (channelProps.has(prop.name) && presence && prop.name === presence.changeHandlerProp) {
+    if (valueChannel && prop.name === valueChannel.changeHandlerProp) {
+      // The open-value change handler is a callback prop; fall through to the
+      // generic callback realization.
+    } else if (valueChannel && (prop.name === valueChannel.valueProp || prop.name === valueChannel.defaultValueProp)) {
+      continue;
+    } else if (channelProps.has(prop.name) && presence && prop.name === presence.changeHandlerProp) {
       // The presence change handler is a callback prop; fall through so the
       // generic callback realization stores it.
     } else if (channelProps.has(prop.name) && presence && (prop.name === presence.valueProp || prop.name === presence.defaultValueProp)) {
@@ -524,6 +547,7 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
   // A native part's click event bound to a realized callback prop invokes it.
   // Read from the original anatomy: the projection clears event maps.
   const activations: GpuiActivationPlan[] = [];
+  if (valueChannel) activations.push({ part: valueChannel.triggerPart, handler: '', keyboard: true, method: 'toggle_open' });
   const visitActivations = (node: DomNodeIR, isRoot: boolean): void => {
     const click = node.events?.click;
     if (click?.kind === 'prop' && state.wiredCallbacks.has(click.prop)) {
@@ -572,6 +596,7 @@ export function gpuiAnatomyPlan(ir: ComponentIR, boundary: GpuiBoundary = loadBo
     callbacks,
     activations,
     ...(presence ? { presence } : {}),
+    ...(valueChannel ? { valueChannel } : {}),
     slots: realizedSlots,
     slotVariants,
     defaultValue: 'false',
