@@ -73,9 +73,8 @@ evidence:
     commit_sha: "32416a7d7"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Unity 6000.5.3f1 EditMode real panel: clean source 83269cc1f, results.xml SHA256 f3eb7ff0, 100/100 passed including SpinnerPaintsSourceBoundGeometryAndThemeColors, SpinnerRotatesOnTheDeclaredLoop, SpinnerHoldsTheAuthoredStaticValueWhenReducedMotionIsRequested; Unity source unchanged through landed revision."
-    recorded_at: "2026-11-01T11:25:09.442Z"
-    artifact_path: "/private/tmp/fsds-spinner-unity-final-20261101/results.xml"
+    evidence_ref: "Unity 6000.5.3f1 clean source 83269cc1f: real EditMode panel results at docs/internal/engine-spinner-parity/unity/results.xml (ignored local receipt, SHA256 f3eb7ff0ac799e3f79d334e2fbf139d6fa5888bf20cd7cc5d253157a3fba6901) record 100/100 passed including Spinner source geometry/colors, rotation and reduced-motion hold. Unity source unchanged through merge 32416a7d7. CAWS commit verification checks reachability, not test execution."
+    recorded_at: "2026-11-01T11:31:15.039Z"
     commit_sha: "83269cc1f"
   - criterion_id: A3
     status: pass
