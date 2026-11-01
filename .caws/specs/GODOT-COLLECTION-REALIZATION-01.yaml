@@ -67,3 +67,7 @@ evidence:
     status: pass
     evidence_ref: "docs/architecture/godot-target.md 'Collections and date family' section states the family closed entirely by refusal, lists each refusal with its reason, and says behavioural completion would need new runtimes (date grid, paged set, dynamic ref mounting); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; docs:check-claims and docs:check-links pass"
     recorded_at: "2026-11-01T10:06:41.734Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=godot twice -> tree unchanged (byte-stable); pnpm run generate:check exit 0; pnpm run audit:godot-boundary exit 0; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 92 tests passed (boundary.test.ts updated where narrowed rules changed expected dispositions); pnpm run test:godot passed"
+    recorded_at: "2026-11-01T10:06:42.967Z"
