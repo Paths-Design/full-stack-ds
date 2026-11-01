@@ -53,3 +53,7 @@ evidence:
     status: pass
     evidence_ref: "node examples/game-pause-menu/parity-check.mjs --root /tmp/typography-evidence: 195 colour probes, 117 typography bbox measurements (39 probes x 3 engines), 12 RMSE pairs, 0 failures on merged main"
     recorded_at: "2026-11-01T03:04:18.676Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/game-pause-menu/README.md Typography parity section + gpui/unity/godot README typography/permitted-difference sections + examples/README.md row"
+    recorded_at: "2026-11-01T03:04:19.467Z"
