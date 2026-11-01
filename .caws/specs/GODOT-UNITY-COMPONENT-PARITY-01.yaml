@@ -85,3 +85,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run generate:check -> exit 0, Validation: 55/55 component contract(s) passed; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/cli.test.ts packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 9 files, 120 tests passed, 0 failed"
     recorded_at: "2026-11-01T07:59:01.430Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "FSDS_ENGINE_OUT=/tmp/godot-pilot-final node scripts/godot-pilot.mjs (Godot 4.7.2 headless) -> exit 0, receipt passed:true, 22 rows; catalog-load row {'admitted':55,'failures':[]}; all 21 pre-existing rows unchanged versus the pre-slice baseline run /tmp/godot-pilot-baseline"
+    recorded_at: "2026-11-01T07:59:03.860Z"
