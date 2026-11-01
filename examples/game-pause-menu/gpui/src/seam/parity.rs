@@ -416,6 +416,7 @@ pub struct Panels {
     pub header_height: f32,
     pub padding: f32,
     pub background: String,
+    pub elevated_background: String,
     pub border: String,
 }
 

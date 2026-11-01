@@ -1,7 +1,7 @@
 {
   "claim": "Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.",
-  "root": "/tmp/restyle3-evidence",
-  "out": "/tmp/restyle3-evidence/report",
+  "root": "/tmp/restyle4-evidence",
+  "out": "/tmp/restyle4-evidence/report",
   "states": [
     "map",
     "map-popover",
@@ -766,11 +766,11 @@
       "probe": "panel-meta",
       "text": "SCALE 1:40K",
       "bbox": {
-        "x": 819,
+        "x": 820,
         "y": 192,
-        "w": 61,
+        "w": 59,
         "h": 8,
-        "ink": 0.430328
+        "ink": 0.283898
       }
     },
     {
@@ -880,9 +880,9 @@
       "bbox": {
         "x": 1177,
         "y": 192,
-        "w": 63,
+        "w": 62,
         "h": 6,
-        "ink": 0.425926
+        "ink": 0.268817
       }
     },
     {
@@ -1004,11 +1004,11 @@
       "probe": "panel-meta",
       "text": "SCALE 1:40K",
       "bbox": {
-        "x": 816,
+        "x": 817,
         "y": 194,
-        "w": 61,
+        "w": 60,
         "h": 6,
-        "ink": 0.398907
+        "ink": 0.266667
       }
     },
     {
@@ -1116,11 +1116,11 @@
       "probe": "icon-meta",
       "text": "7/8 PLOTTED",
       "bbox": {
-        "x": 1174,
+        "x": 1175,
         "y": 194,
-        "w": 63,
+        "w": 62,
         "h": 4,
-        "ink": 0.412698
+        "ink": 0.28629
       }
     },
     {
@@ -1246,7 +1246,7 @@
         "y": 190,
         "w": 60,
         "h": 8,
-        "ink": 0.372917
+        "ink": 0.2875
       }
     },
     {
@@ -1354,27 +1354,27 @@
       "probe": "icon-meta",
       "text": "7/8 PLOTTED",
       "bbox": {
-        "x": 1177,
+        "x": 1178,
         "y": 190,
-        "w": 63,
+        "w": 62,
         "h": 8,
-        "ink": 0.353175
+        "ink": 0.28629
       }
     },
     {
       "state": "map",
       "compare": "gpui/unity",
-      "rmse": 0.0673298
+      "rmse": 0.0676196
     },
     {
       "state": "map",
       "compare": "unity/godot",
-      "rmse": 0.0616847
+      "rmse": 0.0620562
     },
     {
       "state": "map",
       "compare": "gpui/godot",
-      "rmse": 0.0728899
+      "rmse": 0.0731462
     },
     {
       "state": "map",
@@ -1400,17 +1400,17 @@
     {
       "state": "map-popover",
       "compare": "gpui/unity",
-      "rmse": 0.128119
+      "rmse": 0.128272
     },
     {
       "state": "map-popover",
       "compare": "unity/godot",
-      "rmse": 0.125061
+      "rmse": 0.125245
     },
     {
       "state": "map-popover",
       "compare": "gpui/godot",
-      "rmse": 0.0965045
+      "rmse": 0.0966982
     },
     {
       "state": "map-popover",
@@ -2222,17 +2222,17 @@
     {
       "state": "progress",
       "compare": "gpui/unity",
-      "rmse": 0.0904177
+      "rmse": 0.0906528
     },
     {
       "state": "progress",
       "compare": "unity/godot",
-      "rmse": 0.0786984
+      "rmse": 0.0790054
     },
     {
       "state": "progress",
       "compare": "gpui/godot",
-      "rmse": 0.0825252
+      "rmse": 0.0828127
     },
     {
       "state": "progress",
@@ -2330,8 +2330,8 @@
       "lane": "gpui",
       "x": 850,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "detail panel background"
     },
@@ -2340,8 +2340,8 @@
       "lane": "gpui",
       "x": 1248,
       "y": 200,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "detail panel inside right edge"
     },
@@ -2440,8 +2440,8 @@
       "lane": "unity",
       "x": 850,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "detail panel background"
     },
@@ -2450,8 +2450,8 @@
       "lane": "unity",
       "x": 1248,
       "y": 200,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "detail panel inside right edge"
     },
@@ -2550,8 +2550,8 @@
       "lane": "godot",
       "x": 850,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "detail panel background"
     },
@@ -2560,8 +2560,8 @@
       "lane": "godot",
       "x": 1248,
       "y": 200,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "detail panel inside right edge"
     },
@@ -2608,9 +2608,9 @@
       "bbox": {
         "x": 612,
         "y": 192,
-        "w": 204,
+        "w": 203,
         "h": 6,
-        "ink": 0.35866
+        "ink": 0.252874
       }
     },
     {
@@ -2634,11 +2634,11 @@
       "probe": "detail-title",
       "text": "ABILITY DETAIL",
       "bbox": {
-        "x": 865,
+        "x": 864,
         "y": 192,
-        "w": 83,
+        "w": 84,
         "h": 8,
-        "ink": 0.365964
+        "ink": 0.4375
       }
     },
     {
@@ -2652,7 +2652,7 @@
         "y": 235,
         "w": 148,
         "h": 18,
-        "ink": 0.422673
+        "ink": 0.442943
       }
     },
     {
@@ -2666,7 +2666,7 @@
         "y": 297,
         "w": 345,
         "h": 23,
-        "ink": 0.110145
+        "ink": 0.138374
       }
     },
     {
@@ -2690,11 +2690,11 @@
       "probe": "grid-meta",
       "text": "10 MODULES · SELECT ONE, THEN A SLOT",
       "bbox": {
-        "x": 609,
+        "x": 610,
         "y": 194,
-        "w": 204,
+        "w": 203,
         "h": 4,
-        "ink": 0.387255
+        "ink": 0.231527
       }
     },
     {
@@ -2722,7 +2722,7 @@
         "y": 194,
         "w": 80,
         "h": 6,
-        "ink": 0.35625
+        "ink": 0.435417
       }
     },
     {
@@ -2736,7 +2736,7 @@
         "y": 234,
         "w": 148,
         "h": 18,
-        "ink": 0.405781
+        "ink": 0.43994
       }
     },
     {
@@ -2750,7 +2750,7 @@
         "y": 297,
         "w": 345,
         "h": 23,
-        "ink": 0.0819156
+        "ink": 0.129931
       }
     },
     {
@@ -2774,11 +2774,11 @@
       "probe": "grid-meta",
       "text": "10 MODULES · SELECT ONE, THEN A SLOT",
       "bbox": {
-        "x": 612,
+        "x": 613,
         "y": 190,
-        "w": 204,
+        "w": 203,
         "h": 8,
-        "ink": 0.352941
+        "ink": 0.272167
       }
     },
     {
@@ -2802,11 +2802,11 @@
       "probe": "detail-title",
       "text": "ABILITY DETAIL",
       "bbox": {
-        "x": 865,
+        "x": 864,
         "y": 191,
-        "w": 83,
+        "w": 84,
         "h": 8,
-        "ink": 0.329819
+        "ink": 0.361607
       }
     },
     {
@@ -2820,7 +2820,7 @@
         "y": 235,
         "w": 148,
         "h": 17,
-        "ink": 0.426073
+        "ink": 0.448728
       }
     },
     {
@@ -2834,23 +2834,23 @@
         "y": 298,
         "w": 346,
         "h": 22,
-        "ink": 0.101025
+        "ink": 0.116132
       }
     },
     {
       "state": "abilities",
       "compare": "gpui/unity",
-      "rmse": 0.0816271
+      "rmse": 0.0783196
     },
     {
       "state": "abilities",
       "compare": "unity/godot",
-      "rmse": 0.0841628
+      "rmse": 0.0816383
     },
     {
       "state": "abilities",
       "compare": "gpui/godot",
-      "rmse": 0.0844156
+      "rmse": 0.0810164
     },
     {
       "state": "abilities",
@@ -2876,17 +2876,17 @@
     {
       "state": "abilities-hover",
       "compare": "gpui/unity",
-      "rmse": 0.0924976
+      "rmse": 0.0895923
     },
     {
       "state": "abilities-hover",
       "compare": "unity/godot",
-      "rmse": 0.100308
+      "rmse": 0.0930967
     },
     {
       "state": "abilities-hover",
       "compare": "gpui/godot",
-      "rmse": 0.0996226
+      "rmse": 0.0933925
     },
     {
       "state": "abilities-hover",
@@ -2974,8 +2974,8 @@
       "lane": "gpui",
       "x": 26,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "GENERAL panel top-left fill"
     },
@@ -2984,8 +2984,8 @@
       "lane": "gpui",
       "x": 629,
       "y": 300,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "GENERAL panel inside right edge"
     },
@@ -3014,8 +3014,8 @@
       "lane": "gpui",
       "x": 650,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "CONTROLLER panel top-left fill"
     },
@@ -3024,8 +3024,8 @@
       "lane": "gpui",
       "x": 26,
       "y": 462,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "REMAP panel top-left fill"
     },
@@ -3034,8 +3034,8 @@
       "lane": "gpui",
       "x": 650,
       "y": 462,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "AUDIO panel top-left fill"
     },
@@ -3054,8 +3054,8 @@
       "lane": "gpui",
       "x": 554,
       "y": 224,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "settings switch corner outside pill"
     },
@@ -3154,8 +3154,8 @@
       "lane": "unity",
       "x": 26,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "GENERAL panel top-left fill"
     },
@@ -3164,8 +3164,8 @@
       "lane": "unity",
       "x": 629,
       "y": 300,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "GENERAL panel inside right edge"
     },
@@ -3194,8 +3194,8 @@
       "lane": "unity",
       "x": 650,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "CONTROLLER panel top-left fill"
     },
@@ -3204,8 +3204,8 @@
       "lane": "unity",
       "x": 26,
       "y": 462,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "REMAP panel top-left fill"
     },
@@ -3214,8 +3214,8 @@
       "lane": "unity",
       "x": 650,
       "y": 462,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "AUDIO panel top-left fill"
     },
@@ -3234,8 +3234,8 @@
       "lane": "unity",
       "x": 554,
       "y": 224,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "settings switch corner outside pill"
     },
@@ -3334,8 +3334,8 @@
       "lane": "godot",
       "x": 26,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "GENERAL panel top-left fill"
     },
@@ -3344,8 +3344,8 @@
       "lane": "godot",
       "x": 629,
       "y": 300,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "GENERAL panel inside right edge"
     },
@@ -3374,8 +3374,8 @@
       "lane": "godot",
       "x": 650,
       "y": 178,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "CONTROLLER panel top-left fill"
     },
@@ -3384,8 +3384,8 @@
       "lane": "godot",
       "x": 26,
       "y": 462,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "REMAP panel top-left fill"
     },
@@ -3394,8 +3394,8 @@
       "lane": "godot",
       "x": 650,
       "y": 462,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "AUDIO panel top-left fill"
     },
@@ -3414,8 +3414,8 @@
       "lane": "godot",
       "x": 554,
       "y": 224,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
       "delta": 0,
       "description": "settings switch corner outside pill"
     },
@@ -3460,7 +3460,7 @@
         "y": 190,
         "w": 50,
         "h": 8,
-        "ink": 0.455
+        "ink": 0.495
       }
     },
     {
@@ -3472,9 +3472,9 @@
       "bbox": {
         "x": 490,
         "y": 190,
-        "w": 126,
+        "w": 125,
         "h": 6,
-        "ink": 0.468254
+        "ink": 0.458667
       }
     },
     {
@@ -3484,11 +3484,11 @@
       "probe": "row-label",
       "text": "AUTO-SAVE",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 221,
-        "w": 70,
+        "w": 71,
         "h": 9,
-        "ink": 0.369841
+        "ink": 0.405321
       }
     },
     {
@@ -3498,11 +3498,11 @@
       "probe": "row-sub",
       "text": "Write a checkpoint on every pad handshake.",
       "bbox": {
-        "x": 40,
-        "y": 237,
-        "w": 207,
-        "h": 10,
-        "ink": 0.331401
+        "x": 38,
+        "y": 236,
+        "w": 330,
+        "h": 18,
+        "ink": 1
       }
     },
     {
@@ -3516,7 +3516,7 @@
         "y": 221,
         "w": 111,
         "h": 9,
-        "ink": 0.39039
+        "ink": 0.451451
       }
     },
     {
@@ -3530,7 +3530,7 @@
         "y": 222,
         "w": 31,
         "h": 10,
-        "ink": 0.36129
+        "ink": 0.406452
       }
     },
     {
@@ -3544,7 +3544,7 @@
         "y": 501,
         "w": 49,
         "h": 9,
-        "ink": 0.424036
+        "ink": 0.492063
       }
     },
     {
@@ -3556,9 +3556,9 @@
       "bbox": {
         "x": 41,
         "y": 501,
-        "w": 59,
+        "w": 60,
         "h": 9,
-        "ink": 0.393597
+        "ink": 0.453704
       }
     },
     {
@@ -3572,7 +3572,7 @@
         "y": 192,
         "w": 47,
         "h": 6,
-        "ink": 0.453901
+        "ink": 0.507092
       }
     },
     {
@@ -3586,7 +3586,7 @@
         "y": 192,
         "w": 125,
         "h": 4,
-        "ink": 0.458
+        "ink": 0.432
       }
     },
     {
@@ -3596,11 +3596,11 @@
       "probe": "row-label",
       "text": "AUTO-SAVE",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 223,
-        "w": 70,
+        "w": 71,
         "h": 9,
-        "ink": 0.368254
+        "ink": 0.416275
       }
     },
     {
@@ -3610,11 +3610,11 @@
       "probe": "row-sub",
       "text": "Write a checkpoint on every pad handshake.",
       "bbox": {
-        "x": 40,
-        "y": 238,
-        "w": 207,
-        "h": 10,
-        "ink": 0.306763
+        "x": 38,
+        "y": 236,
+        "w": 330,
+        "h": 18,
+        "ink": 1
       }
     },
     {
@@ -3628,7 +3628,7 @@
         "y": 223,
         "w": 111,
         "h": 9,
-        "ink": 0.388388
+        "ink": 0.457457
       }
     },
     {
@@ -3640,9 +3640,9 @@
       "bbox": {
         "x": 1208,
         "y": 223,
-        "w": 30,
+        "w": 31,
         "h": 10,
-        "ink": 0.376667
+        "ink": 0.416129
       }
     },
     {
@@ -3656,7 +3656,7 @@
         "y": 501,
         "w": 49,
         "h": 9,
-        "ink": 0.430839
+        "ink": 0.505669
       }
     },
     {
@@ -3668,9 +3668,9 @@
       "bbox": {
         "x": 41,
         "y": 501,
-        "w": 59,
+        "w": 60,
         "h": 9,
-        "ink": 0.416196
+        "ink": 0.477778
       }
     },
     {
@@ -3684,7 +3684,7 @@
         "y": 190,
         "w": 50,
         "h": 8,
-        "ink": 0.4075
+        "ink": 0.4575
       }
     },
     {
@@ -3698,7 +3698,7 @@
         "y": 190,
         "w": 125,
         "h": 6,
-        "ink": 0.408
+        "ink": 0.382667
       }
     },
     {
@@ -3708,11 +3708,11 @@
       "probe": "row-label",
       "text": "AUTO-SAVE",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 223,
-        "w": 71,
+        "w": 72,
         "h": 9,
-        "ink": 0.377152
+        "ink": 0.447531
       }
     },
     {
@@ -3722,11 +3722,11 @@
       "probe": "row-sub",
       "text": "Write a checkpoint on every pad handshake.",
       "bbox": {
-        "x": 40,
-        "y": 238,
-        "w": 206,
-        "h": 10,
-        "ink": 0.301942
+        "x": 38,
+        "y": 236,
+        "w": 330,
+        "h": 18,
+        "ink": 1
       }
     },
     {
@@ -3740,7 +3740,7 @@
         "y": 223,
         "w": 111,
         "h": 9,
-        "ink": 0.359359
+        "ink": 0.451451
       }
     },
     {
@@ -3754,7 +3754,7 @@
         "y": 223,
         "w": 30,
         "h": 11,
-        "ink": 0.366667
+        "ink": 0.430303
       }
     },
     {
@@ -3768,7 +3768,7 @@
         "y": 503,
         "w": 49,
         "h": 9,
-        "ink": 0.430839
+        "ink": 0.535147
       }
     },
     {
@@ -3782,23 +3782,23 @@
         "y": 501,
         "w": 55,
         "h": 8,
-        "ink": 0.370455
+        "ink": 0.409091
       }
     },
     {
       "state": "settings",
       "compare": "gpui/unity",
-      "rmse": 0.0998059
+      "rmse": 0.0868898
     },
     {
       "state": "settings",
       "compare": "unity/godot",
-      "rmse": 0.0915589
+      "rmse": 0.0790767
     },
     {
       "state": "settings",
       "compare": "gpui/godot",
-      "rmse": 0.0980308
+      "rmse": 0.085476
     },
     {
       "state": "settings",
@@ -3824,17 +3824,17 @@
     {
       "state": "settings-remap-modal",
       "compare": "gpui/unity",
-      "rmse": 0.0468511
+      "rmse": 0.0457348
     },
     {
       "state": "settings-remap-modal",
       "compare": "unity/godot",
-      "rmse": 0.0476059
+      "rmse": 0.0466174
     },
     {
       "state": "settings-remap-modal",
       "compare": "gpui/godot",
-      "rmse": 0.0467007
+      "rmse": 0.0456999
     },
     {
       "state": "settings-remap-modal",
@@ -3860,17 +3860,17 @@
     {
       "state": "settings-subtitle",
       "compare": "gpui/unity",
-      "rmse": 0.098455
+      "rmse": 0.0848254
     },
     {
       "state": "settings-subtitle",
       "compare": "unity/godot",
-      "rmse": 0.0906932
+      "rmse": 0.0775242
     },
     {
       "state": "settings-subtitle",
       "compare": "gpui/godot",
-      "rmse": 0.0957019
+      "rmse": 0.0827947
     },
     {
       "state": "settings-subtitle",

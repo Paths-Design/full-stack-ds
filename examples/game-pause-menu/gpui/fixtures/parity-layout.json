@@ -223,7 +223,9 @@
     "headerHeight": 40,
     "padding": 16,
     "background": "charcoal",
-    "border": "rule"
+    "border": "rule",
+    "elevatedBackground": "ruleStrong",
+    "headerMetaColor": "textSecondary"
   },
   "map": {
     "mapPanel": {
@@ -740,7 +742,7 @@
       {
         "state": "map",
         "id": "panel-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 790,
         "y": 180,
         "w": 92,
@@ -820,7 +822,7 @@
       {
         "state": "map",
         "id": "icon-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 1160,
         "y": 180,
         "w": 96,
@@ -906,7 +908,8 @@
         "y": 242,
         "w": 90,
         "h": 16,
-        "text": "OPEN \u2192"
+        "text": "OPEN \u2192",
+        "inkTolerance": 0.35
       },
       {
         "state": "abilities",
@@ -921,7 +924,7 @@
       {
         "state": "abilities",
         "id": "grid-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 560,
         "y": 180,
         "w": 270,
@@ -982,7 +985,7 @@
       {
         "state": "settings",
         "id": "general-meta",
-        "color": "muted",
+        "color": "textSecondary",
         "x": 470,
         "y": 180,
         "w": 146,

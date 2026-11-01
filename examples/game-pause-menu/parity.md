@@ -79,15 +79,15 @@ accepting a bounded claim. The first restyle pass is authority-driven:
   already painted, which the brighter chrome exposed as a real parity gap.
 
 The source-design oracle audit dropped from 90 composition violations / 0 clean
-observations to **30 violations / 6 clean**. Pass 2 adds a 160 px grey ghost
+observations to **36 violations / 6 clean**. Pass 2 adds a 160 px grey ghost
 `N5` display layer and turns the header and footer into mint fields (the orange
 tab band now sits between them). Pass 3 thickens the panel housings to 2 px
 industrial frames (Unity lane class, GPUI panel widget, Godot panel-frame
-width); settings meets the oracle bands, abilities is
-~1.7 points over the ink ceiling, and map/progress now hold more mint than the
-reference collage band. The full-screen remap modal is scrim-dominated and is a
-documented exception rather than a composition sample. Industrial framing and a
-full per-tab mint/grey panel conversion are still non-claims. See
+width). Pass 4 splits the fields: settings panels and the ability-detail panel
+use the steel surface, map/progress keep charcoal housings, and the chrome stays
+mint/orange. Abilities now meets the oracle bands; settings is grey-heavy,
+map/progress are mint-heavy, and the full-screen remap modal is a
+documented scrim-dominated exception. See See
 [`evidence/visual-review.md`](evidence/visual-review.md) and
 [`evidence/oracle-report.json`](evidence/oracle-report.json).
 
