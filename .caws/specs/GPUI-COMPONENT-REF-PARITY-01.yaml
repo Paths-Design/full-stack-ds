@@ -64,3 +64,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
     commit_sha: "94652ada7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "cargo test --lib passes 58 tests (55 mount witnesses including every ref-bearing component plus 3 control unit tests) and the native pilot reports GPUI_NATIVE_PASS with all required engine tests present; child entities are created once via get_or_insert_with and retained in the parent struct, so they are not reinstantiated per redraw"
+    recorded_at: "2026-11-01T10:40:02.904Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: "94652ada7"
