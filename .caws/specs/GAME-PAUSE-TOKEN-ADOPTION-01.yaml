@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: game-pause-token-adoption
 created_at: '2026-11-01T04:06:52.214Z'
-updated_at: '2026-11-01T04:53:54.744Z'
+updated_at: '2026-11-01T05:44:19.704Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
@@ -24,6 +24,9 @@ scope:
     - 'examples/README.md'
     - packages/ds-codegen
   out: []
+  support:
+    - docs/architecture/unity-target.md
+    - docs/specifications/governed-ci.md
 invariants:
   - 'Geometry, interaction semantics and the 195-probe/117-bbox parity baseline remain green'
 acceptance:
