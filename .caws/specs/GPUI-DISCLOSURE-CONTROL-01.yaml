@@ -1,9 +1,11 @@
 id: GPUI-DISCLOSURE-CONTROL-01
 title: 'GPUI disclosure control: boolean open channel on a trigger part'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Details realizes its boolean open disclosure channel with trigger activation and guarded content; behavior 7->8, props 249->250, earlier controls byte-identical.'
 created_at: '2026-11-01T11:25:03.920Z'
-updated_at: '2026-11-01T11:25:06.430Z'
+updated_at: '2026-11-01T11:44:37.531Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
