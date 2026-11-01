@@ -1,0 +1,47 @@
+id: TOKENS-BRAND-REFERENCE-NORMALIZATION-01
+title: 'Normalize brand references to declared graph paths before CSS emission'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-01T10:33:10.418Z'
+updated_at: '2026-11-01T10:33:10.418Z'
+created_by_session: '01a196a8-3dec-72b2-9d96-bd8b254a659b'
+blast_radius:
+  modules:
+    - 'Brand CSS generator and graph reference validator'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/build/generators/global.ts'
+    - 'packages/ds-tokens/build/generators/global.brand-references.test.ts'
+    - 'packages/ds-tokens/build/runners/check-brand-refs.ts'
+    - 'packages/ds-tokens/build/runners/check-brand-refs.test.ts'
+    - 'packages/ds-tokens/build/lib/brand-reference.ts'
+    - 'packages/ds-tokens/build/lib/brand-reference.test.ts'
+    - 'packages/ds-tokens/generated/tokens.css'
+    - 'packages/ds-tokens/generated/resolved.tokens.json'
+  out: []
+invariants:
+  - 'Reference resolution preserves exact then core then semantic preference and rejects paths absent from the composed graph'
+  - 'Source token names and consumers remain unchanged; emitted brand references target declared CSS variables'
+acceptance:
+  - id: A1
+    given: 'explicit and implicit-root references with ambiguous core and semantic candidates'
+    when: 'validation and brand emission resolve them'
+    then: 'both choose the same exact then core then semantic graph path and unresolved references remain invalid'
+  - id: A2
+    given: 'semantic and component brand overrides including light dark and nested composition values'
+    when: 'tokens build'
+    then: 'valid references emit declared CSS variable names including Orion Inter references without source renaming'
+  - id: A3
+    given: 'regenerated token outputs'
+    when: 'focused tests build and brand reference checks execute'
+    then: 'checks pass and generated drift remains confined to corrected references'
+observability:
+  - 'Focused unit test and token build logs retained in .caws/state/release-evidence/TOKENS-BRAND-REFERENCE-NORMALIZATION-01'
+rollback:
+  - 'Revert the isolated token normalization commit and rebuild tokens'
+non_functional: {}
+contracts:
+  - name: 'brand-reference-resolution'
+    type: behavior
