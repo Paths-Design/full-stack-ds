@@ -67,3 +67,7 @@ evidence:
     status: pass
     evidence_ref: "GPUI seam/tokens.rs embeds resolved.tokens.json+orion.tokens.json and overwrites parity palette; Godot setup.sh copies tokens to res://fixtures/ds-tokens and TokenResolver.apply_to_authority rewrites colors/type; Godot 207/207 headless, GPUI 69 default tests, parity checker 0 failures"
     recorded_at: "2026-11-01T05:45:15.987Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "packages/ds-codegen vitest unity/uss.test.ts 42/42; node scripts/unity-tests.mjs 98/98 EditMode; Unity Player capture result.json passed=true and parity checker 0 failures; Orion brand scope 93/68 to 217/123 vars; examples/game-pause-menu/unity/token-channel-ledger.md records 318->315 inline assignments + Card token channel"
+    recorded_at: "2026-11-01T05:45:44.420Z"
