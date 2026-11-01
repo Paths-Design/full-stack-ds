@@ -1,6 +1,6 @@
 //! Real generated GPUI entities mounted in GPUI's layout and platform-input dispatcher.
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
-use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Details, Divider, PageNavigator, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Alert, Badge, Button, Checkbox, Details, Dialog, Divider, PageNavigator, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
@@ -426,4 +426,20 @@ fn mounted_details_disclosure_toggles_from_trigger_click_and_keyboard(cx: &mut T
     assert!(!view.read_with(cx, |details, _| details.state.value()), "Space closes the disclosure");
     tap_key(cx, "enter");
     assert!(view.read_with(cx, |details, _| details.state.value()), "Enter opens the disclosure");
+}
+
+#[gpui::test]
+fn mounted_dialog_presence_gates_backdrop_and_panel(cx: &mut TestAppContext) {
+    let (_closed, cx) = cx.add_window_view(|_, _| Dialog::default());
+    assert!(cx.debug_bounds("dialog-backdrop").is_none(), "default dialog renders no backdrop");
+    assert!(cx.debug_bounds("dialog-modal").is_none(), "default dialog renders no panel");
+    let (view, cx) = cx.add_window_view(|_, _| Dialog::default().default_open(true));
+    assert!(cx.debug_bounds("dialog-backdrop").is_some(), "open dialog renders its backdrop");
+    assert!(cx.debug_bounds("dialog-modal").is_some(), "open dialog renders its panel");
+    view.update(cx, |dialog, cx| dialog.set_open(Some(false), cx));
+    cx.run_until_parked();
+    assert!(cx.debug_bounds("dialog-modal").is_none(), "closing the dialog removes the panel");
+    view.update(cx, |dialog, cx| dialog.set_open(Some(true), cx));
+    cx.run_until_parked();
+    assert!(cx.debug_bounds("dialog-backdrop").is_some(), "reopening restores the backdrop");
 }
