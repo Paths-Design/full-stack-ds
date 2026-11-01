@@ -1,9 +1,10 @@
 id: RN-PROJECTED-TEXT-CHILDREN-01
 title: 'Render numeric and structured scalar children in native Text hosts'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: rn-projected-text-children
 created_at: '2026-11-01T22:00:50.300Z'
-updated_at: '2026-11-01T22:00:50.300Z'
+updated_at: '2026-11-01T22:00:51.557Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
