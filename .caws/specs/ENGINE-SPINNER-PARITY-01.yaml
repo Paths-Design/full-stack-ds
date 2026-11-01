@@ -86,3 +86,8 @@ evidence:
     exit_code: 0
     artifact_path: "/private/tmp/fsds-spinner-final-escalated-20261101/spinner-exported.log"
     commit_sha: "8409c7094"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Committed source 8409c7094 and merge 32416a7d7: focused 88 Vitest, Unity 100 EditMode, Godot runtime/export, capability audit zero unclassified/dead, docs claims 81 and links 277, generated committed-tree check pass. Full root 376 files/5496 tests and framework suites passed at prior source 83269cc1f; newer main-only GPUI changes were not rerun in that full suite. Target docs retain inline, delay, accessibility and OS preference gaps."
+    recorded_at: "2026-11-01T11:25:41.087Z"
+    commit_sha: "32416a7d7"
