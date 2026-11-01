@@ -68,3 +68,7 @@ evidence:
     status: pass
     evidence_ref: "examples/game-pause-menu/evidence/parity-matrix.md records claimed states/lanes/host viewport and non-coverage: full state matrix, DPI/backends/OS, physical input, accessibility, usability, source-design composition; checker now covers all eight states"
     recorded_at: "2026-11-01T07:57:57.931Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "grep -rni 'full parity' examples/game-pause-menu docs/architecture/unity-target.md returns only negated/non-claim contexts; parity-check.mjs emits a bounded claim; parity.md/README/matrix state the bounded claim"
+    recorded_at: "2026-11-01T07:58:01.148Z"
