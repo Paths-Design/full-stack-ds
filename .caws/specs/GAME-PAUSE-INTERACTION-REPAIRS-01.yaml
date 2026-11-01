@@ -41,3 +41,9 @@ contracts:
   - name: 'pause-menu'
     type: behavior
     path: 'examples/game-pause-menu/spec.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected Godot I13 scene checks: pressed JOY_BUTTON_X binds PAD 2 and closes remap; Escape cancel preserves vehicleBoost. Raw 221/221 log: .caws/state/game-pause-interaction-repairs/game-pause-godot-integrated.log"
+    recorded_at: "2026-11-01T23:55:28.493Z"
+    commit_sha: b9118c57f640a1fc356571c793d4b206ad2a83a3
