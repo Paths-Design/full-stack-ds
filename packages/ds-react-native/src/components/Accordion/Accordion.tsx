@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { Pressable, Text as RNText, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { type ReactNode, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createAccordionStyles } from "./Accordion.styles";
 import { Icon } from "../Icon/Icon";
@@ -60,7 +61,7 @@ export function Accordion({
             accessibilityRole="button"
             accessibilityState={{ expanded: String(openness) === "true" }}
           >
-            {typeof children === "string" ? <RNText>{children}</RNText> : children}
+            {renderTextChildren(children)}
             <Icon
               name="chevron-down"
               size="sm"
@@ -73,7 +74,7 @@ export function Accordion({
           <View
             style={styles.contentInner}
           >
-            {typeof children === "string" ? <RNText>{children}</RNText> : children}
+            {renderTextChildren(children)}
           </View>
         </View>
       </View>

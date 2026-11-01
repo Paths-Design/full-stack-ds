@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { Modal, Pressable, TextInput, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createCommandStyles } from "./Command.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -127,7 +128,7 @@ export function Command({
             <View
               style={styles.empty}
             />
-            {slots?.items}
+            {renderTextChildren(slots?.items)}
 <MotionPart projection={motionParts["separator"]} style={styles.separator}>
             <View
               style={styles.separator}

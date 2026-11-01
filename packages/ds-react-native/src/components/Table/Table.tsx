@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { Text as RNText, View } from "react-native";
+import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createTableStyles } from "./Table.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -51,7 +52,7 @@ export function Table({
         style={styles.container}
         accessibilityLabel={ariaLabel}
       >
-        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: styles.rootText })}
       </View>
     </View>
   );

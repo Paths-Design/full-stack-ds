@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
-import { Text as RNText, View } from "react-native";
+import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createStatusStyles } from "./Status.styles";
 import { Icon } from "../Icon/Icon";
@@ -49,7 +50,7 @@ export function Status({
       <View
         style={styles.label}
       >
-        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForStatus]}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForStatus] })}
       </View>
     </View>
   );

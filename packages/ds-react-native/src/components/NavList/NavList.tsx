@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { Text as RNText, View } from "react-native";
+import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createNavListStyles } from "./NavList.styles";
 // @generated:end
@@ -43,7 +44,7 @@ export function NavList({
       <View
         style={styles.list}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {renderTextChildren(children)}
       </View>
     </View>
   );

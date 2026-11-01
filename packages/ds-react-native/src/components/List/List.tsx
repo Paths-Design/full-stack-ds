@@ -1,7 +1,8 @@
 // @generated:start imports
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
-import { Text as RNText, View } from "react-native";
+import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createListStyles } from "./List.styles";
 // @generated:end
@@ -50,7 +51,7 @@ export function List({
       accessibilityLabel={accessibilityLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
-      {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize]}>{children}</RNText> : children}
+      {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForSize] })}
     </View>
   );
 }

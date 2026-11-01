@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createShowMoreStyles } from "./ShowMore.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -65,7 +66,7 @@ export function ShowMore({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText numberOfLines={expanded ? undefined : maxLines} style={styles.rootText}>{children}</RNText> : children}
+        {renderTextChildren(children, { numberOfLines: expanded ? undefined : maxLines, style: styles.rootText })}
       </View>
       <Pressable
         style={styles.trigger}

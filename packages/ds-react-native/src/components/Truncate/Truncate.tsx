@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createTruncateStyles } from "./Truncate.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -67,7 +68,7 @@ export function Truncate({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText numberOfLines={expanded ? undefined : lines}>{children}</RNText> : children}
+        {renderTextChildren(children, { numberOfLines: expanded ? undefined : lines })}
       </View>
       {expandable ? (
       <Pressable

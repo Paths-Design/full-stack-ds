@@ -2,6 +2,7 @@
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createAlertNoticeStyles } from "./AlertNotice.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -68,7 +69,7 @@ export function AlertNotice({
         <RNText style={[styles.rootText, textVariantStyleForStatus, textVariantStyleForLevel]}>{icon}</RNText>
       </View>
       ) : null}
-      {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForStatus, textVariantStyleForLevel]}>{children}</RNText> : children}
+      {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForStatus, textVariantStyleForLevel] })}
       {dismissible ? (
       <Pressable
         style={styles.dismiss}

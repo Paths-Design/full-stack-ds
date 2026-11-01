@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { BackHandler, Modal, Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createSheetStyles } from "./Sheet.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -98,7 +99,7 @@ export function Sheet({
           <View
             style={styles.title}
           >
-            {slots?.title}
+            {renderTextChildren(slots?.title)}
           </View>
           <RNText
             style={styles.description}
@@ -116,12 +117,12 @@ export function Sheet({
         <View
           style={styles.body}
         >
-          {typeof children === "string" ? <RNText>{children}</RNText> : children}
+          {renderTextChildren(children)}
         </View>
         <View
           style={styles.footer}
         >
-          {slots?.footer}
+          {renderTextChildren(slots?.footer)}
         </View>
       </View>
       ) : null}

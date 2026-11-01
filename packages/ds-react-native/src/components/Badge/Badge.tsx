@@ -2,6 +2,7 @@
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createBadgeStyles } from "./Badge.styles";
 // @generated:end
@@ -66,7 +67,7 @@ export function Badge({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForVariant, textVariantStyleForIntent, textVariantStyleForSize]}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: [styles.rootText, textVariantStyleForVariant, textVariantStyleForIntent, textVariantStyleForSize] })}
       </View>
     </View>
   );

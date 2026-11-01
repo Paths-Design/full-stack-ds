@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { TextInput, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createTextFieldStyles } from "./TextField.styles";
 // @generated:end
@@ -66,7 +67,7 @@ export function TextField({
       <View
         style={styles.label}
       >
-        {slots?.label}
+        {renderTextChildren(slots?.label)}
       </View>
       <TextInput
         style={styles.field}
@@ -79,13 +80,13 @@ export function TextField({
       <View
         style={styles.description}
       >
-        {slots?.description}
+        {renderTextChildren(slots?.description)}
       </View>
       <View
         style={styles.error}
         accessibilityRole="alert"
       >
-        {slots?.error}
+        {renderTextChildren(slots?.error)}
       </View>
     </View>
   );

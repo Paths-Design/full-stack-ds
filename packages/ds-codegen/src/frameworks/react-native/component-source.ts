@@ -164,7 +164,7 @@ function emitHighlightPresentation(ir: ComponentIR, transform: HighlightTransfor
   lines.push(`  const styles = useMemo(() => create${ir.name}Styles(fsdsTheme), [fsdsTheme]);`);
   lines.push(`  const source = useMemo(() => prepareSourceLines(${sourceProp}, suppliedTokens, ${gateProp}), [${sourceProp}, suppliedTokens, ${gateProp}]);`);
   lines.push(`  return <View testID={testID} style={[styles.root, style]} accessible accessibilityLabel={accessibilityLabel ?? ${sourceProp}} accessibilityLabelledBy={accessibilityLabelledBy}>`);
-  lines.push(`    {children ? (typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children) : source.lines.map((line) => <${lineName} key={line.number} number={line.number} showLineNumbers={${lineNumbersProp}}>{line.tokens.map((token, index) => source.highlighted ? <${tokenName} key={index} kind={token.kind}>{token.text}</${tokenName}> : token.text)}</${lineName}>)}`);
+  lines.push(`    {(typeof children === "number" || typeof children === "bigint" || children) ? renderTextChildren(children, { style: styles.rootText }) : source.lines.map((line) => <${lineName} key={line.number} number={line.number} showLineNumbers={${lineNumbersProp}}>{line.tokens.map((token, index) => source.highlighted ? <${tokenName} key={index} kind={token.kind}>{token.text}</${tokenName}> : token.text)}</${lineName}>)}`);
   lines.push(`  </View>;`);
   lines.push(`}`);
   lines.push("// @generated:end");
@@ -372,7 +372,7 @@ function emitCompoundSelectionComponent(ir: ComponentIR): string {
   );
   lines.push(`${INDENT}${INDENT}${INDENT}>`);
   lines.push(
-    `${INDENT}${INDENT}${INDENT}${INDENT}{typeof children === "string" ? <RNText>{children}</RNText> : children}`,
+    `${INDENT}${INDENT}${INDENT}${INDENT}{renderTextChildren(children)}`,
   );
   lines.push(`${INDENT}${INDENT}${INDENT}</View>`);
   lines.push(`${INDENT}${INDENT}</${name}ContextProvider>`);
@@ -444,7 +444,7 @@ function emitCompoundSelectionComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}${INDENT}}}`);
   lines.push(`${INDENT}${INDENT}>`);
   lines.push(
-    `${INDENT}${INDENT}${INDENT}{typeof children === "string" ? <RNText>{children}</RNText> : children}`,
+    `${INDENT}${INDENT}${INDENT}{renderTextChildren(children)}`,
   );
   lines.push(`${INDENT}${INDENT}</Pressable>`);
   lines.push(`${INDENT});`);
@@ -479,7 +479,7 @@ function emitCompoundSelectionComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}${INDENT}accessible={isActive}`);
   lines.push(`${INDENT}${INDENT}>`);
   lines.push(
-    `${INDENT}${INDENT}${INDENT}{typeof children === "string" ? <RNText>{children}</RNText> : children}`,
+    `${INDENT}${INDENT}${INDENT}{renderTextChildren(children)}`,
   );
   lines.push(`${INDENT}${INDENT}</View>`);
   lines.push(`${INDENT});`);
@@ -498,12 +498,6 @@ function emitImports(ir: ComponentIR, component: string): string {
     collectRnComponents(ir.dom, rnValueImports, ir);
   }
   if (usesLinking(ir.dom)) rnValueImports.add("Linking");
-  if (
-    (!usesNativeToggle(ir) && hasChildrenSlotUnderNonTextParent(ir.dom)) ||
-    isCheckboxControl(ir)
-  ) {
-    rnValueImports.add("Text as RNText");
-  }
   if (isCheckboxControl(ir)) rnValueImports.add("View");
   if (isCheckboxControl(ir)) rnValueImports.add("Pressable");
   if (rootPressableAcceptsOnPress(ir)) rnTypeImports.add("GestureResponderEvent");
@@ -518,12 +512,10 @@ function emitImports(ir: ComponentIR, component: string): string {
     rnValueImports.add("Dimensions");
     rnValueImports.add("Modal");
     rnValueImports.add("Pressable");
-    rnValueImports.add("Text as RNText");
     rnValueImports.add("View");
   }
   if (isCompoundSelectionContainer(ir)) {
     rnValueImports.add("Pressable");
-    rnValueImports.add("Text as RNText");
     rnValueImports.add("View");
   }
   if (
@@ -538,6 +530,10 @@ function emitImports(ir: ComponentIR, component: string): string {
   ) {
     rnTypeImports.add("TextStyle");
   }
+  // Text hosts can also be emitted by behavior-owned presentation (for example
+  // sequence controls), beyond the anatomy walk. Import the host actually used.
+  if (component.includes("<RNText")) rnValueImports.add("Text as RNText");
+  else rnValueImports.delete("Text as RNText");
   const reactImports = new Set(["ReactNode"]);
   if (usage.channelSetters.size > 0) {
     reactImports.add("useCallback");
@@ -578,6 +574,7 @@ function emitImports(ir: ComponentIR, component: string): string {
     ir.transfer ? `import { useTransferList } from "../../primitives/hooks/useTransferList";` : "",
     nativeMotionImports(component),
     component.includes("<NativeGlyph") ? `import { NativeGlyph } from "../../primitives/glyph";` : "",
+    component.includes("renderTextChildren(") ? `import { renderTextChildren } from "../../primitives/text-children";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
     usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir) || ir.motion.sequence
@@ -640,30 +637,6 @@ function usesLinking(node: DomNodeIR | undefined): boolean {
   if (!node) return false;
   if (node.tag === "a" && Boolean(node.bindings.href)) return true;
   return node.children.some((child) => usesLinking(child));
-}
-
-function hasChildrenSlotUnderNonTextParent(node: DomNodeIR | undefined): boolean {
-  if (!node) return false;
-  const component = rnComponentForNode(node);
-  if (
-    component !== "RNText" &&
-    !VOID_RN_COMPONENTS.has(component) &&
-    node.children.length === 0 &&
-    node.part === "root"
-  ) {
-    return true;
-  }
-  if (
-    component !== "RNText" &&
-    !VOID_RN_COMPONENTS.has(component) &&
-    node.children.some(
-      (child) =>
-        child.tag === "children" || (child.tag === "slot" && !child.slotName),
-    )
-  ) {
-    return true;
-  }
-  return node.children.some((child) => hasChildrenSlotUnderNonTextParent(child));
 }
 
 function emitTypes(ir: ComponentIR): string {
@@ -1321,7 +1294,7 @@ function emitCheckboxReturn(ir: ComponentIR): string[] {
   lines.push(`${INDENT}${INDENT}${INDENT}<View style={[styles.indicator, ${valueName} || ${indeterminateProp} ? styles.indicator_checked : undefined]}>`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}<RNText style={styles.indicatorMark}>{${indeterminateProp} ? "-" : ${valueName} ? "x" : ""}</RNText>`);
   lines.push(`${INDENT}${INDENT}${INDENT}</View>`);
-  lines.push(`${INDENT}${INDENT}${INDENT}{typeof children === "string" ? <RNText style={styles.label}>{children}</RNText> : children}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}{renderTextChildren(children, { style: styles.label })}`);
   lines.push(`${INDENT}${INDENT}</Pressable>`);
   lines.push(`${INDENT});`);
   return lines;
@@ -1735,7 +1708,7 @@ function emitAnchoredSurfaceReturn(
       ? [`${INDENT}${INDENT}${INDENT}${INDENT}accessibilityState={{ expanded: Boolean(${value}) }}`]
       : []),
     `${INDENT}${INDENT}${INDENT}>`,
-    `${INDENT}${INDENT}${INDENT}${INDENT}{typeof children === "string" ? <RNText>{children}</RNText> : children}`,
+    `${INDENT}${INDENT}${INDENT}${INDENT}{renderTextChildren(children)}`,
     `${INDENT}${INDENT}${INDENT}</Pressable>`,
     `${INDENT}${INDENT}${INDENT}<Modal`,
     `${INDENT}${INDENT}${INDENT}${INDENT}visible={Boolean(${value})}`,
@@ -1753,7 +1726,7 @@ function emitAnchoredSurfaceReturn(
     `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}accessible={false}`,
     `${INDENT}${INDENT}${INDENT}${INDENT}>`,
     `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}<View style={[styles.content, contentPosition]}>`,
-    `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}{typeof content === "string" ? <RNText>{content}</RNText> : content}`,
+    `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}{renderTextChildren(content)}`,
     `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}</View>`,
     `${INDENT}${INDENT}${INDENT}${INDENT}</Pressable>`,
     `${INDENT}${INDENT}${INDENT}</Modal>`,
@@ -1881,14 +1854,14 @@ function emitNode(
     const checked = bindingExpr(radio.bindings.checked, ir);
     const rendered = [`${pad}<Pressable`, ...attrs, `${pad}>`,
       `${pad}${INDENT}<RNText accessible={false}>{${checked} ? "◉ " : "○ "}</RNText>`,
-      ...emitNodeChildren(target, ir, depth + 1), `${pad}</Pressable>`].join("\n");
+      ...emitNodeChildren(target, ir, depth + 1, "Pressable"), `${pad}</Pressable>`].join("\n");
     return applyIfGuard(rendered, node, ir, pad);
   }
 
   const isOverlay = node.part !== undefined && node.part === surfaceOverlayPartName(ir);
   const component = isOverlay ? "Pressable" : rnComponentForNodeInIr(ir, node);
   const attrs = emitNodeProps(node, ir, component, depth + 1, keyExpr);
-  const childLines = emitNodeChildren(node, ir, depth + 1);
+  const childLines = emitNodeChildren(node, ir, depth + 1, component);
   const pad = INDENT.repeat(depth);
   let rendered: string;
   if (VOID_RN_COMPONENTS.has(component) || childLines.length === 0) {
@@ -1947,7 +1920,7 @@ function emitComponentRefNode(
     props.push(`${propPad}${handlerProp}={${bindingExpr(ev.expr, ir)}}`);
   }
 
-  const childLines = emitNodeChildren(node, ir, depth + 1);
+  const childLines = emitNodeChildren(node, ir, depth + 1, component);
   let rendered: string;
   if (childLines.length === 0) {
     rendered = [`${pad}<${component}`, ...props, `${pad}/>`].join("\n");
@@ -1963,7 +1936,7 @@ function emitComponentRefNode(
   return applyIfGuard(nativeMotionInstance(ir, node, rendered), node, ir, pad);
 }
 
-function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): string[] {
+function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number, parentComponent: string): string[] {
   const sequence = ir.motion.sequence;
   if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} position={fsdsMessages.${sequence.labels.position}} />`];
   if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}</RNText>`];
@@ -1988,12 +1961,13 @@ function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): stri
     if (child.tag === "slot" && child.slotName) {
       // ARCH-COMPOSER-SLOT-PROJECTION-001: a named slot projects its own
       // `slots.<name>` content, distinct from the default `{children}`.
-      lines.push(`${INDENT.repeat(depth)}{slots?.${child.slotName}}`);
+      const source = `slots?.${child.slotName}`;
+      lines.push(`${INDENT.repeat(depth)}{${parentComponent === "RNText" ? source : textChildrenExpression(source, maxLinesExpressionForNode(node, ir), textStyleExpr ?? "")}}`);
       continue;
     }
     if (child.tag === "children" || child.tag === "slot") {
       lines.push(
-        emitChildrenSlot(rnComponentForNode(node), depth, maxLinesExpressionForNode(node, ir), textStyleProp),
+        emitChildrenSlot(parentComponent, depth, maxLinesExpressionForNode(node, ir), textStyleExpr ?? ""),
       );
       continue;
     }
@@ -2002,7 +1976,7 @@ function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): stri
   }
   if (node.children.length === 0 && node.part === "root") {
     lines.push(
-      emitChildrenSlot(rnComponentForNode(node), depth, maxLinesExpressionForNode(node, ir), textStyleProp),
+      emitChildrenSlot(parentComponent, depth, maxLinesExpressionForNode(node, ir), textStyleExpr ?? ""),
     );
   }
   return lines;
@@ -2012,12 +1986,16 @@ function emitChildrenSlot(
   parentComponent: string,
   depth: number,
   numberOfLinesExpr?: string,
-  textStyleProp = "",
+  textStyleExpr = "",
 ): string {
   const pad = INDENT.repeat(depth);
   if (parentComponent === "RNText") return `${pad}{children}`;
-  const linesProp = numberOfLinesExpr ? ` numberOfLines={${numberOfLinesExpr}}` : "";
-  return `${pad}{typeof children === "string" ? <RNText${linesProp}${textStyleProp}>{children}</RNText> : children}`;
+  return `${pad}{${textChildrenExpression("children", numberOfLinesExpr, textStyleExpr)}}`;
+}
+
+function textChildrenExpression(source: string, numberOfLinesExpr?: string, textStyleExpr = ""): string {
+  const props = [numberOfLinesExpr ? `numberOfLines: ${numberOfLinesExpr}` : "", textStyleExpr ? `style: ${textStyleExpr}` : ""].filter(Boolean);
+  return `renderTextChildren(${source}${props.length ? `, { ${props.join(", ")} }` : ""})`;
 }
 
 function emitNodeProps(

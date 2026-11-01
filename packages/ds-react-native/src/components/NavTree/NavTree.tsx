@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { Linking, Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { NativeGlyph } from "../../primitives/glyph";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createNavTreeStyles } from "./NavTree.styles";
 // @generated:end
@@ -78,7 +79,7 @@ export function NavTree({
       <View
         style={styles.list}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {renderTextChildren(children)}
       </View>
     </View>
   );

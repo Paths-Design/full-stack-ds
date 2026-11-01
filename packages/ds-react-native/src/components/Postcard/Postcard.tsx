@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { renderTextChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createPostcardStyles } from "./Postcard.styles";
 import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages";
@@ -79,7 +80,7 @@ export function Postcard({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
+        {renderTextChildren(children, { style: styles.rootText })}
       </View>
       <View
         style={styles.footer}
