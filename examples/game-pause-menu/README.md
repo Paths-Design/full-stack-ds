@@ -95,6 +95,14 @@ scale from the provenance maps at load, and Godot's `setup.sh` copies them into
 `res://fixtures/ds-tokens/` for its `TokenResolver`; neither lane renders from
 the legacy `orion-appearance.json` palette copy.
 
+The Unity projection now emits every brand-layer variable that resolves to a USS
+scalar, growing Orion's generated brand scope from 93 light / 68 dark variables
+to 217 light / 123 dark, including the brand-only graphic surface/status roles.
+The Unity parity lane consumes the generated `Card` component's token variables
+for panel/ability-card surfaces; the remaining inline assignments and the
+channel classification are recorded in
+[`unity/token-channel-ledger.md`](unity/token-channel-ledger.md).
+
 ### Icon art
 
 The first parity montage still showed two glyph languages (Unity/Godot catalog

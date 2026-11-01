@@ -1312,10 +1312,21 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
           entries.push({ component: slot.component, sourceKey: `brand:${brand.id}${theme === "dark" ? ":dark" : ""}`, part: slot.part, property: slot.property, value, reason: "uss-design-slot" });
           continue;
         }
-        if (!emitted.has(name)) continue;
+        // Emit every brand-layer variable that resolves to a USS scalar, not
+        // only graph tokens already referenced by an admitted component: the
+        // brand layer is the supported token-override channel for consumers
+        // (a lane can address these variables from its own stylesheet).
         const resolved = brandValue(sources.graph, index, value, theme);
         if (resolved === undefined) {
-          entries.push({ component: THEME_COMPONENT, sourceKey: `brand:${brand.id}${theme === "dark" ? ":dark" : ""}`, part: "", property: name, value, reason: "uss-scalar" });
+          // Brand-only variables that carry a literal USS scalar are part of the
+          // brand's supported token-override channel even when no graph token
+          // backs them (e.g. Orion's graphic surface/status roles).
+          const literal = tokenScalar(value);
+          if (literal !== undefined) {
+            target.push([name, literal]);
+          } else {
+            entries.push({ component: THEME_COMPONENT, sourceKey: `brand:${brand.id}${theme === "dark" ? ":dark" : ""}`, part: "", property: name, value, reason: "uss-scalar" });
+          }
           continue;
         }
         target.push([name, resolved]);
@@ -1325,7 +1336,7 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
     // brand does not restate there; a theme-aware alias then resolves to its
     // dark value at cascade time, so the dark scope carries that value.
     for (const [name, value] of brand.light) {
-      if (!emitted.has(name) || brand.dark.has(name) || designSlots.has(name)) continue;
+      if (brand.dark.has(name) || designSlots.has(name)) continue;
       const aliased = VAR.exec(value.trim())?.[1];
       const target = aliased ? index.get(aliased) : undefined;
       if (!target || !isThemeAware(sources.graph, target)) continue;

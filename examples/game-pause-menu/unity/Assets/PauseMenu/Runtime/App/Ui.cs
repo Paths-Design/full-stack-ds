@@ -181,13 +181,13 @@ namespace GamePauseMenu
             var badge = new Badge { Size = "sm" };
             badge.AddToClassList("parity-badge");
             StripBox(badge);
+            Radius(badge, 0);
             badge.style.flexDirection = FlexDirection.Row;
             badge.style.alignItems = Align.Center;
             badge.style.justifyContent = Justify.Center;
             badge.style.backgroundColor = outlined ? new Color(0, 0, 0, 0) : background;
             BorderWidth(badge, outlined ? 1 : 0);
             if (outlined) BorderColor(badge, outlineColor);
-            Radius(badge, 0);
             if (rect.HasValue) At(badge, rect.Value);
             var contentHost = new BadgeContent { name = "content" };
             contentHost.style.flexGrow = 1;
@@ -358,12 +358,8 @@ namespace GamePauseMenu
             root.AddToClassList("parity-panel");
             At(root, rect);
             StripBox(root);
-            root.style.backgroundColor = layout.Color(layout.Panels.Background);
             root.style.flexDirection = FlexDirection.Column;
             root.style.overflow = Overflow.Visible;
-            BorderWidth(root, layout.PanelBorder);
-            BorderColor(root, layout.Color(layout.Panels.Border));
-            Radius(root, 0);
 
             var header = new CardHeader { name = "header" };
             header.AddToClassList("parity-panel-header");
@@ -377,7 +373,6 @@ namespace GamePauseMenu
             header.style.paddingTop = 0;
             header.style.paddingBottom = 0;
             header.style.borderBottomWidth = 1;
-            header.style.borderBottomColor = layout.Color(layout.Panels.Border);
             var titleText = MakeText(layout, title, "panelTitle", "boneBright", true,
                 letterSpacing: layout.Size("letterSpacingMicro"));
             titleText.style.flexGrow = 1;

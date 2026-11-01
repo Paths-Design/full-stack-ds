@@ -393,7 +393,10 @@ Every authority colour and type size stores its token provenance:
   type scale from the provenance maps before any view renders. Godot's
   `setup.sh` copies both token files into `res://fixtures/ds-tokens/` and
   `TokenResolver` rewrites the authority's colours/type sizes at load. Unity
-  continues to consume the generated `.fsds-brand-orion` scope. The shared
+  continues to consume the generated `.fsds-brand-orion` scope, which now
+  projects every brand-layer variable that resolves to a USS scalar (Orion:
+  217 light / 123 dark, up from 93 / 68); the lane's Card token channel uses
+  those variables for panel/ability-card surfaces. The shared
   `orion-appearance.json` fixture is retained only for the shared fixture
   corpus' validation tests; it is not a rendering palette for any lane (Godot
   no longer loads it, GPUI keeps it out of the render path).

@@ -14,6 +14,24 @@ The lane exists to answer two questions for the engine comparison:
    without re-deciding layout, colour or copy?
 2. Where does the Unity projection help or get in the way for a consumer of this shape?
 
+## Design-token channels
+
+The parity lane uses the generated `Card` component's token variables
+(`--fsds-card-color-background-default`, `--fsds-card-color-border`,
+`--fsds-card-size-radius`) from the Orion brand scope instead of inline
+background/border/radius styles on parity panels and ability cards. The rest of
+the lane's 315 inline setter assignments are authority geometry and per-instance
+chrome that the current Unity UI Toolkit projection has no token consumer for;
+the classification and counts live in
+[`token-channel-ledger.md`](token-channel-ledger.md).
+
+The generated `Controls.uss` brand scope now projects every brand-layer variable
+that resolves to a USS scalar: Orion grew from 93 light / 68 dark variables to
+217 light / 123 dark, including brand-only graphic surface/status roles and
+Orion shape/spacing/typography overrides. Design-slot overrides still surface in
+`Controls.unsupported.json` as `uss-design-slot`; elevation/motion variables are
+present but have no generated UI Toolkit consumer.
+
 ## Open, run, verify
 
 Prerequisites: Unity **6000.5.3f1** with an activated license (macOS; the screenshot lane builds

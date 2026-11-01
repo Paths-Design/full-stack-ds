@@ -362,10 +362,6 @@ namespace GamePauseMenu
             card.AddToClassList("ability-card");
             Ui.At(card, rect);
             Ui.StripBox(card);
-            card.style.backgroundColor = layout.Color("charcoal");
-            Ui.BorderWidth(card, 1);
-            Ui.BorderColor(card, layout.Color("rule"));
-            Ui.Radius(card, 0);
             card.style.overflow = Overflow.Visible;
 
             var hit = new DsButton { Size = "medium", Variant = "ghost", text = string.Empty };
