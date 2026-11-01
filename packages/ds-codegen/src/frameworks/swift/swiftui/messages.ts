@@ -10,9 +10,11 @@
  * exposed through a computed `<name>` that applies explicit-value-first
  * precedence; archetype bodies keep referring to `<name>` unchanged.
  */
-import type { ComponentIR } from "../../../ir.js";
+import type { BindingExpression, ComponentIR } from "../../../ir.js";
+import { metadataInput, type NativeMetadataTextPlan } from "../../../native-metadata-text.js";
+import { findMessage } from "../../../messages.js";
 import type { MessageIR } from "../../../messages.js";
-import { propMessage, requireNativeParams } from "../../native-messages.js";
+import { nativeMessageParams, propMessage, requireNativeParams } from "../../native-messages.js";
 import { swiftLiteral } from "./icon-glyph.js";
 
 export const SWIFT_MESSAGES_ENVIRONMENT = "@Environment(\\.fsdsMessages) private var fsdsMessages";
@@ -25,6 +27,17 @@ export function swiftMessage(ir: ComponentIR, message: MessageIR, params: Record
     args.push(`params: [${message.params.map((name) => `${swiftLiteral(name)}: ${params[name]}`).join(", ")}]`);
   }
   return `fsdsMessages.string(${args.join(", ")})`;
+}
+
+/** Lower one validated metadata source into an actual Swift String expression. */
+export function swiftMetadataText(ir: ComponentIR, plan: NativeMetadataTextPlan, source: BindingExpression): string {
+  if (source.kind === "literal") return swiftLiteral(source.value);
+  if (source.kind === "prop") return `\`${metadataInput(plan, source).name}\``;
+  if (source.kind === "message") {
+    const ref = { message: findMessage(ir, source.key), params: source.params };
+    return swiftMessage(ir, ref.message, nativeMessageParams(ir, ref, value => swiftMetadataText(ir, plan, value)));
+  }
+  throw new Error(`Unsupported native metadata text: ${source.kind}`);
 }
 
 /**

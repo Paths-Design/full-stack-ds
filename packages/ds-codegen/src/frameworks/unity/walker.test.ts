@@ -18,6 +18,146 @@ function irFor(name: string, replacement: string) {
 
 const emit = (ir: ReturnType<typeof irFor>): string => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
 
+/** One semantic label part, three authored instances under distinct parents. */
+function repeatedLabelsIr() {
+  return buildComponentIR({
+    name: "ReadingTriplet", cssPrefix: "reading-triplet", layer: "composite", category: "data-display", description: "Synthetic static projection.",
+    anatomy: {
+      parts: ["root", "west", "middle", "east", "reading", "body"],
+      details: {
+        root: { tag: "div", role: "root" },
+        west: { tag: "div", role: "decoration" }, middle: { tag: "div", role: "decoration" }, east: { tag: "div", role: "decoration" },
+        reading: { tag: "span", role: "label", multiple: true }, body: { tag: "div", role: "region" },
+      },
+      dom: {
+        tag: "div", part: "root", children: [
+          ...["west", "middle", "east"].map(part => ({ tag: "div", part, children: [{ tag: "span", part: "reading", content: `prop:totals.${part}` }] })),
+          { tag: "div", part: "body", children: [{ tag: "children" }] },
+        ],
+      },
+    },
+    props: { styled: { members: [{ name: "totals", propType: { kind: "ref", to: "Readings" } }] } },
+    types: { Readings: { kind: "alias", alias: "{ west: string; middle: string; east: string }" } },
+  } as unknown as ComponentContract);
+}
+
+describe("Unity repeated static part instances", () => {
+  it("preserves every nested label, semantic carrier and independent value binding", () => {
+    const ir = repeatedLabelsIr();
+    expect(unityLowering(ir).behavior).toBe("ProjectedText");
+    const source = emit(ir);
+    for (const [index, parent] of ["West", "Middle", "East"].entries()) {
+      const ref = index === 0 ? "Reading" : `Reading${index + 1}`;
+      expect(source).toContain(`public Label ${ref} { get; } = new Label();`);
+      expect(source).toContain(`${ref}.name = "reading";`);
+      expect(source).toContain(`${ref}.AddToClassList("reading-triplet__reading");`);
+      expect(source).toContain(`${parent}.Add(${ref});`);
+      expect(source).toContain(`public string Totals${parent} { get => ${ref}.text; set { ${ref}.text = value ?? ""; } }`);
+    }
+    expect(source.match(/public Label Reading\d* \{/g)).toHaveLength(3);
+    expect(source).toContain("public override VisualElement contentContainer => Body;");
+    expect(source).toContain("Theme.AddStyleSheet(this);");
+  });
+
+  it("keeps literal content on repeated labels alongside a projected leaf", () => {
+    const ir = repeatedLabelsIr();
+    ir.dom!.children[1]!.children[0]!.content = { kind: "literal", value: "Middle literal" };
+    ir.dom!.children[2]!.children[0]!.content = { kind: "literal", value: "East literal" };
+    const source = emit(ir);
+    expect(source).toContain('Reading2.text = "Middle literal";');
+    expect(source).toContain('Reading3.text = "East literal";');
+    expect(source).toContain("Middle.Add(Reading2);");
+    expect(source).toContain("East.Add(Reading3);");
+  });
+
+  it("reserves authored part and class identifiers before allocating instance suffixes", () => {
+    const ir = repeatedLabelsIr();
+    ir.name = "Reading3";
+    const other = structuredClone(ir.dom!.children[0]!.children[0]!);
+    other.part = "reading2";
+    other.content = { kind: "literal", value: "Separate part" };
+    ir.dom!.children.push(other);
+    ir.parts.push({ ...ir.parts.find(part => part.name === "reading")!, name: "reading2" });
+    const source = emit(ir);
+    expect(source).toContain("public Label Reading2 { get; } = new Label();");
+    expect(source).toContain('Reading2.name = "reading2";');
+    expect(source).toContain("Middle.Add(Reading4);");
+    expect(source).toContain("East.Add(Reading5);");
+    expect(source).not.toContain("public Label Reading3 {");
+  });
+
+  it("reserves flattened parameter attributes before allocating instance suffixes", () => {
+    const ir = repeatedLabelsIr();
+    ir.dom!.children[0]!.children[0]!.content = { kind: "prop", prop: "reading", path: ["2"] };
+    ir.styledProps.push({ ...ir.styledProps[0]!, name: "reading" });
+    const source = emit(ir);
+    expect(source).toContain("public string Reading2 { get => Reading.text;");
+    expect(source).toContain("Middle.Add(Reading3);");
+    expect(source).toContain("East.Add(Reading4);");
+  });
+
+  it("retains raw parameter attributes and formats every occurrence with escaped fallback text", () => {
+    const ir = repeatedLabelsIr();
+    const template = 'Reading "C:\\data" {amount}\nAgain {amount}';
+    ir.messages = [{ key: "readingText", catalogKey: "ReadingTriplet.readingText", defaultMessage: template, description: "Synthetic text.", params: ["amount"] }];
+    for (const [index, parent] of ir.dom!.children.slice(0, 3).entries()) {
+      parent.children[0]!.content = { kind: "message", key: "readingText", params: [{ name: "amount", value: { kind: "prop", prop: "totals", path: [index === 2 ? "east" : "west"] } }] };
+    }
+    // ProjectedText selection is independently established by an object-path
+    // leaf; message-only host selection remains outside this bounded backend.
+    ir.dom!.children.push({ ...structuredClone(ir.dom!.children[0]!.children[0]!), part: "heading", content: { kind: "prop", prop: "totals", path: ["heading"] } });
+    expect(unityLowering(ir).behavior).toBe("ProjectedText");
+    const source = emit(ir);
+    const emptyText = JSON.stringify(template.replaceAll("{amount}", ""));
+    const serialized = JSON.stringify(template);
+    for (const ref of ["Reading", "Reading2", "Reading3"]) expect(source).toContain(`${ref}.text = ${emptyText};`);
+    // The getter stores the consumer value; rendered contextual text never
+    // becomes the next parameter. Null/clearing normalizes before formatting.
+    expect(source).toContain('private string textValue1 = "";');
+    expect(source).toContain(`public string TotalsWest { get => textValue1; set { textValue1 = value ?? ""; Reading.text = ${serialized}.Replace("{amount}", textValue1); Reading2.text = ${serialized}.Replace("{amount}", textValue1); } }`);
+    expect(source.match(/public string TotalsWest \{/g)).toHaveLength(1);
+    expect(source).toContain(`public string TotalsEast { get => textValue2; set { textValue2 = value ?? ""; Reading3.text = ${serialized}.Replace("{amount}", textValue2); } }`);
+  });
+
+  it("refuses message parameters outside the bounded prop/path projection", () => {
+    const ir = repeatedLabelsIr();
+    ir.messages = [{ key: "readingText", catalogKey: "ReadingTriplet.readingText", defaultMessage: "Reading {amount}", description: "Synthetic text.", params: ["amount"] }];
+    ir.dom!.children[0]!.children[0]!.content = { kind: "message", key: "readingText", params: [{ name: "amount", value: { kind: "literal", value: "unprojectable" } }] };
+    expect(() => emit(ir)).toThrow("UNITY_UNSUPPORTED_ANATOMY: ReadingTriplet message readingText requires one declared prop parameter on a static text leaf");
+    ir.dom!.children[0]!.children[0]!.content = { kind: "message", key: "readingText", params: [
+      { name: "amount", value: { kind: "prop", prop: "totals", path: ["west"] } },
+      { name: "other", value: { kind: "prop", prop: "totals", path: ["east"] } },
+    ] };
+    expect(() => emit(ir)).toThrow("UNITY_UNSUPPORTED_ANATOMY: ReadingTriplet message readingText requires one declared prop parameter on a static text leaf");
+  });
+
+  it("keeps message-only hosts explicitly unsupported rather than emitting blank labels", () => {
+    const ir = repeatedLabelsIr();
+    ir.messages = [{ key: "readingText", catalogKey: "ReadingTriplet.readingText", defaultMessage: "Reading {amount}", description: "Synthetic text.", params: ["amount"] }];
+    for (const [index, parent] of ir.dom!.children.slice(0, 3).entries()) {
+      parent.children[0]!.content = { kind: "message", key: "readingText", params: [{ name: "amount", value: { kind: "prop", prop: "totals", path: [["west", "middle", "east"][index]!] } }] };
+    }
+    expect(unityLowering(ir).behavior).toBe("Passive");
+    expect(() => emit(ir)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ReadingTriplet reading has unlowered authored facts");
+  });
+
+  it("refuses flattened attribute collisions between different content sources", () => {
+    const ir = repeatedLabelsIr();
+    ir.dom!.children[0]!.children[0]!.content = { kind: "prop", prop: "totals", path: ["west"] };
+    ir.dom!.children[1]!.children[0]!.content = { kind: "prop", prop: "totals", path: ["West"] };
+    expect(() => emit(ir)).toThrow("UNITY_IDENTIFIER_COLLISION: ReadingTriplet ReadingTriplet projects distinct content sources to TotalsWest");
+  });
+
+  it("refuses undeclared repetition and interactive repeated labels", () => {
+    const undeclared = repeatedLabelsIr();
+    undeclared.parts.find(part => part.name === "reading")!.details!.multiple = false;
+    expect(() => emit(undeclared)).toThrow("UNITY_UNSUPPORTED_ANATOMY: ReadingTriplet repeated part reading must declare multiple static text leaves");
+    const interactive = repeatedLabelsIr();
+    interactive.parts.find(part => part.name === "reading")!.details!.interactive = true;
+    expect(() => emit(interactive)).toThrow("UNITY_UNSUPPORTED_ANATOMY: ReadingTriplet repeated part reading must declare multiple static text leaves");
+  });
+});
+
 function surfaceIr(name: string, replacement: string) {
   const contract = loadContractWithSidecars(root, name) as ComponentContract;
   const ir = buildComponentIR(contract);
@@ -429,7 +569,12 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public string AuthorName { get => DisplayName.text; set { DisplayName.text = value ?? \"\"; } }");
     expect(source).toContain("public string AuthorHandle { get => Handle.text; set { Handle.text = value ?? \"\"; } }");
     expect(source).toContain("public string Timestamp { get => TimestampControl.text; set { TimestampControl.text = value ?? \"\"; } }");
-    expect(source).toContain("public string StatsLikes { get => Stat.text; set { Stat.text = value ?? \"\"; } }");
+    expect(source).toContain('public string StatsLikes { get => textValue1; set { textValue1 = value ?? ""; Stat.text = "Likes: {count}".Replace("{count}", textValue1); } }');
+    expect(source).toContain('public string StatsReplies { get => textValue2; set { textValue2 = value ?? ""; Stat2.text = "Replies: {count}".Replace("{count}", textValue2); } }');
+    expect(source).toContain('public string StatsReposts { get => textValue3; set { textValue3 = value ?? ""; Stat3.text = "Reposts: {count}".Replace("{count}", textValue3); } }');
+    expect(source).toContain('Stat.text = "Likes: ";');
+    expect(source).toContain('Stat2.text = "Replies: ";');
+    expect(source).toContain('Stat3.text = "Reposts: ";');
     expect(source).not.toMatch(/public string Author |public string Stats |public string PostId|public string Embed/);
   });
 

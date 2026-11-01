@@ -418,6 +418,28 @@ describe("Unity USS projection: selectors", () => {
 });
 
 describe("Unity USS projection: property table", () => {
+  it.each(["min-width", "max-width", "min-height", "max-height"])("preserves percentage %s constraints and scalar fallbacks", property => {
+    for (const value of ["0%", "37.5%", "100%", "125%", "var(--bound, 60%)"]) {
+      const { uss, ledger } = sheetOf(knobWith({ tail: { [property]: web(value) } }));
+      expect(rule(uss, ".knob__tail"), `${property}: ${value}`).toEqual([`${property}: ${value};`]);
+      expect(ledger.entries, `${property}: ${value}`).toEqual([]);
+    }
+    const keyword = property.startsWith("min-") ? "auto" : "none";
+    for (const value of ["0", "24px", keyword]) {
+      const { uss, ledger } = sheetOf(knobWith({ tail: { [property]: web(value) } }));
+      expect(rule(uss, ".knob__tail")).toEqual([`${property}: ${value};`]);
+      expect(ledger.entries).toEqual([]);
+    }
+  });
+
+  it.each(["min-width", "max-width", "min-height", "max-height"])("keeps unsupported %s expressions and intrinsic values ledgered", property => {
+    for (const value of ["calc(100% - 2px)", "2rem", "1em", "max-content", "var(--bound, calc(100% - 2px))"]) {
+      const { uss, ledger } = sheetOf(knobWith({ tail: { [property]: web(value) } }));
+      expect(uss).not.toContain(`\n    ${property}:`);
+      expect(ledger.entries).toEqual([expect.objectContaining({ part: "tail", property, value, reason: "uss-scalar" })]);
+    }
+  });
+
   it("lowers web-tagged display to the flex engine with CSS's initial axis unless the rule declares one", () => {
     const { uss } = sheetOf(knobWith({
       shell: { display: web("inline-flex") },

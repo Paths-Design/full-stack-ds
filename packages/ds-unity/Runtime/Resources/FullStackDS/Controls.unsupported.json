@@ -7726,14 +7726,6 @@
       "component": "Image",
       "sourceKey": "root",
       "part": "root",
-      "property": "max-width",
-      "value": "100%",
-      "reason": "uss-scalar"
-    },
-    {
-      "component": "Image",
-      "sourceKey": "root",
-      "part": "root",
       "property": "object-fit",
       "value": "var(--fsds-image-prop-object-fit, fill)",
       "reason": "uss-property"
@@ -7752,14 +7744,6 @@
       "part": "root",
       "property": "width",
       "value": "revert-layer",
-      "reason": "uss-scalar"
-    },
-    {
-      "component": "Image",
-      "sourceKey": "structure",
-      "part": "root",
-      "property": "max-width",
-      "value": "100%",
       "reason": "uss-scalar"
     },
     {
@@ -9000,6 +8984,14 @@
       "part": "root",
       "property": "line-height",
       "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-wrap",
+      "value": "anywhere",
       "reason": "uss-property"
     },
     {

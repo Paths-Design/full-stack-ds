@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { FsdsMessagesController, formatFsdsMessage } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
@@ -10,7 +11,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 
 // @generated:start types
 export type PostcardAuthor = { name: string; handle: string; avatar: string };
-export type PostcardStats = { likes: number; replies: number; reposts: number };
+export type PostcardStatValue = number | string;
+export type PostcardStats = { likes: PostcardStatValue; replies: PostcardStatValue; reposts: PostcardStatValue };
 export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
 // @generated:end
 
@@ -19,6 +21,8 @@ export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; as
 // @custom:end
 
 // @generated:start component
+const PostcardMessages = { postLabel: "Post by {name}", likes: "Likes: {count}", replies: "Replies: {count}", reposts: "Reposts: {count}" };
+
 export class PostcardElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -88,10 +92,6 @@ export class PostcardElement extends LitElement {
       --fsds-postcard-typography-footer-font-size: var(--fsds-semantic-typography-body-03, 14px);
     }
 
-    .postcard__userInfo {
-      --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
-    }
-
     .postcard__handle {
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
@@ -129,6 +129,7 @@ export class PostcardElement extends LitElement {
       box-sizing: border-box;
       border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
+      overflow-wrap: anywhere;
 
       &:hover {
         background-color: var(--fsds-postcard-design-hover-background-fill, var(--fsds-postcard-color-background-hover, #f7f7f7));
@@ -150,12 +151,18 @@ export class PostcardElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       gap: var(--fsds-postcard-design-header-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .postcard__userInfo {
       display: flex;
       align-items: center;
       flex: 1 1 auto;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+      gap: var(--fsds-postcard-design-userinfo-spacing-gap, var(--fsds-core-spacing-size-03, 4px));
     }
 
     .postcard__displayName {
@@ -169,6 +176,7 @@ export class PostcardElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -188,15 +196,21 @@ export class PostcardElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-postcard-design-stats-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .postcard__stat {
       display: inline-flex;
       align-items: center;
       font-size: var(--fsds-postcard-design-stat-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
+      max-width: 100%;
     }
     }
   `;
+
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Postcard", PostcardMessages);
 
   @property({ type: String }) postId!: string;
   @property({ attribute: false }) author!: PostcardAuthor;
@@ -218,7 +232,7 @@ export class PostcardElement extends LitElement {
   }
 
   override render() {
-    return html`<article class="${this.computeClasses()}" data-fsds-box="">
+    return html`<article class="${this.computeClasses()}" aria-label=${formatFsdsMessage(this.fsdsMessages.value.postLabel, { name: this.author.name })} data-fsds-box="">
   <div class=${'postcard__header'}>
     <div class=${'postcard__userInfo'}>
       <span class=${'postcard__displayName'}>${this.author.name}</span>
@@ -231,7 +245,9 @@ export class PostcardElement extends LitElement {
   </div>
   <div class=${'postcard__footer'}>
     <div class=${'postcard__stats'}>
-      <span class=${'postcard__stat'}>${this.stats.likes}</span>
+      <span class=${'postcard__stat'}>${formatFsdsMessage(this.fsdsMessages.value.likes, { count: this.stats.likes })}</span>
+      <span class=${'postcard__stat'}>${formatFsdsMessage(this.fsdsMessages.value.replies, { count: this.stats.replies })}</span>
+      <span class=${'postcard__stat'}>${formatFsdsMessage(this.fsdsMessages.value.reposts, { count: this.stats.reposts })}</span>
     </div>
   </div>
 </article>`;
@@ -310,10 +326,6 @@ export class PostcardHeaderElement extends LitElement {
       --fsds-postcard-typography-footer-font-size: var(--fsds-semantic-typography-body-03, 14px);
     }
 
-    .postcard__userInfo {
-      --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
-    }
-
     .postcard__handle {
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
@@ -351,6 +363,7 @@ export class PostcardHeaderElement extends LitElement {
       box-sizing: border-box;
       border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
+      overflow-wrap: anywhere;
 
       &:hover {
         background-color: var(--fsds-postcard-design-hover-background-fill, var(--fsds-postcard-color-background-hover, #f7f7f7));
@@ -372,12 +385,18 @@ export class PostcardHeaderElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       gap: var(--fsds-postcard-design-header-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .postcard__userInfo {
       display: flex;
       align-items: center;
       flex: 1 1 auto;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+      gap: var(--fsds-postcard-design-userinfo-spacing-gap, var(--fsds-core-spacing-size-03, 4px));
     }
 
     .postcard__displayName {
@@ -391,6 +410,7 @@ export class PostcardHeaderElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -410,12 +430,16 @@ export class PostcardHeaderElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-postcard-design-stats-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .postcard__stat {
       display: inline-flex;
       align-items: center;
       font-size: var(--fsds-postcard-design-stat-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
+      max-width: 100%;
     }
     }
   `;
@@ -496,10 +520,6 @@ export class PostcardContentElement extends LitElement {
       --fsds-postcard-typography-footer-font-size: var(--fsds-semantic-typography-body-03, 14px);
     }
 
-    .postcard__userInfo {
-      --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
-    }
-
     .postcard__handle {
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
@@ -537,6 +557,7 @@ export class PostcardContentElement extends LitElement {
       box-sizing: border-box;
       border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
+      overflow-wrap: anywhere;
 
       &:hover {
         background-color: var(--fsds-postcard-design-hover-background-fill, var(--fsds-postcard-color-background-hover, #f7f7f7));
@@ -558,12 +579,18 @@ export class PostcardContentElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       gap: var(--fsds-postcard-design-header-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .postcard__userInfo {
       display: flex;
       align-items: center;
       flex: 1 1 auto;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+      gap: var(--fsds-postcard-design-userinfo-spacing-gap, var(--fsds-core-spacing-size-03, 4px));
     }
 
     .postcard__displayName {
@@ -577,6 +604,7 @@ export class PostcardContentElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -596,12 +624,16 @@ export class PostcardContentElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-postcard-design-stats-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .postcard__stat {
       display: inline-flex;
       align-items: center;
       font-size: var(--fsds-postcard-design-stat-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
+      max-width: 100%;
     }
     }
   `;
@@ -682,10 +714,6 @@ export class PostcardFooterElement extends LitElement {
       --fsds-postcard-typography-footer-font-size: var(--fsds-semantic-typography-body-03, 14px);
     }
 
-    .postcard__userInfo {
-      --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
-    }
-
     .postcard__handle {
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
@@ -723,6 +751,7 @@ export class PostcardFooterElement extends LitElement {
       box-sizing: border-box;
       border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
+      overflow-wrap: anywhere;
 
       &:hover {
         background-color: var(--fsds-postcard-design-hover-background-fill, var(--fsds-postcard-color-background-hover, #f7f7f7));
@@ -744,12 +773,18 @@ export class PostcardFooterElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       gap: var(--fsds-postcard-design-header-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .postcard__userInfo {
       display: flex;
       align-items: center;
       flex: 1 1 auto;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+      gap: var(--fsds-postcard-design-userinfo-spacing-gap, var(--fsds-core-spacing-size-03, 4px));
     }
 
     .postcard__displayName {
@@ -763,6 +798,7 @@ export class PostcardFooterElement extends LitElement {
     }
 
     .postcard__timestamp {
+      max-width: 100%;
       font-size: var(--fsds-postcard-design-timestamp-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
       flex-shrink: 0;
     }
@@ -782,12 +818,16 @@ export class PostcardFooterElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-postcard-design-stats-spacing-gap, var(--fsds-postcard-size-gap, 12px));
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .postcard__stat {
       display: inline-flex;
       align-items: center;
       font-size: var(--fsds-postcard-design-stat-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
+      max-width: 100%;
     }
     }
   `;
