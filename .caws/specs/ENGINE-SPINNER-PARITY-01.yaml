@@ -72,3 +72,9 @@ evidence:
     command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/native-loop-visual.test.ts packages/ds-codegen/src/frameworks/godot/factory.test.ts packages/ds-codegen/src/frameworks/godot/boundary.test.ts packages/ds-codegen/src/frameworks/unity/walker.test.ts --maxWorkers=1 --no-file-parallelism --reporter=dot"
     exit_code: 0
     commit_sha: "32416a7d7"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Unity 6000.5.3f1 EditMode real panel: clean source 83269cc1f, results.xml SHA256 f3eb7ff0, 100/100 passed including SpinnerPaintsSourceBoundGeometryAndThemeColors, SpinnerRotatesOnTheDeclaredLoop, SpinnerHoldsTheAuthoredStaticValueWhenReducedMotionIsRequested; Unity source unchanged through landed revision."
+    recorded_at: "2026-11-01T11:25:09.442Z"
+    artifact_path: "/private/tmp/fsds-spinner-unity-final-20261101/results.xml"
+    commit_sha: "83269cc1f"
