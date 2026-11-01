@@ -402,7 +402,8 @@ impl Menu {
 
     /// NOT FSDS: no Slider component on the target. 300x6 graphite track with a
     /// signal fill and a 16 px circular boneBright thumb; the whole track is
-    /// divided into 20 pointer cells so a click sets the stepped value (I12/I14).
+    /// divided into one pointer cell per admitted value, including both ends
+    /// of the range, so a click can select the minimum (I12/I14).
     fn render_slider(
         &mut self,
         cx: &mut Context<Self>,
@@ -419,14 +420,16 @@ impl Menu {
         let track_y = y + (thumb - spec.h) / 2.0;
         let fill_w = (spec.w - thumb) * fraction + thumb;
         let thumb_x = (spec.w - thumb) * fraction;
-        let steps = 20usize;
+        let values = slider_click_values(row);
+        let steps = values.len();
         let mut cells: Vec<AnyElement> = Vec::new();
-        for step in 0..steps {
-            let value = row.min + (row.max - row.min) * (step as f32 + 0.5) / steps as f32;
+        for (step, value) in values.into_iter().enumerate() {
             let click_id = row.id.clone();
+            let selector = format!("slider-cell:{key}:{step}");
             cells.push(
                 div()
                     .id(("slider-cell", slider_seed(&key) * 32 + step))
+                    .debug_selector(move || selector.clone())
                     .w(px(spec.w / steps as f32))
                     .h(px(thumb))
                     .cursor_pointer()
@@ -540,43 +543,60 @@ impl Menu {
             }))
             .child(value)
             .child(chevron);
-        let mut children: Vec<AnyElement> = vec![label, button.into_any_element()];
-        if open {
-            let options = self.state.language_options(kind).to_vec();
-            for (index, option) in options.iter().enumerate() {
-                let selected = option == &value_text(&self.state, kind);
-                let option_value = option.clone();
-                let option_label = self.text(
-                    cx,
-                    format!("dropdown:{kind:?}:option:{index}"),
-                    style::button_secondary(),
-                    &layout.color(if selected { "signal" } else { "boneBright" }),
-                    option.clone(),
-                );
-                children.push(
-                    div()
-                        .id(("language-option", index))
-                        .absolute()
-                        .left(px(x))
-                        .top(px(y + height + index as f32 * 24.0))
-                        .w(px(spec.w))
-                        .h(px(24.))
-                        .flex()
-                        .items_center()
-                        .px(px(8.))
-                        .bg(colors::paint(&layout.colors.charcoal))
-                        .border_1()
-                        .border_color(colors::paint(&layout.colors.rule_strong))
-                        .cursor_pointer()
-                        .on_click(cx.listener(move |this, _, _, cx| {
-                            this.select_language(kind, &option_value, cx)
-                        }))
-                        .child(option_label)
-                        .into_any_element(),
-                );
-            }
+        div().children(vec![label, button.into_any_element()]).into_any_element()
+    }
+
+    /// Render the open menu after the shell so preview and footer cannot paint
+    /// over its rows. The list opens upward within the audio panel.
+    pub(crate) fn render_language_options(&mut self, cx: &mut Context<Self>) -> Option<AnyElement> {
+        let kind = self.state.dropdown()?;
+        let layout = self.layout.clone();
+        let panel = layout.panel("audio").expect("parity audio panel").rect;
+        let x = panel.x + layout.panels.padding
+            + if kind == DropdownKind::SubtitleLanguage {
+                layout.settings.dropdown.w + layout.panels.padding
+            } else {
+                0.0
+            };
+        let options = self.state.language_options(kind).to_vec();
+        let row_h = 24.0;
+        let top = language_options_top(layout.settings.dropdown_y, options.len(), row_h);
+        let selected = value_text(&self.state, kind);
+        let mut children = Vec::new();
+        for (index, option) in options.into_iter().enumerate() {
+            let is_selected = option == selected;
+            let option_value = option.clone();
+            let option_label = self.text(
+                cx,
+                format!("dropdown:{kind:?}:option:{index}"),
+                style::button_secondary(),
+                &layout.color(if is_selected { "signal" } else { "boneBright" }),
+                option,
+            );
+            children.push(
+                div()
+                    .id(("language-option", index))
+                    .debug_selector(move || format!("language-option:{kind:?}:{index}"))
+                    .absolute()
+                    .left(px(x))
+                    .top(px(top + index as f32 * row_h))
+                    .w(px(layout.settings.dropdown.w))
+                    .h(px(row_h))
+                    .flex()
+                    .items_center()
+                    .px(px(8.))
+                    .bg(colors::paint(&layout.colors.charcoal))
+                    .border_1()
+                    .border_color(colors::paint(&layout.colors.rule_strong))
+                    .cursor_pointer()
+                    .on_click(cx.listener(move |this, _, _, cx| {
+                        this.select_language(kind, &option_value, cx)
+                    }))
+                    .child(option_label)
+                    .into_any_element(),
+            );
         }
-        div().children(children).into_any_element()
+        Some(div().children(children).into_any_element())
     }
 
     /// I13: the key-waiting remap modal (no Dialog component on the target).
@@ -681,6 +701,47 @@ fn value_text(state: &game_pause_menu_gpui::seam::AppState, kind: DropdownKind) 
     match kind {
         DropdownKind::AudioLanguage => state.audio_language().to_string(),
         DropdownKind::SubtitleLanguage => state.subtitle_language().to_string(),
+    }
+}
+
+fn slider_click_values(row: &SliderState) -> Vec<f32> {
+    let intervals = ((row.max - row.min) / row.step).round() as usize;
+    (0..=intervals)
+        .map(|index| row.quantize(row.min + index as f32 * row.step))
+        .collect()
+}
+
+fn language_options_top(dropdown_y: f32, count: usize, row_h: f32) -> f32 {
+    dropdown_y - count as f32 * row_h
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use game_pause_menu_gpui::seam::{AppState, load_fixtures, load_parity_layout};
+
+    #[test]
+    fn every_slider_endpoint_has_a_click_cell() {
+        let state = AppState::new(load_fixtures());
+        for slider in state.controller().iter().chain(state.audio_sliders()) {
+            let values = slider_click_values(slider);
+            assert_eq!(values.first().copied(), Some(slider.min), "{} minimum", slider.id);
+            assert_eq!(values.last().copied(), Some(slider.max), "{} maximum", slider.id);
+            assert!(values.windows(2).all(|pair| pair[0] < pair[1]), "{} unique steps", slider.id);
+        }
+    }
+
+    #[test]
+    fn every_language_option_fits_above_its_trigger() {
+        let state = AppState::new(load_fixtures());
+        let layout = load_parity_layout();
+        let panel = layout.panel("audio").unwrap().rect;
+        for kind in [DropdownKind::AudioLanguage, DropdownKind::SubtitleLanguage] {
+            let count = state.language_options(kind).len();
+            let top = language_options_top(layout.settings.dropdown_y, count, 24.0);
+            assert!(top >= panel.y + 1.0, "{kind:?} starts inside panel");
+            assert_eq!(top + count as f32 * 24.0, layout.settings.dropdown_y);
+        }
     }
 }
 

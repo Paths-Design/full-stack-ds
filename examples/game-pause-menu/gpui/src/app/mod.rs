@@ -995,6 +995,11 @@ impl Render for Menu {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         self.sync_controls(cx);
         let children = self.render_shell(cx);
+        let language_options = if self.state.active_tab() == Tab::Settings {
+            self.render_language_options(cx)
+        } else {
+            None
+        };
         let modal = self.render_remap_modal(cx);
         let viewport = self.layout.viewport;
         let mut root = div()
@@ -1022,6 +1027,9 @@ impl Render for Menu {
                 this.select_tab(Tab::Settings, cx)
             }))
             .children(children);
+        if let Some(options) = language_options {
+            root = root.child(options);
+        }
         if let Some(modal) = modal {
             root = root.child(modal);
         }
@@ -1075,7 +1083,40 @@ mod tests {
 #[cfg(all(test, feature = "capture"))]
 mod mounted_layout_tests {
     use super::*;
-    use gpui::{TestAppContext, point, size};
+    use gpui::{Modifiers, TestAppContext, point, size};
+
+    #[gpui::test]
+    fn settings_controls_receive_clicks_at_their_edge_and_above_the_preview(cx: &mut TestAppContext) {
+        let (view, cx) = cx.add_window_view(|window, cx| Menu::new(window, cx, Tab::Settings));
+        let first_slider = view.read_with(cx, |menu, _| menu.state.controller()[0].clone());
+        view.update(cx, |menu, cx| {
+            menu.state.set_controller(&first_slider.id, first_slider.max);
+            cx.notify();
+        });
+        cx.run_until_parked();
+        let minimum_cell = cx
+            .debug_bounds("slider-cell:controller:lookSensitivity:0")
+            .expect("minimum slider click target is mounted");
+        cx.simulate_click(minimum_cell.center(), Modifiers::default());
+        assert_eq!(
+            view.read_with(cx, |menu, _| menu.state.controller()[0].value),
+            first_slider.min,
+        );
+
+        view.update(cx, |menu, cx| {
+            menu.state.open_dropdown(DropdownKind::AudioLanguage);
+            cx.notify();
+        });
+        cx.run_until_parked();
+        let option = cx
+            .debug_bounds("language-option:AudioLanguage:1")
+            .expect("second language option is mounted above the shell");
+        cx.simulate_click(option.center(), Modifiers::default());
+        assert_eq!(
+            view.read_with(cx, |menu, _| menu.state.audio_language().to_string()),
+            "Español",
+        );
+    }
 
     struct SwitchHarness {
         switch: Entity<Switch>,
