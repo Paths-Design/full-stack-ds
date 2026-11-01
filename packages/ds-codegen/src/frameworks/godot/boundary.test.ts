@@ -127,7 +127,8 @@ describe("Godot support boundary", () => {
     // Validation state is projected structurally (required/invalid); validation
     // execution and read-only mode remain refused.
     expect(classifyProp(boundary, "required")).toMatchObject({ disposition: "lowered" });
-    expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "pending" });
+    // Value formatting has no runtime on this target; it is refused, not pending.
+    expect(classifyProp(boundary, "formatValue")).toMatchObject({ disposition: "refused" });
     // Data-driven children props are refused: the runtime does not iterate or
     // persist consumer data.
     expect(classifyProp(boundary, "options")).toMatchObject({ disposition: "refused" });
@@ -215,7 +216,9 @@ describe("Godot support boundary", () => {
       expect(leaf.pointer.startsWith("/")).toBe(true);
     }
     // A non-lowered leaf is still named by a rule (never silently dropped).
-    const pendingLeaf = classified.find(leaf => leaf.disposition === "pending");
+    // Button has no pending leaves any more, so the check uses a component that
+    // still carries one.
+    const pendingLeaf = classifyContract(load("Avatar"), boundary).find(leaf => leaf.disposition === "pending");
     expect(pendingLeaf?.rule).toBeTruthy();
     // contractLeaves merges the identity-keyed sidecar leaves.
     expect(contractLeaves(load("Button")).some(leaf => leaf.source === "styles")).toBe(true);

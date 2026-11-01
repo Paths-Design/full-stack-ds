@@ -177,8 +177,8 @@
         "contract:/anatomy/dom/**/ref:*/if",
         "contract:/anatomy/dom/**/ref:*/children/**"
       ],
-      "disposition": "pending",
-      "reason": "dynamic composition of a referenced component is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Dynamic component-ref facts (bindings, events, guards, children on a componentRef) are not lowered: the planner emits a static host for each admitted ref and the consumer binds its own behaviour."
     },
     {
       "id": "anatomy-content-transform",
@@ -293,8 +293,8 @@
       "match": [
         "contract:/anatomy/dom/**/bindings/role"
       ],
-      "disposition": "pending",
-      "reason": "accessibility roles are a semantic mapping the shared runtime does not expose yet"
+      "disposition": "refused",
+      "reason": "An authored role binding is DOM authoring; Godot exposes no accessible-role property to bind it to."
     },
     {
       "id": "anatomy-dom-binding-media",
@@ -379,8 +379,8 @@
         "contract:/anatomy/dom/**/bindings/target",
         "contract:/anatomy/dom/**/bindings/rel"
       ],
-      "disposition": "pending",
-      "reason": "web navigation semantics are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored href/target/rel bindings are not projected; navigation is consumer-owned."
     },
     {
       "id": "anatomy-media-binding",
@@ -491,8 +491,8 @@
         "contract:/anatomy/dom/**/events/focusin",
         "contract:/anatomy/dom/**/events/focusout"
       ],
-      "disposition": "pending",
-      "reason": "focus management is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Authored focus-event handlers are not bound; the runtime handles the focus keys the contracts declare."
     },
     {
       "id": "surface-dismissal",
@@ -785,16 +785,16 @@
       "match": [
         "contract:/pagedSet/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven pagination children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The paged-set model (channel, items, count, disabled) has no runtime: the target builds no page list or navigation chrome."
     },
     {
       "id": "date-grid",
       "match": [
         "contract:/dateGrid/**"
       ],
-      "disposition": "pending",
-      "reason": "data-driven date-grid children are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "The date-grid model (value/month channels, mode, min/max, caption, locale) has no runtime: the target renders no calendar grid, so the declared grid facts are not lowered."
     },
     {
       "id": "transfer",
@@ -1314,6 +1314,66 @@
       "reason": "The remaining validation props (validate callbacks, readOnly) are not honoured: the runtime executes no validation and exposes no read-only mode; the realised required/invalid state projection is split out above."
     },
     {
+      "id": "prop-variant-axes-extended",
+      "match": [
+        "contract:/props/*/members/*:presentation",
+        "contract:/props/*/members/*:presentation/**",
+        "contract:/props/presentation",
+        "contract:/props/*/members/*:progress",
+        "contract:/props/*/members/*:progress/**",
+        "contract:/props/progress",
+        "contract:/props/*/members/*:indicator",
+        "contract:/props/*/members/*:indicator/**",
+        "contract:/props/indicator",
+        "contract:/props/*/members/*:mode",
+        "contract:/props/*/members/*:mode/**",
+        "contract:/props/mode",
+        "contract:/props/*/members/*:radius",
+        "contract:/props/*/members/*:radius/**",
+        "contract:/props/radius"
+      ],
+      "disposition": "refused",
+      "reason": "These declared axes are inert on this target: the collection/date contracts declare no axis-conditioned style rule the runtime could switch, and the target does not synthesize variant chrome. The axis value is stored as a declared prop only."
+    },
+    {
+      "id": "prop-inert-display-flags",
+      "match": [
+        "contract:/props/*/members/*:showValue",
+        "contract:/props/*/members/*:showValue/**",
+        "contract:/props/showValue",
+        "contract:/props/*/members/*:showChoices",
+        "contract:/props/*/members/*:showChoices/**",
+        "contract:/props/showChoices",
+        "contract:/props/*/members/*:showPlaceholder",
+        "contract:/props/*/members/*:showPlaceholder/**",
+        "contract:/props/showPlaceholder",
+        "contract:/props/*/members/*:showStatusIcon",
+        "contract:/props/*/members/*:showStatusIcon/**",
+        "contract:/props/showStatusIcon",
+        "contract:/props/*/members/*:expandable",
+        "contract:/props/*/members/*:expandable/**",
+        "contract:/props/expandable",
+        "contract:/props/*/members/*:responsive",
+        "contract:/props/*/members/*:responsive/**",
+        "contract:/props/responsive",
+        "contract:/props/*/members/*:aspectRatio",
+        "contract:/props/*/members/*:aspectRatio/**",
+        "contract:/props/aspectRatio"
+      ],
+      "disposition": "refused",
+      "reason": "Display flags the runtimes store as inert declared props; the target does not synthesize the chrome they would switch on."
+    },
+    {
+      "id": "prop-delay-timer",
+      "match": [
+        "contract:/props/*/members/*:showAfterMs",
+        "contract:/props/*/members/*:showAfterMs/**",
+        "contract:/props/showAfterMs"
+      ],
+      "disposition": "refused",
+      "reason": "Delayed-appearance timers are consumer scheduling on this target; the runtime mounts content immediately and honours no delay."
+    },
+    {
       "id": "prop-formatting",
       "match": [
         "contract:/props/*/members/*:formatValue",
@@ -1345,46 +1405,10 @@
         "contract:/props/lines",
         "contract:/props/*/members/*:maxLines",
         "contract:/props/*/members/*:maxLines/**",
-        "contract:/props/maxLines",
-        "contract:/props/*/members/*:expandable",
-        "contract:/props/*/members/*:expandable/**",
-        "contract:/props/expandable",
-        "contract:/props/*/members/*:showAfterMs",
-        "contract:/props/*/members/*:showAfterMs/**",
-        "contract:/props/showAfterMs",
-        "contract:/props/*/members/*:progress",
-        "contract:/props/*/members/*:progress/**",
-        "contract:/props/progress",
-        "contract:/props/*/members/*:showValue",
-        "contract:/props/*/members/*:showValue/**",
-        "contract:/props/showValue",
-        "contract:/props/*/members/*:showChoices",
-        "contract:/props/*/members/*:showChoices/**",
-        "contract:/props/showChoices",
-        "contract:/props/*/members/*:presentation",
-        "contract:/props/*/members/*:presentation/**",
-        "contract:/props/presentation",
-        "contract:/props/*/members/*:showPlaceholder",
-        "contract:/props/*/members/*:showPlaceholder/**",
-        "contract:/props/showPlaceholder",
-        "contract:/props/*/members/*:showStatusIcon",
-        "contract:/props/*/members/*:showStatusIcon/**",
-        "contract:/props/showStatusIcon",
-        "contract:/props/*/members/*:indicator",
-        "contract:/props/*/members/*:indicator/**",
-        "contract:/props/indicator",
-        "contract:/props/*/members/*:responsive",
-        "contract:/props/*/members/*:responsive/**",
-        "contract:/props/responsive",
-        "contract:/props/*/members/*:aspectRatio",
-        "contract:/props/*/members/*:aspectRatio/**",
-        "contract:/props/aspectRatio",
-        "contract:/props/*/members/*:radius",
-        "contract:/props/*/members/*:radius/**",
-        "contract:/props/radius"
+        "contract:/props/maxLines"
       ],
-      "disposition": "pending",
-      "reason": "formatting/presentation projection is not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "Value formatting and syntax highlighting have no runtime on this target: there is no locale/number/date formatter and no tokenizer, so consumers format and tokenize before passing values."
     },
     {
       "id": "prop-data-children",
@@ -1501,8 +1525,8 @@
         "contract:/props/*/members/*:rel/**",
         "contract:/props/rel"
       ],
-      "disposition": "pending",
-      "reason": "web navigation semantics are not realised by the shared runtime yet"
+      "disposition": "refused",
+      "reason": "URL/navigation-target props have no native meaning on this target; consumers handle navigation themselves."
     },
     {
       "id": "prop-aria-labeling",

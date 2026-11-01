@@ -43,6 +43,8 @@ The overlay-surface family (Dialog, Sheet, Toast, Command, Tooltip, Walkthrough)
 
 The form-control family (Select, Checkbox, ToggleSwitch, Input, TextField, Field, OTP, RadioGroup, Shuttle) is closed: the declared `required`/`invalid` state is projected as structural `aria_required`/`aria_invalid` (validation itself is the consumer's job), and `ariaLabelledby`/`ariaDescribedby` props wire Godot's native labeled-by/described-by relations. The checkbox tri-state, the OTP field-group runtime, data-driven options, authored bindings and the transfer model are refused with written reasons.
 
+The collections/date family (Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel) is closed by **refusal**: the target has no date-grid, paged-set or collection runtime and no formatter, so the date-grid/paged-set models, dynamic component-ref facts, formatting/highlighting, navigation targets and authored bindings are refused with written reasons rather than claimed. Building those runtimes is a feature slice, not a ledger adjudication.
+
 ## Generate and verify
 
 From the repository root:
