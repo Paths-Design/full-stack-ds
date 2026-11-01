@@ -1,9 +1,11 @@
 id: GPUI-COLLECTION-ACCORDION-01
 title: 'GPUI accordion collection state: open value and trigger toggle'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Accordion realizes its string open value with a trigger toggle and gated panel; behavior 12->13, props 257->259, other targets byte-identical.'
 created_at: '2026-11-01T12:06:12.961Z'
-updated_at: '2026-11-01T12:06:16.448Z'
+updated_at: '2026-11-01T12:18:03.846Z'
 created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
 blast_radius:
   modules:
