@@ -44,3 +44,12 @@ contracts:
   - name: 'gpui-web-consistency-baseline'
     type: schema
     path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Details plans through a synthetic disclosure host (trigger part summary, open/defaultOpen/onOpenChange): generated source carries BooleanState, EventEmitter<ChangeRequest>, builders open/default_open, the focus/tab/keyboard chain on details-summary and content guarded by when(self.state.value()); the receipt's controlPart names the trigger; existing value controls are byte-identical (channel host rule keeps the root chain for skipped input hosts)"
+    recorded_at: "2026-11-01T11:44:29.270Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Details/Details.rs
+    commit_sha: d314cf175
