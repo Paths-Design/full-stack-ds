@@ -59,3 +59,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run test:godot row form-aria-validation: Checkbox (control shape) projects aria_required/aria_invalid from the required/invalid props and wires accessibility_labeled_by_nodes from the aria_labelledby path; Input (anatomy shape) does the same through set_contract_prop; the anatomy/control runtimes share the accessibility-facts projection module"
     recorded_at: "2026-11-01T09:55:47.691Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 31 rows; only form-aria-validation was added (30 prior rows unchanged: 21 original + 7 disclosure + surface-aria-labeling); catalog-load admitted 55 failures []; zero JSON parse warnings after guarding absent default keys"
+    recorded_at: "2026-11-01T09:55:49.505Z"
