@@ -31,6 +31,13 @@ const requiredEngineTests = [
   "mounted_nested_controls_own_pointer_focus_and_keyboard_requests",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
+// Every admitted component carries one generated mount witness. This is a
+// two-directional ratchet: the allowlist cannot grow without the witness, and a
+// witness cannot silently disappear from the run.
+const mountModule = name => name.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
+const expectedMountWitnesses = target.components.map(name => `components::${mountModule(name)}_mount::mounts`);
+const missingWitnessFiles = target.components.filter(name => !fs.existsSync(path.join(root, `packages/ds-gpui/src/components/${name}/${name}.test.rs`)));
+if (missingWitnessFiles.length) throw new Error(`GPUI_MOUNT_WITNESS_GENERATION_REQUIRED: ${missingWitnessFiles.join(", ")}`);
 for (const name of target.components) {
   if (!fs.existsSync(path.join(root, `packages/ds-gpui/src/components/${name}/${name}.rs`))) throw new Error(`GPUI_PILOT_GENERATION_REQUIRED: ${name}`);
 }
@@ -63,6 +70,7 @@ const report = {
   sourceStatus: spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], { cwd: root, encoding: "utf8" }).stdout.trim(),
   components: target.components,
   requiredEngineTests,
+  expectedMountWitnesses,
   sourceHashes: snapshot(),
   sourceIntegrity: "unchecked",
   checks: [],
@@ -81,12 +89,14 @@ for (const command of [
   fs.writeFileSync(path.join(evidenceRoot, log), `${result.stdout ?? ""}\n${result.stderr ?? ""}`);
   const passedTests = [...(result.stdout ?? "").matchAll(/^test (.+?) \.\.\. ok$/gm)].map(match => match[1]);
   const missingEngineTests = command[0] === "test" ? requiredEngineTests.filter(name => !passedTests.includes(name)) : [];
-  report.checks.push({ command: ["cargo", ...args], exitCode: result.status, log, passedTests, missingEngineTests, error: result.error?.message });
+  const missingMountWitnesses = command[0] === "test" ? expectedMountWitnesses.filter(name => !passedTests.includes(name)) : [];
+  report.checks.push({ command: ["cargo", ...args], exitCode: result.status, log, passedTests, missingEngineTests, missingMountWitnesses, error: result.error?.message });
   report.overall = result.error || result.status !== 0 ? "fail" : "incomplete";
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
   process.stdout.write(result.stdout ?? "");
   process.stderr.write(result.stderr ?? "");
-  if (result.error || result.status !== 0 || missingEngineTests.length > 0) {
+  if (result.error || result.status !== 0 || missingEngineTests.length > 0 || missingMountWitnesses.length > 0) {
+    if (missingMountWitnesses.length) console.error(`GPUI_MOUNT_WITNESS_MISSING: ${missingMountWitnesses.join(", ")}`);
     report.overall = "fail";
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
     console.error(`GPUI_PILOT_FAIL: ${reportPath}`);
