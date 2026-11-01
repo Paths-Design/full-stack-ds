@@ -38,7 +38,7 @@ impl Menu {
             cx,
             "map:title-meta",
             style::panel_meta(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             layout.map.map_title.meta.clone(),
             Rect {
                 x: map_panel.right() - padding - 240.0,
@@ -176,7 +176,7 @@ impl Menu {
             cx,
             "map:icon-meta",
             style::panel_meta(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             layout.map.icon_panel_meta.clone(),
             Rect {
                 x: icon_panel.right() - padding - 200.0,

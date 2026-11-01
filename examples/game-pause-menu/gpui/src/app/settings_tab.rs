@@ -14,7 +14,7 @@ impl Menu {
         let layout = self.layout.clone();
         let mut children: Vec<AnyElement> = Vec::new();
         for panel in layout.settings.panels.clone() {
-            children.push(widgets::panel(&layout, panel.rect).into_any_element());
+            children.push(widgets::panel_on(&layout, panel.rect, &layout.panels.elevated_background).into_any_element());
             children.push(self.text_at(
                 cx,
                 format!("settings:{}:title", panel.id),
@@ -28,7 +28,7 @@ impl Menu {
                 cx,
                 format!("settings:{}:meta", panel.id),
                 style::panel_meta(&layout.type_scale),
-                &layout.colors.muted,
+                &layout.colors.text_secondary,
                 panel.meta.clone(),
                 Rect {
                     x: panel.rect.right() - layout.panels.padding - 420.0,

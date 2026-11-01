@@ -64,7 +64,7 @@ namespace GamePauseMenu
             var remap = FindPanel("remap");
             var audio = FindPanel("audio");
             foreach (var panel in panels)
-                Root.Add(Ui.MakePanel(layout, panel.Rect, panel.Title, panel.Meta, 36).Root);
+                Root.Add(Ui.MakePanel(layout, panel.Rect, panel.Title, panel.Meta, 36, "parity-panel--steel").Root);
 
             RemapStatus = Ui.MakeText(layout, string.Empty, "micro", "signalHot", true,
                 new LayoutRect(remap.Rect.X + 300, remap.Rect.Bottom - 17, 292, 14), align: TextAnchor.MiddleRight);

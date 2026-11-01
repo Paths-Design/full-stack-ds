@@ -1,6 +1,6 @@
 # Visual review record — Orion N5 pause menu
 
-**Status: restyle pass 3 complete; human re-review pending.** The human
+**Status: restyle pass 4 complete; human re-review pending.** The human
 review decision was “require the Orion style restyle first”, so this record now
 covers both the original gap and the first restyle pass.
 
@@ -63,9 +63,11 @@ review is required before any stronger claim is recorded.
 ### Where the reference is not met
 
 The original oracle audit recorded **90 composition-band violations across 24
-lane/state observations, with zero clean observations**. After the second restyle pass it records **30 violations with 6 clean
-observations** (settings and settings-subtitle meet the bands in all lanes).
-Representative post-pass-2 values:
+lane/state observations, with zero clean observations**. The restyle pass sequence first reduced the gap from 90/0 to 30/6; after the
+field-split pass it records **36 violations with 6 clean observations**
+(abilities/abilities-hover meet the bands in all lanes). Representative
+post-pass-2 values (pass 4 changed the field split; the committed
+oracle-report.json is authoritative):
 
 | Screen | Ink | Mint | Grey | Orange | Cream |
 |---|---:|---:|---:|---:|---:|
@@ -106,15 +108,24 @@ Authority-driven changes:
 - GPUI gained the full-viewport ink/0.78 remap-modal scrim Unity and Godot
   already had — the brighter chrome exposed that as a genuine cross-engine gap.
 
+## Restyle pass 4 (2026-11-01)
+
+- settings panels and the ability-detail panel use the `ruleStrong` steel
+  field; map/progress keep charcoal housings, cards stay charcoal, and the
+  chrome remains mint with an orange band;
+- abilities now meets all oracle bands; settings is grey-heavy (65 % grey),
+  map/progress are mint-heavy (42–55 % mint), and the full-screen remap modal
+  remains a scrim-dominated exception;
+- the oracle records **36 violations / 6 clean observations**, with abilities
+  and abilities-hover clean in all lanes.
+
 ## Restyle pass 3 (2026-11-01)
 
 - panel housings use 2 px frames in all three lanes (Unity lane class, GPUI
   panel widget, Godot frame width from the authority); the abilities detail
   edge probe moves inside the thicker border;
-- this is the industrial-frame part of the restyle only. The requested
-  per-tab mint/grey field conversion of abilities/settings is **not done**;
-  those remain dark charcoal bodies under the mint header/footer and orange
-  band. That gap is the next restyle item.
+- this pass added the industrial frames. The per-tab field conversion followed
+  in pass 4.
 
 ## Restyle pass 2 (2026-11-01)
 

@@ -131,7 +131,16 @@
  * variables and lets its own rules consume them, rather than repeating the
  * authority values as inline colour/border/radius styles. The values resolve
  * through the generated .fsds-brand-orion(.fsds-theme--dark) scope. */
-.pause-app .parity-panel,
+.pause-app .parity-panel {
+    --fsds-card-color-background-default: var(--fsds-semantic-color-background-secondary);
+    --fsds-card-color-border: var(--fsds-semantic-color-border-subtle);
+    --fsds-card-size-radius: var(--fsds-semantic-shape-card-radius);
+}
+
+.pause-app .parity-panel--steel {
+    --fsds-card-color-background-default: var(--fsds-semantic-color-border-default);
+}
+
 .pause-app .ability-card {
     --fsds-card-color-background-default: var(--fsds-semantic-color-background-secondary);
     --fsds-card-color-border: var(--fsds-semantic-color-border-subtle);

@@ -33,7 +33,7 @@ impl Menu {
             cx,
             "progress:meta",
             style::panel_meta(&layout.type_scale),
-            &layout.colors.muted,
+            &layout.colors.text_secondary,
             layout.progress.list_meta.clone(),
             Rect {
                 x: list_panel.right() - padding - 280.0,

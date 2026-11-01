@@ -50,7 +50,7 @@ func _build_grid() -> void:
 	_grid_panel.name = "GridPanel"
 	UI.place_rect(_grid_panel, rect)
 	add_child(_grid_panel)
-	var frame := UI.frame("charcoal", "rule")
+	var frame := UI.frame(str(app.parity.panels["background"]), "rule")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size
@@ -205,7 +205,7 @@ func _build_detail() -> void:
 	_detail_panel.name = "DetailPanel"
 	UI.place_rect(_detail_panel, rect)
 	add_child(_detail_panel)
-	var frame := UI.frame("charcoal", "rule")
+	var frame := UI.frame(str(app.parity.panels["elevatedBackground"]), "rule")
 	frame.position = Vector2.ZERO
 	frame.size = rect.size
 	frame.custom_minimum_size = rect.size
@@ -214,7 +214,8 @@ func _build_detail() -> void:
 		_detail_panel,
 		rect.size.x,
 		str(app.parity.abilities["detailTitle"]),
-		"SELECT A MODULE"
+		"SELECT A MODULE",
+		str(app.parity.panels["elevatedBackground"])
 	)
 
 	var padding := 16.0

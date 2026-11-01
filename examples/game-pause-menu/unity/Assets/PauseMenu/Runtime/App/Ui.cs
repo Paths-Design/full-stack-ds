@@ -345,7 +345,7 @@ namespace GamePauseMenu
         }
 
         public static Panel MakePanel(ParityLayoutData layout, LayoutRect rect, string title, string meta,
-            double headerHeight)
+            double headerHeight, string surfaceClass = null)
         {
             var panel = new Panel
             {
@@ -356,6 +356,7 @@ namespace GamePauseMenu
             var root = panel.Root;
             root.name = "panel";
             root.AddToClassList("parity-panel");
+            if (surfaceClass != null) root.AddToClassList(surfaceClass);
             At(root, rect);
             StripBox(root);
             root.style.flexDirection = FlexDirection.Column;
@@ -377,7 +378,7 @@ namespace GamePauseMenu
                 letterSpacing: layout.Size("letterSpacingMicro"));
             titleText.style.flexGrow = 1;
             titleText.style.height = (float)headerHeight;
-            var metaText = MakeText(layout, meta, "panelMeta", "muted", false, align: TextAnchor.MiddleRight);
+            var metaText = MakeText(layout, meta, "panelMeta", "textSecondary", false, align: TextAnchor.MiddleRight);
             metaText.style.height = (float)headerHeight;
             header.Add(titleText);
             header.Add(metaText);
