@@ -8663,6 +8663,8 @@
     align-items: center;
     justify-content: space-between;
     --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+    flex-wrap: wrap;
+    min-width: 0;
 }
 
 .postcard__userInfo {
@@ -8670,7 +8672,9 @@
     flex-direction: row;
     align-items: center;
     flex: 1 1 auto;
-    --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
+    flex-wrap: wrap;
+    min-width: 0;
+    --fsds-gap: var(--fsds-core-spacing-size-03, 4px);
 }
 
 .postcard__displayName {
@@ -8705,6 +8709,8 @@
     flex-direction: row;
     align-items: center;
     --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+    flex-wrap: wrap;
+    min-width: 0;
 }
 
 .postcard__stat {

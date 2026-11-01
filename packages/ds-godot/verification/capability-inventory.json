@@ -6,9 +6,9 @@
     "rules": 167,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8913,
+      "lowered": 8925,
       "pending": 13,
-      "refused": 8599
+      "refused": 8631
     },
     "deadRules": []
   },
@@ -1584,10 +1584,10 @@
       "emitted": true,
       "operation": "anatomy",
       "diagnostic": null,
-      "contractSha256": "241c34f946f28e5c70b8c13860b68753adab31c3a085e8082dc84409ef07843a",
+      "contractSha256": "ce79bbaad7cc5e74df8565a08ac2fab8a58f3380cbc123ac616a61f91cc9fef3",
       "sidecarSha256": {
         "tokens": "b7e1571e337e707e58449697852926f981c7978e7a21da2aa12c5a82a9e0c4cb",
-        "styles": "929618f45830265bac718d0fa943c462a15b25b6bbfc4d476f4337d0075a7474"
+        "styles": "f0bb95299899c00fe4d7c1ef565ae25033cbbc48e98ae12fe29ea0d29f273802"
       },
       "receipt": {
         "operation": "anatomy",
@@ -1599,7 +1599,7 @@
           "embed"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 50
+        "nonClaimCount": 64
       },
       "variance": [
         {
@@ -1609,11 +1609,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 196,
+          "lowered": 208,
           "pending": 0,
-          "refused": 174
+          "refused": 206
         },
-        "digest": "f7e8f9183012919ec8ac97cce8b4faa3397f814c01350fb87f67a1979488b38d"
+        "digest": "273575a435b106260dee7ee425a114b780870040a3ef778de81360ba239ea2ac"
       }
     },
     {

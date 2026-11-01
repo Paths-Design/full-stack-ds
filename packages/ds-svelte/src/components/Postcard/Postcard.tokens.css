@@ -18,10 +18,6 @@
   --fsds-postcard-typography-footer-font-size: var(--fsds-semantic-typography-body-03, 14px);
 }
 
-.postcard__userInfo {
-  --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
-}
-
 .postcard__handle {
   --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
 }

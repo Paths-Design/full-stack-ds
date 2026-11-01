@@ -9003,6 +9003,38 @@
       "reason": "uss-property"
     },
     {
+      "component": "Postcard",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "stat",
+      "part": "stat",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "stats",
+      "part": "stats",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "userInfo",
+      "part": "userInfo",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Progress",
       "sourceKey": "fill",
       "part": "fill",

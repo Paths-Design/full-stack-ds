@@ -7,11 +7,38 @@ import { pathToFileURL } from "node:url";
 
 const WEB = ["react", "vue", "svelte", "angular", "lit"];
 const imports = framework => 'import "@full-stack-ds/tokens/tokens.css";\n' + (framework === "lit" ? "" : `import "@full-stack-ds/${framework}/styles.css";\n`);
+const postcardData = `
+const postcardAuthor = { name: "ليلى 山田", handle: "@layla.yamada", avatar: "avatar.png" };
+const expandedPostcardAuthor = { name: "ليلى التصميم — Internationalization 日本語", handle: "@internationalization.design.systems.日本語", avatar: "avatar.png" };
+const initialPostcardStats: PostcardStats = { likes: 42, replies: 0, reposts: 14 };
+const updatedPostcardStats: PostcardStats = { likes: 7, replies: 3, reposts: 0 };
+const formattedPostcardStats: PostcardStats = { likes: "١٬٢٣٤", replies: "٠", reposts: "١٤" };
+const translatedPostcardCatalog = { Postcard: { likes: "{count} إعجاب", reposts: "再共有 {count} 件", postLabel: "{name} の投稿" } };
+const expandedPostcardCatalog = { Postcard: { likes: "Anzahl der Gefällt-mir-Markierungen: {count}", replies: "Anzahl der Antworten auf diesen Beitrag: {count}", reposts: "Anzahl der Weiterveröffentlichungen: {count}", postLabel: "Veröffentlichung von {name}" } };
+`;
 const react = `${imports("react")}
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { Button, Icon, Links, type LinkActivationEvent, useFsdsMessages, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/react";
+import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, useFsdsMessages, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/react";
 import { FsdsMessagesProvider } from "@full-stack-ds/react/primitives";
+${postcardData}
+function PostcardConsumer() {
+  const [author, setAuthor] = React.useState(postcardAuthor);
+  const [stats, setStats] = React.useState(initialPostcardStats);
+  const [catalog, setCatalog] = React.useState({});
+  const [direction, setDirection] = React.useState<"ltr" | "rtl">("ltr");
+  const [language, setLanguage] = React.useState("en");
+  return React.createElement("section", { id: "postcard-consumer" },
+    React.createElement("button", { id: "postcard-update", onClick: () => setStats(updatedPostcardStats) }, "Update post counts"),
+    React.createElement("button", { id: "postcard-translate", onClick: () => setCatalog(translatedPostcardCatalog) }, "Translate post"),
+    React.createElement("button", { id: "postcard-default", onClick: () => setCatalog({}) }, "Default post catalog"),
+    React.createElement("button", { id: "postcard-format", onClick: () => setStats(formattedPostcardStats) }, "Consumer formatted counts"),
+    React.createElement("button", { id: "postcard-rtl", onClick: () => setDirection("rtl") }, "Inherit RTL"),
+    React.createElement("button", { id: "postcard-stress", onClick: () => { setAuthor(expandedPostcardAuthor); setCatalog(expandedPostcardCatalog); setLanguage("de"); } }, "Long post content"),
+    React.createElement("div", { id: "postcard-viewport", dir: direction, lang: language, style: { width: "320px" } },
+      React.createElement(FsdsMessagesProvider, { messages: catalog }, React.createElement(Postcard, { postId: "packed-post", author, timestamp: "2026-11-01", stats },
+        React.createElement("p", { id: "postcard-body" }, "مرحبا 日本語 — Packed post body stays available.")))));
+}
 function App() {
   const [count, setCount] = React.useState(0);
   const [disabled, setDisabled] = React.useState(false);
@@ -29,6 +56,7 @@ function App() {
   };
   const messages = useFsdsMessages("ReleaseProbe", { label: "Untranslated" });
   return React.createElement("main", null,
+    React.createElement(PostcardConsumer),
     React.createElement(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled, onClick: () => setCount(value => value + 1) }, "Packed action"),
     React.createElement(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
     React.createElement("button", { id: "toggle-disabled", onClick: () => setDisabled(value => !value) }, "Toggle disabled"),
@@ -65,7 +93,28 @@ createRoot(document.getElementById("app")!).render(React.createElement(FsdsMessa
 `;
 const vue = `${imports("vue")}
 import { createApp, h, ref } from "vue";
-import { Button, Icon, Links, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/vue";
+import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/vue";
+import { provideFsdsMessages } from "@full-stack-ds/vue";
+${postcardData}
+const PostcardConsumer = { setup() {
+  const author = ref(postcardAuthor);
+  const stats = ref(initialPostcardStats);
+  const catalog = ref({});
+  const direction = ref("ltr");
+  const language = ref("en");
+  provideFsdsMessages(catalog);
+  return () => h("section", { id: "postcard-consumer" }, [
+    h("button", { id: "postcard-update", onClick: () => { stats.value = updatedPostcardStats; } }, "Update post counts"),
+    h("button", { id: "postcard-translate", onClick: () => { catalog.value = translatedPostcardCatalog; } }, "Translate post"),
+    h("button", { id: "postcard-default", onClick: () => { catalog.value = {}; } }, "Default post catalog"),
+    h("button", { id: "postcard-format", onClick: () => { stats.value = formattedPostcardStats; } }, "Consumer formatted counts"),
+    h("button", { id: "postcard-rtl", onClick: () => { direction.value = "rtl"; } }, "Inherit RTL"),
+    h("button", { id: "postcard-stress", onClick: () => { author.value = expandedPostcardAuthor; catalog.value = expandedPostcardCatalog; language.value = "de"; } }, "Long post content"),
+    h("div", { id: "postcard-viewport", dir: direction.value, lang: language.value, style: "width:320px" }, [
+      h(Postcard, { postId: "packed-post", author: author.value, timestamp: "2026-11-01", stats: stats.value }, { default: () => h("p", { id: "postcard-body" }, "مرحبا 日本語 — Packed post body stays available.") }),
+    ]),
+  ]);
+} };
 createApp({ setup() {
   const count = ref(0);
   const disabled = ref(false);
@@ -82,6 +131,7 @@ createApp({ setup() {
     linkEvents.value.push({ hash: location.hash, before, after: event.defaultPrevented });
   };
   return () => h("main", null, [
+    h(PostcardConsumer),
     h(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled: disabled.value, onClick: () => { count.value += 1; } }, { default: () => "Packed action" }),
     h(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
     h("button", { id: "toggle-disabled", onClick: () => { disabled.value = !disabled.value; } }, "Toggle disabled"),
@@ -121,7 +171,15 @@ createApp({ setup() {
 } }).mount("#app");
 `;
 const svelteApp = `<script lang="ts">
-  import { Button, Icon, Links, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/svelte";
+  import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/svelte";
+  import { setFsdsMessages } from "@full-stack-ds/svelte/primitives";
+  ${postcardData}
+  let postcardCurrentAuthor = $state(postcardAuthor);
+  let postcardStats = $state(initialPostcardStats);
+  let postcardCatalog = $state({});
+  let postcardDirection = $state("ltr");
+  let postcardLanguage = $state("en");
+  setFsdsMessages(() => postcardCatalog);
   let count = $state(0);
   let disabled = $state(false);
   let tableCount = $state(0);
@@ -138,6 +196,17 @@ const svelteApp = `<script lang="ts">
   };
 </script>
 <main>
+  <section id="postcard-consumer">
+    <button id="postcard-update" onclick={() => { postcardStats = updatedPostcardStats; }}>Update post counts</button>
+    <button id="postcard-translate" onclick={() => { postcardCatalog = translatedPostcardCatalog; }}>Translate post</button>
+    <button id="postcard-default" onclick={() => { postcardCatalog = {}; }}>Default post catalog</button>
+    <button id="postcard-format" onclick={() => { postcardStats = formattedPostcardStats; }}>Consumer formatted counts</button>
+    <button id="postcard-rtl" onclick={() => { postcardDirection = "rtl"; }}>Inherit RTL</button>
+    <button id="postcard-stress" onclick={() => { postcardCurrentAuthor = expandedPostcardAuthor; postcardCatalog = expandedPostcardCatalog; postcardLanguage = "de"; }}>Long post content</button>
+    <div id="postcard-viewport" dir={postcardDirection} lang={postcardLanguage} style="width:320px">
+      <Postcard postId="packed-post" author={postcardCurrentAuthor} timestamp="2026-11-01" stats={postcardStats}><p id="postcard-body">مرحبا 日本語 — Packed post body stays available.</p></Postcard>
+    </div>
+  </section>
   <Button variant="primary" size="large" ariaLabel="Packed action" {disabled} onClick={() => { count += 1; }}>Packed action</Button>
   <Icon name="alarm" size="lg" decorative={false} ariaLabel="Packed alarm" />
   <button id="toggle-disabled" onclick={() => { disabled = !disabled; }}>Toggle disabled</button>
@@ -178,9 +247,23 @@ const svelteApp = `<script lang="ts">
 const angular = `${imports("angular")}
 import { Component, enableProdMode, provideZonelessChangeDetection, signal } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
-import { ButtonComponent, IconComponent, LinksComponent, type LinkActivationEvent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent } from "@full-stack-ds/angular";
-@Component({ selector: "packed-consumer", standalone: true, imports: [ButtonComponent, IconComponent, LinksComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
+import { ButtonComponent, IconComponent, LinksComponent, PostcardComponent, type PostcardStats, type LinkActivationEvent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent } from "@full-stack-ds/angular";
+import { provideFsdsMessages, type FsdsMessageCatalog } from "@full-stack-ds/angular";
+${postcardData}
+const postcardCatalog = signal<FsdsMessageCatalog>({});
+@Component({ selector: "packed-consumer", standalone: true, imports: [ButtonComponent, IconComponent, LinksComponent, PostcardComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
   <main>
+    <section id="postcard-consumer">
+      <button id="postcard-update" (click)="updatePostcard()">Update post counts</button>
+      <button id="postcard-translate" (click)="translatePostcard()">Translate post</button>
+      <button id="postcard-default" (click)="defaultPostcard()">Default post catalog</button>
+      <button id="postcard-format" (click)="formatPostcard()">Consumer formatted counts</button>
+      <button id="postcard-rtl" (click)="postcardDirection.set('rtl')">Inherit RTL</button>
+      <button id="postcard-stress" (click)="stressPostcard()">Long post content</button>
+      <div id="postcard-viewport" [dir]="postcardDirection()" [lang]="postcardLanguage()" style="width:320px">
+        <fsds-postcard postId="packed-post" [author]="postcardAuthor()" timestamp="2026-11-01" [stats]="postcardStats()"><p id="postcard-body">مرحبا 日本語 — Packed post body stays available.</p></fsds-postcard>
+      </div>
+    </section>
     <fsds-button variant="primary" size="large" ariaLabel="Packed action" [disabled]="disabled()" [onClick]="activate">Packed action</fsds-button>
     <fsds-icon name="alarm" size="lg" [decorative]="false" ariaLabel="Packed alarm" />
     <button id="toggle-disabled" (click)="disabled.set(!disabled())">Toggle disabled</button>
@@ -218,6 +301,15 @@ import { ButtonComponent, IconComponent, LinksComponent, type LinkActivationEven
     </fsds-table></section>
   </main>\` })
 class PackedConsumer {
+  readonly postcardAuthor = signal(postcardAuthor);
+  readonly postcardStats = signal<PostcardStats>(initialPostcardStats);
+  readonly postcardDirection = signal("ltr");
+  readonly postcardLanguage = signal("en");
+  readonly stressPostcard = () => { this.postcardAuthor.set(expandedPostcardAuthor); postcardCatalog.set(expandedPostcardCatalog); this.postcardLanguage.set("de"); };
+  readonly updatePostcard = () => this.postcardStats.set(updatedPostcardStats);
+  readonly translatePostcard = () => postcardCatalog.set(translatedPostcardCatalog);
+  readonly defaultPostcard = () => postcardCatalog.set({});
+  readonly formatPostcard = () => this.postcardStats.set(formattedPostcardStats);
   readonly count = signal(0);
   readonly disabled = signal(false);
   readonly tableCount = signal(0);
@@ -238,11 +330,12 @@ class PackedConsumer {
   readonly activate = () => this.count.update(value => value + 1);
 }
 enableProdMode();
-bootstrapApplication(PackedConsumer, { providers: [provideZonelessChangeDetection()] }).catch(error => { console.error(error); throw error; });
+bootstrapApplication(PackedConsumer, { providers: [provideZonelessChangeDetection(), provideFsdsMessages(postcardCatalog)] }).catch(error => { console.error(error); throw error; });
 `;
 const lit = `${imports("lit")}
-import { ButtonElement, IconElement, LinksElement, type LinkActivationEvent, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
-import { StackElement } from "@full-stack-ds/lit/primitives";
+import { ButtonElement, IconElement, LinksElement, PostcardElement, type PostcardStats, type LinkActivationEvent, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
+import { StackElement, setFsdsMessages } from "@full-stack-ds/lit/primitives";
+${postcardData}
 if (StackElement !== RootStack) throw new Error("Public entries have different Stack constructors");
 const stack = new StackElement();
 stack.id = "packed-stack";
@@ -260,6 +353,30 @@ toggle.textContent = "Toggle disabled";
 toggle.onclick = () => { button.disabled = !button.disabled; };
 stack.textContent = "Packed stack";
 document.getElementById("app")!.append(stack, button, icon, toggle, count);
+const postcardConsumer = document.createElement("section");
+postcardConsumer.id = "postcard-consumer";
+const postcardViewport = document.createElement("div");
+Object.assign(postcardViewport, { id: "postcard-viewport", dir: "ltr", lang: "en" });
+postcardViewport.style.width = "320px";
+const postcard = new PostcardElement();
+Object.assign(postcard, { postId: "packed-post", author: postcardAuthor, timestamp: "2026-11-01", stats: initialPostcardStats });
+const postcardBody = document.createElement("p");
+postcardBody.id = "postcard-body";
+postcardBody.textContent = "مرحبا 日本語 — Packed post body stays available.";
+postcard.append(postcardBody);
+postcardViewport.append(postcard);
+const postcardControls = ([
+  ["postcard-update", "Update post counts", () => { postcard.stats = updatedPostcardStats; }],
+  ["postcard-translate", "Translate post", () => { setFsdsMessages(translatedPostcardCatalog); }],
+  ["postcard-default", "Default post catalog", () => { setFsdsMessages({}); }],
+  ["postcard-format", "Consumer formatted counts", () => { postcard.stats = formattedPostcardStats; }],
+  ["postcard-rtl", "Inherit RTL", () => { postcardViewport.dir = "rtl"; }],
+  ["postcard-stress", "Long post content", () => { postcard.author = expandedPostcardAuthor; setFsdsMessages(expandedPostcardCatalog); postcardViewport.lang = "de"; }],
+] as const).map(([id, text, activate]) => {
+  const control = document.createElement("button"); control.id = id; control.textContent = text; control.onclick = activate; return control;
+});
+postcardConsumer.append(...postcardControls, postcardViewport);
+document.getElementById("app")!.append(postcardConsumer);
 const linkConsumer = document.createElement("section");
 Object.assign(linkConsumer, { id: "link-consumer", lang: "ar", dir: "rtl" });
 const link = new LinksElement();
@@ -344,6 +461,101 @@ const controls = ([
 document.getElementById("app")!.append(...controls, viewport, tableCount);
 `;
 
+async function verifyPostcard({ page, framework, evidence, expect, observation }) {
+  const viewport = page.locator("#postcard-viewport");
+  const article = viewport.getByRole("article");
+  const stats = viewport.locator(".postcard__stat");
+  const body = viewport.locator("#postcard-body");
+  const bodyText = "مرحبا 日本語 — Packed post body stays available.";
+  const author = "ليلى 山田";
+  const stages = [];
+  observation.postcard = { stages, limits: "Consumer-supplied formatted text; no automatic number, plural or date formatting; avatar/media and OS screen readers are not qualified." };
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    const capture = async (stage, expectedStats, expectedName, direction = "ltr", width = 320, expectedAuthor = author, expectedHandle = "@layla.yamada", language = "en") => {
+      await page.setViewportSize({ width: width + 64, height: 960 });
+      await viewport.evaluate((element, value) => { element.style.width = value + "px"; }, width);
+      await article.waitFor({ state: "visible" });
+      await article.scrollIntoViewIfNeeded();
+      await page.evaluate(async () => { await document.fonts.ready; await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); });
+      const facts = {
+        stage, width,
+        article: await article.evaluate(element => ({ tag: element.tagName, label: element.getAttribute("aria-label"), direction: getComputedStyle(element).direction, fontFamily: getComputedStyle(element).fontFamily, fontSize: getComputedStyle(element).fontSize, text: element.textContent, outerHTML: element.outerHTML })),
+        stats: await stats.allTextContents(),
+        body: await body.textContent(),
+        viewport: await viewport.evaluate(element => { const bounds = element.getBoundingClientRect(); return { left: bounds.left, right: bounds.right, width: bounds.width, clientWidth: element.clientWidth, scrollWidth: element.scrollWidth, language: element.lang }; }),
+        textGeometry: await viewport.locator(".postcard__displayName, .postcard__handle, .postcard__timestamp, .postcard__stat, #postcard-body").evaluateAll(elements => elements.map(element => {
+          const bounds = element.getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          const rects = [...range.getClientRects()].map(rect => ({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height }));
+          const clipping = [];
+          let ancestor = element;
+          while (ancestor) {
+            const style = getComputedStyle(ancestor);
+            if (["hidden", "clip", "auto", "scroll"].includes(style.overflowX)) {
+              const clip = ancestor.getBoundingClientRect();
+              const left = clip.left + ancestor.clientLeft;
+              const right = left + ancestor.clientWidth;
+              if (rects.some(rect => rect.left < left - 1 || rect.right > right + 1)) clipping.push({ tag: ancestor.tagName, className: ancestor.className, left, right, overflowX: style.overflowX });
+            }
+            ancestor = ancestor.parentElement ?? (ancestor.getRootNode() instanceof ShadowRoot ? ancestor.getRootNode().host : null);
+          }
+          return { text: element.textContent, className: element.className, id: element.id, width: bounds.width, height: bounds.height, clientWidth: element.clientWidth, scrollWidth: element.scrollWidth, visibility: getComputedStyle(element).visibility, rects, clipping };
+        })),
+      };
+      const ax = await cdp.send("Accessibility.getFullAXTree");
+      stages.push(facts);
+      writeFileSync(join(evidence, `browser-postcard-${framework}-${stage}.json`), JSON.stringify(facts, null, 2));
+      writeFileSync(join(evidence, `browser-postcard-${framework}-${stage}-AX.json`), JSON.stringify(ax, null, 2));
+      await viewport.screenshot({ path: join(evidence, `packed-postcard-${framework}-${stage}.png`) });
+      assert.equal(facts.article.tag, "ARTICLE", framework + ": Postcard uses a real article");
+      await expect(article).toHaveAccessibleName(expectedName);
+      await expect(stats).toHaveText(expectedStats);
+      await expect(body).toBeVisible();
+      await expect(body).toHaveText(bodyText);
+      await expect(viewport.locator(".postcard__displayName")).toHaveText(expectedAuthor);
+      await expect(viewport.locator(".postcard__handle")).toHaveText(expectedHandle);
+      assert.equal(facts.article.direction, direction, framework + ": article must inherit wrapper direction");
+      assert.equal(facts.viewport.language, language, framework + ": consumer wrapper supplies the intended language");
+      assert.ok(facts.article.fontFamily.includes("Arial"), framework + ": narrow witness must exercise the consumer UI font");
+      assert.equal(facts.article.fontSize, "16px", framework + ": narrow witness must exercise the consumer base size");
+      const axArticle = ax.nodes.find(node => node.role?.value === "article" && node.name?.value === expectedName && !node.ignored);
+      assert.ok(axArticle, framework + ": named article must reach Chromium accessibility tree");
+      for (const text of [...expectedStats, bodyText, expectedAuthor]) {
+        assert.ok(ax.nodes.some(node => node.role?.value === "StaticText" && node.name?.value === text && !node.ignored), framework + ": visible post content must reach accessibility tree: " + text);
+      }
+      assert.ok(Math.abs(facts.viewport.width - width) <= 1, framework + ": witness must exercise the requested narrow width");
+      assert.ok(facts.viewport.scrollWidth <= facts.viewport.clientWidth + 1, framework + ": Postcard must not overflow its narrow wrapper");
+      assert.equal(facts.textGeometry.length, 7, framework + ": geometry must include author, handle, timestamp, three stats and body");
+      for (const item of facts.textGeometry) {
+        assert.ok(item.width > 0 && item.height > 0 && item.visibility === "visible" && item.rects.length > 0, framework + ": text requires visible measurable geometry: " + item.text);
+        assert.ok(item.scrollWidth <= item.clientWidth + 1, framework + ": text must not be clipped inside its own box: " + item.text);
+        assert.deepEqual(item.clipping, [], framework + ": text must not be clipped by an ancestor: " + item.text);
+        for (const rect of item.rects) {
+          assert.ok(rect.left >= facts.viewport.left - 1 && rect.right <= facts.viewport.right + 1, framework + ": text must remain within the narrow post: " + item.text + " " + JSON.stringify(rect));
+        }
+      }
+    };
+    await capture("default-320", ["Likes: 42", "Replies: 0", "Reposts: 14"], "Post by " + author);
+    await page.locator("#postcard-update").click();
+    await capture("updated-320", ["Likes: 7", "Replies: 3", "Reposts: 0"], "Post by " + author);
+    await page.locator("#postcard-translate").click();
+    await capture("translated-320", ["7 إعجاب", "Replies: 3", "再共有 0 件"], author + " の投稿");
+    await page.locator("#postcard-format").click();
+    await page.locator("#postcard-rtl").click();
+    await capture("formatted-rtl-320", ["١٬٢٣٤ إعجاب", "Replies: ٠", "再共有 ١٤ 件"], author + " の投稿", "rtl");
+    await capture("formatted-rtl-240", ["١٬٢٣٤ إعجاب", "Replies: ٠", "再共有 ١٤ 件"], author + " の投稿", "rtl", 240);
+    await page.locator("#postcard-default").click();
+    await capture("fallback-rtl-240", ["Likes: ١٬٢٣٤", "Replies: ٠", "Reposts: ١٤"], "Post by " + author, "rtl", 240);
+    await page.locator("#postcard-stress").click();
+    await capture("expanded-rtl-240", ["Anzahl der Gefällt-mir-Markierungen: ١٬٢٣٤", "Anzahl der Antworten auf diesen Beitrag: ٠", "Anzahl der Weiterveröffentlichungen: ١٤"], "Veröffentlichung von ليلى التصميم — Internationalization 日本語", "rtl", 240, "ليلى التصميم — Internationalization 日本語", "@internationalization.design.systems.日本語", "de");
+  } finally {
+    await cdp.detach();
+    await page.setViewportSize({ width: 1280, height: 720 });
+  }
+}
+
 /** FSDS packages are installed tarballs; external tools/peers use the pinned store. */
 export async function verifyBrowsers({ repo, consumer, evidence }) {
   const rootRequire = createRequire(join(repo, "package.json"));
@@ -372,7 +584,7 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
   const browserRoot = join(consumer, "browser");
   const write = (file, contents) => { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, contents); };
   for (const framework of WEB) write(join(browserRoot, framework, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><title>Installed ${framework} consumer</title><style>:root { --fsds-button-design-root-background-fill: rgb(18, 52, 86); } body { margin: 32px; } [data-fsds-component="table"] { --fsds-core-spacing-size-03: 11px; } #table-viewport { width: 240px; max-width: 100%; }</style></head>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><title>Installed ${framework} consumer</title><style>:root { --fsds-button-design-root-background-fill: rgb(18, 52, 86); } body { margin: 32px; } [data-fsds-component="table"] { --fsds-core-spacing-size-03: 11px; } #table-viewport { width: 240px; max-width: 100%; } #postcard-viewport { font-family: Arial, sans-serif; font-size: 16px; }</style></head>
 <body>${framework === "angular" ? "<packed-consumer></packed-consumer>" : '<div id="app"></div>'}<script type="module" src="${framework === "angular" ? "./compiled/main.js" : "./main.ts"}"></script></body></html>`);
   for (const [name, source] of Object.entries({ react, vue, lit })) write(join(browserRoot, name, "main.ts"), source);
   write(join(browserRoot, "svelte/App.svelte"), svelteApp);
@@ -770,11 +982,12 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         await button.click();
         await expect(count).toHaveText("2");
         observation.activation = { enabledCounts: [0, 1, 2], disabledCount: 1 };
+        await verifyPostcard({ page, framework, evidence, expect, observation });
         await page.screenshot({ path: join(evidence, `packed-${framework}.png`), fullPage: true });
         assert.deepEqual(failures, [], framework + ": browser failures");
         observation.passed = true;
         observations.push(observation);
-        console.log(`Installed ${framework}: Button, Icon, Links activation/focus/navigation, Table metadata, tokens and styles verified`);
+        console.log(`Installed ${framework}: Button, Icon, Links activation/focus/navigation, Table metadata, Postcard engagement/messages/narrow RTL, tokens and styles verified`);
       } catch (error) { observation.error = error.stack ?? String(error); throw error; }
       finally { observation.failures = failures; writeFileSync(join(evidence, `browser-${framework}.json`), JSON.stringify(observation, null, 2)); await page.close(); }
     }

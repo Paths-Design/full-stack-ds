@@ -1,14 +1,15 @@
 <script module lang="ts">
 // @generated:start publicTypes
 export type PostcardAuthor = { name: string; handle: string; avatar: string };
-export type PostcardStats = { likes: number; replies: number; reposts: number };
+export type PostcardStatValue = number | string;
+export type PostcardStats = { likes: PostcardStatValue; replies: PostcardStatValue; reposts: PostcardStatValue };
 export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
 // @generated:end
 </script>
 
 <script lang="ts">
 // @generated:start imports
-
+import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -36,6 +37,8 @@ interface Props {
 }
 
 let { postId, author, timestamp, stats, embed, type, class: className, children }: Props = $props();
+const PostcardMessages = { postLabel: "Post by {name}", likes: "Likes: {count}", replies: "Replies: {count}", reposts: "Reposts: {count}" };
+const fsdsMessages = useFsdsMessages("Postcard", PostcardMessages);
 // @generated:end
 
 // @generated:start classes
@@ -53,7 +56,7 @@ const classes = $derived(
 // @custom:end
 </script>
 
-<article class={classes} data-fsds-component="postcard" data-fsds-box="">
+<article class={classes} aria-label={formatFsdsMessage(fsdsMessages.current.postLabel, { name: author.name })} data-fsds-component="postcard" data-fsds-box="">
   <div class={'postcard__header'}>
     <div class={'postcard__userInfo'}>
       <span class={'postcard__displayName'}>{author.name}</span>
@@ -66,7 +69,9 @@ const classes = $derived(
   </div>
   <div class={'postcard__footer'}>
     <div class={'postcard__stats'}>
-      <span class={'postcard__stat'}>{stats.likes}</span>
+      <span class={'postcard__stat'}>{formatFsdsMessage(fsdsMessages.current.likes, { count: stats.likes })}</span>
+      <span class={'postcard__stat'}>{formatFsdsMessage(fsdsMessages.current.replies, { count: stats.replies })}</span>
+      <span class={'postcard__stat'}>{formatFsdsMessage(fsdsMessages.current.reposts, { count: stats.reposts })}</span>
     </div>
   </div>
 </article>

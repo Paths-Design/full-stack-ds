@@ -122,7 +122,7 @@
       "safeName": "stats",
       "type": "PostcardStats",
       "required": true,
-      "description": "Engagement statistics: likes, replies, reposts.",
+      "description": "Engagement statistics for likes, replies, and reposts. Each value accepts a number or consumer-formatted display text for localized numerals and abbreviations; the component supplies translatable contextual labels.",
       "defaultExpr": null,
       "nodeKind": null
     },
@@ -134,6 +134,44 @@
       "description": "Optional media embed with type, URL, and aspect ratio.",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "postLabel",
+      "catalogKey": "Postcard.postLabel",
+      "defaultMessage": "Post by {name}",
+      "description": "Accessible name of a post article. The name is the author's display name.",
+      "params": [
+        "name"
+      ]
+    },
+    {
+      "key": "likes",
+      "catalogKey": "Postcard.likes",
+      "defaultMessage": "Likes: {count}",
+      "description": "Visible engagement metadata, including zero. The count may be localized display text supplied by the consumer.",
+      "params": [
+        "count"
+      ]
+    },
+    {
+      "key": "replies",
+      "catalogKey": "Postcard.replies",
+      "defaultMessage": "Replies: {count}",
+      "description": "Visible reply metadata, including zero. The count may be localized display text supplied by the consumer.",
+      "params": [
+        "count"
+      ]
+    },
+    {
+      "key": "reposts",
+      "catalogKey": "Postcard.reposts",
+      "defaultMessage": "Reposts: {count}",
+      "description": "Visible repost metadata, including zero. The count may be localized display text supplied by the consumer.",
+      "params": [
+        "count"
+      ]
     }
   ],
   "designBindings": [
@@ -393,6 +431,22 @@
       "selector": ".postcard__header"
     },
     {
+      "property": "spacing.gap",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "postcard.design.userinfo.spacing.gap",
+      "cssVar": "--fsds-postcard-design-userinfo-spacing-gap",
+      "cssProperty": "gap",
+      "selectorKey": "userInfo",
+      "part": "userInfo",
+      "defaultValue": "4px",
+      "resolvesTo": "core.spacing.size.03",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".postcard__userInfo"
+    },
+    {
       "property": "typography.weight",
       "group": "typography",
       "valueType": "number",
@@ -634,7 +688,7 @@
     "explicitRole": "article",
     "implicitRole": "article",
     "labeling": [
-      "aria-labelledby"
+      "aria-label"
     ],
     "keyboard": []
   },
@@ -693,7 +747,8 @@
           "border-width": "var(--fsds-postcard-size-border, 1px)",
           "box-sizing": "border-box",
           "border-color": "var(--fsds-postcard-color-border-default, #d0d0d0)",
-          "color": "var(--fsds-postcard-color-foreground-primary, #141414)"
+          "color": "var(--fsds-postcard-color-foreground-primary, #141414)",
+          "overflow-wrap": "anywhere"
         }
       },
       {
@@ -720,7 +775,9 @@
           "display": "flex",
           "align-items": "center",
           "justify-content": "space-between",
-          "gap": "var(--fsds-postcard-size-gap, 12px)"
+          "gap": "var(--fsds-postcard-size-gap, 12px)",
+          "flex-wrap": "wrap",
+          "min-width": "0"
         }
       },
       {
@@ -729,7 +786,10 @@
           "display": "flex",
           "align-items": "center",
           "flex": "1 1 auto",
-          "--fsds-postcard-size-gap": "var(--fsds-core-spacing-size-03, 4px)"
+          "flex-wrap": "wrap",
+          "min-width": "0",
+          "max-width": "100%",
+          "gap": "var(--fsds-core-spacing-size-03, 4px)"
         }
       },
       {
@@ -773,7 +833,10 @@
         "declarations": {
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-postcard-size-gap, 12px)"
+          "gap": "var(--fsds-postcard-size-gap, 12px)",
+          "flex-wrap": "wrap",
+          "min-width": "0",
+          "max-width": "100%"
         }
       },
       {
@@ -783,7 +846,8 @@
           "align-items": "center",
           "font-size": "var(--fsds-postcard-typography-footer-font-size, 14px)",
           "--fsds-postcard-size-gap": "var(--fsds-core-spacing-size-03, 4px)",
-          "--fsds-postcard-color-foreground-primary": "var(--fsds-semantic-color-foreground-secondary, #474647)"
+          "--fsds-postcard-color-foreground-primary": "var(--fsds-semantic-color-foreground-secondary, #474647)",
+          "max-width": "100%"
         }
       }
     ],

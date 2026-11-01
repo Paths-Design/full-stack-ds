@@ -1,6 +1,7 @@
 // @generated:start imports
 import { type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
+import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages";
 import "./Postcard.css";
 // @generated:end
 
@@ -11,7 +12,9 @@ import "./Postcard.css";
 // @generated:start types
 export type PostcardAuthor = { name: string; handle: string; avatar: string };
 
-export type PostcardStats = { likes: number; replies: number; reposts: number };
+export type PostcardStatValue = number | string;
+
+export type PostcardStats = { likes: PostcardStatValue; replies: PostcardStatValue; reposts: PostcardStatValue };
 
 export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
 // @generated:end
@@ -94,6 +97,8 @@ export function PostcardFooter({
 // @generated:end
 
 // @generated:start component
+const PostcardMessages = { postLabel: "Post by {name}", likes: "Likes: {count}", replies: "Replies: {count}", reposts: "Reposts: {count}" };
+
 export function Postcard({
   type,
   className,
@@ -106,6 +111,7 @@ export function Postcard({
   embed: _embed,
   ...rest
 }: PostcardProps) {
+  const fsdsMessages = useFsdsMessages("Postcard", PostcardMessages);
   const classNames = [
     "postcard",
     type && `postcard--${type}`,
@@ -115,7 +121,7 @@ export function Postcard({
     .join(" ");
 
   return (
-  <Stack layout="native" as="article" className={`${classNames}`} data-testid={testId} data-fsds-component="postcard" data-fsds-box="" {...rest}>
+  <Stack layout="native" as="article" className={`${classNames}`} aria-label={formatFsdsMessage(fsdsMessages.postLabel, { name: author.name })} data-testid={testId} data-fsds-component="postcard" data-fsds-box="" {...rest}>
     <div className="postcard__header">
       <div className="postcard__userInfo">
         <span className="postcard__displayName">
@@ -135,7 +141,13 @@ export function Postcard({
     <div className="postcard__footer">
       <div className="postcard__stats">
         <span className="postcard__stat">
-          {stats.likes}
+          {formatFsdsMessage(fsdsMessages.likes, { count: stats.likes })}
+        </span>
+        <span className="postcard__stat">
+          {formatFsdsMessage(fsdsMessages.replies, { count: stats.replies })}
+        </span>
+        <span className="postcard__stat">
+          {formatFsdsMessage(fsdsMessages.reposts, { count: stats.reposts })}
         </span>
       </div>
     </div>

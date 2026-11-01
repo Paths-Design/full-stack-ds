@@ -91,6 +91,12 @@
         "property": "foreground.color",
         "slot": "postcard.design.root.foreground.color"
       }
+    },
+    "overflow-wrap": {
+      "literal": "anywhere",
+      "platforms": [
+        "web"
+      ]
     }
   },
   "hover": {
@@ -183,6 +189,18 @@
         "property": "spacing.gap",
         "slot": "postcard.design.header.spacing.gap"
       }
+    },
+    "flex-wrap": {
+      "literal": "wrap",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
     }
   },
   "userInfo": {
@@ -204,9 +222,34 @@
         "web"
       ]
     },
-    "postcard.size.gap": {
+    "flex-wrap": {
+      "literal": "wrap",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "max-width": {
+      "literal": "100%",
+      "platforms": [
+        "web"
+      ]
+    },
+    "gap": {
       "resolvesTo": "core.spacing.size.03",
-      "fallback": "4px"
+      "fallback": "4px",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "spacing.gap",
+        "slot": "postcard.design.userinfo.spacing.gap"
+      }
     }
   },
   "displayName": {
@@ -349,6 +392,24 @@
         "property": "spacing.gap",
         "slot": "postcard.design.stats.spacing.gap"
       }
+    },
+    "flex-wrap": {
+      "literal": "wrap",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "max-width": {
+      "literal": "100%",
+      "platforms": [
+        "web"
+      ]
     }
   },
   "stat": {
@@ -379,6 +440,12 @@
     "postcard.color.foreground.primary": {
       "resolvesTo": "semantic.color.foreground.secondary",
       "fallback": "#474647"
+    },
+    "max-width": {
+      "literal": "100%",
+      "platforms": [
+        "web"
+      ]
     }
   }
 }
