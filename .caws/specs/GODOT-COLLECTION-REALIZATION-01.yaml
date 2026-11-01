@@ -59,3 +59,7 @@ evidence:
     status: pass
     evidence_ref: "No fact was claimed lowered for this family, so no new witness was required: every pending leaf was reclassified refused with a written reason (date-grid model, paged-set model, dynamic component-ref facts, formatting/highlighting, inert flags/axes, navigation targets, authored bindings). The claim is conservative: an earlier draft that marked variant axes lowered was reverted after inspecting the generated configs (Pagination/Calendar/PageNavigator carry zero predicate rules, so those axes are inert) — the ledger records the refusal instead of the stronger claim."
     recorded_at: "2026-11-01T10:06:39.450Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 31 rows; no row added (nothing realized) and every pre-existing row is unchanged; catalog-load admitted 55 failures []"
+    recorded_at: "2026-11-01T10:06:40.538Z"
