@@ -59,7 +59,16 @@
       "safeName": "disabled",
       "type": "boolean",
       "required": false,
-      "description": "Visually disables the link. Note: anchors are not natively disable-able; intercept onClick to actually prevent navigation.",
+      "description": "Prevents activation and navigation while keeping the link keyboard discoverable.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "onClick",
+      "safeName": "onClick",
+      "type": "(event: LinkActivationEvent) => void",
+      "required": false,
+      "description": "Runs once before enabled navigation. Call event.preventDefault() to cancel navigation. The portable event exposes cancellation across web and native targets.",
       "defaultExpr": null,
       "nodeKind": null
     }
@@ -207,7 +216,7 @@
       "editableTargets": [
         "web"
       ],
-      "selector": ".links:visited"
+      "selector": ".links:visited:not([aria-disabled=\"true\"])"
     },
     {
       "property": "foreground.color",
@@ -239,7 +248,7 @@
       "editableTargets": [
         "web"
       ],
-      "selector": ".links:focus-visible:not([aria-disabled=\"true\"])"
+      "selector": ".links:focus-visible"
     },
     {
       "property": "focus.color",
@@ -255,7 +264,7 @@
       "editableTargets": [
         "web"
       ],
-      "selector": ".links:focus-visible:not([aria-disabled=\"true\"])"
+      "selector": ".links:focus-visible"
     },
     {
       "property": "focus.style",
@@ -271,7 +280,7 @@
       "editableTargets": [
         "web"
       ],
-      "selector": ".links:focus-visible:not([aria-disabled=\"true\"])"
+      "selector": ".links:focus-visible"
     },
     {
       "property": "focus.offset",
@@ -287,7 +296,7 @@
       "editableTargets": [
         "web"
       ],
-      "selector": ".links:focus-visible:not([aria-disabled=\"true\"])"
+      "selector": ".links:focus-visible"
     },
     {
       "property": "shape.radius",
@@ -303,7 +312,7 @@
       "editableTargets": [
         "web"
       ],
-      "selector": ".links:focus-visible:not([aria-disabled=\"true\"])"
+      "selector": ".links:focus-visible"
     }
   ],
   "motion": {
@@ -362,8 +371,8 @@
         "initial": "enabled",
         "exclusive": true,
         "suppresses": {
-          "categories": [
-            "interaction"
+          "names": [
+            "pointer"
           ]
         }
       }
@@ -474,7 +483,7 @@
         }
       },
       {
-        "selector": ".links:visited",
+        "selector": ".links:visited:not([aria-disabled=\"true\"])",
         "declarations": {
           "color": "var(--fsds-links-color-foreground-visited, #e55b5a)"
         }
@@ -484,12 +493,11 @@
         "declarations": {
           "color": "var(--fsds-links-color-foreground-disabled, #727272)",
           "cursor": "not-allowed",
-          "text-decoration-line": "none",
-          "pointer-events": "none"
+          "text-decoration-line": "none"
         }
       },
       {
-        "selector": ".links:focus-visible:not([aria-disabled=\"true\"])",
+        "selector": ".links:focus-visible",
         "declarations": {
           "outline-width": "var(--fsds-links-focus-ring-width, 2px)",
           "outline-color": "var(--fsds-links-focus-ring-color, #0566fe)",

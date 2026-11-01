@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // @generated:start imports
 import { computed } from "vue";
+import { canActivateInteraction, isActivationDisabled } from "../../primitives/interaction.js";
 // @generated:end
 
 // @custom:start imports
@@ -10,6 +11,7 @@ import { computed } from "vue";
 // @generated:start types
 export type LinkTarget = "_self" | "_blank" | "_parent" | "_top";
 export type LinkSize = "small" | "medium" | "large";
+export type LinkActivationEvent = { readonly defaultPrevented: boolean; preventDefault(): void };
 // @generated:end
 
 // @custom:start types
@@ -23,12 +25,15 @@ interface Props {
   rel?: string;
   size?: LinkSize;
   disabled?: boolean;
+  onClick?: (event: LinkActivationEvent) => void;
   class?: string;
   dataTestid?: string;
 }
 // @generated:end
 
 // @generated:start defineProps
+defineOptions({ inheritAttrs: false });
+
 const props = withDefaults(defineProps<Props>(), {
   disabled: undefined,
 });
@@ -49,7 +54,7 @@ const classNames = computed(() => [
 </script>
 
 <template>
-  <a :class="classNames" :href="props.href" :target="props.target" :rel="props.rel" :data-testid="props.dataTestid" data-fsds-component="links" data-fsds-box="">
+  <a :class="classNames" v-bind="$attrs" role="link" tabindex="0" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false, isActivationDisabled(props.disabled))) (props.onClick)?.(e); }" :href="isActivationDisabled(props.disabled) ? undefined : props.href" :target="props.target" :rel="props.rel" :aria-disabled="props.disabled" :data-testid="props.dataTestid" data-fsds-component="links" data-fsds-box="">
     <slot />
   </a>
 </template>

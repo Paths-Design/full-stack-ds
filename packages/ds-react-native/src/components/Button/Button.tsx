@@ -78,7 +78,7 @@ export function Button({
       <View
         style={styles.loadingText}
       >
-        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize, textVariantStyleForVariant]}>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize, textVariantStyleForVariant, (disabled) ? styles.rootText_state_disabled : undefined]}>{children}</RNText> : children}
       </View>
     </Pressable>
   );

@@ -31,6 +31,20 @@ const boundaryOf = (rules: Record<string, unknown>[]): Boundary => validateBound
 const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Unity support boundary", () => {
+  it("classifies a renamed root anchor callback as pending while retaining native disabled support", () => {
+    const contract = load("Links");
+    contract.name = "DestinationControl";
+    delete contract.styles;
+    delete contract.tokens;
+    contract.props!.designed!.members!.find(prop => prop.name === "onClick")!.name = "onActivate";
+    const dom = (contract.anatomy as { dom: { events: Record<string, string> } }).dom;
+    dom.events.click = "prop:onActivate";
+    const leaves = classifyContract(contract);
+    expect(leaves.find(leaf => leaf.pointer === "/anatomy/dom/events/click")).toMatchObject({ rule: "anatomy-anchor-activation-event", disposition: "pending" });
+    expect(leaves.find(leaf => leaf.keyed.endsWith("anchor-activation:onActivate/name"))).toMatchObject({ rule: "prop-anchor-activation-callback", disposition: "pending" });
+    expect(leaves.find(leaf => leaf.keyed.endsWith("plain:disabled/name"))).toMatchObject({ rule: "prop-disabled", disposition: "lowered" });
+    expect(classifyContract(load("Button")).find(leaf => leaf.pointer === "/anatomy/dom/events/click")).toMatchObject({ rule: "anatomy-action-event-click", disposition: "lowered" });
+  });
   it("classifies every leaf of the live corpus and its sidecars with no dead rules", () => {
     const audit = auditBoundary(root);
     // The audit is the P1 exit condition: zero unclassified, no allowlisted

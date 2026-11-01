@@ -23,7 +23,15 @@
       "bindings": {
         "href": "prop:href",
         "target": "prop:target",
-        "rel": "prop:rel"
+        "rel": "prop:rel",
+        "aria-disabled": "prop:disabled"
+      },
+      "attrs": {
+        "role": "link",
+        "tabindex": "0"
+      },
+      "events": {
+        "click": "prop:onClick"
       },
       "children": [
         {
@@ -58,12 +66,21 @@
         {
           "name": "disabled",
           "propType": { "kind": "boolean" },
-          "description": "Visually disables the link. Note: anchors are not natively disable-able; intercept onClick to actually prevent navigation."
+          "description": "Prevents activation and navigation while keeping the link keyboard discoverable."
+        },
+        {
+          "name": "onClick",
+          "propType": { "kind": "callback", "params": [{ "name": "event", "type": { "kind": "ref", "to": "LinkActivationEvent" } }], "returns": { "kind": "void" } },
+          "description": "Runs once before enabled navigation. Call event.preventDefault() to cancel navigation. The portable event exposes cancellation across web and native targets."
         }
       ]
     }
   },
   "types": {
+    "LinkActivationEvent": {
+      "kind": "alias",
+      "alias": "{ readonly defaultPrevented: boolean; preventDefault(): void }"
+    },
     "LinkTarget": {
       "kind": "union",
       "values": [
@@ -120,8 +137,8 @@
         "initial": "enabled",
         "exclusive": true,
         "suppresses": {
-          "categories": [
-            "interaction"
+          "names": [
+            "pointer"
           ]
         }
       }
@@ -147,7 +164,7 @@
     "category": "navigation",
     "usageHints": [
       "Use for inline hyperlinks within body copy",
-      "Use variant=standalone for a link that stands alone, not within a sentence",
+      "Use descriptive link text that identifies the destination",
       "Prefer Button for actions — Links are for navigation"
     ],
     "children": {

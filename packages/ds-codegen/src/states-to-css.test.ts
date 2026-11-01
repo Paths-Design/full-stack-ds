@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ComponentContract } from "./contract.js";
-import { computeCssBlocks } from "./ir.js";
+import { buildComponentIR, computeCssBlocks } from "./ir.js";
 
 /**
  * After the tokens/styles convergence (PLAN-TOKENS-STYLES-CONVERGENCE-001),
@@ -509,6 +509,97 @@ describe("computeCssBlocks: interaction suppression guard (FIX-STATE-SUPPRESSION
     expect(selectors).toContain(".x--primary");
     expect(selectors).toContain(".x__icon");
     expect(selectors.some((s) => s.includes(":not("))).toBe(false);
+  });
+});
+
+describe("named dimension suppression", () => {
+  const named = (names: string[], extra: Record<string, unknown> = {}) => makeContract({
+    anatomy: { parts: ["root"], dom: { tag: "a", part: "root" } },
+    states: { dimensions: {
+      pointer: { category: "interaction", values: ["rest", "hover", "visited"], initial: "rest" },
+      focus: { category: "interaction", values: ["blur", "focus"], initial: "blur" },
+      availability: {
+        category: "availability", values: ["enabled", "disabled"], initial: "enabled",
+        suppresses: { names }, a11y: { attribute: "aria-disabled", values: { disabled: "true" } },
+      },
+      ...extra,
+    } } as ComponentContract["states"],
+    styles: Object.fromEntries(["hover", "visited", "focus"].map((key) => [key, {
+      color: { literal: "red", platforms: ["web", "ios"], design: { property: "foreground.color", slot: `x.design.${key}.foreground.color` } },
+    }])) as ComponentContract["styles"],
+  });
+
+  it("suppresses pointer hover and visited while preserving focus, with matching design selectors", () => {
+    const ir = buildComponentIR(named(["pointer"]));
+    const selectors = ir.cssBlocks.map((block) => block.selector);
+    expect(selectors).toContain('.x:hover:not([aria-disabled="true"])');
+    expect(selectors).toContain('.x:visited:not([aria-disabled="true"])');
+    expect(selectors).toContain(".x:focus-visible");
+    expect(ir.designBindings.map((binding) => binding.selector)).toEqual(selectors.slice(1));
+    expect(selectors.some((selector) => selector.includes(":pointer"))).toBe(false);
+  });
+
+  it("focus-only suppression preserves both pointer states and leaves native CSS selectors unguarded", () => {
+    const contract = named(["focus"]);
+    expect(computeCssBlocks(contract, "x").map((block) => block.selector)).toEqual([
+      ".x", ".x:hover", ".x:visited", '.x:focus-visible:not([aria-disabled="true"])',
+    ]);
+    expect(computeCssBlocks(contract, "x", { platformTarget: "ios" }).map((block) => block.selector)).toEqual([
+      ".x", ".x:hover", ".x:visited", ".x:focus-visible",
+    ]);
+  });
+
+  it("resolves category and name targets as a union and rejects unknown names", () => {
+    const contract = named(["pointer"], { selection: { category: "selection", values: ["unchecked", "checked"], initial: "unchecked" } });
+    contract.states!.dimensions.availability.suppresses!.categories = ["selection"];
+    contract.styles!.checked = { color: { literal: "blue", platforms: ["web"] } };
+    const selectors = computeCssBlocks(contract, "x").map((block) => block.selector);
+    expect(selectors).toContain('.x:hover:not([aria-disabled="true"])');
+    expect(selectors).toContain('.x:checked:not([aria-disabled="true"])');
+    expect(selectors).toContain('.x:focus-visible');
+    expect(() => computeCssBlocks(named(["missing"]), "x")).toThrow(/STATE_SUPPRESSION_UNKNOWN_DIMENSION.*availability.*missing/);
+    expect(() => buildComponentIR(named(["missing"]))).toThrow(/STATE_SUPPRESSION_UNKNOWN_DIMENSION/);
+  });
+
+  it("guards the state-bearing subject in compound selectors without inheriting an ancestor's guard", () => {
+    const contract = named(["pointer"]);
+    contract.styles = {
+      '.x:hover:focus-visible': { color: { literal: "red", platforms: ["web"] } },
+      '.outer:not([aria-disabled="true"]) .x:hover': { color: { literal: "blue", platforms: ["web"] } },
+      '.x:focus-visible': { color: { literal: "black", platforms: ["web"] } },
+    };
+    expect(computeCssBlocks(contract, "x").map((block) => block.selector)).toEqual([
+      ".x", '.x:hover:focus-visible:not([aria-disabled="true"])',
+      '.outer:not([aria-disabled="true"]) .x:hover:not([aria-disabled="true"])', '.x:focus-visible',
+    ]);
+  });
+
+  it("preserves an authored native source guard while rejecting a decorative one on an anchor", () => {
+    const contract = named(["pointer"]);
+    contract.anatomy = { parts: ["root", "field"], dom: { tag: "div", part: "root", children: [
+      { tag: "input", part: "field", bindings: { disabled: "prop:disabled" } },
+    ] } };
+    contract.styles = { '.x__field:hover:not(:disabled)': { color: { literal: "red", platforms: ["web"] } } };
+    expect(computeCssBlocks(contract, "x")[1].selector).toBe('.x__field:hover:not(:disabled)');
+    const anchor = named(["pointer"]);
+    anchor.styles = { '.x:hover:not(:disabled)': { color: { literal: "red", platforms: ["web"] } } };
+    expect(computeCssBlocks(anchor, "x")[1].selector).toBe('.x:hover:not(:disabled):not([aria-disabled="true"])');
+  });
+
+  it("composes distinct source guards and keeps authored guards idempotent in each selector-list branch", () => {
+    const contract = named(["pointer"], {
+      loading: {
+        category: "data", values: ["idle", "loading", "blocked"], initial: "idle",
+        suppresses: { names: ["pointer"] },
+        a11y: { attribute: "data-status", values: { loading: "loading", blocked: "blocked" } },
+      },
+    });
+    contract.styles = {
+      '.x:hover:not([aria-disabled="true"]), .x:visited': { color: { literal: "red", platforms: ["web"] } },
+    };
+    expect(computeCssBlocks(contract, "x")[1].selector).toBe(
+      '.x:hover:not([aria-disabled="true"]):not([data-status="loading"]):not([data-status="blocked"]), .x:visited:not([aria-disabled="true"]):not([data-status="loading"]):not([data-status="blocked"])',
+    );
   });
 });
 

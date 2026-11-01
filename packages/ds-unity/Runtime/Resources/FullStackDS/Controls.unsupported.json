@@ -7966,14 +7966,6 @@
       "component": "Links",
       "sourceKey": "disabled",
       "part": "root",
-      "property": "pointer-events",
-      "value": "none",
-      "reason": "uss-property"
-    },
-    {
-      "component": "Links",
-      "sourceKey": "disabled",
-      "part": "root",
       "property": "text-decoration-line",
       "value": "none",
       "reason": "uss-property"

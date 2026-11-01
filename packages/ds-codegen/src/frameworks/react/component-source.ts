@@ -347,6 +347,7 @@ export function generateReactComponentSource(
 
   const importLines: string[] = [];
   if (bodyHaystack.includes("canActivateInteraction(")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (bodyHaystack.includes("isActivationDisabled(")) importLines.push(`import { isActivationDisabled } from "../../primitives/interaction.js";`);
   if (isCompound) importLines.push(`import { InteractionHost, type InteractionHostProps } from "../../primitives/InteractionHost";`);
   if (isDisclosure) {
     importLines.push(`import { toggleInteractionItem } from "../../primitives/interaction.js";`);
@@ -812,6 +813,11 @@ function buildHostAttrsExtendsClause(
   // match — but omit it anyway for consistency, so the interface body
   // is the single source of truth for that field.
   omit.add("children");
+  if (ir.dom?.disabledActivation) {
+    // The contract owns disabled discovery and semantics; inherited host
+    // props must not advertise overrides the generated host cannot honor.
+    for (const attr of ["role", "tabIndex", "aria-disabled"]) omit.add(attr);
+  }
 
   const omitKeys = [...omit]
     .sort()
@@ -2912,6 +2918,12 @@ function renderReactDomNode(
   // for channel-routed events too. Legacy `bindings.onX` paths feed
   // through the attribute loop below until the retention drops.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderReactBinding("aria-disabled", node.disabledActivation.disabled, ctx);
+      const callback = renderReactBinding("onClick", expr, ctx);
+      attrs.push(`onClick={(e) => { if (canActivateInteraction(e, false, isActivationDisabled(${disabled}))) (${callback})?.(e); }}`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {
@@ -2933,6 +2945,11 @@ function renderReactDomNode(
       : renderReactBinding(jsxEventProp, expr, ctx);
     if (valueExpr === null) continue;
     attrs.push(`${jsxEventProp}={${valueExpr}}`);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderReactBinding("aria-disabled", node.disabledActivation.disabled, ctx);
+    attrs.push(`onClick={(e) => { canActivateInteraction(e, false, isActivationDisabled(${disabled})); }}`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2970,6 +2987,11 @@ function renderReactDomNode(
   }
 
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderReactBinding("aria-disabled", node.disabledActivation.disabled, ctx);
+      attrs.push(`href={isActivationDisabled(${disabled}) ? undefined : ${renderReactBinding(key, expr, ctx)}}`);
+      continue;
+    }
     // Dual-pathway retention dedup: when parseDomNode mirrored a legacy
     // `bindings.onX` entry into `events.<x>`, the canonical `events` loop
     // above already emitted it. Skip the legacy attribute pass to avoid
@@ -3161,7 +3183,8 @@ function renderReactDomNode(
         `style={{ position: "fixed", top: \`\${anchoredPosition.top}px\`, left: \`\${anchoredPosition.left}px\`, visibility: anchoredPosition.ready ? "visible" : "hidden" }}`,
       );
     }
-    attrs.push(`{...rest}`);
+    if (node.disabledActivation) attrs.unshift(`{...rest}`);
+    else attrs.push(`{...rest}`);
     if (rootCssVarStyle) attrs.push(rootCssVarStyle);
   } else if (classParts.length > 0) {
     attrs.unshift(`className=${classPartsExpr(classParts)}`);

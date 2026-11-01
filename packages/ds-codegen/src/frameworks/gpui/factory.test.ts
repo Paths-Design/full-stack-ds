@@ -7,6 +7,8 @@ import type { DomNodeIR } from "../../ir.js";
 import { loadBoxModelPrimitive, mergeBoxModelDefaults } from '../../box-model.js';
 import { createDefaultRegistry } from "../../registry.js";
 import { createGpuiEmitter, gpuiPlan, gpuiStylePlan } from "./factory.js";
+import { gpuiAnatomyPlan } from "./anatomy.js";
+import { loadBoundary } from "./boundary.js";
 
 const root = path.resolve(__dirname, "../../../../..");
 const contractsRoot = path.join(root, "packages/ds-contracts");
@@ -23,6 +25,59 @@ const emitter = createGpuiEmitter();
 const options = { componentsRoot: "", contractsRoot };
 
 describe("GPUI native style and control lowering", () => {
+  it("withholds cancellable anchor callbacks and activation without narrowing their payload", () => {
+    const ir = buildComponentIR(fixture("Links"));
+    ir.name = "DestinationControl";
+    ir.styledProps.find(prop => prop.name === "onClick")!.name = "onActivate";
+    ir.dom!.events.click = { kind: "prop", prop: "onActivate" };
+    const projection = gpuiAnatomyPlan(ir);
+    expect(projection.plan.callbacks).toEqual([]);
+    expect(projection.plan.activations).toEqual([]);
+    expect(projection.plan.excludedProps).toContain("onActivate");
+    expect(projection.omissions).toContainEqual(expect.objectContaining({
+      kind: "prop", source: "onActivate", boundary: "prop-anchor-activation-callback", disposition: "pending",
+      reason: expect.stringContaining("cancellable anchor event"),
+    }));
+    expect(projection.omissions).toContainEqual(expect.objectContaining({
+      kind: "event", source: "root/click", boundary: "anatomy-anchor-activation-event", disposition: "pending",
+    }));
+    const files = emitter.emitComponent(ir, options);
+    const source = files[0]!.contents;
+    expect(source).not.toContain("pub on_activate:");
+    expect(source).not.toContain("fn set_on_activate(");
+    expect(source).not.toContain(".on_click(");
+    expect(source).not.toContain(".on_key_down(");
+    const receipt = JSON.parse(files[1]!.contents);
+    expect(receipt.excludedProps).toContain("onActivate");
+    expect(receipt.omittedFacts).toContainEqual(expect.objectContaining({ source: "onActivate", disposition: "pending" }));
+    // Callback decisions consume host/payload IR, independently of ledger labels.
+    const unguarded = structuredClone(ir);
+    unguarded.dom!.disabledActivation = undefined;
+    expect(gpuiAnatomyPlan(unguarded).plan.callbacks).toEqual([]);
+    const guarded = structuredClone(ir);
+    const callback = guarded.styledProps.find(prop => prop.name === "onActivate")!;
+    if (callback.propType.kind !== "callback") throw new Error("activation fixture must declare a callback");
+    callback.propType.params = [];
+    expect(gpuiAnatomyPlan(guarded).plan.callbacks).toEqual([]);
+    const forgedBoundary = structuredClone(loadBoundary());
+    for (const rule of forgedBoundary.rules.filter(rule => rule.id.includes("anchor-activation"))) {
+      rule.disposition = "lowered";
+      rule.via = "test-only false capability claim";
+    }
+    expect(gpuiAnatomyPlan(ir, forgedBoundary).plan.callbacks).toEqual([]);
+  });
+
+  it("preserves zero-payload native action callbacks and their activation wiring", () => {
+    const ir = buildComponentIR(fixture("Button"));
+    const projection = gpuiAnatomyPlan(ir);
+    expect(projection.plan.callbacks).toContainEqual({ prop: "onClick", field: "on_click" });
+    expect(projection.plan.activations).toContainEqual({ part: "root", handler: "on_click", keyboard: true });
+    const source = emitter.emitComponent(ir, options)[0]!.contents;
+    expect(source).toContain("pub on_click:Option<crate::callback::ActionHandler>");
+    expect(source).toContain("pub fn set_on_click(");
+    expect(source).toContain(".on_click(");
+    expect(source).toContain(".on_key_down(");
+  });
   it("omits a presence predicate without emitting a nonexistent Rust condition", () => {
     const contract = fixture("Text");
     contract.styles = { ...contract.styles, ".text:not([hidden])": { opacity: { literal: "0.5", platforms: ["web"] } } };

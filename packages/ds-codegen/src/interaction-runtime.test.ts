@@ -10,7 +10,8 @@ import { INTERACTION_RUNTIME_SOURCE } from "./interaction-runtime.js";
 
 type Runtime = {
   bindInteractionEvents(host: HTMLElement, handlers: Record<string, (event: Event) => void>): () => void;
-  canActivateInteraction(event: Event, cancel?: boolean): boolean;
+  canActivateInteraction(event: Event, cancel?: boolean, disabledValue?: unknown): boolean;
+  isActivationDisabled(value: unknown): boolean;
   toggleInteractionItem(value: string | string[], item: string, multiple: boolean, collapsible: boolean): string | string[];
   requestInteractionChange<T>(controlled: T | undefined, next: T, commit: (value: T) => void, notify: (value: T) => void): void;
   requestNativeRadioChange(event: { currentTarget: EventTarget | null }, request: () => void, readAccepted: () => string | undefined): void;
@@ -19,6 +20,38 @@ type Runtime = {
 const runtime = {} as Runtime;
 new Function("exports", ts.transpileModule(INTERACTION_RUNTIME_SOURCE, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(runtime);
 afterEach(() => document.body.replaceChildren());
+
+describe("disabled navigation activation", () => {
+  it.each([true, "true"])("cancels a disabled source even when fallthrough metadata says enabled: %s", value => {
+    const anchor = document.createElement("a");
+    anchor.href = "#destination";
+    anchor.setAttribute("aria-disabled", "false");
+    const child = document.createElement("span"); anchor.append(child); document.body.append(anchor);
+    const callback = vi.fn();
+    anchor.addEventListener("click", event => { if (runtime.canActivateInteraction(event, false, value)) callback(); });
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+    child.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(callback).not.toHaveBeenCalled();
+    expect(runtime.isActivationDisabled(value)).toBe(true);
+  });
+  it.each([false, "false", undefined, null, 0])("preserves enabled native default and observes consumer cancellation: %s", value => {
+    const anchor = document.createElement("a"); document.body.append(anchor);
+    const observed: boolean[] = [];
+    anchor.addEventListener("click", event => observed.push(runtime.canActivateInteraction(event, false, value)));
+    const event = new MouseEvent("click", { cancelable: true }); anchor.dispatchEvent(event);
+    expect(observed).toEqual([true]); expect(event.defaultPrevented).toBe(false);
+    const cancelled = new MouseEvent("click", { cancelable: true }); cancelled.preventDefault(); anchor.dispatchEvent(cancelled);
+    expect(observed).toEqual([true, false]); expect(runtime.isActivationDisabled(value)).toBe(false);
+  });
+  it("cancels disabled host activation from a nested pointer target", () => {
+    const anchor = document.createElement("a"); anchor.setAttribute("aria-disabled", "true");
+    const child = document.createElement("span"); anchor.append(child); document.body.append(anchor);
+    const callback = vi.fn(); anchor.addEventListener("click", event => { if (runtime.canActivateInteraction(event)) callback(); });
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true }); child.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true); expect(callback).not.toHaveBeenCalled();
+  });
+});
 
 describe("native text ownership", () => {
   function input(tag = "input") {

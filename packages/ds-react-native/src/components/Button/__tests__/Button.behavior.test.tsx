@@ -1,6 +1,7 @@
 // Hand-written behavioral companion to the generated Button scaffold.
 import { describe, expect, it, vi } from "vitest";
 import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import { StyleSheet } from "react-native";
 import { Button } from "../Button";
 import { FsdsThemeProvider } from "../../../tokens";
 
@@ -63,5 +64,27 @@ describe("Button — behavioral surfaces", () => {
     expect(label).toBeDefined();
     const paint = Object.assign({}, ...(label!.props.style as Record<string, unknown>[]).filter(Boolean));
     expect(paint).toMatchObject({ color: "#123456", fontSize: 18, fontWeight: "500" });
+  });
+
+  it("paints disabled label text from its token and restores the enabled variant on rerender", () => {
+    let renderer: ReactTestRenderer | undefined;
+    const render = (disabled: boolean) => (
+      <FsdsThemeProvider value={{ tokens: {
+        "button.color.foreground.default": "#123456",
+        "button.color.foreground.disabled": "#654321",
+      } }}>
+        <Button disabled={disabled} variant="primary">Save</Button>
+      </FsdsThemeProvider>
+    );
+    act(() => { renderer = TestRenderer.create(render(true)); });
+    const paint = () => {
+      const labels = renderer!.root.findAllByType("Text" as never).filter(node => node.children.includes("Save"));
+      expect(labels).toHaveLength(1);
+      return StyleSheet.flatten(labels[0]!.props.style);
+    };
+    expect(paint().color).toBe("#654321");
+    act(() => { renderer!.update(render(false)); });
+    expect(paint().color).toBe("#123456");
+    act(() => { renderer!.unmount(); });
   });
 });

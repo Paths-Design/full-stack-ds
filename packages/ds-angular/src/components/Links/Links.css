@@ -29,7 +29,7 @@
     text-decoration-color: var(--fsds-links-color-foreground-hover, #b31b1b);
   }
 
-  &:visited {
+  &:visited:not([aria-disabled="true"]) {
     color: var(--fsds-links-design-visited-foreground-color, var(--fsds-links-color-foreground-visited, #e55b5a));
   }
 
@@ -37,10 +37,9 @@
     color: var(--fsds-links-design-disabled-foreground-color, var(--fsds-links-color-foreground-disabled, #727272));
     cursor: not-allowed;
     text-decoration-line: none;
-    pointer-events: none;
   }
 
-  &:focus-visible:not([aria-disabled="true"]) {
+  &:focus-visible {
     outline-width: var(--fsds-links-design-focus-focus-width, var(--fsds-links-focus-ring-width, 2px));
     outline-color: var(--fsds-links-design-focus-focus-color, var(--fsds-links-focus-ring-color, #0566fe));
     outline-style: var(--fsds-links-design-focus-focus-style, var(--fsds-links-focus-ring-style, solid));

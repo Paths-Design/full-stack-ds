@@ -47,6 +47,7 @@ import type {
 } from "../../ir.js";
 import { componentNeedsInstanceId } from "../../id-relationships.js";
 import {
+  hasDisabledActivation,
   TABLE_COMPOSITION_TAGS,
   NATIVE_FOCUSABLE_TAGS,
   canonicalTsType,
@@ -1212,7 +1213,7 @@ function generateCompoundPartComponent(
     `  selector: "fsds-${selector}",`,
     `  standalone: true,`,
     `  imports: [NgClass, StackComponent],`,
-    `  template: \`${template}\`,`,
+    `  template: \`${escapeAngularTemplateLiteral(template)}\`,`,
     `  changeDetection: ChangeDetectionStrategy.OnPush,`,
     `})`,
     `export class ${className} {`,
@@ -1279,7 +1280,7 @@ function generateComponent(ir: ComponentIR): string {
     `  standalone: true,`,
     `  imports: [NgClass, StackComponent],`,
     `  host: { "data-fsds-component": "${ir.cssPrefix}" },`,
-    `  template: \`${template}\`,`,
+    `  template: \`${escapeAngularTemplateLiteral(template)}\`,`,
     `  changeDetection: ChangeDetectionStrategy.OnPush,`,
     `})`,
     `export class ${className} {`,
@@ -1598,7 +1599,7 @@ function generateDomTreeImports(ir: ComponentIR, componentBody: string): string 
     const names = [...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : []), "injectFsdsMessages"];
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction${hasDisabledActivation(ir.dom) ? ", isActivationDisabled" : ""} } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) lines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) lines.push(`import { afterNextRender } from "@angular/core";`);
@@ -1955,7 +1956,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`  providers: [FieldAssociationService],`);
   }
   lines.push(`  host: { "data-fsds-component": "${ir.cssPrefix}" },`);
-  lines.push(`  template: \`${template}\`,`);
+  lines.push(`  template: \`${escapeAngularTemplateLiteral(template)}\`,`);
   lines.push(`  changeDetection: ChangeDetectionStrategy.OnPush,`);
   lines.push(`})`);
   // When the dom tree has a children guard, the class implements AfterContentInit
@@ -2171,7 +2172,8 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     }
   }
 
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  if (hasDisabledActivation(ir.dom)) lines.push(`  protected isActivationDisabled = isActivationDisabled;`);
   for (const channel of ir.nativeTextChannels ?? []) {
     lines.push(`  protected requestNativeText${capitalizeAngular(channel)}(event: Event): void {`,
       `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });`,
@@ -2904,6 +2906,12 @@ function renderAngularDomNode(
   // produces `(click)="behavior.X()"`. Legacy `bindings.onX` is filtered
   // below to avoid double-emit.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderAngularBindingValue(node.disabledActivation.disabled, ctx);
+      const callback = renderAngularBindingValue(expr, ctx);
+      attrs.push(`(click)="canActivateInteraction($event, false, isActivationDisabled(${disabled})) && (${callback})?.($event)"`);
+      continue;
+    }
     if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
       attrs.push(`(${eventName})="requestNativeText${capitalizeAngular(node.nativeTextChannel)}($event)"`);
       continue;
@@ -2925,6 +2933,11 @@ function renderAngularDomNode(
       : renderAngularEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderAngularBindingValue(node.disabledActivation.disabled, ctx);
+    attrs.push(`(click)="canActivateInteraction($event, false, isActivationDisabled(${disabled}))"`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2964,6 +2977,11 @@ function renderAngularDomNode(
     (node.componentInstance?.bindings ?? []).map((b) => [b.sourceAttr, b]),
   );
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderAngularBindingValue(node.disabledActivation.disabled, ctx);
+      attrs.push(`[attr.href]="isActivationDisabled(${disabled}) ? null : ${renderAngularBindingValue(expr, ctx)}"`);
+      continue;
+    }
     // Dual-pathway dedup: parseDomNode mirrored `bindings.onX` to
     // `events.<x>` for back-compat. The canonical events loop above
     // already emitted the handler — skip the legacy attribute pass.
@@ -3410,6 +3428,9 @@ function renderAngularDomNode(
 // per-tag attribute set; entries here are derived from real DOM-IDL
 // facts, not from "tests are failing".
 const ANGULAR_ATTR_BINDING_OVERRIDES_BY_TAG: Record<string, ReadonlySet<string>> = {
+  // DOMString navigation setters stringify undefined. Optional metadata must
+  // remove its attribute so the document's ordinary navigation policy applies.
+  a: new Set(["target", "rel"]),
   label: new Set(["form"]),
   // HTMLImageElement's unsigned-long setters turn undefined into zero.
   // Attribute binding removes an unset dimension so intrinsic sizing survives.
@@ -3537,13 +3558,11 @@ function defaultAwareAngularTemplatePropAccessor(
  * verbatim prematurely closes that attribute (confirmed via a runtime
  * probe: OTP's `[attr.aria-label]="(label ?? "One-time password")"`
  * broke the Angular JIT compiler with "Opening tag not terminated").
- * This is the exact defect class `renderAngularBindingValue`'s `literal`
- * case already works around (DOM-PROPERTY-REFLECTION-IR-CHECKBOX-
- * INDETERMINATE-01) — swap every `"` for `'`. JSON strings never contain
+ * This default-expression path swaps every `"` for `'`. JSON strings never contain
  * a raw (unescaped) `"` internally, so this is a safe 1:1 substitution
  * for the string/array shapes `defaultExpr` can take; boolean/number
- * defaultExprs contain no quotes and pass through unchanged. Known limit
- * (shared with the `literal` case): a default value containing an
+ * defaultExprs contain no quotes and pass through unchanged. Known limit:
+ * a default value containing an
  * apostrophe would still break — no corpus default does today.
  */
 function angularTemplateSafeDefaultExpr(defaultExpr: string): string {
@@ -3772,20 +3791,7 @@ function renderAngularBindingValue(
     case "prop":
       return appendPath(angularPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
-      // Single-quoted, not JSON.stringify's double-quoted form: this
-      // result gets spliced into `[attr]="..."` (conditional/predicate/
-      // style callers), a "-delimited Angular template attribute. A
-      // double-quoted literal would prematurely close that attribute for
-      // Angular's template lexer, which reads attribute values with an
-      // HTML-attribute tokenizer BEFORE parsing the expression inside —
-      // confirmed via a runtime probe on Checkbox's aria-checked
-      // conditional (the first literal-string operand used in attribute
-      // position): the "false"-branch silently evaluated wrong because
-      // `&quot;` inside the parsed expression is literal entity text, not
-      // a quote character (DOM-PROPERTY-REFLECTION-IR-CHECKBOX-
-      // INDETERMINATE-01). Single quotes have no such collision in any
-      // of this function's call sites.
-      return `'${expr.value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
+      return angularExpressionString(expr.value);
     case "message":
       // `fsdsMessages` is a computed signal member; `formatFsdsMessage` is
       // exposed on the class when any message takes params.
@@ -3952,7 +3958,25 @@ function mapJsxEventToAngular(attr: string): string {
 }
 
 function escapeAngularAttr(s: string): string {
-  return s.replace(/"/g, "&quot;");
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+/** Keep expression literals intact through Angular's HTML attribute lexer. */
+function angularExpressionString(s: string): string {
+  return `'${s
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/"/g, "\\u0022")
+    .replace(/&/g, "\\u0026")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/\r/g, "\\r")
+    .replace(/\n/g, "\\n")}'`;
+}
+
+/** Decorator template text must survive TypeScript template-literal cooking. */
+function escapeAngularTemplateLiteral(s: string): string {
+  return s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
 }
 
 function formatAngularAttrs(attrs: string[]): string {

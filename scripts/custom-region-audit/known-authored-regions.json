@@ -23,6 +23,13 @@
       "note": "Codegen emits a baseline suite and opens the `tests` region for the hostile-path coverage no contract implies. This is the escape hatch's intended use, not a method violation — ledgered so the set cannot grow silently, and so a region that later migrates into a contract-derived assertion surfaces as stale."
     },
     {
+      "file": "packages/ds-angular/src/components/Links/__tests__/Links.test.ts",
+      "label": "tests",
+      "kind": "test",
+      "spec": "LINKS-DISABLED-ACTIVATION-01",
+      "note": "Mounted optional navigation metadata coverage: absent target/rel, explicit empty/self/blank and relationship values, then removal on the same anchor. This authored hostile-path test is the intended generated-test region use; no component implementation is customized. If equivalent transitions become contract-derived tests, this region empties and the inventory entry becomes stale."
+    },
+    {
       "file": "packages/ds-angular/src/components/Select/__tests__/Select.test.ts",
       "label": "tests",
       "kind": "test",

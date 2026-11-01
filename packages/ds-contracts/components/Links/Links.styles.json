@@ -147,12 +147,6 @@
       "platforms": [
         "web"
       ]
-    },
-    "pointer-events": {
-      "literal": "none",
-      "platforms": [
-        "web"
-      ]
     }
   },
   "focus": {

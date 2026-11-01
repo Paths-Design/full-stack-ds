@@ -37,6 +37,7 @@ import type {
 } from "../../ir.js";
 import { componentNeedsInstanceId } from "../../id-relationships.js";
 import {
+  hasDisabledActivation,
   TABLE_COMPOSITION_TAGS,
   NATIVE_FOCUSABLE_TAGS,
   nativeTableAttrsFor,
@@ -1659,7 +1660,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     );
     importLines.push(`import { h, Fragment, defineComponent, type VNode } from "vue";`);
   }
-  if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (hasDisabledActivation(ir.dom) || ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction${hasDisabledActivation(ir.dom) ? ", isActivationDisabled" : ""} } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) importLines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
@@ -1671,7 +1672,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
 
   const typesBody = emitNonReactTypeAliases(ir).join("\n");
   const propsInterfaceBody = generatePropsInterface(ir);
-  const definePropsBody = generateDefineProps(ir);
+  const definePropsBody = (ir.dom?.disabledActivation ? "defineOptions({ inheritAttrs: false });\n\n" : "") + generateDefineProps(ir);
 
   // Build the hook call. Vue's primitives expect getter-shaped controlled
   // values (`() => boolean | undefined`), and value-shaped onChange.
@@ -2310,6 +2311,12 @@ function renderVueDomNode(
   // no-op when undefined. Channel events delegate to the existing
   // channel-handler logic.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (eventName === "click" && node.disabledActivation && !node.activation) {
+      const disabled = renderVueBindingValue(node.disabledActivation.disabled, ctx);
+      const callback = renderVueBindingValue(expr, ctx);
+      attrs.push(`@click="(e: MouseEvent) => { if (canActivateInteraction(e, false, isActivationDisabled(${disabled}))) (${callback})?.(e); }"`);
+      continue;
+    }
     if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
       const channel = node.nativeTextChannel;
       attrs.push(`@${eventName}="(e) => requestNativeTextChange(e, () => behavior.set${capitalize(channel)}((e.currentTarget as HTMLInputElement).value), () => behavior.${channel}.value)"`);
@@ -2332,6 +2339,11 @@ function renderVueDomNode(
       : renderVueEvent(eventName, expr, ctx);
     if (rendered === null) continue;
     attrs.push(rendered);
+  }
+
+  if (node.disabledActivation && !node.events.click && !node.activation) {
+    const disabled = renderVueBindingValue(node.disabledActivation.disabled, ctx);
+    attrs.push(`@click="(e: MouseEvent) => { canActivateInteraction(e, false, isActivationDisabled(${disabled})); }"`);
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: bind the realized keyboard actions onto
@@ -2365,6 +2377,11 @@ function renderVueDomNode(
   }
 
   for (const [key, expr] of Object.entries(node.bindings)) {
+    if (key === "href" && node.disabledActivation) {
+      const disabled = renderVueBindingValue(node.disabledActivation.disabled, ctx);
+      attrs.push(`:href="isActivationDisabled(${disabled}) ? undefined : ${renderVueBindingValue(expr, ctx)}"`);
+      continue;
+    }
     if (key === "textContent" || key === "children") {
       if (!node.content) {
         const interpolated = renderVueTextContent(expr, ctx);
@@ -2499,6 +2516,7 @@ function renderVueDomNode(
   }
 
   if (ctx.isRoot) {
+    if (node.disabledActivation) attrs.unshift(`v-bind="$attrs"`);
     if (classParts.length > 0) {
       // The root node's BEM class is included in `classNames` (computed).
       // The dom-tree's root part class is the same as classRecipe.base, so
@@ -2851,13 +2869,19 @@ function formatVueAttrs(attrs: string[]): string {
 }
 
 function escapeAttrString(s: string): string {
-  return s.replace(/"/g, "&quot;");
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 }
 
 function singleQuotedJsString(s: string): string {
   return `'${s
     .replace(/\\/g, "\\\\")
     .replace(/'/g, "\\'")
+    // The expression is nested in a double-delimited HTML attribute. JS
+    // escapes preserve the value without exposing quotes or entities to HTML.
+    .replace(/"/g, "\\u0022")
+    .replace(/&/g, "\\u0026")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
     .replace(/\r/g, "\\r")
     .replace(/\n/g, "\\n")}'`;
 }

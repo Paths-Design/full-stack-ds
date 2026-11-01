@@ -402,7 +402,8 @@
     {
       "id": "anatomy-focus-binding",
       "match": [
-        "contract:/anatomy/dom/**/bindings/tabindex"
+        "contract:/anatomy/dom/**/bindings/tabindex",
+        "contract:/anatomy/dom/**/attrs/tabindex"
       ],
       "disposition": "pending",
       "reason": "focus order is realized only by the bounded control planner"
@@ -464,6 +465,12 @@
       ],
       "disposition": "pending",
       "reason": "no glyph/svg rendering is realized"
+    },
+    {
+      "id": "anatomy-anchor-activation-event",
+      "match": ["contract:/anatomy/dom/events/anchor-activation"],
+      "disposition": "pending",
+      "reason": "ActionHandlerFn carries window/app access, not a cancellable anchor event or navigation default action; this callback and its pointer/keyboard activation are withheld."
     },
     {
       "id": "anatomy-click-event",
@@ -1067,6 +1074,12 @@
       ],
       "disposition": "lowered",
       "via": "the icon name/size selects and sizes the emitted glyph catalog mount"
+    },
+    {
+      "id": "prop-anchor-activation-callback",
+      "match": ["contract:/props/*/members/anchor-activation:*/**", "contract:/props/*/members/anchor-activation:*"],
+      "disposition": "pending",
+      "reason": "The anchor callback payload cannot be reduced to ActionHandlerFn window/app access without discarding cancellation; the callback prop is withheld."
     },
     {
       "id": "prop-action-callback",

@@ -7,6 +7,7 @@ import { createLinksStyles } from "./Links.styles";
 // @generated:end
 
 // @generated:start types
+export type LinkActivationEvent = { readonly defaultPrevented: boolean; preventDefault(): void };
 export type LinkTarget = "_self" | "_blank" | "_parent" | "_top";
 export type LinkSize = "small" | "medium" | "large";
 // @generated:end
@@ -18,6 +19,7 @@ export interface LinksProps {
   rel?: string;
   size?: LinkSize;
   disabled?: boolean;
+  onClick?: (event: LinkActivationEvent) => void;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
   testID?: string;
@@ -30,6 +32,8 @@ export interface LinksProps {
 export function Links({
   href,
   size,
+  disabled,
+  onClick,
   children,
   style,
   testID,
@@ -43,12 +47,14 @@ export function Links({
     <Pressable
       testID={testID}
       style={[styles.root, style]}
-      onPress={() => { if (href) void Linking.openURL(String(href)); }}
+      disabled={String(disabled) === "true"}
+      onPress={(event) => { if (String(disabled) === "true" || event.defaultPrevented) return; onClick?.(event); if (!event.defaultPrevented && href) void Linking.openURL(String(href)); }}
       accessibilityLabel={accessibilityLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
       accessibilityRole="link"
+      accessibilityState={{ disabled: String(disabled) === "true" }}
     >
-      {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize]}>{children}</RNText> : children}
+      {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize, (String(disabled) === "true") ? styles.rootText_state_disabled : undefined]}>{children}</RNText> : children}
     </Pressable>
   );
 }

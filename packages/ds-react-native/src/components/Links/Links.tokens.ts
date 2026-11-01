@@ -47,6 +47,12 @@ export const linksTokenScopes = {
       ref: "semantic.color.foreground.link",
       fallback: "#d92d2e",
     },
+    "links.color.foreground.disabled": {
+      name: "links.color.foreground.disabled",
+      cssVar: "--fsds-links-color-foreground-disabled",
+      ref: "semantic.color.foreground.disabled",
+      fallback: "#727272",
+    },
     "links.focus.ring.radius": {
       name: "links.focus.ring.radius",
       cssVar: "--fsds-links-focus-ring-radius",
