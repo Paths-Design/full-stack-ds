@@ -33,6 +33,15 @@ fn main() {
 
     let platform = gpui_platform::current_platform(false);
     gpui::Application::with_platform(platform).run(move |cx: &mut App| {
+        // Typography parity: every lane loads the bundled Inter 4.1 static faces
+        // (`examples/game-pause-menu/fonts`, OFL). GPUI has no system-font
+        // guarantee, so embed and register the exact bytes used by the other lanes.
+        cx.text_system()
+            .add_fonts(vec![
+                std::borrow::Cow::Borrowed(include_bytes!("../../fonts/inter/Inter-Regular.ttf")),
+                std::borrow::Cow::Borrowed(include_bytes!("../../fonts/inter/Inter-Bold.ttf")),
+            ])
+            .expect("register Inter parity fonts");
         // Escape dismisses one overlay; number keys select a tab. Tab/Shift-Tab
         // focus traversal belongs to the generated controls' own tab stops.
         cx.bind_keys([

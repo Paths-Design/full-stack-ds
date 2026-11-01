@@ -159,7 +159,7 @@ func _build_header() -> Control:
 	band.add_child(wordmark)
 
 	var mission_data: Dictionary = parity.header["mission"]
-	var mission := UI.label(str(mission_data["text"]), orion.type_size("mission"), 600, "muted", orion.micro_spacing())
+	var mission := UI.label(str(mission_data["text"]), orion.type_size("mission"), 400, "muted", orion.micro_spacing())
 	UI.place(mission, float(mission_data["x"]), float(mission_data["y"]), 700, 18)
 	band.add_child(mission)
 
@@ -308,14 +308,14 @@ func _build_footer() -> Control:
 	var nav_data: Dictionary = footer_data["navTarget"]
 	var value_right := float(nav_data["valueRight"])
 	var nav_label := UI.micro(str(nav_data["label"]), "muted")
-	nav_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	UI.place(nav_label, value_right - 256.0, float(nav_data["labelY"]) - 10.0 - rect.position.y, 256, 14)
+	nav_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	UI.place(nav_label, float(nav_data["labelX"]), float(nav_data["labelY"]) - 1.0 - rect.position.y, 160, 14)
 	band.add_child(nav_label)
-	# Right-aligned target value ending at valueRight (baseline ~valueY).
-	nav_target_label = UI.label(str(nav_data["empty"]), orion.type_size("value"), 700, "muted", -0.4)
+	# Right-aligned target value ending at valueRight, 13 px / 700 / signal.
+	nav_target_label = UI.label(str(nav_data["empty"]), orion.type_size("tab"), 700, "signal", 0.0)
 	nav_target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	nav_target_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	UI.place(nav_target_label, value_right - 256.0, float(nav_data["valueY"]) - 10.0 - rect.position.y, 256, 20)
+	UI.place(nav_target_label, value_right - 256.0, float(nav_data["valueY"]) - 1.0 - rect.position.y, 256, 20)
 	band.add_child(nav_target_label)
 	return band
 

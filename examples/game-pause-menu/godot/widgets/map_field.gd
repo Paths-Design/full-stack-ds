@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func _build_note() -> void:
 	var note_data: Dictionary = DSFactory.parity.map["fieldNote"]
-	_note = UI.sub(str(note_data.get("text", "")), "paperMuted")
+	_note = UI.sub(str(note_data.get("text", "")), "ink")
 	var note_y := size.y + float(note_data.get("yOffsetFromFieldBottom", -26))
 	UI.place(_note, 8, note_y, size.x - 16, 14)
 	_note.mouse_filter = Control.MOUSE_FILTER_IGNORE

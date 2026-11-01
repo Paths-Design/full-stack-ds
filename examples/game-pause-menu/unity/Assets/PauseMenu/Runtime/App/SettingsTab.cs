@@ -226,7 +226,8 @@ namespace GamePauseMenu
                 Ui.Point(description, 16, 20);
                 row.Add(description);
                 var value = Ui.MakeText(layout, app.State.ControllerValue(setting.Id) + setting.Unit,
-                    "value", "boneBright", true, new LayoutRect(456, 4, 120, 16), align: TextAnchor.MiddleRight);
+                    "value", "boneBright", true,
+                    new LayoutRect(panel.Rect.W - layout.PanelPadding - 120, 4, 120, 16), align: TextAnchor.MiddleRight);
                 row.Add(value);
                 var sliderRect = new LayoutRect(292, 26, layout.Settings.Slider.W, 16);
                 var slider = BuildSlider(setting.Min, setting.Max, app.State.ControllerValue(setting.Id),
@@ -257,7 +258,7 @@ namespace GamePauseMenu
                 var action = fixtures.Settings.Remap[i];
                 var row = RowFrame(panel, first + i * layout.Settings.RemapRowH, layout.Settings.RemapRowH);
                 var label = Ui.MakeText(layout, action.Label, "rowLabel", "boneBright", true);
-                Ui.Point(label, 16, 10);
+                Ui.Point(label, 16, 2);
                 row.Add(label);
                 var button = Ui.MakeButton(layout, app.State.RemapBinding(action.Id),
                     new LayoutRect(panel.Rect.W - layout.PanelPadding - layout.Settings.BindingButton.W,

@@ -224,89 +224,17 @@ slot count, incomplete parity layout (`test_corpus`).
   icon height + 8 px); the SVG canvas is 64×40 with the pill drawn flush at its top,
   so the painted pill is exactly the JSON 64×32 geometry at `row+8` and the widget
   padding is the only native-control difference.
-- **Permitted differences taken:** system-font fallback and glyph
-  rasterisation; letter-spacing approximated with `FontVariation.spacing_glyph`
-  (integer pixels); controller description secondary lines ellipsised inside the
-  44 px row; drawer/parts micro-labels use the system face. Everything else
-  (rects, colours, copy, switch geometry, active/selected states, overlays) is
+- **Permitted differences taken:** glyph anti-aliasing/hinting on the shared
+  Inter faces; sub-pixel baseline rounding. Family, weights (400/700), sizes,
+  zero tracking, chip centring and body-copy alignment are pinned and verified
+  by the shared checker's 39 typography bbox probes. Everything else (rects,
+  colours, copy, switch geometry, active/selected states, overlays) is
   parity-pinned.
-- **Cross-engine checker note:** running the shared `parity-check.mjs` against the
-  three lanes currently flags two checker-side issues that affect **every** lane
-  identically, not this lane:
-  1. *Glyph-pixel probes.* The colour probes at `(160/480/800/1120, 132)` land on
-     the centered tab labels and `(1118,250)` on the centered `ACCESS` chip text —
-     glyph anti-aliasing, not fill. This lane's fills are exact when sampled off
-     glyph (`160,112`/`160,150` = signal; `1118,245`/`1118,260` = signal; first
-     General switch `584,238` = signal). Recommend probing a solid band
-     (`y=112/150`) or a median patch.
-  2. *Region checks.* Every region check reports a degenerate `1×1` box at
-     `searchRect+1` and `areaFraction=0` for all three lanes (e.g. drawer expect
-     `24x176x560x552`, got `1x1x1x1`; ON-switch expect `552x222x64x32`, got
-     `521x209x1x1`). The mask pipeline (`-fill black -opaque hex` followed by
-     `-fill white +opaque hex`) converts the matched pixels to black and then the
-     second `+opaque` also clears them, so `-trim` sees no target region. Suggested
-     mask: match first, then set **non-black** pixels white
-     (`-fill white +opaque black`), and add a `-bordercolor white -border 1` before
-     `-trim` so regions touching the search-rect corner (active tabs start at
-     `x=0`) do not invert the trim.
-- **Evidence:** eight 1280×800 PNGs in `evidence/` (required four + four extra),
-  mirrored byte-identically to the slice directory by the capture tool.
-
-## Evidence
-
-Lane-local (gitignored): `examples/game-pause-menu/godot/evidence/`
-- required: `map.png`, `progress.png`, `abilities.png`, `settings.png`
-- extras: `map-popover.png`, `abilities-hover.png`, `settings-remap-modal.png`,
-  `settings-subtitle.png`
-
-Mirror (written by the Godot process, not a shell copy):
-`/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/godot/`
-Logs there: `parity-capture.log`, `parity-tests.log`,
-`parity-capture-headless.log`.
-
-## Source size
-
-Source only, excluding the gitignored generated addon copy and fixtures:
-**4,867 GDScript lines** (`scripts/` 2,465 · `tabs/` 1,331 · `widgets/` 286 ·
-`tests/` 696 · `tools/` 89), **30 `.tscn` lines**, **65 shell lines**
-(`setup.sh`). No TypeScript is authored by this lane.
-
-## Findings (feed the usability comparison)
-
-- **F-GODOT-1 — No resolved brand projection.** Godot consumers receive no brand
-  tokens; this lane projects the palette from the parity JSON through a lane-local
-  Theme.
-- **F-GODOT-2 — Text is theme- and type-locked.** `DSText` always projects
-  `#141414` with its contract type scale and no override channel: it cannot serve
-  dark-ground copy and cannot hit the parity 10/11/12/13 px scale. The lane uses
-  native labels and ledgers Text as admitted-but-unused for parity.
-- **F-GODOT-3 — Two incompatible styling surfaces.** Only action/composite
-  runtimes (Button/Badge/Card) accept `token_overrides`; control-family runtimes
-  (Switch/Tabs/Popover) accept none and their authored theme projects a light-theme
-  foreground, so branding them needs a lane Theme plus per-node overrides.
-- **F-GODOT-4 — Popover surface is first-layout-pass sized and
-  trigger-positioned.** Attaching content inflates the surface from the first
-  layout pass (measured 3,584 px panel for 219 px of content) and the runtime only
-  positions below the trigger with a 280×90 default; there is no placement or
-  outside-click channel. The lane re-fits and re-anchors the surface.
-- **F-GODOT-5 — Attached Popover content loses the consumer theme scope.**
-  Content is reparented into a `CanvasLayer` surface, so it must be authored
-  against the surface's own theme (same class as Unity's portal).
-- **F-GODOT-6 — Tabs has no selected-tab or per-tab geometry channel.** The four
-  320×56 parity boxes and active/inactive fills are forced with per-trigger
-  `add_theme_*_override`; tab bodies default to a light PanelContainer stylebox
-  from `control.gd` `_ready` and need a body override.
-- **F-GODOT-7 — Card is presentation-only.** No activated/selected channel:
-  the lane wraps each Card in a native hit target and repaints the surface.
-- **F-GODOT-8 — Divider colour is baked.** `#d0d0d0` is not a parity colour and
-  there is no override channel; the lane uses native 1 px rules.
-- **F-GODOT-9 — Control-family `_ready` mutates the shared authored theme
-  resource** (light-theme Button/PanelContainer styleboxes); the lane assigns its
-  own theme after instantiation to avoid depending on that state.
-- **F-GODOT-10 — Switch has no track/thumb styling channel.** The boolean runtime
-  paints engine-default CheckButton icons; the lane must supply 64×32 SVG icon
-  overrides (the parity switch fix). A radius/geometry contract (or a per-engine
-  pill translation) would remove this per-lane work.
+- **Typography:** the lane loads the bundled Inter 4.1 static faces
+  (`setup.sh` copies `../fonts/inter` into `res://fonts/inter`), maps weight
+  < 700 to Regular and >= 700 to Bold with `FontFile.fixed_size`, and pins
+  theme default fonts. The retired `SystemFont` projection and glyph tracking
+  are gone. The taxonomy follows `parity.md` → "Typography parity".
 
 ## Non-claims
 

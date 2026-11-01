@@ -203,7 +203,9 @@ fn colours_and_type_resolve_from_the_json_maps() {
     assert_eq!(layout.marker_monograms.get("camp").map(String::as_str), Some("M"));
     assert!(layout.type_scale.wordmark > 0.0);
     assert!(layout.type_scale.body > 0.0);
-    assert!(layout.type_scale.letter_spacing_micro > 0.0);
+    // Typography parity: tracking is pinned to zero so the three engines can match.
+    assert_eq!(layout.type_scale.letter_spacing_micro, 0.0);
+    assert_eq!(layout.type_scale.letter_spacing_tab, 0.0);
 }
 
 #[test]
@@ -216,12 +218,12 @@ fn icon_art_is_the_portable_code_tile_language() {
     assert_eq!(row.border_width, 1.0);
     assert_eq!(row.radius, 0.0);
     assert_eq!(row.font_size, 8.0);
-    assert_eq!(row.weight, 800);
+    assert_eq!(row.weight, 700);
     assert_eq!(row.text, "boneBright");
     let card = &layout.icon_art.card_tile;
     assert_eq!(card.size, 40.0);
     assert_eq!(card.font_size, 12.0);
-    assert_eq!(card.weight, 800);
+    assert_eq!(card.weight, 700);
     assert_eq!(card.background, "graphite");
     assert_eq!(card.border, "ruleStrong");
     assert_eq!(card.radius, 0.0);

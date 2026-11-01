@@ -38,36 +38,28 @@ pub(crate) enum Weight {
 }
 
 impl Weight {
-    /// Map a JSON weight number (e.g. `iconArt.rowTile.weight = 800`).
+    /// Map a JSON weight number to the two pinned Inter weights. The parity
+    /// authority uses only regular 400 and bold 700 (the pinned GPUI renderer
+    /// has no variable-axis channel); any larger request is bold.
     pub(crate) fn from_numeric(weight: u32) -> Self {
         match weight {
-            300 => Weight::Regular,
-            400 => Weight::Regular,
-            500 => Weight::SemiBold,
-            600 => Weight::SemiBold,
-            700 => Weight::Bold,
-            _ => Weight::Heavy,
+            300 | 400 => Weight::Regular,
+            _ => Weight::Bold,
         }
     }
 
     /// The generated `Text` weight variant the lane sets.
     pub(crate) fn variant(self) -> &'static str {
         match self {
-            Weight::Regular => "normal",
-            Weight::SemiBold => "semibold",
-            Weight::Bold => "bold",
-            Weight::Heavy => "bold",
+            Weight::Regular | Weight::SemiBold => "normal",
+            Weight::Bold | Weight::Heavy => "bold",
         }
     }
 
-    /// A token override needed when the variant's authored weight is not the
-    /// pinned one (semibold→500, bold→700; the lane's 600/800 need a nudge).
+    /// No token nudge is needed: the bold variant already resolves to 700, and
+    /// 600/800 are retired from the parity type treatment.
     pub(crate) fn token_override(self) -> Option<(&'static str, &'static str)> {
-        match self {
-            Weight::SemiBold => Some(("text.typography.fontWeight.medium", "600")),
-            Weight::Heavy => Some(("text.typography.fontWeight.bold", "800")),
-            _ => None,
-        }
+        None
     }
 }
 
@@ -189,6 +181,11 @@ pub(crate) fn footer_label(type_scale: &TypeScale) -> TextStyleSpec {
 /// Footer NAV TARGET value: 13 px / 700 / signal.
 pub(crate) fn footer_value(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.tab, Weight::Bold, 1.0)
+}
+
+/// Roster dossier affordance: 10 px / 700 / signal (`parity.md` → PROGRESS).
+pub(crate) fn dossier() -> TextStyleSpec {
+    TextStyleSpec::new(10.0, Weight::Bold, 1.0)
 }
 
 /// Wordmark: 40 px / 800.

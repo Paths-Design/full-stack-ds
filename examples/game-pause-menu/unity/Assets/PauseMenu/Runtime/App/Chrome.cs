@@ -96,6 +96,9 @@ namespace GamePauseMenu
             Root.style.borderTopColor = layout.Color(footer.RuleTop);
 
             Hints = Ui.MakeText(layout, footer.HintsText, "footer", "muted", false);
+            // Typography parity: UI Toolkit collapses runs of spaces by default;
+            // the pinned hint string uses triple-space separators.
+            Hints.style.whiteSpace = WhiteSpace.Pre;
             Ui.Point(Hints, footer.Hints.X, footer.Hints.Y - footer.Rect.Y);
             Root.Add(Hints);
 
@@ -108,7 +111,7 @@ namespace GamePauseMenu
             // prose size (13) overflows the right edge from valueX=1176; JSON type map wins per authority.
             // Pinned: right-aligned to x=1256 at y=770, 13 px / 700 signal.
             NavTargetValue = Ui.MakeText(layout, footer.NavEmpty, "body", "signal", true,
-                new LayoutRect(footer.NavValueRight - 256, footer.NavValueY - footer.Rect.Y, 256, 18),
+                new LayoutRect(footer.NavValueRight - 256, footer.NavValueY - footer.Rect.Y - 4, 256, 16),
                 align: TextAnchor.MiddleRight);
             Root.Add(NavTargetValue);
 

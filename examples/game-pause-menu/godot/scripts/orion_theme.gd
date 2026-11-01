@@ -71,19 +71,32 @@ func border_width() -> int:
 	return int(style.get("borderWidth", 1))
 
 
-## System-font projection with the Orion type treatment. The target bundles no
-## condensed grotesque face, so weights plus letter-spaced caps approximate it
-## (permitted parity difference: font fallback/rasterisation, letter-spacing).
-func font(size: int, weight: int, spacing := 0.0) -> Font:
-	var system := SystemFont.new()
-	system.font_weight = clampi(weight, 100, 900)
-	system.allow_system_fallback = true
-	if is_zero_approx(spacing):
-		return system
-	var variation := FontVariation.new()
-	variation.base_font = system
-	variation.spacing_glyph = roundi(spacing)
-	return variation
+## Typography parity: the lanes ship Inter 4.1 static faces in
+## `examples/game-pause-menu/fonts` (copied into `res://fonts` by setup.sh).
+## Two weights are pinned (400 regular / 700 bold) and tracking is zero; the
+## `spacing` argument is kept for call-site compatibility and ignored.
+const FONT_DIR := "res://fonts/inter"
+static var _font_cache: Dictionary = {}
+
+func font(size: int, weight := 400, _spacing := 0.0) -> Font:
+	var bold := weight >= 700
+	var key := "%d:%s" % [size, "bold" if bold else "regular"]
+	if _font_cache.has(key):
+		return _font_cache[key]
+	var path := FONT_DIR + ("/Inter-Bold.ttf" if bold else "/Inter-Regular.ttf")
+	var face := FontFile.new()
+	var error := face.load_dynamic_font(path)
+	if error != OK:
+		push_error("ORION_THEME_INTER_FONT_MISSING: " + path + " (run setup.sh)")
+		return ThemeDB.fallback_font
+	face.fixed_size = size
+	face.allow_system_fallback = true
+	_font_cache[key] = face
+	return face
+
+
+func default_font() -> Font:
+	return font(type_size("body"), 400)
 
 
 ## Zero-radius, no-shadow StyleBoxFlat.
@@ -115,6 +128,7 @@ func panel_style(bg_key: String, border_key := "", width := -1, margin := 0.0) -
 func shell_theme() -> Theme:
 	var theme := Theme.new()
 	var text_primary: Color = palette["boneBright"]
+	theme.default_font = default_font()
 	theme.default_font_size = type_size("body")
 	theme.set_color("font_color", "Label", text_primary)
 	theme.set_color("font_color", "Button", text_primary)
@@ -169,6 +183,8 @@ func shell_theme() -> Theme:
 ## lane's 64x32 icon overrides).
 func control_theme() -> Theme:
 	var theme := shell_theme()
+	# Generated control-family labels are bold (buttons, tab labels, chips).
+	theme.default_font = font(type_size("body"), 700)
 	var empty := StyleBoxEmpty.new()
 	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
 		theme.set_stylebox(state, "CheckButton", empty)

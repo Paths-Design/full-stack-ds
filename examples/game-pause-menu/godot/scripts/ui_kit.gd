@@ -49,7 +49,7 @@ static func sub(text: String, color_key := "muted") -> Label:
 
 
 static func title(text: String, size := 24, color_key := "boneBright") -> Label:
-	return label(text, size, 800, color_key, 0.0)
+	return label(text, size, 700, color_key, 0.0)
 
 
 static func panel_title(text: String) -> Label:
@@ -57,7 +57,7 @@ static func panel_title(text: String) -> Label:
 
 
 static func panel_meta(text: String) -> Label:
-	return label(text.to_upper(), type_size("panelMeta"), 600, "muted", orion.micro_spacing())
+	return label(text.to_upper(), type_size("panelMeta"), 400, "muted", orion.micro_spacing())
 
 
 # --- layout ------------------------------------------------------------------

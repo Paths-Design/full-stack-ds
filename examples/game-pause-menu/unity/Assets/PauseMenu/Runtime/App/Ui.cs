@@ -64,6 +64,52 @@ namespace GamePauseMenu
             element.style.paddingBottom = (float)padding;
         }
 
+        // Typography parity: both Inter weights are imported as Unity Font
+        // assets; every lane text element is projected onto one of them and the
+        // synthetic bold/italic styles are disabled so no faux weight is drawn.
+        private static UnityEngine.Font interRegular;
+        private static UnityEngine.Font interBold;
+
+        public static UnityEngine.Font InterRegular =>
+            interRegular ??= Resources.Load<UnityEngine.Font>("Fonts/Inter-Regular");
+
+        public static UnityEngine.Font InterBold =>
+            interBold ??= Resources.Load<UnityEngine.Font>("Fonts/Inter-Bold");
+
+        /// <summary>Pin an element (and its inherited descendants) to an Inter weight.</summary>
+        public static void UseFont(VisualElement element, bool bold)
+        {
+            if (element == null) return;
+            var face = bold ? InterBold : InterRegular;
+            if (face == null)
+                throw new FixtureFormatException("Unity Inter font asset missing from Resources/Fonts.");
+            element.style.unityFontDefinition = new StyleFontDefinition(FontDefinition.FromFont(face));
+            element.style.unityFontStyleAndWeight = FontStyle.Normal;
+        }
+
+        /// <summary>Apply Inter to generated-component text after the app tree is built.</summary>
+        public static void ApplyParityFonts(VisualElement root)
+        {
+            UseFont(root, false);
+            foreach (var element in root.Query<VisualElement>().ToList())
+            {
+                if (element.ClassListContains("button") || element.ClassListContains("tabs__tab") ||
+                    element.ClassListContains("badge") || element.ClassListContains("badge__content"))
+                {
+                    UseFont(element, true);
+                }
+            }
+            foreach (var textElement in root.Query<TextElement>().ToList())
+            {
+                if (textElement.ClassListContains("parity-text")) continue;
+                var bold = textElement.ClassListContains("tabs__tab") ||
+                           textElement.ClassListContains("button") ||
+                           textElement.ClassListContains("badge") ||
+                           textElement.ClassListContains("badge__content");
+                UseFont(textElement, bold);
+            }
+        }
+
         public static void StripBox(VisualElement element)
         {
             Pad(element, 0);
@@ -97,10 +143,12 @@ namespace GamePauseMenu
             StripBox(text);
             text.style.fontSize = (float)layout.Size(typeKey);
             text.style.color = layout.Color(colorKey);
-            text.style.unityFontStyleAndWeight = bold ? FontStyle.Bold : FontStyle.Normal;
+            // Typography parity: two Inter weights, zero tracking. The spacing
+            // argument is retained for call-site compatibility and ignored.
+            UseFont(text, bold);
             text.style.unityTextAlign = align;
             text.style.whiteSpace = wrap ? WhiteSpace.Normal : WhiteSpace.NoWrap;
-            if (letterSpacing > 0) text.style.letterSpacing = (float)letterSpacing;
+            text.style.letterSpacing = 0;
             text.style.overflow = Overflow.Visible;
             if (rect.HasValue) At(text, rect.Value);
             return text;
@@ -148,7 +196,7 @@ namespace GamePauseMenu
             contentHost.style.justifyContent = Justify.Center;
             StripBox(contentHost);
             var text = MakeText(layout, content, typeKey, foreground, true, align: TextAnchor.MiddleCenter);
-            text.style.letterSpacing = (float)letterSpacing;
+            text.style.letterSpacing = 0;
             contentHost.Add(text);
             badge.Add(contentHost);
             return badge;

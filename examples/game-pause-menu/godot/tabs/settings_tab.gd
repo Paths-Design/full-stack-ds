@@ -99,10 +99,10 @@ func _build_general(panel_def: Dictionary) -> void:
 		var toggle_id := str(toggle.get("id", ""))
 		var row_y := first_y + index * row_h
 		var name_label := UI.label(str(toggle.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
-		UI.place(name_label, 16, row_y + 6, width - 120, 16)
+		UI.place(name_label, 16, row_y + 4, width - 120, 16)
 		panel.add_child(name_label)
 		var description := UI.sub(str(toggle.get("description", "")), "muted")
-		UI.place(description, 16, row_y + 24, width - 120, 14)
+		UI.place(description, 16, row_y + 20, width - 120, 14)
 		panel.add_child(description)
 		var toggle_node = DSFactory.toggle()
 		UI.place(toggle_node, width - 16 - switch_w, row_y + (row_h - switch_h) / 2.0 - 4.0, switch_w, switch_h)
@@ -135,7 +135,7 @@ func _build_controller(panel_def: Dictionary) -> void:
 		var setting_id := str(setting.get("id", ""))
 		var row_y := first_y + index * row_h
 		var name_label := UI.label(str(setting.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
-		UI.place(name_label, 16, row_y + 6, 240, 16)
+		UI.place(name_label, 16, row_y + 4, 240, 16)
 		panel.add_child(name_label)
 		var description := UI.sub(str(setting.get("description", "")), "muted")
 		description.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -151,7 +151,7 @@ func _build_controller(panel_def: Dictionary) -> void:
 		panel.add_child(slider)
 		var value_label := UI.label("", app.parity.type_size("value"), 700, "boneBright", 0.0)
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		UI.place(value_label, width - 16 - 84, row_y + 8, 84, 20)
+		UI.place(value_label, width - 16 - 84, row_y + 4, 84, 20)
 		value_label.text = "%d%s" % [int(slider.value), str(setting.get("unit", ""))]
 		panel.add_child(value_label)
 		controller_sliders[setting_id] = slider
@@ -182,7 +182,7 @@ func _build_remap(panel_def: Dictionary) -> void:
 		var action_id := str(action.get("id", ""))
 		var row_y := first_y + index * row_h
 		var name_label := UI.label(str(action.get("label", "")), 11, 700, "boneBright", 0.0)
-		UI.place(name_label, 16, row_y + 10, 240, 16)
+		UI.place(name_label, 16, row_y + 2, 240, 16)
 		panel.add_child(name_label)
 		var binding = DSFactory.action(
 			str(app.remap_bindings.get(action_id, "")),
@@ -218,8 +218,8 @@ func _build_audio(panel_def: Dictionary) -> void:
 	for slider_data_item in audio.get("sliders", []):
 		var slider_id := str(slider_data_item.get("id", ""))
 		var row_y := first_y + index * row_h
-		var name_label := UI.label(str(slider_data_item.get("label", "")), 11, 700, "boneBright", 0.0)
-		UI.place(name_label, 16, row_y + 6, 130, 16)
+		var name_label := UI.label(str(slider_data_item.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
+		UI.place(name_label, 16, row_y + 4, 130, 16)
 		panel.add_child(name_label)
 		# NOT FSDS: no Slider component is admitted on the Godot target.
 		var slider := ParitySlider.new()

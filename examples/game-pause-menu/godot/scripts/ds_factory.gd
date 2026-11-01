@@ -57,7 +57,6 @@ static func tabs():
 ## buttons at x=0/320/640/960, then the content body at the parity content rect.
 static func style_tabs(node) -> void:
 	var tab_type := parity.type_size("tab")
-	var tab_spacing := orion.tab_spacing()
 	var label_inset := float(parity.tab_bar.get("labelInset", 32))
 	var inactive := _tab_style(orion.color("charcoal"), Color.TRANSPARENT, label_inset)
 	var hover := _tab_style(orion.color("graphite"), Color.TRANSPARENT, label_inset)
@@ -83,7 +82,7 @@ static func style_tabs(node) -> void:
 		button.add_theme_color_override("font_color", orion.color("textSecondary"))
 		button.add_theme_color_override("font_hover_color", orion.color("boneBright"))
 		button.add_theme_color_override("font_pressed_color", orion.color("onSignal"))
-		button.add_theme_font_override("font", orion.font(tab_type, 700, tab_spacing))
+		button.add_theme_font_override("font", orion.font(tab_type, 700))
 		button.add_theme_font_size_override("font_size", tab_type)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		item.body.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
@@ -244,6 +243,7 @@ static func action(text: String, role := "primary", width := 0.0, height := 0.0,
 	var node = _instantiate(BUTTON_SCENE)
 	if node == null:
 		return null
+	node.theme = orion.control_theme()
 	node.content = text
 	var overrides := action_overrides(role)
 	if font_size <= 0:
@@ -273,7 +273,7 @@ static func _role_font_size(role: String) -> int:
 static func _role_weight(role: String) -> int:
 	match role:
 		"primary":
-			return 800
+			return 700
 		_:
 			return 700
 
@@ -329,6 +329,11 @@ static func chip(text: String, bg: Color, fg: Color, border: Color, width: float
 	var node = _instantiate(BADGE_SCENE)
 	if node == null:
 		return null
+	node.theme = orion.control_theme()
+	node.set_meta("parity_chip_font_size", font_size)
+	node.set_meta("parity_chip_text", text)
+	node.set_meta("parity_chip_fg", fg)
+	node.set_meta("parity_chip_size", Vector2(width, height))
 	node.size_axis = "sm"
 	node.custom_minimum_size = Vector2(width, height)
 	node.token_overrides = {
@@ -342,7 +347,7 @@ static func chip(text: String, bg: Color, fg: Color, border: Color, width: float
 		"badge.design.root.spacing.padding-inline": "0px",
 		"badge.design.root.spacing.gap": "0px",
 		"badge.design.root.typography.size": "%dpx" % font_size,
-		"badge.design.root.typography.weight": "800",
+		"badge.design.root.typography.weight": "700",
 	}
 	node.content = text
 	return node
@@ -358,10 +363,21 @@ static func rarity_chip(rarity_name: String, width: float, height: float) -> Con
 static func prepare_chip(node: Control) -> void:
 	# NOT FSDS: generated Badge exposes no content alignment channel; the lane
 	# centers its projected content label for parity chip geometry.
-	if node != null and node.content_label != null:
+	if node == null:
+		return
+	# Typography parity: the generated Badge exposes no font-family channel, so
+	# pin the bundled Inter Bold face at the chip's own size and let the content
+	# label fill the chip box so Godot's horizontal alignment can centre it.
+	if node.content_label != null:
+		var font_size := int(node.get_meta("parity_chip_font_size", 10))
+		var chip_size: Vector2 = node.get_meta("parity_chip_size", Vector2(76, 22))
 		node.content_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		node.content_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		node.content_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		node.content_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		node.content_label.custom_minimum_size = Vector2(chip_size.x, 0)
+		node.content_label.add_theme_font_override("font", orion.font(font_size, 700))
+		node.content_label.add_theme_font_size_override("font_size", font_size)
 
 
 # --- card / icon / passive ---------------------------------------------------

@@ -44,6 +44,12 @@ cp -R "$SOURCE_DIR" "$TARGET_DIR"
 # The package ships no engine import cache; remove any that leaked into the copy.
 rm -rf "$TARGET_DIR/.godot"
 
+# Typography parity: copy the committed Inter faces into the project so
+# `res://fonts/inter/*.ttf` resolves inside the Godot project boundary.
+rm -rf "$LANE_DIR/fonts"
+mkdir -p "$LANE_DIR/fonts"
+cp -R "$LANE_DIR/../fonts/inter" "$LANE_DIR/fonts/inter"
+
 for required in \
   components/Tabs/Tabs.tscn \
   components/Switch/Switch.tscn \
@@ -61,5 +67,13 @@ for required in \
   fi
 done
 
+for required in fonts/inter/Inter-Regular.ttf fonts/inter/Inter-Bold.ttf; do
+  if [[ ! -e "$LANE_DIR/$required" ]]; then
+    echo "FSDS Godot setup: Inter typography asset is missing at $LANE_DIR/$required" >&2
+    exit 1
+  fi
+done
+
 echo "FSDS Godot setup: copied $SOURCE_DIR"
 echo "                   -> $TARGET_DIR"
+echo "FSDS Godot setup: copied ../fonts/inter -> $LANE_DIR/fonts/inter"

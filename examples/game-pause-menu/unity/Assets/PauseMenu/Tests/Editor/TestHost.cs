@@ -23,6 +23,7 @@ namespace GamePauseMenu.Tests
             App = new PauseMenuApp(FixtureRepository.LoadFromResources());
             Mount = Window.rootVisualElement;
             Mount.Add(App.Root);
+            App.ApplyParityTypography();
         }
 
         public void Dispose()

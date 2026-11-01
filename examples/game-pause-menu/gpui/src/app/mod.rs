@@ -902,11 +902,11 @@ fn build_badge(font: f32, weight: style::Weight, color_hex: &str, label: SharedS
 }
 
 fn weight_token(weight: style::Weight) -> &'static str {
+    // Typography parity pins two Inter weights only (400/700); the old
+    // 600/800 requests collapse to bold so no engine needs a semi/extra face.
     match weight {
         style::Weight::Regular => "400",
-        style::Weight::SemiBold => "600",
-        style::Weight::Bold => "700",
-        style::Weight::Heavy => "800",
+        style::Weight::SemiBold | style::Weight::Bold | style::Weight::Heavy => "700",
     }
 }
 
@@ -987,6 +987,7 @@ impl Render for Menu {
             .w(px(viewport.width))
             .h(px(viewport.height))
             .bg(colors::paint(&self.layout.colors.ink))
+            .font_family("Inter")
             .text_color(colors::paint(&self.layout.colors.bone_bright))
             .track_focus(&self.focus)
             .on_action(cx.listener(|this, _: &DismissOverlay, window, cx| {
