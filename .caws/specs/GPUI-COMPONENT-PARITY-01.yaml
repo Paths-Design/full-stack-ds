@@ -95,3 +95,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/src/components/Select/capabilities.json
     commit_sha: "083d81833"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "generate:check passes 55/55 contract semantics with the widened allowlist; the GPU framework suites pass 42/42 tests (boundary ledger audit + bounded planner + anatomy fallback + fixture pinning)"
+    recorded_at: "2026-11-01T08:17:14.581Z"
+    command: "pnpm run generate:check && pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    commit_sha: "8e1e2e4a1"
