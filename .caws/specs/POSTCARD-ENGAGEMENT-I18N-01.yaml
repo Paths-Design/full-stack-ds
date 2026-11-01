@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: postcard-engagement-i18n
 created_at: '2026-11-01T19:07:23.492Z'
-updated_at: '2026-11-01T19:07:41.210Z'
+updated_at: '2026-11-01T19:13:47.060Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -24,6 +24,15 @@ scope:
     - 'scripts/public-types-consumer/fixtures.mjs'
     - 'docs/codegen-authority.md'
     - 'packages/ds-codegen/src/postcard-engagement.test.ts'
+    - packages/ds-figma-plugin/src/generated/components/Postcard
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Postcard
+    - packages/ds-swiftui/Localization/FsdsComponents.xcstrings
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Postcard
+    - packages/ds-unity/Runtime/Components/Postcard
+    - packages/ds-unity/Runtime/Resources/FullStackDS/Controls.unsupported.json
+    - packages/ds-godot/addons/full_stack_ds/components/Postcard
+    - packages/ds-godot/verification/capability-inventory.json
+    - packages/ds-gpui/src/components/Postcard
   out: []
 invariants:
   - 'Keep required author and stats inputs and existing public media/avatar props; this slice does not close omitted media/avatar or preview-fixture obligations'
