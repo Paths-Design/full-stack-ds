@@ -31,6 +31,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { PATHS } from "../core/index.js";
+import { collectValidPaths, resolveBrandReference } from "../lib/brand-reference.js";
+export { collectValidPaths } from "../lib/brand-reference.js";
 
 export interface UnresolvedRef {
   brand: string;
@@ -53,29 +55,6 @@ const INLINE_REF_RE = /\{([a-zA-Z][a-zA-Z0-9._-]*)\}/g;
 
 export function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/**
- * Walk the composed graph and collect every path that points at a real
- * token. A node is a leaf when it carries `$value`; presence of `$type`
- * alone is not enough, because DTCG hoists `$type` to group nodes so
- * children can inherit it (e.g. `core.color.palette` has `$type: "color"`
- * but the actual leaves are `core.color.palette.red.500` etc).
- */
-export function collectValidPaths(graph: unknown, prefix: string[] = [], out = new Set<string>()): Set<string> {
-  if (!isPlainObject(graph)) return out;
-  if ("$value" in graph) {
-    out.add(prefix.join("."));
-    // Composite $value (e.g. typography) may contain nested objects, but
-    // those nested fields aren't independently referenceable tokens —
-    // they're just structure inside the leaf — so don't descend further.
-    return out;
-  }
-  for (const [key, value] of Object.entries(graph)) {
-    if (key.startsWith("$")) continue;
-    collectValidPaths(value, [...prefix, key], out);
-  }
-  return out;
 }
 
 /**
@@ -189,10 +168,7 @@ export function collectRefsFromBrandFile(
  * as resolved if either the prefixed form or the literal form exists.
  */
 export function resolvesAgainstGraph(ref: string, validPaths: Set<string>): boolean {
-  if (validPaths.has(ref)) return true;
-  if (validPaths.has(`core.${ref}`)) return true;
-  if (validPaths.has(`semantic.${ref}`)) return true;
-  return false;
+  return resolveBrandReference(ref, validPaths) !== undefined;
 }
 
 /**

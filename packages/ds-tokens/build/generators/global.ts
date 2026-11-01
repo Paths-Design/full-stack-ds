@@ -43,6 +43,7 @@ import {
   dimensionValueToCSS,
   shadowValueToCSS,
 } from "../lib/transforms.js";
+import { collectValidPaths, resolveBrandReference } from "../lib/brand-reference.js";
 
 /**
  * Type guard for DTCG 1.0 structured shadow $value. A shadow is `{offsetX,
@@ -134,6 +135,7 @@ export interface CollectionContext {
   theme?: "light" | "dark";
   definedVars: Set<string>;
   referencedVars: Set<string>;
+  referencePaths?: ReadonlySet<string>;
 }
 
 /**
@@ -554,7 +556,10 @@ function processTokenValue(
           }
         }
 
-        const cssVar = tokenPathToCSSVar(refTokenPath);
+        const canonicalPath = context.referencePaths
+          ? resolveBrandReference(refTokenPath, context.referencePaths) ?? refTokenPath
+          : refTokenPath;
+        const cssVar = tokenPathToCSSVar(canonicalPath);
         context.referencedVars.add(cssVar);
         return `var(${cssVar})`;
       },
@@ -589,9 +594,10 @@ function validateReferences(context: CollectionContext): string[] {
 }
 
 /**
- * Load all brand token files from the brands directory
+ * Load brand overrides with the graph's canonical reference paths. The
+ * separate brand-reference gate rejects references absent from that graph.
  */
-export function loadBrandTokens(): Map<BrandId, BrandOverrides> {
+export function loadBrandTokens(tokens: TokenGroup = readTokenFile(PATHS.tokens) ?? {}): Map<BrandId, BrandOverrides> {
   const brands = new Map<BrandId, BrandOverrides>();
   const brandsDir = PATHS.brandsDir;
 
@@ -603,6 +609,7 @@ export function loadBrandTokens(): Map<BrandId, BrandOverrides> {
   const brandFiles = fs
     .readdirSync(brandsDir)
     .filter((f) => f.endsWith(".tokens.json") && !f.startsWith("_"));
+  const referencePaths = collectValidPaths(tokens);
 
   for (const file of brandFiles) {
     const brandName = file.replace(".tokens.json", "") as BrandId;
@@ -622,6 +629,7 @@ export function loadBrandTokens(): Map<BrandId, BrandOverrides> {
       const context: CollectionContext = {
         definedVars: new Set(),
         referencedVars: new Set(),
+        referencePaths,
       };
 
       const lightVars: Record<string, string> = {};
@@ -648,15 +656,11 @@ export function loadBrandTokens(): Map<BrandId, BrandOverrides> {
         );
       }
 
-      // NOTE: We deliberately do NOT call validateReferences() here. Brand
-      // tokens reference core tokens via `{shape.border.style.solid}` etc.,
-      // which the global walker emits as `--fsds-core-*` later in the same
-      // build. Reference resolution happens at CSS-cascade time via var(),
-      // not at build time — so the brand processor's local `definedVars` set
-      // (empty at this point) would generate false-positive warnings about
-      // every cross-tier ref. The brand block's emitted `var(--fsds-core-*)`
-      // calls are validated by the browser at runtime against the @layer core
-      // block in the same stylesheet.
+      // The local definedVars set omits core and semantic declarations, so
+      // validateReferences() cannot validate cross-tier brand references.
+      // The graph index canonicalizes their paths; the brand-reference gate
+      // rejects missing paths. CSS var() resolves their values at cascade
+      // time so theme overrides remain effective.
 
       brands.set(brandName, {
         metadata: brandData.$brand,
@@ -1329,7 +1333,7 @@ function generateCSSFromTokens(tokens: TokenGroup): boolean {
   // where references remain as {token.path} strings.
 
   // Load brand tokens
-  const brands = loadBrandTokens();
+  const brands = loadBrandTokens(tokens);
 
   // Load density tokens
   const densities = loadDensityTokens();
@@ -1572,7 +1576,7 @@ export function generateGlobalTokens(incremental = true): boolean {
   }
 
   // Load brand tokens
-  const brands = loadBrandTokens();
+  const brands = loadBrandTokens(tokens);
 
   // Load density tokens
   const densities = loadDensityTokens();
