@@ -3287,6 +3287,7 @@
     --fsds-semantic-typography-body-small-line-height: 1.35;
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-typography-graphic-size-label: 13px;
     --fsds-semantic-typography-heading-font-weight: 700;
     --fsds-semantic-typography-line-height-body: 1.45;
@@ -3421,6 +3422,7 @@
     --fsds-semantic-shape-card-border-transparent: rgba(0, 0, 0, 0);
     --fsds-semantic-typography-graphic-size-compact: 11px;
     --fsds-semantic-typography-graphic-size-display: 28px;
+    --fsds-semantic-typography-graphic-size-ghost: 160px;
     --fsds-semantic-typography-graphic-size-label: 13px;
 }
 

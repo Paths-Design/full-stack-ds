@@ -361,7 +361,7 @@ fn unequal_tab_columns_are_an_authoring_error() {
 fn loaded_palette_consumes_every_authority_colour_token() {
     let layout = load_parity_layout();
     assert_eq!(layout.color_tokens.len(), 19, "all authority colours carry token provenance");
-    assert_eq!(layout.type_tokens.len(), 20, "all authority type values carry token provenance");
+    assert_eq!(layout.type_tokens.len(), 21, "all authority type values carry token provenance");
     for (name, provenance) in &layout.color_tokens {
         let expected = tokens::resolve_color(&provenance.token, &provenance.mode)
             .unwrap_or_else(|| panic!("colour {name} token {} must resolve", provenance.token));

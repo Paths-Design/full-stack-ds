@@ -1,7 +1,7 @@
 {
   "claim": "Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.",
-  "root": "/tmp/restyle-evidence",
-  "out": "/tmp/restyle-evidence/report",
+  "root": "/tmp/restyle2-evidence",
+  "out": "/tmp/restyle2-evidence/report",
   "states": [
     "map",
     "map-popover",
@@ -22,8 +22,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -32,8 +32,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -232,8 +232,8 @@
       "lane": "unity",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -242,8 +242,8 @@
       "lane": "unity",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -442,8 +442,8 @@
       "lane": "godot",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -452,8 +452,8 @@
       "lane": "godot",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -658,7 +658,7 @@
         "y": 28,
         "w": 125,
         "h": 29,
-        "ink": 0.497931
+        "ink": 0.517241
       }
     },
     {
@@ -669,10 +669,10 @@
       "text": "MARS EXPEDITION // COMMANDER D3SO",
       "bbox": {
         "x": 33,
-        "y": 73,
+        "y": 74,
         "w": 220,
-        "h": 10,
-        "ink": 0.363636
+        "h": 8,
+        "ink": 0.250568
       }
     },
     {
@@ -682,11 +682,11 @@
       "probe": "stat-label",
       "text": "RANKING",
       "bbox": {
-        "x": 608,
+        "x": 609,
         "y": 27,
-        "w": 47,
+        "w": 45,
         "h": 8,
-        "ink": 0.648936
+        "ink": 0.511111
       }
     },
     {
@@ -700,7 +700,7 @@
         "y": 45,
         "w": 207,
         "h": 15,
-        "ink": 0.331079
+        "ink": 0.33913
       }
     },
     {
@@ -714,7 +714,7 @@
         "y": 70,
         "w": 217,
         "h": 8,
-        "ink": 0.282834
+        "ink": 0.19182
       }
     },
     {
@@ -826,7 +826,7 @@
         "y": 772,
         "w": 306,
         "h": 8,
-        "ink": 0.303513
+        "ink": 0.180964
       }
     },
     {
@@ -836,11 +836,11 @@
       "probe": "nav-label",
       "text": "NAV TARGET",
       "bbox": {
-        "x": 1096,
+        "x": 1097,
         "y": 759,
-        "w": 64,
+        "w": 63,
         "h": 7,
-        "ink": 0.569196
+        "ink": 0.410431
       }
     },
     {
@@ -850,11 +850,11 @@
       "probe": "nav-value",
       "text": "SUPPLY CACHE 02",
       "bbox": {
-        "x": 1100,
-        "y": 762,
-        "w": 155,
-        "h": 19,
-        "ink": 0.257385
+        "x": 1136,
+        "y": 771,
+        "w": 119,
+        "h": 10,
+        "ink": 0.528571
       }
     },
     {
@@ -896,7 +896,7 @@
         "y": 27,
         "w": 125,
         "h": 30,
-        "ink": 0.464533
+        "ink": 0.474933
       }
     },
     {
@@ -907,10 +907,10 @@
       "text": "MARS EXPEDITION // COMMANDER D3SO",
       "bbox": {
         "x": 33,
-        "y": 74,
-        "w": 224,
-        "h": 10,
-        "ink": 0.483036
+        "y": 75,
+        "w": 223,
+        "h": 9,
+        "ink": 0.36871
       }
     },
     {
@@ -924,7 +924,7 @@
         "y": 29,
         "w": 45,
         "h": 7,
-        "ink": 0.653968
+        "ink": 0.473016
       }
     },
     {
@@ -938,7 +938,7 @@
         "y": 47,
         "w": 206,
         "h": 15,
-        "ink": 0.344337
+        "ink": 0.355663
       }
     },
     {
@@ -952,7 +952,7 @@
         "y": 71,
         "w": 217,
         "h": 7,
-        "ink": 0.284398
+        "ink": 0.16919
       }
     },
     {
@@ -1064,7 +1064,7 @@
         "y": 774,
         "w": 306,
         "h": 6,
-        "ink": 0.315904
+        "ink": 0.162854
       }
     },
     {
@@ -1078,7 +1078,7 @@
         "y": 762,
         "w": 63,
         "h": 4,
-        "ink": 0.531746
+        "ink": 0.404762
       }
     },
     {
@@ -1088,11 +1088,11 @@
       "probe": "nav-value",
       "text": "SUPPLY CACHE 02",
       "bbox": {
-        "x": 1100,
-        "y": 762,
-        "w": 156,
-        "h": 18,
-        "ink": 0.266738
+        "x": 1137,
+        "y": 770,
+        "w": 118,
+        "h": 10,
+        "ink": 0.507627
       }
     },
     {
@@ -1134,7 +1134,7 @@
         "y": 28,
         "w": 125,
         "h": 29,
-        "ink": 0.494069
+        "ink": 0.510345
       }
     },
     {
@@ -1145,10 +1145,10 @@
       "text": "MARS EXPEDITION // COMMANDER D3SO",
       "bbox": {
         "x": 33,
-        "y": 74,
+        "y": 75,
         "w": 220,
-        "h": 10,
-        "ink": 0.319545
+        "h": 9,
+        "ink": 0.259091
       }
     },
     {
@@ -1158,11 +1158,11 @@
       "probe": "stat-label",
       "text": "RANKING",
       "bbox": {
-        "x": 608,
+        "x": 609,
         "y": 28,
-        "w": 46,
+        "w": 45,
         "h": 8,
-        "ink": 0.671196
+        "ink": 0.438889
       }
     },
     {
@@ -1176,7 +1176,7 @@
         "y": 48,
         "w": 207,
         "h": 14,
-        "ink": 0.358868
+        "ink": 0.364389
       }
     },
     {
@@ -1190,7 +1190,7 @@
         "y": 71,
         "w": 217,
         "h": 7,
-        "ink": 0.273864
+        "ink": 0.174457
       }
     },
     {
@@ -1300,9 +1300,9 @@
       "bbox": {
         "x": 25,
         "y": 773,
-        "w": 305,
+        "w": 304,
         "h": 7,
-        "ink": 0.267916
+        "ink": 0.197368
       }
     },
     {
@@ -1312,11 +1312,11 @@
       "probe": "nav-label",
       "text": "NAV TARGET",
       "bbox": {
-        "x": 1096,
+        "x": 1097,
         "y": 759,
-        "w": 65,
+        "w": 63,
         "h": 7,
-        "ink": 0.578022
+        "ink": 0.380952
       }
     },
     {
@@ -1326,11 +1326,11 @@
       "probe": "nav-value",
       "text": "SUPPLY CACHE 02",
       "bbox": {
-        "x": 1100,
-        "y": 762,
-        "w": 156,
-        "h": 20,
-        "ink": 0.210577
+        "x": 1136,
+        "y": 773,
+        "w": 120,
+        "h": 9,
+        "ink": 0.500926
       }
     },
     {
@@ -1364,17 +1364,17 @@
     {
       "state": "map",
       "compare": "gpui/unity",
-      "rmse": 0.0564467
+      "rmse": 0.0605777
     },
     {
       "state": "map",
       "compare": "unity/godot",
-      "rmse": 0.0503155
+      "rmse": 0.0545913
     },
     {
       "state": "map",
       "compare": "gpui/godot",
-      "rmse": 0.0651827
+      "rmse": 0.067963
     },
     {
       "state": "map",
@@ -1400,17 +1400,17 @@
     {
       "state": "map-popover",
       "compare": "gpui/unity",
-      "rmse": 0.122943
+      "rmse": 0.124894
     },
     {
       "state": "map-popover",
       "compare": "unity/godot",
-      "rmse": 0.12027
+      "rmse": 0.122121
     },
     {
       "state": "map-popover",
       "compare": "gpui/godot",
-      "rmse": 0.0908221
+      "rmse": 0.0928377
     },
     {
       "state": "map-popover",
@@ -1438,8 +1438,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -1448,8 +1448,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -1588,8 +1588,8 @@
       "lane": "unity",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -1598,8 +1598,8 @@
       "lane": "unity",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -1738,8 +1738,8 @@
       "lane": "godot",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -1748,8 +1748,8 @@
       "lane": "godot",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -2222,17 +2222,17 @@
     {
       "state": "progress",
       "compare": "gpui/unity",
-      "rmse": 0.083101
+      "rmse": 0.0859605
     },
     {
       "state": "progress",
       "compare": "unity/godot",
-      "rmse": 0.0692412
+      "rmse": 0.0724079
     },
     {
       "state": "progress",
       "compare": "gpui/godot",
-      "rmse": 0.0768048
+      "rmse": 0.079178
     },
     {
       "state": "progress",
@@ -2260,8 +2260,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -2270,8 +2270,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -2370,8 +2370,8 @@
       "lane": "unity",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -2380,8 +2380,8 @@
       "lane": "unity",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -2480,8 +2480,8 @@
       "lane": "godot",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -2490,8 +2490,8 @@
       "lane": "godot",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -2840,17 +2840,17 @@
     {
       "state": "abilities",
       "compare": "gpui/unity",
-      "rmse": 0.0732235
+      "rmse": 0.0764533
     },
     {
       "state": "abilities",
       "compare": "unity/godot",
-      "rmse": 0.0761491
+      "rmse": 0.0790394
     },
     {
       "state": "abilities",
       "compare": "gpui/godot",
-      "rmse": 0.0780586
+      "rmse": 0.0803948
     },
     {
       "state": "abilities",
@@ -2876,17 +2876,17 @@
     {
       "state": "abilities-hover",
       "compare": "gpui/unity",
-      "rmse": 0.0851734
+      "rmse": 0.0879655
     },
     {
       "state": "abilities-hover",
       "compare": "unity/godot",
-      "rmse": 0.0937112
+      "rmse": 0.0960747
     },
     {
       "state": "abilities-hover",
       "compare": "gpui/godot",
-      "rmse": 0.0942656
+      "rmse": 0.0962091
     },
     {
       "state": "abilities-hover",
@@ -2914,8 +2914,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -2924,8 +2924,8 @@
       "lane": "gpui",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -3094,8 +3094,8 @@
       "lane": "unity",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -3104,8 +3104,8 @@
       "lane": "unity",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -3274,8 +3274,8 @@
       "lane": "godot",
       "x": 4,
       "y": 4,
-      "expected": "#232320",
-      "actual": "rgb(35,35,32)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "header background"
     },
@@ -3284,8 +3284,8 @@
       "lane": "godot",
       "x": 4,
       "y": 780,
-      "expected": "#56564C",
-      "actual": "rgb(86,86,76)",
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
       "delta": 0,
       "description": "footer background"
     },
@@ -3788,17 +3788,17 @@
     {
       "state": "settings",
       "compare": "gpui/unity",
-      "rmse": 0.0917956
+      "rmse": 0.0943921
     },
     {
       "state": "settings",
       "compare": "unity/godot",
-      "rmse": 0.0833074
+      "rmse": 0.0859575
     },
     {
       "state": "settings",
       "compare": "gpui/godot",
-      "rmse": 0.0918418
+      "rmse": 0.0938354
     },
     {
       "state": "settings",
@@ -3824,17 +3824,17 @@
     {
       "state": "settings-remap-modal",
       "compare": "gpui/unity",
-      "rmse": 0.0460995
+      "rmse": 0.0463433
     },
     {
       "state": "settings-remap-modal",
       "compare": "unity/godot",
-      "rmse": 0.0468967
+      "rmse": 0.047123
     },
     {
       "state": "settings-remap-modal",
       "compare": "gpui/godot",
-      "rmse": 0.0461067
+      "rmse": 0.0462947
     },
     {
       "state": "settings-remap-modal",
@@ -3860,17 +3860,17 @@
     {
       "state": "settings-subtitle",
       "compare": "gpui/unity",
-      "rmse": 0.0903249
+      "rmse": 0.0929625
     },
     {
       "state": "settings-subtitle",
       "compare": "unity/godot",
-      "rmse": 0.082355
+      "rmse": 0.0850347
     },
     {
       "state": "settings-subtitle",
       "compare": "gpui/godot",
-      "rmse": 0.0893517
+      "rmse": 0.0913997
     },
     {
       "state": "settings-subtitle",

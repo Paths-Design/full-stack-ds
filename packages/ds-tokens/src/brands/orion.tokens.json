@@ -1465,6 +1465,23 @@
               "unit": "px"
             }
           }
+        },
+        "ghost": {
+          "$type": "dimension",
+          "$value": {
+            "value": 160,
+            "unit": "px"
+          },
+          "$extensions": {
+            "fsds.light": {
+              "value": 160,
+              "unit": "px"
+            },
+            "fsds.dark": {
+              "value": 160,
+              "unit": "px"
+            }
+          }
         }
       }
     }
