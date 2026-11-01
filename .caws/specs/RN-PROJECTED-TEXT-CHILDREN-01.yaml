@@ -1,9 +1,11 @@
 id: RN-PROJECTED-TEXT-CHILDREN-01
 title: 'Render numeric and structured scalar children in native Text hosts'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Landed synchronous native text normalization with bigint and zero fallback, coherent styled scopes and resolved text hosts; native311, codegen46, root5731, framework/type/rail/packed browser and Metro checks pass; overall release, native OS/AT and variant qualification remain open.'
 created_at: '2026-11-01T22:00:50.300Z'
-updated_at: '2026-11-01T22:00:51.557Z'
+updated_at: '2026-11-01T23:12:50.069Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
