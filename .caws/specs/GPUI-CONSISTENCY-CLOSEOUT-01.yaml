@@ -39,3 +39,11 @@ evidence:
     exit_code: 0
     artifact_path: docs/architecture/gpui-web-consistency.md
     commit_sha: c5d6e6997
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "docs:check-claims reports OK with every marker matching derived values and all verified stamps fresh or ledgered, and docs:check-links resolves 278 relative links after the snapshot, consistency-doc and target-doc edits"
+    recorded_at: "2026-11-01T12:35:21.694Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/current-implementation-snapshot.md
+    commit_sha: c5d6e6997
