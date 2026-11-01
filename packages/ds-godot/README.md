@@ -1,6 +1,6 @@
 # Godot comparative pilot
 
-Copy `addons/full_stack_ds` into a Godot 4.7.2 project. The generated script classes and `.tscn` scenes in `components/` are editor-importable. No editor plugin must be enabled. Channel controls depend on `runtime/control.gd`; passive text and rule shapes depend on `runtime/static_content.gd`; projected actions depend on `runtime/action.gd`; composed parts depend on `runtime/composite.gd`; glyph hosts depend on `runtime/glyph.gd` and its generated `glyph_catalog.json`.
+Copy `addons/full_stack_ds` into a Godot 4.7.2 project. The generated script classes and `.tscn` scenes in `components/` are editor-importable. No editor plugin must be enabled. Channel controls depend on `runtime/control.gd`; passive text and rule shapes depend on `runtime/static_content.gd`; projected actions depend on `runtime/action.gd`; composed parts depend on `runtime/composite.gd`; `glyph_catalog.json`; generic anatomy components depend on `runtime/anatomy.gd`; wider presence surfaces (modals, sheets, toasts, coachmarks, tooltips) depend on `runtime/surface.gd`.
 
 This is a comparative semantic pilot with bounded component admission. For interaction controls, `value` is a normalized string channel, `controlled` prevents speculative state commitment, and `value_requested`/`value_changed` expose requests and accepted state. Boolean channels use `"true"` and `"false"`. Use `add_item(key, label, body, disabled)` after attachment for compound content. Add arbitrary content to a Popover's `content` after attachment. The surface is an in-viewport CanvasLayer overlay.
 
@@ -11,6 +11,21 @@ This is a comparative semantic pilot with bounded component admission. For inter
 `DSCard` and `DSBadge` have serialized part hosts. Call `get_part(name)` on the instantiated scene to attach a consumer Control, and set that child's `owner` to the Card root when packing a composed scene. Card exposes `density`, `interactive`, `axis_values` and `token_overrides`; Badge exposes string `content`, `variant`, `intent`, `size_axis`, `axis_values` and `token_overrides`. Badge's `icon` part accepts a consumer Control. Restyling the parent keeps those child nodes and their state. The emitted capability receipts identify omitted styles and props. Badge does not supply a default status glyph.
 
 `DSIcon` renders canonical iconography names. Set `glyph_name` and `size_axis` (`sm`, `md`, `lg`, `xl`), or use `set_contract_prop` with the generated contract prop names. The renderer selects the largest authored grid at or below the requested size, then rasterizes the authored SVG into the contract's size frame. An unknown name clears the texture. `currentColor` paths use the inherited Label foreground. Set `decorative = false` and `aria_label` for an informative icon. The native accessibility name and decorative-hidden flag are projected structurally; screen-reader delivery and parity are unverified.
+
+## Admission set and boundary audit
+
+The registry allowlist matches the Unity target's component set: every corpus contract emits a script, scene, theme and capability receipt. Widening from ten components was a capability slice — a generic anatomy shape, a wider presence-surface shape and a committed support-boundary ledger — not a registry edit.
+
+Admission is structural, not behavioural. Each generated `capabilities.json` names the props it excludes and the semantics it does not realize; the generic anatomy shape emits a loadable part tree with inert declared props (data-driven iteration emits one host, component refs emit an empty host), and the presence-surface runtime implements an open flag and signal only — no backdrop, focus containment, dismissal, anchoring, stacking or timer. Treat every receipt's `omissions` list as the component's actual contract on this target.
+
+Two gates pin the accounting:
+
+```sh
+pnpm run audit:godot-boundary   # ledger totality, receipt totality, inventory drift
+pnpm run write:godot-boundary   # regenerate packages/ds-godot/verification/capability-inventory.json
+```
+
+A planner/ledger disagreement (a shape declining a fact the target lowers elsewhere) is recorded as a shape variance, not swallowed and not fatal. An unadjudicated contract family, a receipt that drops an excluded prop, or a drifted inventory exits non-zero.
 
 ## Generate and verify
 

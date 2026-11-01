@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Skeleton/Skeleton.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Skeleton/theme.tres" id="2"]
+
+[node name="Skeleton" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="stack" type="PanelContainer" parent="."]
+[node name="row" type="PanelContainer" parent="stack"]
+[node name="shape" type="PanelContainer" parent="stack/row"]

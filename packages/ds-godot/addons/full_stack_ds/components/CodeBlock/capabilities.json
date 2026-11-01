@@ -1,0 +1,298 @@
+{
+  "operation": "anatomy",
+  "parts": [
+    "code",
+    "source"
+  ],
+  "contentPart": "code",
+  "styles": [
+    {
+      "source": "tokens",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "box-model.padding",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block-start",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-block"
+        },
+        {
+          "property": "box-model.padding-block-end",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-block"
+        },
+        {
+          "property": "box-model.padding-inline",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline-start",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-inline"
+        },
+        {
+          "property": "box-model.padding-inline-end",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-inline"
+        },
+        {
+          "property": "box-model.gap",
+          "value": "4px",
+          "token": "semantic.display.size.gap"
+        },
+        {
+          "property": "box-model.width",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-width",
+          "value": "0"
+        },
+        {
+          "property": "box-model.max-width",
+          "value": "none"
+        },
+        {
+          "property": "box-model.height",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-height",
+          "value": "0"
+        },
+        {
+          "property": "box-model.max-height",
+          "value": "none"
+        },
+        {
+          "property": "code-block.color.background",
+          "value": "#f7f7f7",
+          "token": "semantic.color.background.secondary"
+        },
+        {
+          "property": "code-block.color.foreground.primary",
+          "value": "#141414",
+          "token": "semantic.color.foreground.primary"
+        },
+        {
+          "property": "code-block.color.border",
+          "value": "#d0d0d0",
+          "token": "semantic.surface.border.subtle"
+        },
+        {
+          "property": "code-block.size.padding",
+          "value": "16px",
+          "token": "core.spacing.size.06"
+        },
+        {
+          "property": "code-block.size.radius",
+          "value": "6px",
+          "token": "semantic.shape.control.radius.default"
+        },
+        {
+          "property": "code-block.size.border",
+          "value": "1px",
+          "token": "semantic.shape.control.border.defaultWidth"
+        },
+        {
+          "property": "code-block.size.fontSize",
+          "value": "0.875rem",
+          "token": "core.typography.ramp.3"
+        },
+        {
+          "property": "code-block.typography.lineHeight",
+          "value": "1.5",
+          "token": "semantic.typography.line.height.body"
+        },
+        {
+          "property": "code-block.token.color.plain",
+          "value": "#141414",
+          "token": "semantic.color.foreground.syntax.plain"
+        },
+        {
+          "property": "code-block.token.color.comment",
+          "value": "#474647",
+          "token": "semantic.color.foreground.syntax.comment.color"
+        },
+        {
+          "property": "code-block.token.color.keyword",
+          "value": "#013ab0",
+          "token": "semantic.color.foreground.syntax.keyword"
+        },
+        {
+          "property": "code-block.token.color.definition",
+          "value": "#900909",
+          "token": "semantic.color.foreground.syntax.definition"
+        },
+        {
+          "property": "code-block.token.color.punctuation",
+          "value": "#013ab0",
+          "token": "semantic.color.foreground.syntax.punctuation"
+        },
+        {
+          "property": "code-block.token.color.property",
+          "value": "#6c3a00",
+          "token": "semantic.color.foreground.syntax.property"
+        },
+        {
+          "property": "code-block.token.color.static",
+          "value": "#900909",
+          "token": "semantic.color.foreground.syntax.static"
+        },
+        {
+          "property": "code-block.token.color.string",
+          "value": "#900909",
+          "token": "semantic.color.foreground.syntax.string"
+        },
+        {
+          "property": "code-block.token.color.tag",
+          "value": "#900909",
+          "token": "semantic.color.foreground.syntax.tag"
+        },
+        {
+          "property": "code-block.gutter.color.number",
+          "value": "#474647",
+          "token": "semantic.color.foreground.secondary"
+        },
+        {
+          "property": "code-block.gutter.size.gap",
+          "value": "4px",
+          "token": "core.spacing.size.03"
+        }
+      ]
+    },
+    {
+      "source": "structure",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "box-model.gap"
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "token": "box-model.min-height"
+        }
+      ]
+    },
+    {
+      "source": "root",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "#f7f7f7",
+          "token": "code-block.color.background",
+          "designSlot": "code-block.design.root.background.fill"
+        },
+        {
+          "property": "border-color",
+          "value": "#d0d0d0",
+          "token": "code-block.color.border",
+          "designSlot": "code-block.design.root.border.color"
+        },
+        {
+          "property": "border-width",
+          "value": "1px",
+          "token": "code-block.size.border",
+          "designSlot": "code-block.design.root.border.width"
+        },
+        {
+          "property": "border-radius",
+          "value": "6px",
+          "token": "code-block.size.radius",
+          "designSlot": "code-block.design.root.shape.radius"
+        },
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "code-block.color.foreground.primary",
+          "designSlot": "code-block.design.root.foreground.color"
+        },
+        {
+          "property": "font-size",
+          "value": "0.875rem",
+          "token": "code-block.size.fontSize",
+          "designSlot": "code-block.design.root.typography.size"
+        }
+      ]
+    }
+  ],
+  "projectedProps": [],
+  "defaults": {
+    "highlight": "true",
+    "showLineNumbers": "false"
+  },
+  "excludedProps": [
+    "code",
+    "language",
+    "highlight",
+    "tokens",
+    "showLineNumbers"
+  ],
+  "omissions": [
+    "root: attribute bindings (data-language, data-line-numbers) not projected natively",
+    "code: attributes (spellcheck) not projected natively",
+    "code: attribute bindings (data-language) not projected natively",
+    "source: render guard (if !children) not lowered; host always emitted",
+    "source: content transform (highlight) not lowered",
+    "structure.padding: host root has no padded panel to inset its children",
+    "structure.padding-block: host root has no padded panel to inset its children",
+    "structure.padding-block-start: no Godot anatomy style mapping",
+    "structure.padding-block-end: no Godot anatomy style mapping",
+    "structure.padding-inline: host root has no padded panel to inset its children",
+    "structure.padding-inline-start: no Godot anatomy style mapping",
+    "structure.padding-inline-end: no Godot anatomy style mapping",
+    "structure.min-width: no Godot anatomy style mapping",
+    "root.border-style: platform web only",
+    "root.font-family: platform web only",
+    "root.line-height: no Godot anatomy style mapping",
+    "root.margin: platform web only",
+    "root.overflow-x: platform web only",
+    "root.padding: host root has no padded panel to inset its children",
+    "root.tab-size: platform web only",
+    "root.white-space: platform web only",
+    "code.display: platform web only",
+    "code.font-family: platform web only",
+    "code.font-size: platform web only",
+    ".code-block__line: selector targets part line with no generated host",
+    ".code-block__gutter: selector targets part gutter with no generated host",
+    ".code-block__gutter::before: selector targets part gutter with no generated host",
+    ".code-block[data-line-numbers=\"true\"] .code-block__gutter: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"plain\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"comment\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"keyword\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"definition\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"punctuation\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"property\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"static\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"string\"]: selector outside normalized native grammar",
+    ".code-block__token[data-token=\"tag\"]: selector outside normalized native grammar",
+    "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
+    "reduced motion: native preference handling unverified",
+    "root clipping: native clipping strategy unverified",
+    "part line: declared but has no dom host; consumer composes it",
+    "part gutter: declared but has no dom host; consumer composes it",
+    "part token: declared but has no dom host; consumer composes it",
+    "code: bound to node content; native text projection unverified",
+    "language: bound to the data-language attribute; native attribute projection unverified",
+    "highlight: declared default is not projected into the generated scene",
+    "tokens: no executable native projection",
+    "showLineNumbers: bound to the data-line-numbers attribute; native attribute projection unverified"
+  ],
+  "theme": "source-bearing anatomy style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

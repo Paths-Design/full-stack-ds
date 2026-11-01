@@ -1,0 +1,6 @@
+[gd_resource type="Theme" format=3]
+
+[resource]
+default_font_size = 16
+Button/colors/font_color = Color(0.2784313725490196, 0.27450980392156865, 0.2784313725490196, 1)
+Label/colors/font_color = Color(0.2784313725490196, 0.27450980392156865, 0.2784313725490196, 1)

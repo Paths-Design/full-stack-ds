@@ -1,0 +1,37 @@
+{
+  "operation": "surface",
+  "anchor": "none",
+  "modality": "non-blocking",
+  "openTriggers": [],
+  "defaults": {
+    "variant": "\"info\"",
+    "politeness": "\"polite\""
+  },
+  "excludedProps": [
+    "title",
+    "variant",
+    "politeness",
+    "duration"
+  ],
+  "omissions": [
+    "modality: non-blocking surface input isolation and modality state have no native mapping",
+    "dismissal: escape, close-button and timeout closing unlowered",
+    "dismissal: userDismiss trigger has no native handler",
+    "stacking: overlay order and host layer unverified; declared popover layering, body mount target not projected",
+    "positioning: viewport-edge placement unlowered",
+    "transience: toast auto-dismiss timer unlowered (duration prop)",
+    "content: the item subtree is not projected into a native scene; consumers mount surface content",
+    "anatomy: 3 compound parts (item, title and description) have no native hosts",
+    "focus: declared none focus strategy has no native focus policy",
+    "a11y: the region role has no native accessibility projection",
+    "a11y: aria-label, aria-live and aria-labelledby labeling has no native accessibility projection",
+    "a11y: aria-label (message binding), aria-live (politeness prop) and aria-hidden (static) attributes are not projected",
+    "title: no executable native surface realization",
+    "variant: no executable native surface realization",
+    "politeness: no executable native surface realization",
+    "duration: no executable native surface realization"
+  ],
+  "theme": "source-bearing surface style subset",
+  "otherStyling": "unmapped declarations and selectors are named in omissions; overlay stacking is not CSS layout parity",
+  "proof": "requires-runtime-witness"
+}

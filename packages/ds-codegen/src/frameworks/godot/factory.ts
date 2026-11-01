@@ -7,6 +7,11 @@ import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
 import { godotActionPlan } from "./action-plan.js";
+import { classifyProp, loadBoundary } from "./boundary.js";
+import { anatomyFiles, surfaceFiles } from "./plan-emission.js";
+import { godotSurfacePlan } from "./surface-plan.js";
+import { godotAnatomyPlan } from "./walker.js";
+import type { GodotAnatomyPlan, GodotSurfacePlan } from "./plan-types.js";
 import { godotCompositePlan } from "./composite-plan.js";
 import { godotGlyphPlan } from "./glyph-plan.js";
 import { godotGlyphCatalog } from "./glyph-catalog.js";
@@ -72,13 +77,16 @@ function staticPlan(ir: ComponentIR) {
   const bindingKeys = Object.keys(root.bindings);
   const truncateBinding = root.bindings["data-truncate"];
   const supportedTruncate = truncateBinding?.kind === "conditional" && truncateBinding.condition.kind === "prop" && truncateBinding.condition.prop === "truncate" && truncateBinding.whenTrue.kind === "literal" && truncateBinding.whenTrue.value === "true" && truncateBinding.whenFalse.kind === "literal" && truncateBinding.whenFalse.value === "false";
-  if (root.part !== "root" || hasUnloweredStaticNodeFacts(root) || (isText ? (bindingKeys.length !== 1 || !supportedTruncate || !child || hasUnloweredStaticNodeFacts(child) || Object.keys(child.bindings).length || child.children.length) : bindingKeys.length)) throw new Error(`GODOT_UNSUPPORTED_STATIC_ANATOMY: ${ir.name}`);
+  // The narrow static shape is a single text leaf or a bare rule. Anything else
+  // declines so the generic anatomy path can lower it with named omissions,
+  // rather than refusing a component the corpus declares.
+  if (root.part !== "root" || hasUnloweredStaticNodeFacts(root) || (isText ? (bindingKeys.length !== 1 || !supportedTruncate || !child || hasUnloweredStaticNodeFacts(child) || Object.keys(child.bindings).length || child.children.length) : bindingKeys.length)) return undefined;
   const allowed = isRule ? ruleProps : staticTextProps;
   const allowedStyles = isRule ? ruleStyleProperties : textStyleProperties;
-  for (const prop of ir.styledProps) if (!allowed.has(prop.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${prop.name}`);
+  for (const prop of ir.styledProps) if (!allowed.has(prop.name)) return undefined;
   const rules = ir.nativeStyleRules?.rules ?? [];
   const styleRules = rules.filter(rule => rule.sourceKey !== "tokens" && rule.sourceKey !== "structure");
-  if (styleRules.some(rule => rule.part !== "root" || rule.pseudo || rule.predicates.some(predicate => predicate.kind !== "variant"))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}`);
+  if (styleRules.some(rule => rule.part !== "root" || rule.pseudo || rule.predicates.some(predicate => predicate.kind !== "variant"))) return undefined;
   const tokenValues = new Map(ir.tokenFacts.map(fact => [fact.name, fact.rawValue]));
   const styles = styleRules.map(rule => {
     const localTokens = new Map(rule.declarations.filter(decl => decl.property.includes(".")).map(decl => [decl.property, decl.value]));
@@ -89,9 +97,9 @@ function staticPlan(ir: ComponentIR) {
     };
   }).filter(rule => rule.declarations.length);
   const unsupported = styleRules.flatMap(rule => rule.declarations.filter(decl => !decl.property.includes(".") && !decl.platforms && !allowedStyles.has(decl.property)).map(decl => `${rule.sourceKey}.${decl.property}`));
-  if (unsupported.length) throw new Error(`GODOT_UNSUPPORTED_STATIC_STYLE: ${ir.name}.${unsupported.join(",")}`);
+  if (unsupported.length) return undefined;
   const excludedSelectors = ir.nativeStyleRules?.unsupported.map(rule => rule.sourceKey) ?? [];
-  if (excludedSelectors.length && !(isText && excludedSelectors.every(selector => selector === `.${ir.cssPrefix}[data-truncate="true"]`))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}.${excludedSelectors.join(",")}`);
+  if (excludedSelectors.length && !(isText && excludedSelectors.every(selector => selector === `.${ir.cssPrefix}[data-truncate="true"]`))) return undefined;
   // Source fact: static content/rule anatomy plus native style declarations.
   // Applies by: passive shape. Remove each gap when its native consumer exists.
   const fidelityGaps = isText ? [
@@ -107,6 +115,31 @@ function staticPlan(ir: ComponentIR) {
   ];
   return { operation: isRule ? "rule" : "static-text", excluded: isText ? ["as"] : ["decorative"], fidelityGaps, styles };
 }
+/**
+ * Props this bounded shape declines. A decline is a ledgered decision, read from
+ * the committed support boundary, never a silent drop: the receipt names the
+ * rule and the reason. A fact the boundary says this target lowers cannot be
+ * excluded here — that would be a planner/ledger disagreement, so it fails
+ * generation instead of shipping a receipt the ledger contradicts.
+ */
+function propBoundary(ir: ComponentIR): { excluded: string[]; omissions: string[] } {
+  const boundary = loadBoundary();
+  const excludedProps: string[] = [];
+  const omissions: string[] = [];
+  for (const prop of ir.styledProps) {
+    if (handled.has(prop.name) || excluded.has(prop.name)) continue;
+    const classified = classifyProp(boundary, prop.name);
+    if (classified.catchAll) throw new Error(`GODOT_UNCLASSIFIED_PROP: ${ir.name}.${prop.name}`);
+    // A shape may legitimately decline a fact the target lowers somewhere else
+    // (the ledger is per-target, the plan is per-shape). The decline is receipted
+    // with its rule; the capability audit records the planner/ledger variance
+    // for review instead of treating it as a silent drop.
+    excludedProps.push(prop.name);
+    omissions.push(`${prop.name}: ${classified.reason ?? classified.disposition} (boundary ${classified.rule})`);
+  }
+  return { excluded: excludedProps, omissions };
+}
+
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
   const glyph = godotGlyphPlan(ir);
@@ -117,7 +150,33 @@ export function godotPlan(ir: ComponentIR) {
   if (action) return action;
   const staticContent = staticPlan(ir);
   if (staticContent) return staticContent;
-  for (const p of ir.styledProps) if (!handled.has(p.name) && !excluded.has(p.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${p.name}`);
+  // A wider surface dispatches ahead of the generic shape so an overlay keeps
+  // its presence semantics instead of being lowered as anonymous content. The
+  // narrow part-anchored non-blocking click surface declines here and continues
+  // on the control path below.
+  if (ir.surface) {
+    const wideSurface = godotSurfacePlan(ir);
+    if (wideSurface) return wideSurface;
+  }
+  // Generic anatomy is the fallback that lets the corpus-wide admission set be
+  // emitted: it lowers arbitrary part trees and names every fact it cannot
+  // represent in the receipt rather than refusing the component.
+  const anatomy = godotAnatomyPlan(ir);
+  if (anatomy) {
+    // The generic shape is the one place that could swallow anything, so its
+    // exclusions are checked against the boundary on the way out: a family the
+    // boundary never adjudicated, or one it says this target lowers, must not
+    // become an anonymous exclusion.
+    const boundary = loadBoundary();
+    for (const name of anatomy.excluded) {
+      const classified = classifyProp(boundary, name);
+      if (classified.catchAll) throw new Error(`GODOT_UNCLASSIFIED_PROP: ${ir.name}.${name}`);
+    }
+    return anatomy;
+  }
+  // Shape first, then the prop boundary: a component the shape cannot represent
+  // is a shape refusal, while a component the shape does represent must account
+  // for every prop the boundary says this target lowers.
   let operation: string;
   if (ir.surface) {
     if (!isPartAnchoredSurface(ir.surface) || ir.surface.modality !== "non-blocking" || ir.surface.openTriggers.join() !== "click") throw new Error(`GODOT_UNSUPPORTED_SURFACE: ${ir.name}`);
@@ -125,10 +184,13 @@ export function godotPlan(ir: ComponentIR) {
   } else if (ir.formControl?.valueModel === "boolean") operation = "boolean";
   else if (ir.interaction?.triggers.length === 1 && ["select","toggle-item"].includes(ir.interaction.triggers[0]!.operation)) operation = ir.interaction.triggers[0]!.operation;
   else throw new Error(`GODOT_UNSUPPORTED_SHAPE: ${ir.name}`);
+  const boundary = propBoundary(ir);
   const realized = new Set(["checked", "open", "value", "disabled", "collapsible", "onChange", "onValueChange", "onOpenChange"]);
   const refs = itemButtonRefs(ir);
   if (refs.length && !["select", "toggle-item"].includes(operation)) throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} has no item button host`);
-  return { operation, excluded: ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p=>p.name), ...(refs.length ? { itemButtonRefs: refs } : {}) };
+  const excludedProps = ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p => p.name);
+  for (const name of boundary.excluded) if (!excludedProps.includes(name)) excludedProps.push(name);
+  return { operation, excluded: excludedProps, ...(boundary.omissions.length ? { omissions: boundary.omissions } : {}), ...(refs.length ? { itemButtonRefs: refs } : {}) };
 }
 /** Source fact: normalized sequence, channel and label bindings.
  * Applies by: numeric sequence capability. Removable when: its IR is retired.
@@ -182,12 +244,23 @@ export function themeColor(ir: ComponentIR): string {
   }
   return "#141414";
 }
+/** Declared default expressions by prop name, for the runtime configuration. */
+function declaredDefaults(ir: ComponentIR): Record<string, string> {
+  return Object.fromEntries(ir.styledProps
+    .filter((prop): prop is typeof prop & { defaultExpr: string } => prop.defaultExpr !== undefined)
+    .map(prop => [prop.name, prop.defaultExpr]));
+}
+
 export function createGodotEmitter(): FrameworkEmitter {
   return {
     id: "godot",
     discoverComponentIds: root => fs.existsSync(root) ? fs.readdirSync(root).filter(n => fs.existsSync(path.join(root,n,`${n}.gd`))).sort() : [],
     emitComponent(ir, opts) {
       const plan = godotPlan(ir);
+      if (plan.operation === "surface" && "anchor" in plan)
+        return surfaceFiles(ir, plan as GodotSurfacePlan, themeColor(ir), declaredDefaults(ir));
+      if (plan.operation === "anatomy")
+        return anatomyFiles(ir, plan as GodotAnatomyPlan, themeColor(ir), declaredDefaults(ir));
       const controlRefs = "itemButtonRefs" in plan ? plan.itemButtonRefs ?? [] : [];
       if (controlRefs.length) {
         const workspaceRoot = opts.contractsRoot ? path.resolve(opts.contractsRoot, "../..") : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../..");
