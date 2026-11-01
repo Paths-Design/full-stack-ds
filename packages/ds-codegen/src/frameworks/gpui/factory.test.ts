@@ -136,7 +136,7 @@ describe("GPUI native style and control lowering", () => {
     const ir = buildComponentIR(fixture('Chip'), { allContracts: corpus });
     const files = emitter.emitComponent(ir, options);
     const source = files[0]!.contents;
-    const receipt = JSON.parse(files[1]!.contents) as { operation: string; refs: Array<{ field: string; refType: string; projectedAttrs: string[]; omissions: Array<{ kind: string }> }> };
+    const receipt = JSON.parse(files[1]!.contents) as { operation: string; refs: Array<{ field: string; refType: string; projectedAttrs: string[]; dynamicProps: string[]; omissions: Array<{ kind: string; reason: string }> }> };
     // One retained entity per reference, created once and rendered in the tree.
     expect(receipt.refs).toHaveLength(2);
     expect(receipt.refs.map(ref => ref.refType)).toEqual(['Button', 'Button']);
@@ -149,6 +149,13 @@ describe("GPUI native style and control lowering", () => {
     expect(receipt.refs[0]!.projectedAttrs).toContain('variant');
     expect(receipt.refs[0]!.omissions.some(omission => omission.kind === 'ref-binding')).toBe(true);
     expect(receipt.refs.some(ref => ref.omissions.some(omission => omission.kind === 'ref-event'))).toBe(true);
+    // Realized parent props update the child through its setters each render.
+    expect(receipt.refs[0]!.dynamicProps).toContain('disabled');
+    expect(source).toContain('.update(cx,|child,cx|{child.set_disabled(');
+    // Paged/channel expressions have no parent-state lowering and stay omissions.
+    const pageNavigator = emitter.emitComponent(buildComponentIR(fixture('PageNavigator'), { allContracts: corpus }), options);
+    const pageReceipt = JSON.parse(pageNavigator[1]!.contents) as { refs: Array<{ omissions: Array<{ kind: string; reason: string }> }> };
+    expect(pageReceipt.refs.some(ref => ref.omissions.some(omission => omission.kind === 'ref-binding' && omission.reason.includes("'paged'")))).toBe(true);
     // A component without references keeps the pre-slice output shape.
     const plain = emitter.emitComponent(buildComponentIR(fixture('Text')), options)[0]!.contents;
     expect(plain).not.toContain('Entity<crate::components::');
