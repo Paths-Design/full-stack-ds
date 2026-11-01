@@ -60,3 +60,7 @@ evidence:
     recorded_at: "2026-11-01T07:57:49.943Z"
     command: node scripts/game-pause-token-consumption.mjs
     exit_code: 0
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/game-pause-menu/unity/README.md + token-channel-ledger.md now state 'ledgered migration started, not a completed token-channel migration': 318 -> 315 direct inline assignments, Card token channel only, badge/button/design-slot consumers unsupported"
+    recorded_at: "2026-11-01T07:57:54.243Z"
