@@ -52,3 +52,10 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/web-consistency-baseline.json
     commit_sha: f12a60839
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "falsified manually: deleting Dialog's retained Entity field made --check exit 1 with 'Dialog/gpui: refs regressed 1 -> 0'; restoring the field returned PASS. The self-test independently proves the regression, stale-entry and removed-entry detections fire for the generic dimension loop"
+    recorded_at: "2026-11-01T10:56:12.119Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    artifact_path: scripts/gpui-web-consistency-audit.mjs
+    commit_sha: f12a60839
