@@ -27,6 +27,13 @@ function fixture(tag = "a", callback = true, staticHref?: string): ComponentCont
 }
 
 describe("disabled anchor host facts", () => {
+  it("lowers optional native anchor metadata as removable attributes", () => {
+    const code = generateAngularComponentSource(buildComponentIR(fixture()));
+    expect(code).toContain('[attr.target]="target"');
+    expect(code).toContain('[attr.rel]="rel"');
+    expect(code).not.toContain('[target]="target"');
+    expect(code).not.toContain('[rel]="rel"');
+  });
   it("derives availability from an authored binding while retaining the destination binding", () => {
     const ir = buildComponentIR(fixture());
     expect(ir.dom?.disabledActivation).toEqual({ disabled: { kind: "prop", prop: "unavailable" } });

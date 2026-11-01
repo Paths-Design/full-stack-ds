@@ -3428,6 +3428,9 @@ function renderAngularDomNode(
 // per-tag attribute set; entries here are derived from real DOM-IDL
 // facts, not from "tests are failing".
 const ANGULAR_ATTR_BINDING_OVERRIDES_BY_TAG: Record<string, ReadonlySet<string>> = {
+  // DOMString navigation setters stringify undefined. Optional metadata must
+  // remove its attribute so the document's ordinary navigation policy applies.
+  a: new Set(["target", "rel"]),
   label: new Set(["form"]),
   // HTMLImageElement's unsigned-long setters turn undefined into zero.
   // Attribute binding removes an unset dimension so intrinsic sizing survives.

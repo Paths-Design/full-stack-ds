@@ -42,6 +42,7 @@ function App() {
       React.createElement("button", { id: "before-link" }, "Before link"),
       React.createElement(Links, { href: "#packed-destination", target: "_self", rel: "noopener noreferrer", disabled: linkDisabled, onClick: activateLink }, React.createElement("span", { id: "link-child" }, "الانتقال إلى الطلبات — Prêt")),
       React.createElement("div", { id: "initial-disabled-link" }, React.createElement(Links, { href: "#initial-disabled", disabled: true, onClick: activateLink }, "Indisponible")),
+      React.createElement("div", { id: "ordinary-link" }, React.createElement(Links, { href: "#packed-ordinary" }, "Même page")),
       React.createElement("div", { id: "blank-link" }, React.createElement(Links, { href: "#packed-new-target", target: "_blank", rel: "noopener noreferrer" }, "Nouvel onglet"))),
     React.createElement("button", { id: "responsive-default", onClick: () => setResponsive(undefined) }, "Default viewport"),
     React.createElement("button", { id: "responsive-true", onClick: () => setResponsive(true) }, "Enable viewport"),
@@ -93,6 +94,7 @@ createApp({ setup() {
       h("button", { id: "before-link" }, "Before link"),
       h(Links, { href: "#packed-destination", target: "_self", rel: "noopener noreferrer", disabled: linkDisabled.value, onClick: activateLink }, { default: () => h("span", { id: "link-child" }, "الانتقال إلى الطلبات — Prêt") }),
       h("div", { id: "initial-disabled-link" }, [h(Links, { href: "#initial-disabled", disabled: true, onClick: activateLink }, { default: () => "Indisponible" })]),
+      h("div", { id: "ordinary-link" }, [h(Links, { href: "#packed-ordinary" }, { default: () => "Même page" })]),
       h("div", { id: "blank-link" }, [h(Links, { href: "#packed-new-target", target: "_blank", rel: "noopener noreferrer" }, { default: () => "Nouvel onglet" })]),
     ]),
     h("button", { id: "responsive-default", onClick: () => { responsive.value = undefined; } }, "Default viewport"),
@@ -148,6 +150,7 @@ const svelteApp = `<script lang="ts">
     <button id="before-link">Before link</button>
     <Links href="#packed-destination" target="_self" rel="noopener noreferrer" disabled={linkDisabled} onClick={activateLink}><span id="link-child">الانتقال إلى الطلبات — Prêt</span></Links>
     <div id="initial-disabled-link"><Links href="#initial-disabled" disabled={true} onClick={activateLink}>Indisponible</Links></div>
+    <div id="ordinary-link"><Links href="#packed-ordinary">Même page</Links></div>
     <div id="blank-link"><Links href="#packed-new-target" target="_blank" rel="noopener noreferrer">Nouvel onglet</Links></div>
   </section>
   <button id="responsive-default" onclick={() => { responsive = undefined; }}>Default viewport</button>
@@ -190,6 +193,7 @@ import { ButtonComponent, IconComponent, LinksComponent, type LinkActivationEven
       <button id="before-link">Before link</button>
       <fsds-links href="#packed-destination" target="_self" rel="noopener noreferrer" [disabled]="linkDisabled()" [onClick]="activateLink"><span id="link-child">الانتقال إلى الطلبات — Prêt</span></fsds-links>
       <div id="initial-disabled-link"><fsds-links href="#initial-disabled" [disabled]="true" [onClick]="activateLink">Indisponible</fsds-links></div>
+      <div id="ordinary-link"><fsds-links href="#packed-ordinary">Même page</fsds-links></div>
       <div id="blank-link"><fsds-links href="#packed-new-target" target="_blank" rel="noopener noreferrer">Nouvel onglet</fsds-links></div>
     </section>
     <button id="responsive-default" (click)="responsive.set(undefined)">Default viewport</button>
@@ -281,6 +285,11 @@ initialDisabled.id = "initial-disabled-link";
 const unavailableLink = new LinksElement();
 Object.assign(unavailableLink, { href: "#initial-disabled", disabled: true, onClick: activateLink, textContent: "Indisponible" });
 initialDisabled.append(unavailableLink);
+const ordinary = document.createElement("div");
+ordinary.id = "ordinary-link";
+const ordinaryLink = new LinksElement();
+Object.assign(ordinaryLink, { href: "#packed-ordinary", textContent: "Même page" });
+ordinary.append(ordinaryLink);
 const blank = document.createElement("div");
 blank.id = "blank-link";
 const blankLink = new LinksElement();
@@ -293,7 +302,7 @@ const linkControls = ([
 ] as const).map(([id, text, activate]) => {
   const control = document.createElement("button"); control.id = id; control.textContent = text; control.onclick = activate; return control;
 });
-linkConsumer.append(linkControls[0], linkControls[1], linkOutput, linkControls[2], link, initialDisabled, blank);
+linkConsumer.append(linkControls[0], linkControls[1], linkOutput, linkControls[2], link, initialDisabled, ordinary, blank);
 document.getElementById("app")!.append(linkConsumer);
 const table = new TableElement();
 table.ariaLabel = "Packed table";
@@ -498,6 +507,8 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         assert.equal(observation.links.initialDisabled.disabled, "true");
         assert.equal(observation.links.initialDisabled.role, "link");
         assert.equal(observation.links.initialDisabled.tabIndex, 0);
+        assert.equal(observation.links.initialDisabled.target, null);
+        assert.equal(observation.links.initialDisabled.rel, null);
         await pointerActivateDisabled(initialDisabledLink);
         await initialDisabledLink.focus();
         await page.keyboard.press("Enter");
@@ -505,6 +516,18 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         assert.deepEqual(await linkEvents(), [], framework + ": initially disabled pointer and Enter must not invoke the consumer");
         assert.equal(await linkHash(), "", framework + ": initially disabled pointer and Enter must not navigate");
         Object.assign(observation.links.initialDisabled, { callbackCount: 0, hash: await linkHash() });
+        const ordinaryLink = page.locator("#ordinary-link").getByRole("link", { name: "Même page", exact: true });
+        observation.links.ordinary = await ordinaryLink.evaluate(linkFacts);
+        assert.equal(observation.links.ordinary.href, "#packed-ordinary");
+        assert.equal(observation.links.ordinary.target, null);
+        assert.equal(observation.links.ordinary.rel, null);
+        const pageCount = page.context().pages().length;
+        await ordinaryLink.click();
+        await expect.poll(linkHash).toBe("#packed-ordinary");
+        await settleLinkInput();
+        assert.equal(page.context().pages().length, pageCount, framework + ": omitted target must navigate the same page without opening a named window");
+        Object.assign(observation.links.ordinary, { hash: await linkHash(), openedPages: page.context().pages().length - pageCount });
+        await clearLinkHash();
         const blankLink = page.locator("#blank-link").getByRole("link", { name: "Nouvel onglet", exact: true });
         observation.links.newTarget = await blankLink.evaluate(linkFacts);
         assert.equal(observation.links.newTarget.href, "#packed-new-target");

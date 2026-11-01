@@ -24,7 +24,7 @@ export type LinkActivationEvent = { readonly defaultPrevented: boolean; preventD
   standalone: true,
   imports: [NgClass],
   host: { "data-fsds-component": "links" },
-  template: `<a [ngClass]="classes()" role="link" tabindex="0" (click)="canActivateInteraction($event, false, isActivationDisabled(disabled)) && (onClick)?.($event)" [attr.href]="isActivationDisabled(disabled) ? null : href" [target]="target" [rel]="rel" [attr.aria-disabled]="disabled" data-fsds-box="">
+  template: `<a [ngClass]="classes()" role="link" tabindex="0" (click)="canActivateInteraction($event, false, isActivationDisabled(disabled)) && (onClick)?.($event)" [attr.href]="isActivationDisabled(disabled) ? null : href" [attr.target]="target" [attr.rel]="rel" [attr.aria-disabled]="disabled" data-fsds-box="">
   <ng-content />
 </a>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
