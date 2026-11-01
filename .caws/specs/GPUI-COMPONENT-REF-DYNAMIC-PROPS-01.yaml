@@ -1,0 +1,48 @@
+id: GPUI-COMPONENT-REF-DYNAMIC-PROPS-01
+title: 'GPUI projects dynamic child prop bindings onto retained reference children'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-01T10:41:07.379Z'
+updated_at: '2026-11-01T10:41:07.379Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI reference dynamic props: parent-state-driven child setters, receipted unprojectable expressions, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only expressions whose parent state is realized and whose child setter exists are projected; every other binding stays a named omission'
+  - 'Static-props-only children keep their previous output except for the added update calls when a projectable binding exists'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a componentRef binding whose expression is a realized parent prop or a literal; when generate --target=gpui runs; then the retained child is updated through its generated setter each render'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given paged/channel/valueMap/message expressions; when the projection runs; then they remain named ref-binding omissions with their reason'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the generated crate; when the native lane runs; then compilation, the 55 mount witnesses and the interaction witnesses pass'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI props coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-ref-dynamic-props'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
