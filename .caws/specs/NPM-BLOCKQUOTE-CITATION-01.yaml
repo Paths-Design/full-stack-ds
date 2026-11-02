@@ -96,3 +96,10 @@ evidence:
     command: "VITEST_MAX_THREADS=2 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=2 VITEST_MIN_FORKS=1 pnpm test"
     exit_code: 0
     commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Final78123c683 merged a7b57041c with clean source identity; root-final.log shows2675+3065=5740 pass with bounded supported worker settings and no RPC errors, codegen-types-final.log exit0. All other full gates/frameworks/types/lint/build/rail/tokens/docs/ledgers/native-boundary/generated/policy pass in checks/ead9a10c7-DoE9ab/receipt.json; subsequent delta only Godot walker test expectation, no emitter material source or package/harness delta. Packed all8/browser25stages/types/Metro pass at source-identical180593234 in packed-full.log and runs/fsds-release-packages-Z6eQry/. Original failures retained, not overwritten. Independent same-provider read-only review plus targeted Godot follow-up grounded against source; no unaddressed scoped finding. Overall component/native/min-peer/AT/auth qualification and ledgered variant findings remain parent obligations; no publication or push."
+    recorded_at: "2026-11-02T00:27:37.778Z"
+    command: "VITEST_MAX_THREADS=2 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=2 VITEST_MIN_FORKS=1 pnpm test"
+    exit_code: 0
+    commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
