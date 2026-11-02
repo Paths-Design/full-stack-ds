@@ -73,3 +73,10 @@ evidence:
     command: pnpm exec playwright test --config /Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/lit-inherited-tokens/scripts/lit-token-inheritance-consumer/playwright.config.ts
     exit_code: 0
     commit_sha: "3600da7a3178d82f0aeca1dbda4b16fda6a72ab7"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Directly inspected checks/3600da7a3-02kdcu/receipt.json clean Node22.19 plus raw logs: pack/public types/5web/Metro ios+android/module identity/watch, rail, both root shards without RPC errors, frameworks, types, lint, build, token gates, icon ledger, realization/engine audits, generated and policy pass. Sole failed doc freshness repaired in documentation-only9add0558d; source/scripts/e2e delta empty; final-doc-claims.log and final-policy.log exit0. Raw runs/fsds-release-packages-1NSE5g retained. This is bounded Lit inheritance proof, no OS/native-device/AT/minimum-peer/full release or publication claim. CLI verifies commit existence only."
+    recorded_at: "2026-11-02T19:49:06.013Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "9add0558d394909430724284b13fbc513f042fa6"
