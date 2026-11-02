@@ -89,3 +89,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Native optional cite string API and emitted IntelliSense note remain; no citation consumption unless a source prop is independently used by a native guard (renamed sourceDocument regressions). Unity root metadata omission still refuses title/href and emits unchanged C#; exact citation boundary rules retain Unity/Godot refused and GPUI pending. Focused161 cases pass. Generated Godot inventory refreshed through write:godot-boundary; planner still excludes cite and now names both unprojected root attribute and bound-source omission. New Godot expectation grounded in unchanged planner/runtime and peer source inspection; full root5740 plus all three native boundary audits pass. Native citation rendering remains unimplemented and documented."
+    recorded_at: "2026-11-02T00:27:36.955Z"
+    command: "VITEST_MAX_THREADS=2 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=2 VITEST_MIN_FORKS=1 pnpm test"
+    exit_code: 0
+    commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
