@@ -46,3 +46,11 @@ contracts:
   - name: 'markdown-link-protocols'
     type: behavior
     path: 'packages/ds-codegen/src/markdown/markdown.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected canonical sanitizer and exact document-tree assertions at201379305;64 focused tests and full root suite pass. Actual target admission trims C0 edges/removes ASCII tab-LF-CR before scheme allowlist; unsafe schemes become href:null, allowed relative/query/fragment/http/https/mailto preserved. Declared document paragraph/quote softwrap grammar first converts line breaks to spaces: resulting relative URLs stay relative; direct inline newline schemes are rejected. See document-boundary-unit-network.log and checks/201379305-lcsyG1/root.log under canonical spec release evidence. Commit verification establishes existence only."
+    recorded_at: "2026-11-02T22:22:56.538Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: "201379305e2caf785e5337e1b9cb0a1ab4dd0113"
