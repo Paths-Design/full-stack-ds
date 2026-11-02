@@ -1,0 +1,50 @@
+id: NPM-LIT-INHERITED-TOKENS-01
+title: 'Preserve inherited component token overrides in Lit shadow styles'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-02T05:42:24.178Z'
+updated_at: '2026-11-02T05:42:24.178Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Lit component token default realization and installed Card and Button consumers'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen'
+    - 'packages/ds-lit/src'
+    - 'scripts/lit-token-inheritance-consumer'
+    - 'e2e/lit-token-inheritance.spec.ts'
+    - 'docs/architecture'
+    - 'docs/codegen-authority.md'
+  out: []
+invariants:
+  - 'Public component token overrides inherit and local deliberate state or variant overrides remain effective; defaults preserve reference and literal fallback semantics'
+  - 'Derive lowering from normalized token and CSS facts without component-name dispatch or hand edits to generated component regions'
+acceptance:
+  - id: A1
+    given: 'installed Lit Card under default and explicit brand scopes'
+    when: 'density and ancestor or host public token overrides change and clear'
+    then: 'rendered padding follows the inherited public value and agrees with the authored brand decision'
+  - id: A2
+    given: 'component token aliases core references and absent optional token CSS'
+    when: 'public values are absent supplied or invalid and local state or modifier declarations apply'
+    then: 'fallback chains and explicit local overrides retain their intended CSS validity and precedence without cycles'
+  - id: A3
+    given: 'nested Cards and representative inspected Button consumers'
+    when: 'inherited local and cleared token overrides and variants render in a browser'
+    then: 'concrete computed values demonstrate correct scope and other web control targets retain their behavior'
+  - id: A4
+    given: 'the generated Lit package and release tarballs'
+    when: 'packed consumer public type generation regression and audit checks execute'
+    then: 'source-bound artifacts pass with explicit browser and native proof boundaries'
+observability:
+  - 'Retain the 12px inherited versus 8px rendered packed Card failure and 31px ignored host override; preserve corrective DOM style geometry screenshot and raw gate artifacts'
+rollback:
+  - 'Revert the Lit default realization and regenerate Lit components'
+non_functional: {}
+contracts:
+  - name: 'lit-public-token-inheritance'
+    type: behavior
+    path: 'packages/ds-codegen/src/css.ts'
