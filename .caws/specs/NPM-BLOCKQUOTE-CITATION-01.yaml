@@ -1,9 +1,11 @@
 id: NPM-BLOCKQUOTE-CITATION-01
 title: 'Carry Blockquote source URLs to rendered web citation metadata'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Citation URL metadata and omission work across five web frameworks with native limitations explicit; all8 packed consumers,25 browser stages,5740 root tests and scoped gates pass with grounded independent review; overall component and native release qualification remains open.'
 created_at: '2026-11-01T23:18:54.561Z'
-updated_at: '2026-11-02T00:11:08.553Z'
+updated_at: '2026-11-02T00:31:28.423Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
