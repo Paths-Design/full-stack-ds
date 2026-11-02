@@ -4,10 +4,11 @@ authority: architecture
 status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
-updated: 2026-10-27
-verified_at_commit: 4612d2e31
+updated: 2026-11-01
+verified_at_commit: 0ea69e1889d166c09a72ec2e49ba03560ebe02bc
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
+  - packages/ds-codegen/src/lit-token-fallbacks.ts
   - packages/ds-codegen/src/validation/component-token-consumption.ts
   - packages/ds-codegen/src/frameworks/native-token-consumption.ts
   - packages/ds-codegen/src/frameworks/react-native/token-consumption.ts
@@ -23,6 +24,23 @@ Component-scoped tokens are an executable interface. A declared address must rea
 `audit:dead-slots` additionally reads the emitted CSS for every Web target and checks native dictionaries against their actual emitted lookups. It rejects a missing expected property consumer, an unconsumed emitted declaration, or a cycle. Missing artifacts fail the audit. Its report lives in ignored `tmp/component-token-consumption/`; there is no committed findings baseline to expand.
 
 Web token sheets and Lit inline styles contain only the used declaration closure. Public `design.*` override addresses remain unset and are consumed at the property, retaining the authored fallback chain. Shared box-model defaults remain at consumers, including variant and part defaults. Variant defaults previously occupied side override variables and defeated a consumer's axis/shorthand override; property fallbacks now preserve the shared layer precedence. No per-component reset pool is emitted.
+
+Lit shadow styles place consumed component root defaults in private `--_fsds-*`
+properties. Each property or alias reads its public `--fsds-*` address first,
+then the private default, then its authored fallback. This lets brand, ancestor
+and host values inherit into the shadow tree without a local default masking
+them. Core references retain their fallback when the optional global token sheet
+is absent. The default inventory comes from normalized consumed Web CSS; native
+token projection does not determine which Web addresses exist.
+
+Deliberate part, state and modifier declarations retain their public property
+names and ordinary cascade precedence. Explicit CSS-wide reset declarations
+also retain their identity. A present value that is invalid for its consuming
+property does not select a `var()` fallback. Aliases resolve where declared:
+a same-element base override can change an alias default, while a descendant-only
+base override cannot recompute an inherited alias. A public alias override at the
+descendant remains effective. Entry styles stay inside `@starting-style` rather
+than entering the resting declaration groups.
 
 Native output is projected independently. React Native token dictionaries follow actual typed `tokens.<scope>[name]` reads; Compose follows its emitted `layeredSlot` calls and axis branches plus direct per-component `<Name>TokenScopes[scope]?.get(name)` reads resolved through `fsdsTheme.resolve(...)`; SwiftUI follows emitted color and dimension suffix lookups. Direct Compose reads retain only the addressed scope. Compose's resolver reads reference values from the theme map, so a reference does not justify copying another component-table definition. The registry allowlists govern which explicit native targets may establish a source consumer. Figma descriptors carry contract metadata, not proof of live Figma controls.
 
