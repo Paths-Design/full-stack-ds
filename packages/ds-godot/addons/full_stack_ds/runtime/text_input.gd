@@ -12,6 +12,8 @@ var _default := ""
 var _assigned := false
 var _syncing := false
 var _invalid := false
+var _required := false
+var _labelledby: Variant = null
 
 func _ready() -> void:
 	_current = text
@@ -33,10 +35,20 @@ func set_contract_prop(prop: String, value: Variant) -> bool:
 		placeholder_text = str(value)
 	elif prop == form.get("disabledProp", ""):
 		editable = not bool(value)
+		focus_mode = Control.FOCUS_NONE if not editable else Control.FOCUS_ALL
+		if not editable and has_focus():
+			release_focus()
 		_apply_colors()
 	elif prop == form.get("invalidProp", ""):
 		_invalid = bool(value)
+		set_meta("aria_invalid", _invalid)
 		_apply_colors()
+	elif prop == form.get("requiredProp", ""):
+		_required = bool(value)
+		set_meta("aria_required", _required)
+	elif prop == form.get("ariaLabelledbyProp", ""):
+		_labelledby = value
+		_wire_label_relation(value)
 	else:
 		return false
 	return true
@@ -53,7 +65,23 @@ func get_contract_prop(prop: String) -> Variant:
 		return not editable
 	if prop == form.get("invalidProp", ""):
 		return _invalid
+	if prop == form.get("requiredProp", ""):
+		return _required
+	if prop == form.get("ariaLabelledbyProp", ""):
+		return _labelledby
 	return null
+
+func _wire_label_relation(value: Variant) -> void:
+	var target: Node = null
+	if value is Node: target = value
+	elif value is NodePath: target = get_node_or_null(value)
+	elif value is String and not value.is_empty(): target = get_node_or_null(NodePath(value))
+	if not (target is Control):
+		return
+	var labelled: Array[NodePath] = accessibility_labeled_by_nodes.duplicate()
+	var target_path := target.get_path()
+	if not labelled.has(target_path): labelled.append(target_path)
+	accessibility_labeled_by_nodes = labelled
 
 func set_value_without_notify(next: String) -> void:
 	_assigned = true
@@ -101,8 +129,9 @@ func _apply_colors() -> void:
 	add_theme_stylebox_override("normal", normal)
 	add_theme_stylebox_override("read_only", normal)
 	var focus_style := normal.duplicate() as StyleBoxFlat
-	focus_style.border_color = Color.html(str(colors.get("invalid" if _invalid else "focus", border)))
+	focus_style.border_color = Color.html(str(colors.get("disabledBorder" if disabled else "invalid" if _invalid else "focus", border)))
 	add_theme_stylebox_override("focus", focus_style)
 	add_theme_color_override("font_color", Color.html(foreground))
+	add_theme_color_override("font_uneditable_color", Color.html(str(colors.get("disabledForeground", foreground))))
 	if colors.has("placeholder"):
 		add_theme_color_override("font_placeholder_color", Color.html(str(colors["placeholder"])))

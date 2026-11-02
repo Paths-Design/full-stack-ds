@@ -25,6 +25,8 @@ describe("Godot native form lowering", () => {
     const plan = godotFormPlan(ir)!;
     expect(plan.colors.invalid).toBe("#ab1234");
     expect(plan.excluded).toContain("name");
+    expect(plan.excluded).not.toContain("required");
+    expect(plan.excluded).not.toContain("ariaLabelledby");
     const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: root });
     expect(files.find(file => file.relativePath === "SearchBox/SearchBox.tscn")!.contents).toContain('type="LineEdit"');
     expect(files.find(file => file.relativePath === "SearchBox/SearchBox.gd")!.contents).toContain('runtime/text_input.gd');
@@ -45,5 +47,18 @@ describe("Godot native form lowering", () => {
       ...rule, declarations: rule.declarations.filter(d => d.property !== "color" && d.property !== "label.color.text"),
     }));
     expect(() => godotFormPlan(ir)).toThrow("no label foreground source");
+  });
+
+  it("keeps invalid paint when the bound state prop and style axis are renamed together", () => {
+    const ir = fixture("Input");
+    ir.dom!.bindings["aria-invalid"] = { kind: "prop", prop: "hasError" };
+    for (const rule of ir.nativeStyleRules!.rules) {
+      for (const predicate of rule.predicates) {
+        if (predicate.kind === "variant" && predicate.axis === "invalid") predicate.axis = "hasError";
+      }
+    }
+    const plan = godotFormPlan(ir)!;
+    expect(plan.form).toMatchObject({ invalidProp: "hasError" });
+    expect(plan.colors.invalid).toBe("#b31b1b");
   });
 });

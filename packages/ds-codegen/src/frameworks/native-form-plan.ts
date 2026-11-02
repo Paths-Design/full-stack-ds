@@ -57,10 +57,12 @@ export function nativeFormPlan(ir: ComponentIR): NativeFormPlan | undefined {
   if (form?.valueModel === "text") {
     // Composite fields can declare a text channel on a nested input. Their
     // existing shell lowerings own that anatomy; this plan claims root hosts.
-    if (!ir.dom || ir.dom.part !== form.part.name || !["input", "textarea"].includes(ir.dom.tag)) return undefined;
+    if (!ir.dom || ir.dom.part !== form.part.name) return undefined;
+    if (ir.dom.tag === "textarea") formError(ir, "multiline text needs a native multiline host");
+    if (ir.dom.tag !== "input") return undefined;
     if (form.commit !== "input") formError(ir, "text input needs an input commit");
     const matches = partNode(ir.dom, form.part.name);
-    if (matches.length !== 1 || !["input", "textarea"].includes(matches[0]!.tag)) {
+    if (matches.length !== 1 || matches[0]!.tag !== "input") {
       formError(ir, `text part ${form.part.name} needs one native input host`);
     }
     const node = matches[0]!;

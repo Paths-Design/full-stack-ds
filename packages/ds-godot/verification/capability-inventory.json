@@ -6,9 +6,9 @@
     "rules": 174,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8921,
+      "lowered": 8925,
       "pending": 16,
-      "refused": 8647
+      "refused": 8643
     },
     "deadRules": []
   },
@@ -1040,9 +1040,7 @@
         "excluded": [
           "type",
           "name",
-          "required",
-          "ariaLabel",
-          "ariaLabelledby"
+          "ariaLabel"
         ],
         "proof": "requires-runtime-witness",
         "nonClaimCount": 26
@@ -1050,11 +1048,11 @@
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 195,
+          "lowered": 199,
           "pending": 0,
-          "refused": 137
+          "refused": 133
         },
-        "digest": "3642247b82e462db64833c10dcc799aa750b9b77030f0a39974fa6969462d039"
+        "digest": "2668dffe7db73c0d3229f75df15220a3aaa059d37990d32ad9eef81a277adb00"
       }
     },
     {

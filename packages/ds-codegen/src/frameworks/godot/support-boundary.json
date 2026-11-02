@@ -892,17 +892,17 @@
     },
     {
       "id": "prop-native-input-supported",
-      "match": ["contract:/props/*/members/plain:placeholder/**", "contract:/props/*/members/plain:disabled/**", "contract:/props/*/members/plain:invalid/**"],
+      "match": ["contract:/props/*/members/plain:placeholder/**", "contract:/props/*/members/plain:disabled/**", "contract:/props/*/members/plain:invalid/**", "contract:/props/*/members/plain:required/**", "contract:/props/*/members/plain:ariaLabelledby/**"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
       "disposition": "lowered",
-      "via": "the native LineEdit applies placeholder, editable state and source-derived invalid paint"
+      "via": "the native LineEdit applies placeholder, editable state and source-derived invalid paint, and projects required/invalid metadata and labeled-by relations structurally"
     },
     {
       "id": "prop-native-input-html-refused",
-      "match": ["contract:/props/*/members/plain:type/**", "contract:/props/*/members/plain:name/**", "contract:/props/*/members/plain:required/**", "contract:/props/*/members/plain:ariaLabel/**", "contract:/props/*/members/plain:ariaLabelledby/**"],
+      "match": ["contract:/props/*/members/plain:type/**", "contract:/props/*/members/plain:name/**", "contract:/props/*/members/plain:ariaLabel/**"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
       "disposition": "refused",
-      "reason": "HTML input type, name and required state and ARIA naming have no verified native form or assistive-technology projection"
+      "reason": "HTML input type and name have no native form projection; ariaLabel naming has no verified native projection"
     },
     {
       "id": "prop-channel-value",

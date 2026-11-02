@@ -30,14 +30,14 @@ function styleOmissions(ir: ComponentIR, form: NativeFormPlan): string[] {
   return omitted;
 }
 
-function color(ir: ComponentIR, property: string, state: "base" | "invalid" | "focus" | "disabled"): string | undefined {
+function color(ir: ComponentIR, form: NativeFormPlan, property: string, state: "base" | "invalid" | "focus" | "disabled"): string | undefined {
   const rules = ir.nativeStyleRules?.rules ?? [];
   for (const rule of rules) {
     const predicates = rule.predicates;
     const selected = state === "base" ? predicates.length === 0 && rule.sourceKey !== "tokens" :
-      state === "invalid" ? predicates.some(p => p.kind === "variant" && p.axis === "invalid" && p.value === "true") :
-      state === "focus" ? predicates.some(p => p.kind === "focus") && !predicates.some(p => p.kind === "variant" && p.axis === "invalid") :
-      predicates.some(p => p.kind === "disabled" || (p.kind === "variant" && p.axis === "disabled" && p.value === "true"));
+      state === "invalid" ? predicates.some(p => p.kind === "variant" && form.kind === "text-input" && p.axis === form.invalidProp && p.value === "true") :
+      state === "focus" ? predicates.some(p => p.kind === "focus") && !predicates.some(p => p.kind === "variant" && form.kind === "text-input" && p.axis === form.invalidProp) :
+      predicates.some(p => p.kind === "disabled" || (p.kind === "variant" && form.kind === "text-input" && p.axis === form.disabledProp && p.value === "true"));
     if (!selected) continue;
     const value = rule.declarations.find(d => d.property === property)?.value;
     if (value && /^#[0-9a-f]{6}$/i.test(value)) return value;
@@ -57,7 +57,7 @@ export function godotFormPlan(ir: ComponentIR): GodotFormPlan | undefined {
   const form = nativeFormPlan(ir);
   if (!form) return undefined;
   if (form.kind === "associated-label") {
-    const foreground = color(ir, "color", "base") ?? tokenColor(ir, "label.color.text");
+    const foreground = color(ir, form, "color", "base") ?? tokenColor(ir, "label.color.text");
     if (!foreground) throw new Error(`GODOT_FORM_STYLE: ${ir.name} has no label foreground source`);
     return {
       operation: form.kind, form, colors: { foreground },
@@ -65,29 +65,31 @@ export function godotFormPlan(ir: ComponentIR): GodotFormPlan | undefined {
       omissions: ["HTML form ownership is not projected", "screen-reader label association requires separate proof", ...styleOmissions(ir, form)],
     };
   }
-  const background = color(ir, "background-color", "base");
-  const foreground = color(ir, "color", "base");
-  const border = color(ir, "border-color", "base");
-  const invalid = color(ir, "border-color", "invalid");
+  const background = color(ir, form, "background-color", "base");
+  const foreground = color(ir, form, "color", "base");
+  const border = color(ir, form, "border-color", "base");
+  const invalid = color(ir, form, "border-color", "invalid");
   if (!background || !foreground || !border || !invalid) {
     throw new Error(`GODOT_FORM_STYLE: ${ir.name} lacks a source-bearing base or invalid color`);
   }
   const optional = {
     placeholder: tokenColor(ir, "input.color.text.placeholder"),
-    focus: color(ir, "border-color", "focus"),
-    disabledBackground: color(ir, "background-color", "disabled"),
-    disabledForeground: color(ir, "color", "disabled"),
-    disabledBorder: color(ir, "border-color", "disabled"),
+    focus: color(ir, form, "border-color", "focus"),
+    disabledBackground: color(ir, form, "background-color", "disabled"),
+    disabledForeground: color(ir, form, "color", "disabled"),
+    disabledBorder: color(ir, form, "border-color", "disabled"),
   };
   const colors = { background, foreground, border, invalid,
     ...Object.fromEntries(Object.entries(optional).filter((entry): entry is [string, string] => entry[1] !== undefined)) };
   return {
     operation: form.kind, form, colors,
-    excluded: [form.typeProp, form.nameProp, form.requiredProp, form.ariaLabelProp, form.ariaLabelledbyProp].filter((value): value is string => !!value),
+    excluded: [form.typeProp, form.nameProp, form.ariaLabelProp].filter((value): value is string => !!value),
     omissions: [
-      ...[form.typeProp, form.nameProp, form.requiredProp].filter((value): value is string => !!value)
+      ...[form.typeProp, form.nameProp].filter((value): value is string => !!value)
         .map(prop => `${prop}: HTML form submission or validation has no native projection`),
-      ...[form.ariaLabelProp, form.ariaLabelledbyProp].filter((value): value is string => !!value)
+      ...(form.requiredProp ? [`${form.requiredProp}: structural required state does not execute HTML validation`] : []),
+      ...(form.ariaLabelledbyProp ? [`${form.ariaLabelledbyProp}: structural relation does not establish screen-reader delivery`] : []),
+      ...[form.ariaLabelProp].filter((value): value is string => !!value)
         .map(prop => `${prop}: assistive-technology naming relation is not projected`),
       ...styleOmissions(ir, form),
     ],

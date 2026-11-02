@@ -49,6 +49,9 @@ describe("native form plan", () => {
     const binding = fixture("Input");
     binding.dom!.bindings.disabled = { kind: "literal", value: "true" };
     expect(() => nativeFormPlan(binding)).toThrow("disabled must bind directly");
+    const multiline = fixture("Input");
+    multiline.dom!.tag = "textarea";
+    expect(() => nativeFormPlan(multiline)).toThrow("multiline text needs a native multiline host");
   });
 
   it("leaves unrelated components on their existing lowering paths", () => {

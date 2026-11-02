@@ -30,16 +30,14 @@
   "excludedProps": [
     "type",
     "name",
-    "required",
-    "ariaLabel",
-    "ariaLabelledby"
+    "ariaLabel"
   ],
   "omissions": [
     "type: HTML form submission or validation has no native projection",
     "name: HTML form submission or validation has no native projection",
-    "required: HTML form submission or validation has no native projection",
+    "required: structural required state does not execute HTML validation",
+    "ariaLabelledby: structural relation does not establish screen-reader delivery",
     "ariaLabel: assistive-technology naming relation is not projected",
-    "ariaLabelledby: assistive-technology naming relation is not projected",
     "style root/box-sizing: no native form paint carrier",
     "style root/border-style: no native form paint carrier",
     "style root/border-width: no native form paint carrier",
