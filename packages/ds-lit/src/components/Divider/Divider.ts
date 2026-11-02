@@ -68,9 +68,9 @@ export class DividerElement extends LitElement {
 
 
     .divider {
-      --fsds-divider-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-divider-size-thickness: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-divider-spacing-margin: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-divider-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-divider-size-thickness: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-divider-spacing-margin: var(--fsds-core-spacing-size-04, 8px);
     }
 
     @layer components.defaults {
@@ -90,11 +90,11 @@ export class DividerElement extends LitElement {
       border-right-style: none;
       border-bottom-style: var(--fsds-divider-design-root-border-bottom-style, none);
       border-left-style: none;
-      border-top-color: var(--fsds-divider-design-root-border-top-color, var(--fsds-divider-color, #d0d0d0));
+      border-top-color: var(--fsds-divider-design-root-border-top-color, var(--fsds-divider-color, var(--_fsds-divider-color, #d0d0d0)));
       border-top-style: var(--fsds-divider-design-root-border-top-style, solid);
-      border-top-width: var(--fsds-divider-design-root-border-top-width, var(--fsds-divider-size-thickness, 1px));
-      margin-top: var(--fsds-divider-spacing-margin, 8px);
-      margin-bottom: var(--fsds-divider-spacing-margin, 8px);
+      border-top-width: var(--fsds-divider-design-root-border-top-width, var(--fsds-divider-size-thickness, var(--_fsds-divider-size-thickness, 1px)));
+      margin-top: var(--fsds-divider-spacing-margin, var(--_fsds-divider-spacing-margin, 8px));
+      margin-bottom: var(--fsds-divider-spacing-margin, var(--_fsds-divider-spacing-margin, 8px));
     }
 
     .divider--vertical {
@@ -103,13 +103,13 @@ export class DividerElement extends LitElement {
       align-self: stretch;
       min-height: 1em;
       border-top: none;
-      border-left-color: var(--fsds-divider-color, #d0d0d0);
+      border-left-color: var(--fsds-divider-color, var(--_fsds-divider-color, #d0d0d0));
       border-left-style: solid;
-      border-left-width: var(--fsds-divider-size-thickness, 1px);
+      border-left-width: var(--fsds-divider-size-thickness, var(--_fsds-divider-size-thickness, 1px));
       margin-top: 0;
       margin-bottom: 0;
-      margin-left: var(--fsds-divider-spacing-margin, 8px);
-      margin-right: var(--fsds-divider-spacing-margin, 8px);
+      margin-left: var(--fsds-divider-spacing-margin, var(--_fsds-divider-spacing-margin, 8px));
+      margin-right: var(--fsds-divider-spacing-margin, var(--_fsds-divider-spacing-margin, 8px));
     }
     }
   `;

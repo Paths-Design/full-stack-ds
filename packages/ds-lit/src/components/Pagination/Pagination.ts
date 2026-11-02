@@ -75,14 +75,14 @@ export class PaginationElement extends LitElement {
 
 
     .pagination {
-      --fsds-pagination-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-pagination-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-pagination-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-pagination-size-dot-size: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-pagination-size-active-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-pagination-size-radius: var(--fsds-core-shape-radius-full, 9999px);
-      --fsds-pagination-color-on-current: var(--fsds-semantic-color-foreground-inverse, #fafafa);
-      --fsds-pagination-color-current: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+      --_fsds-pagination-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-pagination-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-pagination-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-pagination-size-dot-size: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-pagination-size-active-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-pagination-size-radius: var(--fsds-core-shape-radius-full, 9999px);
+      --_fsds-pagination-color-on-current: var(--fsds-semantic-color-foreground-inverse, #fafafa);
+      --_fsds-pagination-color-current: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
     }
 
     @layer components.defaults {
@@ -91,7 +91,7 @@ export class PaginationElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-pagination-design-root-spacing-gap, var(--fsds-pagination-spacing-gap, 8px));
+      gap: var(--fsds-pagination-design-root-spacing-gap, var(--fsds-pagination-spacing-gap, var(--_fsds-pagination-spacing-gap, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -100,7 +100,7 @@ export class PaginationElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       align-items: center;
-      color: var(--fsds-pagination-design-root-foreground-color, var(--fsds-pagination-color-foreground, #141414));
+      color: var(--fsds-pagination-design-root-foreground-color, var(--fsds-pagination-color-foreground, var(--_fsds-pagination-color-foreground, #141414)));
     }
 
     .pagination__item {
@@ -119,11 +119,11 @@ export class PaginationElement extends LitElement {
     }
 
     .pagination__marker {
-      width: var(--fsds-pagination-design-marker-sizing-width, var(--fsds-pagination-size-dot-size, 8px));
-      height: var(--fsds-pagination-design-marker-sizing-height, var(--fsds-pagination-size-dot-size, 8px));
-      border-radius: var(--fsds-pagination-design-marker-shape-radius, var(--fsds-pagination-size-radius, 9999px));
+      width: var(--fsds-pagination-design-marker-sizing-width, var(--fsds-pagination-size-dot-size, var(--_fsds-pagination-size-dot-size, 8px)));
+      height: var(--fsds-pagination-design-marker-sizing-height, var(--fsds-pagination-size-dot-size, var(--_fsds-pagination-size-dot-size, 8px)));
+      border-radius: var(--fsds-pagination-design-marker-shape-radius, var(--fsds-pagination-size-radius, var(--_fsds-pagination-size-radius, 9999px)));
       overflow: hidden;
-      background-color: var(--fsds-pagination-design-marker-background-fill, var(--fsds-pagination-color-track, #d0d0d0));
+      background-color: var(--fsds-pagination-design-marker-background-fill, var(--fsds-pagination-color-track, var(--_fsds-pagination-color-track, #d0d0d0)));
       display: block;
       position: relative;
     }
@@ -131,7 +131,7 @@ export class PaginationElement extends LitElement {
     .pagination__fill {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-pagination-design-fill-background-fill, var(--fsds-pagination-color-foreground, #141414));
+      background-color: var(--fsds-pagination-design-fill-background-fill, var(--fsds-pagination-color-foreground, var(--_fsds-pagination-color-foreground, #141414)));
       transform-origin: left center;
       display: none;
     }
@@ -149,12 +149,12 @@ export class PaginationElement extends LitElement {
     }
 
     .pagination--indicators .pagination__item[data-current="true"] .pagination__marker {
-      width: var(--fsds-pagination-design-condition-aea309601ea3-sizing-width, var(--fsds-pagination-size-active-size, 32px));
+      width: var(--fsds-pagination-design-condition-aea309601ea3-sizing-width, var(--fsds-pagination-size-active-size, var(--_fsds-pagination-size-active-size, 32px)));
     }
 
     .pagination--pages .pagination__item[data-current="true"] {
-      background-color: var(--fsds-pagination-design-condition-a2b8c9e94dbf-background-fill, var(--fsds-pagination-color-current, #0566fe));
-      color: var(--fsds-pagination-design-condition-a2b8c9e94dbf-foreground-color, var(--fsds-pagination-color-on-current, #fafafa));
+      background-color: var(--fsds-pagination-design-condition-a2b8c9e94dbf-background-fill, var(--fsds-pagination-color-current, var(--_fsds-pagination-color-current, #0566fe)));
+      color: var(--fsds-pagination-design-condition-a2b8c9e94dbf-foreground-color, var(--fsds-pagination-color-on-current, var(--_fsds-pagination-color-on-current, #fafafa)));
     }
 
     .pagination__fill[hidden] {

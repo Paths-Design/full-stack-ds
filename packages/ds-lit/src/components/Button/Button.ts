@@ -72,22 +72,22 @@ export class ButtonElement extends LitElement {
 
 
     .button {
-      --fsds-button-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
-      --fsds-button-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-button-color-background-active: var(--fsds-semantic-interaction-background-active, #d0d0d0);
-      --fsds-button-color-background-disabled: var(--fsds-semantic-color-action-background-primary-disabled, #b8b8b8);
-      --fsds-button-color-foreground-default: var(--fsds-semantic-color-foreground-inverse, #fafafa);
-      --fsds-button-color-foreground-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
-      --fsds-button-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
-      --fsds-button-color-border-hover: var(--fsds-semantic-interaction-border-hover, #888889);
-      --fsds-button-color-border-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-button-size-gap: var(--fsds-semantic-action-size-medium-gap, 8px);
-      --fsds-button-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-      --fsds-button-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-button-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-button-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
-      --fsds-button-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
-      --fsds-button-size-font-size-medium: var(--fsds-semantic-typography-action-02, 1rem);
+      --_fsds-button-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+      --_fsds-button-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-button-color-background-active: var(--fsds-semantic-interaction-background-active, #d0d0d0);
+      --_fsds-button-color-background-disabled: var(--fsds-semantic-color-action-background-primary-disabled, #b8b8b8);
+      --_fsds-button-color-foreground-default: var(--fsds-semantic-color-foreground-inverse, #fafafa);
+      --_fsds-button-color-foreground-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+      --_fsds-button-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
+      --_fsds-button-color-border-hover: var(--fsds-semantic-interaction-border-hover, #888889);
+      --_fsds-button-color-border-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-button-size-gap: var(--fsds-semantic-action-size-medium-gap, 8px);
+      --_fsds-button-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --_fsds-button-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-button-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-button-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+      --_fsds-button-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+      --_fsds-button-size-font-size-medium: var(--fsds-semantic-typography-action-02, 1rem);
     }
 
     .button--small {
@@ -156,7 +156,7 @@ export class ButtonElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-action-size-medium-padding-block, 4px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-action-size-medium-padding-inline, 8px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-action-size-medium-padding-inline, 8px));
-      gap: var(--fsds-button-design-root-spacing-gap, var(--fsds-button-size-gap, 8px));
+      gap: var(--fsds-button-design-root-spacing-gap, var(--fsds-button-size-gap, var(--_fsds-button-size-gap, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-action-size-medium-min-width, 32px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -171,32 +171,32 @@ export class ButtonElement extends LitElement {
       border-style: var(--fsds-button-design-root-border-style, solid);
       white-space: nowrap;
       user-select: none;
-      background-color: var(--fsds-button-design-root-background-fill, var(--fsds-button-color-background-default, #0566fe));
-      color: var(--fsds-button-design-root-foreground-color, var(--fsds-button-color-foreground-default, #fafafa));
-      border-color: var(--fsds-button-design-root-border-color, var(--fsds-button-color-border-default, #a0a0a1));
-      border-radius: var(--fsds-button-design-root-shape-radius, var(--fsds-button-size-radius, 9999px));
-      border-width: var(--fsds-button-design-root-border-width, var(--fsds-button-size-border, 1px));
-      font-size: var(--fsds-button-design-root-typography-size, var(--fsds-button-size-font-size-medium, 1rem));
-      font-weight: var(--fsds-button-design-root-typography-weight, var(--fsds-button-text-weight, 500));
-      transition-duration: var(--fsds-button-design-root-motion-duration, var(--fsds-button-motion-duration-fast, 150ms));
-      transition-timing-function: var(--fsds-button-design-root-motion-easing, var(--fsds-button-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1)));
+      background-color: var(--fsds-button-design-root-background-fill, var(--fsds-button-color-background-default, var(--_fsds-button-color-background-default, #0566fe)));
+      color: var(--fsds-button-design-root-foreground-color, var(--fsds-button-color-foreground-default, var(--_fsds-button-color-foreground-default, #fafafa)));
+      border-color: var(--fsds-button-design-root-border-color, var(--fsds-button-color-border-default, var(--_fsds-button-color-border-default, #a0a0a1)));
+      border-radius: var(--fsds-button-design-root-shape-radius, var(--fsds-button-size-radius, var(--_fsds-button-size-radius, 9999px)));
+      border-width: var(--fsds-button-design-root-border-width, var(--fsds-button-size-border, var(--_fsds-button-size-border, 1px)));
+      font-size: var(--fsds-button-design-root-typography-size, var(--fsds-button-size-font-size-medium, var(--_fsds-button-size-font-size-medium, 1rem)));
+      font-weight: var(--fsds-button-design-root-typography-weight, var(--fsds-button-text-weight, var(--_fsds-button-text-weight, 500)));
+      transition-duration: var(--fsds-button-design-root-motion-duration, var(--fsds-button-motion-duration-fast, var(--_fsds-button-motion-duration-fast, 150ms)));
+      transition-timing-function: var(--fsds-button-design-root-motion-easing, var(--fsds-button-motion-easing-standard, var(--_fsds-button-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1))));
 
       &:hover:not(:disabled) {
-        background-color: var(--fsds-button-design-hover-background-fill, var(--fsds-button-color-background-hover, #f7f7f7));
-        border-color: var(--fsds-button-design-hover-border-color, var(--fsds-button-color-border-hover, #888889));
+        background-color: var(--fsds-button-design-hover-background-fill, var(--fsds-button-color-background-hover, var(--_fsds-button-color-background-hover, #f7f7f7)));
+        border-color: var(--fsds-button-design-hover-border-color, var(--fsds-button-color-border-hover, var(--_fsds-button-color-border-hover, #888889)));
       }
 
       &:active:not(:disabled) {
-        background-color: var(--fsds-button-design-active-background-fill, var(--fsds-button-color-background-active, #d0d0d0));
+        background-color: var(--fsds-button-design-active-background-fill, var(--fsds-button-color-background-active, var(--_fsds-button-color-background-active, #d0d0d0)));
       }
 
       &:focus-visible:not(:disabled) {
-        border-color: var(--fsds-button-design-focus-border-color, var(--fsds-button-color-border-focus, #0566fe));
+        border-color: var(--fsds-button-design-focus-border-color, var(--fsds-button-color-border-focus, var(--_fsds-button-color-border-focus, #0566fe)));
       }
 
       &:disabled {
-        background-color: var(--fsds-button-design-disabled-background-fill, var(--fsds-button-color-background-disabled, #b8b8b8));
-        color: var(--fsds-button-design-disabled-foreground-color, var(--fsds-button-color-foreground-disabled, #727272));
+        background-color: var(--fsds-button-design-disabled-background-fill, var(--fsds-button-color-background-disabled, var(--_fsds-button-color-background-disabled, #b8b8b8)));
+        color: var(--fsds-button-design-disabled-foreground-color, var(--fsds-button-color-foreground-disabled, var(--_fsds-button-color-foreground-disabled, #727272)));
       }
 
       &[aria-busy="true"] .button__loadingText {

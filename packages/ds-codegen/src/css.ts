@@ -1,6 +1,7 @@
 import { emitBoxModelBoundaryCss } from './box-model.js';
 import { projectedCollectionCssBlocks } from './projected-collection.js';
 import { analyzeCssTokenConsumption, onlyConsumedDeclarations } from './css-token-consumption.js';
+import { litTokenDefaultBlocks, withLitTokenFallbacks } from './lit-token-fallbacks.js';
 /**
  * CSS string formatting from IR.
  *
@@ -643,20 +644,22 @@ export function generateCSS(contract: ComponentContract): string {
 export function emitLitInlineCss(ir: ComponentIR): string {
   const rootSelector = `.${ir.cssPrefix}`;
   const consumed = webTokenConsumption(ir).consumed;
+  const projected = litTokenDefaultBlocks(ir, onlyConsumedDeclarations(webCssBlocks(ir), consumed));
+  const restingBlocks = projected.blocks.filter(block => !block.startingStyle);
 
-  const tokensGroups = groupBlocksByRoot(onlyConsumedDeclarations(webCssBlocks(ir), consumed), rootSelector)
+  const tokensGroups = groupBlocksByRoot(restingBlocks, rootSelector)
     .map((g) => filterGroupedBlock(g, "slots"))
     .map((g) => g.selector === rootSelector ? { ...g, decls: Object.fromEntries(Object.entries(g.decls).filter(([key]) => !key.startsWith("--fsds-box-model-"))) } : g)
     .map((g) => formatGroupedBlock(g))
     .filter((s) => s.length > 0);
 
-  const propertyGroups = groupBlocksByRoot(webCssBlocks(ir), rootSelector)
+  const propertyGroups = groupBlocksByRoot(restingBlocks, rootSelector)
     .map((g) => filterGroupedBlock(g, "properties"))
     .map((g) => formatGroupedBlock(g))
     .filter((s) => s.length > 0);
 
-  const keyframesBody = webKeyframes(ir).map(formatKeyframes).join("\n").trimEnd();
-  const startingStyleBody = startingStyleBlock(webCssBlocks(ir));
+  const keyframesBody = withLitTokenFallbacks(webKeyframes(ir).map(formatKeyframes).join("\n").trimEnd(), projected.defaults);
+  const startingStyleBody = startingStyleBlock(projected.blocks);
 
   const parts: string[] = [emitBoxModelBoundaryCss(true)];
   // A collection item's display:contents host must retain the native hidden contract.
@@ -673,7 +676,7 @@ export function emitLitInlineCss(ir: ComponentIR): string {
   // (Accordion's chevron, for one) animating unconditionally in the shadow
   // tree while its .css artifact honored the media query. The block is
   // derived, so it is empty exactly when nothing animates.
-  const litReducedMotionBody = reducedMotionBlock(ir);
+  const litReducedMotionBody = withLitTokenFallbacks(reducedMotionBlock(ir), projected.defaults);
   if (litReducedMotionBody) parts.push(litReducedMotionBody);
 
   return parts.join("\n\n").trimEnd();

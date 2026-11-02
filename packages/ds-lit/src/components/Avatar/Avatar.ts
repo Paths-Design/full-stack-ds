@@ -70,18 +70,18 @@ export class AvatarElement extends LitElement {
 
 
     .avatar {
-      --fsds-avatar-size: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-avatar-size-small: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-avatar-size-medium: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-avatar-size-large: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-avatar-size-extra-large: var(--fsds-core-spacing-size-09, 48px);
-      --fsds-avatar-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-      --fsds-avatar-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-avatar-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-avatar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-avatar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-avatar-typography-font-weight-medium: var(--fsds-core-typography-weight-medium, 500);
-      --fsds-avatar-typography-font-family-sans: var(--fsds-core-typography-font-family-sans, "Inter", sans-serif);
+      --_fsds-avatar-size: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-avatar-size-small: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-avatar-size-medium: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-avatar-size-large: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-avatar-size-extra-large: var(--fsds-core-spacing-size-09, 48px);
+      --_fsds-avatar-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --_fsds-avatar-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-avatar-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-avatar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-avatar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-avatar-typography-font-weight-medium: var(--fsds-core-typography-weight-medium, 500);
+      --_fsds-avatar-typography-font-family-sans: var(--fsds-core-typography-font-family-sans, "Inter", sans-serif);
     }
 
     @layer components.defaults {
@@ -96,22 +96,22 @@ export class AvatarElement extends LitElement {
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
       gap: var(--fsds-box-model-gap, 0);
-      width: var(--fsds-avatar-design-root-sizing-width, var(--fsds-avatar-size, 16px));
+      width: var(--fsds-avatar-design-root-sizing-width, var(--fsds-avatar-size, var(--_fsds-avatar-size, 16px)));
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
-      height: var(--fsds-avatar-design-root-sizing-height, var(--fsds-avatar-size, 16px));
+      height: var(--fsds-avatar-design-root-sizing-height, var(--fsds-avatar-size, var(--_fsds-avatar-size, 16px)));
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       overflow: hidden;
       position: relative;
-      border-radius: var(--fsds-avatar-design-root-shape-radius, var(--fsds-avatar-size-radius, 9999px));
-      background-color: var(--fsds-avatar-design-root-background-fill, var(--fsds-avatar-color-background, #f7f7f7));
-      color: var(--fsds-avatar-design-root-foreground-color, var(--fsds-avatar-color-foreground-primary, #141414));
-      border-color: var(--fsds-avatar-design-root-border-color, var(--fsds-avatar-color-border, #d0d0d0));
+      border-radius: var(--fsds-avatar-design-root-shape-radius, var(--fsds-avatar-size-radius, var(--_fsds-avatar-size-radius, 9999px)));
+      background-color: var(--fsds-avatar-design-root-background-fill, var(--fsds-avatar-color-background, var(--_fsds-avatar-color-background, #f7f7f7)));
+      color: var(--fsds-avatar-design-root-foreground-color, var(--fsds-avatar-color-foreground-primary, var(--_fsds-avatar-color-foreground-primary, #141414)));
+      border-color: var(--fsds-avatar-design-root-border-color, var(--fsds-avatar-color-border, var(--_fsds-avatar-color-border, #d0d0d0)));
       border-style: var(--fsds-avatar-design-root-border-style, solid);
-      border-width: var(--fsds-avatar-design-root-border-width, var(--fsds-avatar-size-border, 1px));
-      font-weight: var(--fsds-avatar-design-root-typography-weight, var(--fsds-avatar-typography-font-weight-medium, 500));
-      font-family: var(--fsds-avatar-design-root-typography-family, var(--fsds-avatar-typography-font-family-sans, "Inter", sans-serif));
+      border-width: var(--fsds-avatar-design-root-border-width, var(--fsds-avatar-size-border, var(--_fsds-avatar-size-border, 1px)));
+      font-weight: var(--fsds-avatar-design-root-typography-weight, var(--fsds-avatar-typography-font-weight-medium, var(--_fsds-avatar-typography-font-weight-medium, 500)));
+      font-family: var(--fsds-avatar-design-root-typography-family, var(--fsds-avatar-typography-font-family-sans, var(--_fsds-avatar-typography-font-family-sans, "Inter", sans-serif)));
     }
 
     .avatar__image {
@@ -122,23 +122,23 @@ export class AvatarElement extends LitElement {
     }
 
     .avatar--small {
-      width: var(--fsds-avatar-design-condition-42b522a9c46e-sizing-width, var(--fsds-avatar-size-small, 16px));
-      height: var(--fsds-avatar-design-condition-42b522a9c46e-sizing-height, var(--fsds-avatar-size-small, 16px));
+      width: var(--fsds-avatar-design-condition-42b522a9c46e-sizing-width, var(--fsds-avatar-size-small, var(--_fsds-avatar-size-small, 16px)));
+      height: var(--fsds-avatar-design-condition-42b522a9c46e-sizing-height, var(--fsds-avatar-size-small, var(--_fsds-avatar-size-small, 16px)));
     }
 
     .avatar--medium {
-      width: var(--fsds-avatar-design-condition-a9821c9eea70-sizing-width, var(--fsds-avatar-size-medium, 24px));
-      height: var(--fsds-avatar-design-condition-a9821c9eea70-sizing-height, var(--fsds-avatar-size-medium, 24px));
+      width: var(--fsds-avatar-design-condition-a9821c9eea70-sizing-width, var(--fsds-avatar-size-medium, var(--_fsds-avatar-size-medium, 24px)));
+      height: var(--fsds-avatar-design-condition-a9821c9eea70-sizing-height, var(--fsds-avatar-size-medium, var(--_fsds-avatar-size-medium, 24px)));
     }
 
     .avatar--large {
-      width: var(--fsds-avatar-design-condition-cbbd2740a3e5-sizing-width, var(--fsds-avatar-size-large, 32px));
-      height: var(--fsds-avatar-design-condition-cbbd2740a3e5-sizing-height, var(--fsds-avatar-size-large, 32px));
+      width: var(--fsds-avatar-design-condition-cbbd2740a3e5-sizing-width, var(--fsds-avatar-size-large, var(--_fsds-avatar-size-large, 32px)));
+      height: var(--fsds-avatar-design-condition-cbbd2740a3e5-sizing-height, var(--fsds-avatar-size-large, var(--_fsds-avatar-size-large, 32px)));
     }
 
     .avatar--extra-large {
-      width: var(--fsds-avatar-design-condition-ee2a0b1d0aee-sizing-width, var(--fsds-avatar-size-extra-large, 48px));
-      height: var(--fsds-avatar-design-condition-ee2a0b1d0aee-sizing-height, var(--fsds-avatar-size-extra-large, 48px));
+      width: var(--fsds-avatar-design-condition-ee2a0b1d0aee-sizing-width, var(--fsds-avatar-size-extra-large, var(--_fsds-avatar-size-extra-large, 48px)));
+      height: var(--fsds-avatar-design-condition-ee2a0b1d0aee-sizing-height, var(--fsds-avatar-size-extra-large, var(--_fsds-avatar-size-extra-large, 48px)));
     }
     }
   `;

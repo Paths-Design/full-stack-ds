@@ -74,17 +74,17 @@ export class ShuttleElement extends LitElement {
 
 
     .shuttle {
-      --fsds-shuttle-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-shuttle-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-shuttle-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-shuttle-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-shuttle-color-list-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-shuttle-color-item-marked-background: var(--fsds-semantic-color-background-accent, #d92d2e);
-      --fsds-shuttle-color-item-marked-foreground: var(--fsds-semantic-color-foreground-on-color, #ffffff);
-      --fsds-shuttle-color-focus-ring: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-shuttle-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-shuttle-size-padding: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-shuttle-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-shuttle-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-shuttle-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-shuttle-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-shuttle-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --_fsds-shuttle-color-list-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-shuttle-color-item-marked-background: var(--fsds-semantic-color-background-accent, #d92d2e);
+      --_fsds-shuttle-color-item-marked-foreground: var(--fsds-semantic-color-foreground-on-color, #ffffff);
+      --_fsds-shuttle-color-focus-ring: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-shuttle-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-shuttle-size-padding: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-shuttle-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     }
 
     @layer components.defaults {
@@ -102,10 +102,10 @@ export class ShuttleElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       align-items: stretch;
-      background-color: var(--fsds-shuttle-design-root-background-fill, var(--fsds-shuttle-color-background, #f7f7f7));
-      border-color: var(--fsds-shuttle-design-root-border-color, var(--fsds-shuttle-color-border-accent, #d92d2e));
-      padding: var(--fsds-shuttle-design-root-spacing-padding, var(--fsds-shuttle-size-padding, 24px));
-      border-radius: var(--fsds-shuttle-design-root-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+      background-color: var(--fsds-shuttle-design-root-background-fill, var(--fsds-shuttle-color-background, var(--_fsds-shuttle-color-background, #f7f7f7)));
+      border-color: var(--fsds-shuttle-design-root-border-color, var(--fsds-shuttle-color-border-accent, var(--_fsds-shuttle-color-border-accent, #d92d2e)));
+      padding: var(--fsds-shuttle-design-root-spacing-padding, var(--fsds-shuttle-size-padding, var(--_fsds-shuttle-size-padding, 24px)));
+      border-radius: var(--fsds-shuttle-design-root-shape-radius, var(--fsds-shuttle-size-radius, var(--_fsds-shuttle-size-radius, 6px)));
     }
 
     .shuttle__list {
@@ -114,33 +114,33 @@ export class ShuttleElement extends LitElement {
       padding: var(--fsds-shuttle-design-list-spacing-padding, 0);
       min-inline-size: 10rem;
       min-block-size: 8rem;
-      background-color: var(--fsds-shuttle-design-list-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
+      background-color: var(--fsds-shuttle-design-list-background-fill, var(--fsds-shuttle-color-list-background, var(--_fsds-shuttle-color-list-background, #ffffff)));
       border-style: var(--fsds-shuttle-design-list-border-style, solid);
       border-width: var(--fsds-shuttle-design-list-border-width, 1px);
-      border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
-      border-radius: var(--fsds-shuttle-design-list-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+      border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, var(--_fsds-shuttle-color-border, #d0d0d0)));
+      border-radius: var(--fsds-shuttle-design-list-shape-radius, var(--fsds-shuttle-size-radius, var(--_fsds-shuttle-size-radius, 6px)));
     }
 
     .shuttle__item {
       display: flex;
       align-items: center;
       padding: var(--fsds-shuttle-design-item-spacing-padding, 4px 8px);
-      color: var(--fsds-shuttle-design-item-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
+      color: var(--fsds-shuttle-design-item-foreground-color, var(--fsds-shuttle-color-foreground-primary, var(--_fsds-shuttle-color-foreground-primary, #141414)));
       border-block-end-style: solid;
       border-block-end-width: var(--fsds-shuttle-design-item-border-block-end-width, 1px);
-      border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #d0d0d0));
+      border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, var(--_fsds-shuttle-color-border, #d0d0d0)));
       cursor: pointer;
     }
 
     .shuttle__item[aria-selected="true"] {
-      background-color: var(--fsds-shuttle-design-condition-24ad0618e5a2-background-fill, var(--fsds-shuttle-color-item-marked-background, #d92d2e));
-      color: var(--fsds-shuttle-design-condition-24ad0618e5a2-foreground-color, var(--fsds-shuttle-color-item-marked-foreground, #ffffff));
+      background-color: var(--fsds-shuttle-design-condition-24ad0618e5a2-background-fill, var(--fsds-shuttle-color-item-marked-background, var(--_fsds-shuttle-color-item-marked-background, #d92d2e)));
+      color: var(--fsds-shuttle-design-condition-24ad0618e5a2-foreground-color, var(--fsds-shuttle-color-item-marked-foreground, var(--_fsds-shuttle-color-item-marked-foreground, #ffffff)));
     }
 
     .shuttle__item:focus-visible {
       outline-style: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-style, solid);
-      outline-width: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-width, var(--fsds-shuttle-focus-ring-width, 2px));
-      outline-color: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-color, var(--fsds-shuttle-color-focus-ring, #0566fe));
+      outline-width: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-width, var(--fsds-shuttle-focus-ring-width, var(--_fsds-shuttle-focus-ring-width, 2px)));
+      outline-color: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-color, var(--fsds-shuttle-color-focus-ring, var(--_fsds-shuttle-color-focus-ring, #0566fe)));
       outline-offset: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-offset, -2px);
     }
 
@@ -153,23 +153,23 @@ export class ShuttleElement extends LitElement {
 
     .shuttle__add {
       padding: var(--fsds-shuttle-design-add-spacing-padding, 6px 12px);
-      color: var(--fsds-shuttle-design-add-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
-      background-color: var(--fsds-shuttle-design-add-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
+      color: var(--fsds-shuttle-design-add-foreground-color, var(--fsds-shuttle-color-foreground-primary, var(--_fsds-shuttle-color-foreground-primary, #141414)));
+      background-color: var(--fsds-shuttle-design-add-background-fill, var(--fsds-shuttle-color-list-background, var(--_fsds-shuttle-color-list-background, #ffffff)));
       border-style: var(--fsds-shuttle-design-add-border-style, solid);
       border-width: var(--fsds-shuttle-design-add-border-width, 1px);
-      border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
-      border-radius: var(--fsds-shuttle-design-add-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+      border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, var(--_fsds-shuttle-color-border, #d0d0d0)));
+      border-radius: var(--fsds-shuttle-design-add-shape-radius, var(--fsds-shuttle-size-radius, var(--_fsds-shuttle-size-radius, 6px)));
       cursor: pointer;
     }
 
     .shuttle__remove {
       padding: var(--fsds-shuttle-design-remove-spacing-padding, 6px 12px);
-      color: var(--fsds-shuttle-design-remove-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
-      background-color: var(--fsds-shuttle-design-remove-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
+      color: var(--fsds-shuttle-design-remove-foreground-color, var(--fsds-shuttle-color-foreground-primary, var(--_fsds-shuttle-color-foreground-primary, #141414)));
+      background-color: var(--fsds-shuttle-design-remove-background-fill, var(--fsds-shuttle-color-list-background, var(--_fsds-shuttle-color-list-background, #ffffff)));
       border-style: var(--fsds-shuttle-design-remove-border-style, solid);
       border-width: var(--fsds-shuttle-design-remove-border-width, 1px);
-      border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
-      border-radius: var(--fsds-shuttle-design-remove-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+      border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, var(--_fsds-shuttle-color-border, #d0d0d0)));
+      border-radius: var(--fsds-shuttle-design-remove-shape-radius, var(--fsds-shuttle-size-radius, var(--_fsds-shuttle-size-radius, 6px)));
       cursor: pointer;
     }
     }

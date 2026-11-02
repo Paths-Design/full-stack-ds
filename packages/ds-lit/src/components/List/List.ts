@@ -72,16 +72,16 @@ export class ListElement extends LitElement {
 
 
     .list {
-      --fsds-list-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-list-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-list-size-padding: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-list-size-sm: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-list-size-md: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-list-size-lg: var(--fsds-semantic-typography-body-01, 18px);
-      --fsds-list-spacing-none: var(--fsds-core-spacing-size-00, 0px);
-      --fsds-list-spacing-sm: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-list-spacing-md: var(--fsds-core-spacing-size-05, 12px);
-      --fsds-list-spacing-lg: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-list-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-list-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-list-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-list-size-sm: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-list-size-md: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-list-size-lg: var(--fsds-semantic-typography-body-01, 18px);
+      --_fsds-list-spacing-none: var(--fsds-core-spacing-size-00, 0px);
+      --_fsds-list-spacing-sm: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-list-spacing-md: var(--fsds-core-spacing-size-05, 12px);
+      --_fsds-list-spacing-lg: var(--fsds-core-spacing-size-07, 24px);
     }
 
     @layer components.defaults {
@@ -97,37 +97,37 @@ export class ListElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-list-design-root-foreground-color, var(--fsds-list-color-foreground-primary, #141414));
-      border-color: var(--fsds-list-design-root-border-color, var(--fsds-list-color-border, #d0d0d0));
-      padding: var(--fsds-list-design-root-spacing-padding, var(--fsds-list-size-padding, 16px));
+      color: var(--fsds-list-design-root-foreground-color, var(--fsds-list-color-foreground-primary, var(--_fsds-list-color-foreground-primary, #141414)));
+      border-color: var(--fsds-list-design-root-border-color, var(--fsds-list-color-border, var(--_fsds-list-color-border, #d0d0d0)));
+      padding: var(--fsds-list-design-root-spacing-padding, var(--fsds-list-size-padding, var(--_fsds-list-size-padding, 16px)));
     }
 
     .list--size-sm {
-      font-size: var(--fsds-list-design-condition-f14e3fae918a-typography-size, var(--fsds-list-size-sm, 14px));
+      font-size: var(--fsds-list-design-condition-f14e3fae918a-typography-size, var(--fsds-list-size-sm, var(--_fsds-list-size-sm, 14px)));
     }
 
     .list--size-md {
-      font-size: var(--fsds-list-design-condition-8791efdf7f0f-typography-size, var(--fsds-list-size-md, 16px));
+      font-size: var(--fsds-list-design-condition-8791efdf7f0f-typography-size, var(--fsds-list-size-md, var(--_fsds-list-size-md, 16px)));
     }
 
     .list--size-lg {
-      font-size: var(--fsds-list-design-condition-b1a65b7b2e57-typography-size, var(--fsds-list-size-lg, 18px));
+      font-size: var(--fsds-list-design-condition-b1a65b7b2e57-typography-size, var(--fsds-list-size-lg, var(--_fsds-list-size-lg, 18px)));
     }
 
     .list--spacing-none > * + * {
-      margin-block-start: var(--fsds-list-spacing-none, 0px);
+      margin-block-start: var(--fsds-list-spacing-none, var(--_fsds-list-spacing-none, 0px));
     }
 
     .list--spacing-sm > * + * {
-      margin-block-start: var(--fsds-list-spacing-sm, 8px);
+      margin-block-start: var(--fsds-list-spacing-sm, var(--_fsds-list-spacing-sm, 8px));
     }
 
     .list--spacing-md > * + * {
-      margin-block-start: var(--fsds-list-spacing-md, 12px);
+      margin-block-start: var(--fsds-list-spacing-md, var(--_fsds-list-spacing-md, 12px));
     }
 
     .list--spacing-lg > * + * {
-      margin-block-start: var(--fsds-list-spacing-lg, 24px);
+      margin-block-start: var(--fsds-list-spacing-lg, var(--_fsds-list-spacing-lg, 24px));
     }
 
     .list--marker-none {
@@ -168,17 +168,17 @@ export class ListElement extends LitElement {
       display: flex;
       flex-direction: row;
       list-style: none;
-      gap: var(--fsds-list-design-condition-49c5416e5f1d-spacing-gap, var(--fsds-list-spacing-md, 12px));
+      gap: var(--fsds-list-design-condition-49c5416e5f1d-spacing-gap, var(--fsds-list-spacing-md, var(--_fsds-list-spacing-md, 12px)));
     }
 
     .list--variant-divided > * + * {
       border-block-start-width: var(--fsds-list-design-condition-d02d544e812f-border-block-start-width, 1px);
       border-block-start-style: solid;
-      border-block-start-color: var(--fsds-list-design-condition-d02d544e812f-border-block-start-color, var(--fsds-list-color-border, #d0d0d0));
+      border-block-start-color: var(--fsds-list-design-condition-d02d544e812f-border-block-start-color, var(--fsds-list-color-border, var(--_fsds-list-color-border, #d0d0d0)));
     }
 
     .list--variant-spaced > * {
-      margin-block: var(--fsds-list-spacing-lg, 24px);
+      margin-block: var(--fsds-list-spacing-lg, var(--_fsds-list-spacing-lg, 24px));
     }
     }
   `;

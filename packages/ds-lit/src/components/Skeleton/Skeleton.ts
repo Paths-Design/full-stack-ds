@@ -72,15 +72,15 @@ export class SkeletonElement extends LitElement {
 
 
     .skeleton {
-      --fsds-skeleton-color-base: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-skeleton-color-highlight: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-      --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-skeleton-gap-compact: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-skeleton-gap-md: var(--fsds-core-spacing-size-05, 12px);
-      --fsds-skeleton-gap-spacious: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-skeleton-anim-duration: var(--fsds-core-motion-duration-long, 400ms);
-      --fsds-skeleton-anim-easing: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
-      --fsds-skeleton-shape-height-text: var(--fsds-core-typography-ramp-4, 1rem);
+      --_fsds-skeleton-color-base: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-skeleton-color-highlight: var(--fsds-semantic-color-background-highlight, #f5a2a1);
+      --_fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+      --_fsds-skeleton-gap-compact: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-skeleton-gap-md: var(--fsds-core-spacing-size-05, 12px);
+      --_fsds-skeleton-gap-spacious: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-skeleton-anim-duration: var(--fsds-core-motion-duration-long, 400ms);
+      --_fsds-skeleton-anim-easing: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+      --_fsds-skeleton-shape-height-text: var(--fsds-core-typography-ramp-4, 1rem);
     }
 
     .skeleton--block {
@@ -113,7 +113,7 @@ export class SkeletonElement extends LitElement {
     }
 
     .skeleton--compact {
-      --fsds-skeleton-gap-md: var(--fsds-skeleton-gap-compact, 4px);
+      --fsds-skeleton-gap-md: var(--fsds-skeleton-gap-compact, var(--_fsds-skeleton-gap-compact, 4px));
     }
 
     .skeleton--regular {
@@ -121,7 +121,7 @@ export class SkeletonElement extends LitElement {
     }
 
     .skeleton--spacious {
-      --fsds-skeleton-gap-md: var(--fsds-skeleton-gap-spacious, 24px);
+      --fsds-skeleton-gap-md: var(--fsds-skeleton-gap-spacious, var(--_fsds-skeleton-gap-spacious, 24px));
     }
 
     @layer components.defaults {
@@ -139,10 +139,10 @@ export class SkeletonElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 1em);
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-skeleton-design-root-background-fill, var(--fsds-skeleton-color-base, #f7f7f7));
-      border-radius: var(--fsds-skeleton-design-root-shape-radius, var(--fsds-skeleton-radius-md, 8px));
-      transition-duration: var(--fsds-skeleton-design-root-motion-duration, var(--fsds-skeleton-anim-duration, 400ms));
-      transition-timing-function: var(--fsds-skeleton-design-root-motion-easing, var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)));
+      background-color: var(--fsds-skeleton-design-root-background-fill, var(--fsds-skeleton-color-base, var(--_fsds-skeleton-color-base, #f7f7f7)));
+      border-radius: var(--fsds-skeleton-design-root-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
+      transition-duration: var(--fsds-skeleton-design-root-motion-duration, var(--fsds-skeleton-anim-duration, var(--_fsds-skeleton-anim-duration, 400ms)));
+      transition-timing-function: var(--fsds-skeleton-design-root-motion-easing, var(--fsds-skeleton-anim-easing, var(--_fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1))));
 
       &:has(.skeleton__stack) {
         background-color: var(--fsds-skeleton-design-condition-bb9852400063-background-fill, transparent);
@@ -150,50 +150,50 @@ export class SkeletonElement extends LitElement {
       }
 
       &:has(.skeleton__stack) .skeleton__shape {
-        height: var(--fsds-skeleton-design-condition-f1cb085b34e5-sizing-height, var(--fsds-skeleton-shape-height-text, 1rem));
+        height: var(--fsds-skeleton-design-condition-f1cb085b34e5-sizing-height, var(--fsds-skeleton-shape-height-text, var(--_fsds-skeleton-shape-height-text, 1rem)));
       }
     }
 
     .skeleton__shape {
       display: block;
-      background-color: var(--fsds-skeleton-design-shape-background-fill, var(--fsds-skeleton-color-base, #f7f7f7));
-      border-radius: var(--fsds-skeleton-design-shape-shape-radius, var(--fsds-skeleton-radius-md, 8px));
+      background-color: var(--fsds-skeleton-design-shape-background-fill, var(--fsds-skeleton-color-base, var(--_fsds-skeleton-color-base, #f7f7f7)));
+      border-radius: var(--fsds-skeleton-design-shape-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
     }
 
     .skeleton__stack {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-skeleton-design-stack-spacing-gap, var(--fsds-skeleton-gap-md, 12px));
+      gap: var(--fsds-skeleton-design-stack-spacing-gap, var(--fsds-skeleton-gap-md, var(--_fsds-skeleton-gap-md, 12px)));
     }
 
     .skeleton--block {
-      border-radius: var(--fsds-skeleton-design-condition-bd614435ddb4-shape-radius, var(--fsds-skeleton-radius-md, 8px));
+      border-radius: var(--fsds-skeleton-design-condition-bd614435ddb4-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
     }
 
     .skeleton--text {
-      border-radius: var(--fsds-skeleton-design-condition-1c40d16552ca-shape-radius, var(--fsds-skeleton-radius-md, 8px));
-      height: var(--fsds-skeleton-design-condition-1c40d16552ca-sizing-height, var(--fsds-skeleton-shape-height-text, 1rem));
+      border-radius: var(--fsds-skeleton-design-condition-1c40d16552ca-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
+      height: var(--fsds-skeleton-design-condition-1c40d16552ca-sizing-height, var(--fsds-skeleton-shape-height-text, var(--_fsds-skeleton-shape-height-text, 1rem)));
     }
 
     .skeleton--avatar {
-      border-radius: var(--fsds-skeleton-design-condition-6c84e66d0bf9-shape-radius, var(--fsds-skeleton-radius-md, 8px));
+      border-radius: var(--fsds-skeleton-design-condition-6c84e66d0bf9-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
       aspect-ratio: 1;
     }
 
     .skeleton--media {
-      border-radius: var(--fsds-skeleton-design-condition-36338882e838-shape-radius, var(--fsds-skeleton-radius-md, 8px));
+      border-radius: var(--fsds-skeleton-design-condition-36338882e838-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
       aspect-ratio: 16 / 9;
       width: 100%;
     }
 
     .skeleton--dataviz {
-      border-radius: var(--fsds-skeleton-design-condition-5c609fce7db7-shape-radius, var(--fsds-skeleton-radius-md, 8px));
+      border-radius: var(--fsds-skeleton-design-condition-5c609fce7db7-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
       aspect-ratio: 4 / 3;
       width: 100%;
     }
 
     .skeleton--actions {
-      border-radius: var(--fsds-skeleton-design-condition-97dab48677d5-shape-radius, var(--fsds-skeleton-radius-md, 8px));
+      border-radius: var(--fsds-skeleton-design-condition-97dab48677d5-shape-radius, var(--fsds-skeleton-radius-md, var(--_fsds-skeleton-radius-md, 8px)));
       height: 36px;
       min-width: 80px;
     }
@@ -208,9 +208,9 @@ export class SkeletonElement extends LitElement {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, var(--fsds-skeleton-color-highlight, rgba(255,255,255,0.55)), transparent);
+      background: linear-gradient(90deg, transparent, var(--fsds-skeleton-color-highlight, var(--_fsds-skeleton-color-highlight, rgba(255,255,255,0.55))), transparent);
       transform: translateX(-100%);
-      animation: skeleton-wipe calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
+      animation: skeleton-wipe calc(var(--fsds-skeleton-anim-duration, var(--_fsds-skeleton-anim-duration, 400ms)) * 2) var(--fsds-skeleton-anim-easing, var(--_fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1))) infinite;
     }
 
     .skeleton--none {
@@ -218,11 +218,11 @@ export class SkeletonElement extends LitElement {
     }
 
     .skeleton--shimmer {
-      animation: fsds-skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
+      animation: fsds-skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, var(--_fsds-skeleton-anim-duration, 400ms)) * 2) var(--fsds-skeleton-anim-easing, var(--_fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1))) infinite;
     }
 
     .skeleton--pulse {
-      animation: fsds-skeleton-pulse calc(var(--fsds-skeleton-anim-duration, 400ms) * 3) cubic-bezier(0.42, 0, 0.58, 1) infinite;
+      animation: fsds-skeleton-pulse calc(var(--fsds-skeleton-anim-duration, var(--_fsds-skeleton-anim-duration, 400ms)) * 3) cubic-bezier(0.42, 0, 0.58, 1) infinite;
     }
     }
 

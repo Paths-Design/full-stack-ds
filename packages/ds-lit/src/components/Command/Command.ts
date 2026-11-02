@@ -75,24 +75,24 @@ export class CommandElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -114,18 +114,18 @@ export class CommandElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -134,15 +134,15 @@ export class CommandElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -152,8 +152,8 @@ export class CommandElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -163,9 +163,9 @@ export class CommandElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -174,8 +174,8 @@ export class CommandElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -189,10 +189,10 @@ export class CommandElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -202,8 +202,8 @@ export class CommandElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -219,18 +219,18 @@ export class CommandElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -238,9 +238,9 @@ export class CommandElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -252,8 +252,8 @@ export class CommandElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -261,8 +261,8 @@ export class CommandElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -272,7 +272,7 @@ export class CommandElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -423,24 +423,24 @@ export class CommandListElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -462,18 +462,18 @@ export class CommandListElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -482,15 +482,15 @@ export class CommandListElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -500,8 +500,8 @@ export class CommandListElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -511,9 +511,9 @@ export class CommandListElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -522,8 +522,8 @@ export class CommandListElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -537,10 +537,10 @@ export class CommandListElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -550,8 +550,8 @@ export class CommandListElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -567,18 +567,18 @@ export class CommandListElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -586,9 +586,9 @@ export class CommandListElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -600,8 +600,8 @@ export class CommandListElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -609,8 +609,8 @@ export class CommandListElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -620,7 +620,7 @@ export class CommandListElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -684,24 +684,24 @@ export class CommandGroupElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -723,18 +723,18 @@ export class CommandGroupElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -743,15 +743,15 @@ export class CommandGroupElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -761,8 +761,8 @@ export class CommandGroupElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -772,9 +772,9 @@ export class CommandGroupElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -783,8 +783,8 @@ export class CommandGroupElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -798,10 +798,10 @@ export class CommandGroupElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -811,8 +811,8 @@ export class CommandGroupElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -828,18 +828,18 @@ export class CommandGroupElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -847,9 +847,9 @@ export class CommandGroupElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -861,8 +861,8 @@ export class CommandGroupElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -870,8 +870,8 @@ export class CommandGroupElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -881,7 +881,7 @@ export class CommandGroupElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -945,24 +945,24 @@ export class CommandGroupHeadingElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -984,18 +984,18 @@ export class CommandGroupHeadingElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -1004,15 +1004,15 @@ export class CommandGroupHeadingElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -1022,8 +1022,8 @@ export class CommandGroupHeadingElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -1033,9 +1033,9 @@ export class CommandGroupHeadingElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -1044,8 +1044,8 @@ export class CommandGroupHeadingElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -1059,10 +1059,10 @@ export class CommandGroupHeadingElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -1072,8 +1072,8 @@ export class CommandGroupHeadingElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -1089,18 +1089,18 @@ export class CommandGroupHeadingElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -1108,9 +1108,9 @@ export class CommandGroupHeadingElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -1122,8 +1122,8 @@ export class CommandGroupHeadingElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1131,8 +1131,8 @@ export class CommandGroupHeadingElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1142,7 +1142,7 @@ export class CommandGroupHeadingElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -1206,24 +1206,24 @@ export class CommandGroupItemsElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -1245,18 +1245,18 @@ export class CommandGroupItemsElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -1265,15 +1265,15 @@ export class CommandGroupItemsElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -1283,8 +1283,8 @@ export class CommandGroupItemsElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -1294,9 +1294,9 @@ export class CommandGroupItemsElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -1305,8 +1305,8 @@ export class CommandGroupItemsElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -1320,10 +1320,10 @@ export class CommandGroupItemsElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -1333,8 +1333,8 @@ export class CommandGroupItemsElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -1350,18 +1350,18 @@ export class CommandGroupItemsElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -1369,9 +1369,9 @@ export class CommandGroupItemsElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -1383,8 +1383,8 @@ export class CommandGroupItemsElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1392,8 +1392,8 @@ export class CommandGroupItemsElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1403,7 +1403,7 @@ export class CommandGroupItemsElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -1467,24 +1467,24 @@ export class CommandItemElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -1506,18 +1506,18 @@ export class CommandItemElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -1526,15 +1526,15 @@ export class CommandItemElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -1544,8 +1544,8 @@ export class CommandItemElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -1555,9 +1555,9 @@ export class CommandItemElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -1566,8 +1566,8 @@ export class CommandItemElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -1581,10 +1581,10 @@ export class CommandItemElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -1594,8 +1594,8 @@ export class CommandItemElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -1611,18 +1611,18 @@ export class CommandItemElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -1630,9 +1630,9 @@ export class CommandItemElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -1644,8 +1644,8 @@ export class CommandItemElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1653,8 +1653,8 @@ export class CommandItemElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1664,7 +1664,7 @@ export class CommandItemElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -1733,24 +1733,24 @@ export class CommandItemIconElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -1772,18 +1772,18 @@ export class CommandItemIconElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -1792,15 +1792,15 @@ export class CommandItemIconElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -1810,8 +1810,8 @@ export class CommandItemIconElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -1821,9 +1821,9 @@ export class CommandItemIconElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -1832,8 +1832,8 @@ export class CommandItemIconElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -1847,10 +1847,10 @@ export class CommandItemIconElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -1860,8 +1860,8 @@ export class CommandItemIconElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -1877,18 +1877,18 @@ export class CommandItemIconElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -1896,9 +1896,9 @@ export class CommandItemIconElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -1910,8 +1910,8 @@ export class CommandItemIconElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1919,8 +1919,8 @@ export class CommandItemIconElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1930,7 +1930,7 @@ export class CommandItemIconElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -1994,24 +1994,24 @@ export class CommandItemContentElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -2033,18 +2033,18 @@ export class CommandItemContentElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -2053,15 +2053,15 @@ export class CommandItemContentElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -2071,8 +2071,8 @@ export class CommandItemContentElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -2082,9 +2082,9 @@ export class CommandItemContentElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -2093,8 +2093,8 @@ export class CommandItemContentElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -2108,10 +2108,10 @@ export class CommandItemContentElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -2121,8 +2121,8 @@ export class CommandItemContentElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -2138,18 +2138,18 @@ export class CommandItemContentElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -2157,9 +2157,9 @@ export class CommandItemContentElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -2171,8 +2171,8 @@ export class CommandItemContentElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2180,8 +2180,8 @@ export class CommandItemContentElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2191,7 +2191,7 @@ export class CommandItemContentElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -2255,24 +2255,24 @@ export class CommandItemLabelElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -2294,18 +2294,18 @@ export class CommandItemLabelElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -2314,15 +2314,15 @@ export class CommandItemLabelElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -2332,8 +2332,8 @@ export class CommandItemLabelElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -2343,9 +2343,9 @@ export class CommandItemLabelElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -2354,8 +2354,8 @@ export class CommandItemLabelElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -2369,10 +2369,10 @@ export class CommandItemLabelElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -2382,8 +2382,8 @@ export class CommandItemLabelElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -2399,18 +2399,18 @@ export class CommandItemLabelElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -2418,9 +2418,9 @@ export class CommandItemLabelElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -2432,8 +2432,8 @@ export class CommandItemLabelElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2441,8 +2441,8 @@ export class CommandItemLabelElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2452,7 +2452,7 @@ export class CommandItemLabelElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;
@@ -2516,24 +2516,24 @@ export class CommandItemDescriptionElement extends LitElement {
 
 
     .command {
-      --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
-      --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-command-size-max-width: 640px;
-      --fsds-command-size-max-height: 400px;
-      --fsds-command-size-top-offset: 10vh;
-      --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
-      --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
+      --_fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-command-size-max-width: 640px;
+      --_fsds-command-size-max-height: 400px;
+      --_fsds-command-size-top-offset: 10vh;
+      --_fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-command-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
+      --_fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
     }
 
     @layer components.defaults {
@@ -2555,18 +2555,18 @@ export class CommandItemDescriptionElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: var(--fsds-command-size-top-offset, 10vh);
+      padding-top: var(--fsds-command-size-top-offset, var(--_fsds-command-size-top-offset, 10vh));
       pointer-events: none;
 
       &[aria-disabled="true"] {
-        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, 0.5));
+        opacity: var(--fsds-command-design-disabled-appearance-opacity, var(--fsds-command-opacity-disabled, var(--_fsds-command-opacity-disabled, 0.5)));
       }
     }
 
     .command__overlay {
       position: absolute;
       inset: 0;
-      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, rgba(0,0,0,0.64)));
+      background-color: var(--fsds-command-design-overlay-background-fill, var(--fsds-command-color-overlay, var(--_fsds-command-color-overlay, rgba(0,0,0,0.64))));
       pointer-events: auto;
     }
 
@@ -2575,15 +2575,15 @@ export class CommandItemDescriptionElement extends LitElement {
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, 640px));
-      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
-      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
-      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
+      max-width: var(--fsds-command-design-dialog-sizing-max-width, var(--fsds-command-size-max-width, var(--_fsds-command-size-max-width, 640px)));
+      max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, var(--_fsds-command-size-max-height, 400px)));
+      background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, var(--_fsds-command-color-background, #ffffff)));
+      color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, var(--_fsds-command-color-border, #d0d0d0)));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
-      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
-      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
-      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
+      border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, var(--_fsds-command-border-width, 1px)));
+      border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
+      box-shadow: var(--fsds-command-design-dialog-elevation-shadow, var(--fsds-command-shadow, var(--_fsds-command-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a)));
       overflow: hidden;
       pointer-events: auto;
       box-sizing: border-box;
@@ -2593,8 +2593,8 @@ export class CommandItemDescriptionElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--fsds-command-design-input-wrapper-spacing-gap, 8px);
-      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
-      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, #d0d0d0));
+      padding: var(--fsds-command-design-input-wrapper-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
+      border-bottom-color: var(--fsds-command-design-input-wrapper-border-bottom-color, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
       border-bottom-style: var(--fsds-command-design-input-wrapper-border-bottom-style, solid);
       border-bottom-width: var(--fsds-command-design-input-wrapper-border-bottom-width, 1px);
     }
@@ -2604,9 +2604,9 @@ export class CommandItemDescriptionElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-search-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-search-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-search-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__input {
@@ -2615,8 +2615,8 @@ export class CommandItemDescriptionElement extends LitElement {
       border: 0;
       outline: none;
       padding: var(--fsds-command-design-input-spacing-padding, 0);
-      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-input-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-input-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       font-family: var(--fsds-command-design-input-typography-family, inherit);
     }
 
@@ -2630,10 +2630,10 @@ export class CommandItemDescriptionElement extends LitElement {
 
     .command__empty {
       display: block;
-      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, 8px));
+      padding: var(--fsds-command-design-empty-spacing-padding, var(--fsds-command-spacing-dialog-padding, var(--_fsds-command-spacing-dialog-padding, 8px)));
       text-align: var(--fsds-command-design-empty-typography-alignment, center);
-      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-empty-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-empty-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
     }
 
     .command__group {
@@ -2643,8 +2643,8 @@ export class CommandItemDescriptionElement extends LitElement {
     .command__groupHeading {
       display: block;
       padding: var(--fsds-command-design-group-heading-spacing-padding, 8px 12px 4px);
-      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-group-heading-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-group-heading-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       font-weight: var(--fsds-command-design-group-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-command-design-group-heading-typography-tracking, 0.04em);
@@ -2660,18 +2660,18 @@ export class CommandItemDescriptionElement extends LitElement {
       align-items: center;
       gap: var(--fsds-command-design-item-spacing-gap, 8px);
       padding: var(--fsds-command-design-item-spacing-padding, 8px 12px);
-      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, #141414));
+      color: var(--fsds-command-design-item-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
       cursor: pointer;
-      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, 6px));
+      border-radius: var(--fsds-command-design-item-shape-radius, var(--fsds-command-border-radius, var(--_fsds-command-border-radius, 6px)));
     }
 
     .command__item:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-command-design-condition-a27a1da9c734-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
     }
 
     .command__item[aria-selected="true"] {
-      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, #f7f7f7));
-      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, #141414));
+      background-color: var(--fsds-command-design-condition-7f281ded35b0-background-fill, var(--fsds-command-color-background-hover, var(--_fsds-command-color-background-hover, #f7f7f7)));
+      color: var(--fsds-command-design-condition-7f281ded35b0-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
     }
 
     .command__itemIcon {
@@ -2679,9 +2679,9 @@ export class CommandItemDescriptionElement extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, 8px));
-      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, 8px));
-      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, #727272));
+      width: var(--fsds-command-design-item-icon-sizing-width, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      height: var(--fsds-command-design-item-icon-sizing-height, var(--fsds-command-size-icon, var(--_fsds-command-size-icon, 8px)));
+      color: var(--fsds-command-design-item-icon-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
     }
 
     .command__itemContent {
@@ -2693,8 +2693,8 @@ export class CommandItemDescriptionElement extends LitElement {
 
     .command__itemLabel {
       display: block;
-      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, #141414));
-      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, 16px));
+      color: var(--fsds-command-design-item-label-foreground-color, var(--fsds-command-color-text, var(--_fsds-command-color-text, #141414)));
+      font-size: var(--fsds-command-design-item-label-typography-size, var(--fsds-command-text-size, var(--_fsds-command-text-size, 16px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2702,8 +2702,8 @@ export class CommandItemDescriptionElement extends LitElement {
 
     .command__itemDescription {
       display: block;
-      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, #727272));
-      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, 12px));
+      color: var(--fsds-command-design-item-description-foreground-color, var(--fsds-command-color-text-muted, var(--_fsds-command-color-text-muted, #727272)));
+      font-size: var(--fsds-command-design-item-description-typography-size, var(--fsds-command-text-size-small, var(--_fsds-command-text-size-small, 12px)));
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2713,7 +2713,7 @@ export class CommandItemDescriptionElement extends LitElement {
       display: block;
       height: 1px;
       margin: 4px 8px;
-      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, #d0d0d0));
+      background-color: var(--fsds-command-design-separator-background-fill, var(--fsds-command-color-border-light, var(--_fsds-command-color-border-light, #d0d0d0)));
     }
     }
   `;

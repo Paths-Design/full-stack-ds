@@ -70,12 +70,12 @@ export class FieldElement extends LitElement {
 
 
     .field {
-      --fsds-field-gap-y: var(--fsds-semantic-spacing-density-compact-sm, 8px);
-      --fsds-field-gap-meta: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-field-color-invalid-text: var(--fsds-semantic-color-foreground-danger, #d92d2e);
-      --fsds-field-label-font-size: var(--fsds-semantic-typography-body-small-font-size, 14px);
-      --fsds-field-label-color: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-field-gap-y: var(--fsds-semantic-spacing-density-compact-sm, 8px);
+      --_fsds-field-gap-meta: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-field-color-invalid-text: var(--fsds-semantic-color-foreground-danger, #d92d2e);
+      --_fsds-field-label-font-size: var(--fsds-semantic-typography-body-small-font-size, 14px);
+      --_fsds-field-label-color: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
 
     .field--idle {
@@ -100,7 +100,7 @@ export class FieldElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, 8px));
+      gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, var(--_fsds-field-gap-y, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -113,16 +113,16 @@ export class FieldElement extends LitElement {
 
     .field__label {
       display: inline-block;
-      font-size: var(--fsds-field-design-label-typography-size, var(--fsds-field-label-font-size, 14px));
+      font-size: var(--fsds-field-design-label-typography-size, var(--fsds-field-label-font-size, var(--_fsds-field-label-font-size, 14px)));
       font-weight: var(--fsds-field-design-label-typography-weight, 500);
-      color: var(--fsds-field-design-label-foreground-color, var(--fsds-field-label-color, #474647));
+      color: var(--fsds-field-design-label-foreground-color, var(--fsds-field-label-color, var(--_fsds-field-label-color, #474647)));
     }
 
     .field__header {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: var(--fsds-field-design-header-spacing-gap, var(--fsds-field-gap-meta, 4px));
+      gap: var(--fsds-field-design-header-spacing-gap, var(--fsds-field-gap-meta, var(--_fsds-field-gap-meta, 4px)));
     }
 
     .field__control {
@@ -135,26 +135,26 @@ export class FieldElement extends LitElement {
     .field__help {
       display: block;
       font-size: var(--fsds-field-design-help-typography-size, 0.875em);
-      color: var(--fsds-field-design-help-foreground-color, var(--fsds-field-color-fg, #141414));
+      color: var(--fsds-field-design-help-foreground-color, var(--fsds-field-color-fg, var(--_fsds-field-color-fg, #141414)));
     }
 
     .field__error {
       display: block;
       font-size: var(--fsds-field-design-error-typography-size, 0.875em);
-      color: var(--fsds-field-design-error-foreground-color, var(--fsds-field-color-invalid-text, #d92d2e));
+      color: var(--fsds-field-design-error-foreground-color, var(--fsds-field-color-invalid-text, var(--_fsds-field-color-invalid-text, #d92d2e)));
     }
 
     .field__meta {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-field-design-meta-spacing-gap, var(--fsds-field-gap-meta, 4px));
+      gap: var(--fsds-field-design-meta-spacing-gap, var(--fsds-field-gap-meta, var(--_fsds-field-gap-meta, 4px)));
     }
 
     .field__validatingIndicator {
       display: inline-flex;
       width: 1em;
       height: 1em;
-      color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, #141414));
+      color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, var(--_fsds-field-color-fg, #141414)));
     }
 
     .field--disabled .field__header, .field--disabled .field__meta {
@@ -278,12 +278,12 @@ export class FieldHeaderElement extends LitElement {
 
 
     .field {
-      --fsds-field-gap-y: var(--fsds-semantic-spacing-density-compact-sm, 8px);
-      --fsds-field-gap-meta: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-field-color-invalid-text: var(--fsds-semantic-color-foreground-danger, #d92d2e);
-      --fsds-field-label-font-size: var(--fsds-semantic-typography-body-small-font-size, 14px);
-      --fsds-field-label-color: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-field-gap-y: var(--fsds-semantic-spacing-density-compact-sm, 8px);
+      --_fsds-field-gap-meta: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-field-color-invalid-text: var(--fsds-semantic-color-foreground-danger, #d92d2e);
+      --_fsds-field-label-font-size: var(--fsds-semantic-typography-body-small-font-size, 14px);
+      --_fsds-field-label-color: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
 
     .field--idle {
@@ -308,7 +308,7 @@ export class FieldHeaderElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, 8px));
+      gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, var(--_fsds-field-gap-y, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -321,16 +321,16 @@ export class FieldHeaderElement extends LitElement {
 
     .field__label {
       display: inline-block;
-      font-size: var(--fsds-field-design-label-typography-size, var(--fsds-field-label-font-size, 14px));
+      font-size: var(--fsds-field-design-label-typography-size, var(--fsds-field-label-font-size, var(--_fsds-field-label-font-size, 14px)));
       font-weight: var(--fsds-field-design-label-typography-weight, 500);
-      color: var(--fsds-field-design-label-foreground-color, var(--fsds-field-label-color, #474647));
+      color: var(--fsds-field-design-label-foreground-color, var(--fsds-field-label-color, var(--_fsds-field-label-color, #474647)));
     }
 
     .field__header {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: var(--fsds-field-design-header-spacing-gap, var(--fsds-field-gap-meta, 4px));
+      gap: var(--fsds-field-design-header-spacing-gap, var(--fsds-field-gap-meta, var(--_fsds-field-gap-meta, 4px)));
     }
 
     .field__control {
@@ -343,26 +343,26 @@ export class FieldHeaderElement extends LitElement {
     .field__help {
       display: block;
       font-size: var(--fsds-field-design-help-typography-size, 0.875em);
-      color: var(--fsds-field-design-help-foreground-color, var(--fsds-field-color-fg, #141414));
+      color: var(--fsds-field-design-help-foreground-color, var(--fsds-field-color-fg, var(--_fsds-field-color-fg, #141414)));
     }
 
     .field__error {
       display: block;
       font-size: var(--fsds-field-design-error-typography-size, 0.875em);
-      color: var(--fsds-field-design-error-foreground-color, var(--fsds-field-color-invalid-text, #d92d2e));
+      color: var(--fsds-field-design-error-foreground-color, var(--fsds-field-color-invalid-text, var(--_fsds-field-color-invalid-text, #d92d2e)));
     }
 
     .field__meta {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-field-design-meta-spacing-gap, var(--fsds-field-gap-meta, 4px));
+      gap: var(--fsds-field-design-meta-spacing-gap, var(--fsds-field-gap-meta, var(--_fsds-field-gap-meta, 4px)));
     }
 
     .field__validatingIndicator {
       display: inline-flex;
       width: 1em;
       height: 1em;
-      color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, #141414));
+      color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, var(--_fsds-field-color-fg, #141414)));
     }
 
     .field--disabled .field__header, .field--disabled .field__meta {

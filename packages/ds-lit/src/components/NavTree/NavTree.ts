@@ -72,24 +72,24 @@ export class NavTreeElement extends LitElement {
 
 
     .nav-tree {
-      --fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
-      --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
-      --fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
+      --_fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
+      --_fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
+      --_fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
     }
 
     @layer components.defaults {
@@ -106,18 +106,18 @@ export class NavTreeElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       display: block;
-      margin-block-end: var(--fsds-nav-tree-size-margin-group, 8px);
+      margin-block-end: var(--fsds-nav-tree-size-margin-group, var(--_fsds-nav-tree-size-margin-group, 8px));
     }
 
     .nav-tree__heading {
       display: flex;
       align-items: center;
-      gap: var(--fsds-nav-tree-design-heading-spacing-gap, var(--fsds-nav-tree-size-gap-heading, 4px));
-      font-size: var(--fsds-nav-tree-design-heading-typography-size, var(--fsds-nav-tree-size-font-size-heading, 10px));
+      gap: var(--fsds-nav-tree-design-heading-spacing-gap, var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
+      font-size: var(--fsds-nav-tree-design-heading-typography-size, var(--fsds-nav-tree-size-font-size-heading, var(--_fsds-nav-tree-size-font-size-heading, 10px)));
       font-weight: var(--fsds-nav-tree-design-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-nav-tree-design-heading-typography-tracking, 0.04em);
-      color: var(--fsds-nav-tree-design-heading-foreground-color, var(--fsds-nav-tree-color-foreground-heading, #474647));
+      color: var(--fsds-nav-tree-design-heading-foreground-color, var(--fsds-nav-tree-color-foreground-heading, var(--_fsds-nav-tree-color-foreground-heading, #474647)));
     }
 
     .nav-tree__icon {
@@ -127,55 +127,55 @@ export class NavTreeElement extends LitElement {
     }
 
     .nav-tree__headingLink {
-      color: var(--fsds-nav-tree-design-heading-link-foreground-color, var(--fsds-nav-tree-color-foreground-heading, #474647));
+      color: var(--fsds-nav-tree-design-heading-link-foreground-color, var(--fsds-nav-tree-color-foreground-heading, var(--_fsds-nav-tree-color-foreground-heading, #474647)));
       text-decoration: none;
-      padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, var(--_fsds-nav-tree-size-padding-inline, 8px)));
+      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-heading-link-motion-duration, 120ms);
     }
 
     .nav-tree__headingLabel {
-      padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, var(--_fsds-nav-tree-size-padding-inline, 8px)));
+      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
     }
 
     .nav-tree__list {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-nav-tree-design-list-spacing-gap, var(--fsds-nav-tree-size-gap-item, 1px));
+      gap: var(--fsds-nav-tree-design-list-spacing-gap, var(--fsds-nav-tree-size-gap-item, var(--_fsds-nav-tree-size-gap-item, 1px)));
       list-style: none;
       margin-block: 0;
       padding-block: var(--fsds-nav-tree-design-list-spacing-padding-block, 0);
-      padding-inline-start: var(--fsds-nav-tree-design-list-spacing-padding-inline-start, var(--fsds-nav-tree-size-indent, 16px));
+      padding-inline-start: var(--fsds-nav-tree-design-list-spacing-padding-inline-start, var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       padding-inline-end: var(--fsds-nav-tree-design-list-spacing-padding-inline-end, 0);
     }
 
     .nav-tree__item {
       position: relative;
       display: block;
-      color: var(--fsds-nav-tree-design-item-foreground-color, var(--fsds-nav-tree-color-foreground-default, #474647));
-      font-size: var(--fsds-nav-tree-design-item-typography-size, var(--fsds-nav-tree-size-font-size-item, 14px));
+      color: var(--fsds-nav-tree-design-item-foreground-color, var(--fsds-nav-tree-color-foreground-default, var(--_fsds-nav-tree-color-foreground-default, #474647)));
+      font-size: var(--fsds-nav-tree-design-item-typography-size, var(--fsds-nav-tree-size-font-size-item, var(--_fsds-nav-tree-size-font-size-item, 14px)));
     }
 
     .nav-tree__item::before {
       content: "";
       position: absolute;
-      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, 16px));
+      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       top: 0;
       bottom: 0;
-      border-inline-start: 1px solid var(--fsds-nav-tree-color-connector, #d0d0d0);
+      border-inline-start: 1px solid var(--fsds-nav-tree-color-connector, var(--_fsds-nav-tree-color-connector, #d0d0d0));
     }
 
     .nav-tree__item::after {
       content: "";
       position: absolute;
-      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, 16px));
+      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       top: 50%;
-      width: calc(var(--fsds-nav-tree-size-indent, 16px) - var(--fsds-nav-tree-size-gap-heading, 4px));
-      border-block-start: 1px solid var(--fsds-nav-tree-color-connector, #d0d0d0);
+      width: calc(var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)) - var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
+      border-block-start: 1px solid var(--fsds-nav-tree-color-connector, var(--_fsds-nav-tree-color-connector, #d0d0d0));
     }
 
     .nav-tree__item:last-child::before {
@@ -186,41 +186,41 @@ export class NavTreeElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-gap, var(--fsds-nav-tree-size-gap-heading, 4px));
+      gap: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-gap, var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
       color: var(--fsds-nav-tree-design-condition-a5ce9422d04f-foreground-color, inherit);
       text-decoration: none;
-      padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-condition-a5ce9422d04f-motion-duration, 120ms);
     }
 
     .nav-tree__item > *:hover {
-      background-color: var(--fsds-nav-tree-design-condition-474d5cfdf987-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-474d5cfdf987-foreground-color, var(--fsds-nav-tree-color-foreground-hover, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-474d5cfdf987-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, var(--_fsds-nav-tree-state-layer-hover, 0.04)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-474d5cfdf987-foreground-color, var(--fsds-nav-tree-color-foreground-hover, var(--_fsds-nav-tree-color-foreground-hover, #141414)));
     }
 
     .nav-tree__item > *:focus-visible {
       outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
-      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, var(--_fsds-nav-tree-color-outline-focus, #0566fe)));
       outline-width: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .nav-tree__item > *[aria-current="page"] {
-      background-color: var(--fsds-nav-tree-design-condition-ad856367fa22-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-selected, 0.08) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-ad856367fa22-foreground-color, var(--fsds-nav-tree-color-foreground-current, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-ad856367fa22-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-selected, var(--_fsds-nav-tree-state-layer-selected, 0.08)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-ad856367fa22-foreground-color, var(--fsds-nav-tree-color-foreground-current, var(--_fsds-nav-tree-color-foreground-current, #141414)));
       font-weight: var(--fsds-nav-tree-design-condition-ad856367fa22-typography-weight, 600);
     }
 
     .nav-tree__headingLink:hover {
-      background-color: var(--fsds-nav-tree-design-condition-0db823818de5-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-0db823818de5-foreground-color, var(--fsds-nav-tree-color-foreground-heading-hover, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-0db823818de5-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, var(--_fsds-nav-tree-state-layer-hover, 0.04)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-0db823818de5-foreground-color, var(--fsds-nav-tree-color-foreground-heading-hover, var(--_fsds-nav-tree-color-foreground-heading-hover, #141414)));
     }
 
     .nav-tree__headingLink:focus-visible {
       outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
-      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, var(--_fsds-nav-tree-color-outline-focus, #0566fe)));
       outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
@@ -337,24 +337,24 @@ export class NavTreeListElement extends LitElement {
 
 
     .nav-tree {
-      --fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
-      --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
-      --fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
+      --_fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
+      --_fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
+      --_fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
     }
 
     @layer components.defaults {
@@ -371,18 +371,18 @@ export class NavTreeListElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       display: block;
-      margin-block-end: var(--fsds-nav-tree-size-margin-group, 8px);
+      margin-block-end: var(--fsds-nav-tree-size-margin-group, var(--_fsds-nav-tree-size-margin-group, 8px));
     }
 
     .nav-tree__heading {
       display: flex;
       align-items: center;
-      gap: var(--fsds-nav-tree-design-heading-spacing-gap, var(--fsds-nav-tree-size-gap-heading, 4px));
-      font-size: var(--fsds-nav-tree-design-heading-typography-size, var(--fsds-nav-tree-size-font-size-heading, 10px));
+      gap: var(--fsds-nav-tree-design-heading-spacing-gap, var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
+      font-size: var(--fsds-nav-tree-design-heading-typography-size, var(--fsds-nav-tree-size-font-size-heading, var(--_fsds-nav-tree-size-font-size-heading, 10px)));
       font-weight: var(--fsds-nav-tree-design-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-nav-tree-design-heading-typography-tracking, 0.04em);
-      color: var(--fsds-nav-tree-design-heading-foreground-color, var(--fsds-nav-tree-color-foreground-heading, #474647));
+      color: var(--fsds-nav-tree-design-heading-foreground-color, var(--fsds-nav-tree-color-foreground-heading, var(--_fsds-nav-tree-color-foreground-heading, #474647)));
     }
 
     .nav-tree__icon {
@@ -392,55 +392,55 @@ export class NavTreeListElement extends LitElement {
     }
 
     .nav-tree__headingLink {
-      color: var(--fsds-nav-tree-design-heading-link-foreground-color, var(--fsds-nav-tree-color-foreground-heading, #474647));
+      color: var(--fsds-nav-tree-design-heading-link-foreground-color, var(--fsds-nav-tree-color-foreground-heading, var(--_fsds-nav-tree-color-foreground-heading, #474647)));
       text-decoration: none;
-      padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, var(--_fsds-nav-tree-size-padding-inline, 8px)));
+      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-heading-link-motion-duration, 120ms);
     }
 
     .nav-tree__headingLabel {
-      padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, var(--_fsds-nav-tree-size-padding-inline, 8px)));
+      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
     }
 
     .nav-tree__list {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-nav-tree-design-list-spacing-gap, var(--fsds-nav-tree-size-gap-item, 1px));
+      gap: var(--fsds-nav-tree-design-list-spacing-gap, var(--fsds-nav-tree-size-gap-item, var(--_fsds-nav-tree-size-gap-item, 1px)));
       list-style: none;
       margin-block: 0;
       padding-block: var(--fsds-nav-tree-design-list-spacing-padding-block, 0);
-      padding-inline-start: var(--fsds-nav-tree-design-list-spacing-padding-inline-start, var(--fsds-nav-tree-size-indent, 16px));
+      padding-inline-start: var(--fsds-nav-tree-design-list-spacing-padding-inline-start, var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       padding-inline-end: var(--fsds-nav-tree-design-list-spacing-padding-inline-end, 0);
     }
 
     .nav-tree__item {
       position: relative;
       display: block;
-      color: var(--fsds-nav-tree-design-item-foreground-color, var(--fsds-nav-tree-color-foreground-default, #474647));
-      font-size: var(--fsds-nav-tree-design-item-typography-size, var(--fsds-nav-tree-size-font-size-item, 14px));
+      color: var(--fsds-nav-tree-design-item-foreground-color, var(--fsds-nav-tree-color-foreground-default, var(--_fsds-nav-tree-color-foreground-default, #474647)));
+      font-size: var(--fsds-nav-tree-design-item-typography-size, var(--fsds-nav-tree-size-font-size-item, var(--_fsds-nav-tree-size-font-size-item, 14px)));
     }
 
     .nav-tree__item::before {
       content: "";
       position: absolute;
-      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, 16px));
+      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       top: 0;
       bottom: 0;
-      border-inline-start: 1px solid var(--fsds-nav-tree-color-connector, #d0d0d0);
+      border-inline-start: 1px solid var(--fsds-nav-tree-color-connector, var(--_fsds-nav-tree-color-connector, #d0d0d0));
     }
 
     .nav-tree__item::after {
       content: "";
       position: absolute;
-      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, 16px));
+      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       top: 50%;
-      width: calc(var(--fsds-nav-tree-size-indent, 16px) - var(--fsds-nav-tree-size-gap-heading, 4px));
-      border-block-start: 1px solid var(--fsds-nav-tree-color-connector, #d0d0d0);
+      width: calc(var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)) - var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
+      border-block-start: 1px solid var(--fsds-nav-tree-color-connector, var(--_fsds-nav-tree-color-connector, #d0d0d0));
     }
 
     .nav-tree__item:last-child::before {
@@ -451,41 +451,41 @@ export class NavTreeListElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-gap, var(--fsds-nav-tree-size-gap-heading, 4px));
+      gap: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-gap, var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
       color: var(--fsds-nav-tree-design-condition-a5ce9422d04f-foreground-color, inherit);
       text-decoration: none;
-      padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-condition-a5ce9422d04f-motion-duration, 120ms);
     }
 
     .nav-tree__item > *:hover {
-      background-color: var(--fsds-nav-tree-design-condition-474d5cfdf987-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-474d5cfdf987-foreground-color, var(--fsds-nav-tree-color-foreground-hover, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-474d5cfdf987-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, var(--_fsds-nav-tree-state-layer-hover, 0.04)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-474d5cfdf987-foreground-color, var(--fsds-nav-tree-color-foreground-hover, var(--_fsds-nav-tree-color-foreground-hover, #141414)));
     }
 
     .nav-tree__item > *:focus-visible {
       outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
-      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, var(--_fsds-nav-tree-color-outline-focus, #0566fe)));
       outline-width: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .nav-tree__item > *[aria-current="page"] {
-      background-color: var(--fsds-nav-tree-design-condition-ad856367fa22-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-selected, 0.08) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-ad856367fa22-foreground-color, var(--fsds-nav-tree-color-foreground-current, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-ad856367fa22-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-selected, var(--_fsds-nav-tree-state-layer-selected, 0.08)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-ad856367fa22-foreground-color, var(--fsds-nav-tree-color-foreground-current, var(--_fsds-nav-tree-color-foreground-current, #141414)));
       font-weight: var(--fsds-nav-tree-design-condition-ad856367fa22-typography-weight, 600);
     }
 
     .nav-tree__headingLink:hover {
-      background-color: var(--fsds-nav-tree-design-condition-0db823818de5-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-0db823818de5-foreground-color, var(--fsds-nav-tree-color-foreground-heading-hover, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-0db823818de5-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, var(--_fsds-nav-tree-state-layer-hover, 0.04)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-0db823818de5-foreground-color, var(--fsds-nav-tree-color-foreground-heading-hover, var(--_fsds-nav-tree-color-foreground-heading-hover, #141414)));
     }
 
     .nav-tree__headingLink:focus-visible {
       outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
-      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, var(--_fsds-nav-tree-color-outline-focus, #0566fe)));
       outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
@@ -560,24 +560,24 @@ export class NavTreeItemElement extends LitElement {
 
 
     .nav-tree {
-      --fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
-      --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
-      --fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
+      --_fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
+      --_fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
+      --_fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
     }
 
     @layer components.defaults {
@@ -594,18 +594,18 @@ export class NavTreeItemElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       display: block;
-      margin-block-end: var(--fsds-nav-tree-size-margin-group, 8px);
+      margin-block-end: var(--fsds-nav-tree-size-margin-group, var(--_fsds-nav-tree-size-margin-group, 8px));
     }
 
     .nav-tree__heading {
       display: flex;
       align-items: center;
-      gap: var(--fsds-nav-tree-design-heading-spacing-gap, var(--fsds-nav-tree-size-gap-heading, 4px));
-      font-size: var(--fsds-nav-tree-design-heading-typography-size, var(--fsds-nav-tree-size-font-size-heading, 10px));
+      gap: var(--fsds-nav-tree-design-heading-spacing-gap, var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
+      font-size: var(--fsds-nav-tree-design-heading-typography-size, var(--fsds-nav-tree-size-font-size-heading, var(--_fsds-nav-tree-size-font-size-heading, 10px)));
       font-weight: var(--fsds-nav-tree-design-heading-typography-weight, 600);
       text-transform: uppercase;
       letter-spacing: var(--fsds-nav-tree-design-heading-typography-tracking, 0.04em);
-      color: var(--fsds-nav-tree-design-heading-foreground-color, var(--fsds-nav-tree-color-foreground-heading, #474647));
+      color: var(--fsds-nav-tree-design-heading-foreground-color, var(--fsds-nav-tree-color-foreground-heading, var(--_fsds-nav-tree-color-foreground-heading, #474647)));
     }
 
     .nav-tree__icon {
@@ -615,55 +615,55 @@ export class NavTreeItemElement extends LitElement {
     }
 
     .nav-tree__headingLink {
-      color: var(--fsds-nav-tree-design-heading-link-foreground-color, var(--fsds-nav-tree-color-foreground-heading, #474647));
+      color: var(--fsds-nav-tree-design-heading-link-foreground-color, var(--fsds-nav-tree-color-foreground-heading, var(--_fsds-nav-tree-color-foreground-heading, #474647)));
       text-decoration: none;
-      padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, var(--_fsds-nav-tree-size-padding-inline, 8px)));
+      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-heading-link-motion-duration, 120ms);
     }
 
     .nav-tree__headingLabel {
-      padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, var(--_fsds-nav-tree-size-padding-inline, 8px)));
+      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
     }
 
     .nav-tree__list {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-nav-tree-design-list-spacing-gap, var(--fsds-nav-tree-size-gap-item, 1px));
+      gap: var(--fsds-nav-tree-design-list-spacing-gap, var(--fsds-nav-tree-size-gap-item, var(--_fsds-nav-tree-size-gap-item, 1px)));
       list-style: none;
       margin-block: 0;
       padding-block: var(--fsds-nav-tree-design-list-spacing-padding-block, 0);
-      padding-inline-start: var(--fsds-nav-tree-design-list-spacing-padding-inline-start, var(--fsds-nav-tree-size-indent, 16px));
+      padding-inline-start: var(--fsds-nav-tree-design-list-spacing-padding-inline-start, var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       padding-inline-end: var(--fsds-nav-tree-design-list-spacing-padding-inline-end, 0);
     }
 
     .nav-tree__item {
       position: relative;
       display: block;
-      color: var(--fsds-nav-tree-design-item-foreground-color, var(--fsds-nav-tree-color-foreground-default, #474647));
-      font-size: var(--fsds-nav-tree-design-item-typography-size, var(--fsds-nav-tree-size-font-size-item, 14px));
+      color: var(--fsds-nav-tree-design-item-foreground-color, var(--fsds-nav-tree-color-foreground-default, var(--_fsds-nav-tree-color-foreground-default, #474647)));
+      font-size: var(--fsds-nav-tree-design-item-typography-size, var(--fsds-nav-tree-size-font-size-item, var(--_fsds-nav-tree-size-font-size-item, 14px)));
     }
 
     .nav-tree__item::before {
       content: "";
       position: absolute;
-      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, 16px));
+      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       top: 0;
       bottom: 0;
-      border-inline-start: 1px solid var(--fsds-nav-tree-color-connector, #d0d0d0);
+      border-inline-start: 1px solid var(--fsds-nav-tree-color-connector, var(--_fsds-nav-tree-color-connector, #d0d0d0));
     }
 
     .nav-tree__item::after {
       content: "";
       position: absolute;
-      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, 16px));
+      inset-inline-start: calc(-1 * var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)));
       top: 50%;
-      width: calc(var(--fsds-nav-tree-size-indent, 16px) - var(--fsds-nav-tree-size-gap-heading, 4px));
-      border-block-start: 1px solid var(--fsds-nav-tree-color-connector, #d0d0d0);
+      width: calc(var(--fsds-nav-tree-size-indent, var(--_fsds-nav-tree-size-indent, 16px)) - var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
+      border-block-start: 1px solid var(--fsds-nav-tree-color-connector, var(--_fsds-nav-tree-color-connector, #d0d0d0));
     }
 
     .nav-tree__item:last-child::before {
@@ -674,41 +674,41 @@ export class NavTreeItemElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-gap, var(--fsds-nav-tree-size-gap-heading, 4px));
+      gap: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-gap, var(--fsds-nav-tree-size-gap-heading, var(--_fsds-nav-tree-size-gap-heading, 4px)));
       color: var(--fsds-nav-tree-design-condition-a5ce9422d04f-foreground-color, inherit);
       text-decoration: none;
-      padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
+      padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, var(--_fsds-nav-tree-size-padding-block, 2px)));
+      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, var(--_fsds-nav-tree-size-radius, 6px)));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-condition-a5ce9422d04f-motion-duration, 120ms);
     }
 
     .nav-tree__item > *:hover {
-      background-color: var(--fsds-nav-tree-design-condition-474d5cfdf987-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-474d5cfdf987-foreground-color, var(--fsds-nav-tree-color-foreground-hover, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-474d5cfdf987-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, var(--_fsds-nav-tree-state-layer-hover, 0.04)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-474d5cfdf987-foreground-color, var(--fsds-nav-tree-color-foreground-hover, var(--_fsds-nav-tree-color-foreground-hover, #141414)));
     }
 
     .nav-tree__item > *:focus-visible {
       outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
-      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, var(--_fsds-nav-tree-color-outline-focus, #0566fe)));
       outline-width: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .nav-tree__item > *[aria-current="page"] {
-      background-color: var(--fsds-nav-tree-design-condition-ad856367fa22-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-selected, 0.08) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-ad856367fa22-foreground-color, var(--fsds-nav-tree-color-foreground-current, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-ad856367fa22-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-selected, var(--_fsds-nav-tree-state-layer-selected, 0.08)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-ad856367fa22-foreground-color, var(--fsds-nav-tree-color-foreground-current, var(--_fsds-nav-tree-color-foreground-current, #141414)));
       font-weight: var(--fsds-nav-tree-design-condition-ad856367fa22-typography-weight, 600);
     }
 
     .nav-tree__headingLink:hover {
-      background-color: var(--fsds-nav-tree-design-condition-0db823818de5-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent));
-      color: var(--fsds-nav-tree-design-condition-0db823818de5-foreground-color, var(--fsds-nav-tree-color-foreground-heading-hover, #141414));
+      background-color: var(--fsds-nav-tree-design-condition-0db823818de5-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, var(--_fsds-nav-tree-state-layer-hover, 0.04)) * 100%), transparent));
+      color: var(--fsds-nav-tree-design-condition-0db823818de5-foreground-color, var(--fsds-nav-tree-color-foreground-heading-hover, var(--_fsds-nav-tree-color-foreground-heading-hover, #141414)));
     }
 
     .nav-tree__headingLink:focus-visible {
       outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
-      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, var(--_fsds-nav-tree-color-outline-focus, #0566fe)));
       outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
