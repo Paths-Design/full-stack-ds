@@ -279,7 +279,10 @@ describe("Unity passive anatomy path", () => {
     const label = emit(irFor("Label", "UnrelatedLabel"));
     expect(label).toContain("public partial class UnrelatedLabel : TextElement");
     expect(label).toContain('AddToClassList("label")');
-    expect(label).not.toMatch(/HtmlFor|public string Form\b/);
+    expect(label).toContain("public string HtmlFor { get; set; }");
+    expect(label).toContain("public VisualElement AssociatedControl { get; set; }");
+    expect(label).toContain("RegisterCallback<ClickEvent>");
+    expect(label).not.toMatch(/public string Form\b/);
     const crumbs = emit(irFor("Breadcrumbs", "UnrelatedCrumbs"));
     expect(crumbs).toContain("public partial class UnrelatedCrumbs : VisualElement");
     expect(crumbs).toContain("public partial class UnrelatedCrumbsList : VisualElement");
@@ -448,6 +451,8 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public TextControl Control { get; }");
     expect(source).toContain("public string Value { get => Control.Value; set => Control.Value = value; }");
     expect(source).toContain("public string Placeholder { get => Control.Placeholder; set => Control.Placeholder = value; }");
+    expect(source).toContain("public string DefaultValue { get => Control.DefaultValue; set => Control.DefaultValue = value; }");
+    expect(source).toContain('EnableInClassList("input--invalid", value)');
     expect(source).toContain("Control = TextControl.Attach(this);");
     expect(source).not.toMatch(/AriaLabel|public bool Required|public string Name /);
   });

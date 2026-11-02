@@ -407,10 +407,17 @@
     },
     {
       "id": "anatomy-textinput-form-bindings-refused",
-      "match": ["contract:/anatomy/dom/bindings/type", "contract:/anatomy/dom/bindings/name", "contract:/anatomy/dom/bindings/required", "contract:/anatomy/dom/bindings/aria-invalid"],
+      "match": ["contract:/anatomy/dom/bindings/type", "contract:/anatomy/dom/bindings/name", "contract:/anatomy/dom/bindings/required"],
       "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
       "disposition": "refused",
-      "reason": "HTML input type/name/required and ARIA validity bindings have no UI Toolkit counterpart; the native TextField exposes none of them and the generated control withholds those props."
+      "reason": "HTML input type/name/required bindings have no UI Toolkit counterpart; the generated control withholds those props."
+    },
+    {
+      "id": "anatomy-textinput-invalid-binding-lowered",
+      "match": ["contract:/anatomy/dom/bindings/aria-invalid"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "lowered",
+      "via": "walker.ts: the bound invalid prop toggles the authored invalid style carrier; native accessibility exposure is not claimed."
     },
     {
       "id": "anatomy-textinput-child-bindings-lowered",
@@ -1143,10 +1150,17 @@
     },
     {
       "id": "prop-textinput-form-fields-refused",
-      "match": ["contract:/props/*/members/plain:type/**", "contract:/props/*/members/plain:name/**", "contract:/props/*/members/plain:required/**", "contract:/props/*/members/plain:invalid/**"],
+      "match": ["contract:/props/*/members/plain:type/**", "contract:/props/*/members/plain:name/**", "contract:/props/*/members/plain:required/**"],
       "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
       "disposition": "refused",
-      "reason": "HTML input type, form name/required and validity state have no UI Toolkit counterpart; the generated TextField exposes no form or ARIA validity API."
+      "reason": "HTML input type and form name/required have no UI Toolkit counterpart; the generated TextField exposes no form submission or validation API."
+    },
+    {
+      "id": "prop-textinput-invalid-lowered",
+      "match": ["contract:/props/*/members/plain:invalid/**"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "lowered",
+      "via": "walker.ts: Invalid toggles the native style class; ARIA validity is not projected."
     },
     {
       "id": "prop-item-group-options",
@@ -1434,10 +1448,16 @@
     },
     {
       "id": "prop-field-association-pending",
-      "match": ["contract:/props/*/members/plain:htmlFor/**", "contract:/props/*/members/plain:form/**"],
+      "match": ["contract:/props/*/members/plain:form/**"],
       "disposition": "pending",
       "phase": "P4",
-      "reason": "Field association is a DOM label/form linkage; UI Toolkit has no form-association model, so the generated wrapper exposes no HtmlFor/Form property until the P4 field family."
+      "reason": "UI Toolkit has no HTML form ownership model, so the generated label withholds Form."
+    },
+    {
+      "id": "prop-field-association-lowered",
+      "match": ["contract:/props/*/members/plain:htmlFor/**"],
+      "disposition": "lowered",
+      "via": "walker.ts: the associated-label host exposes HtmlFor and focuses the named native control on activation."
     },
     {
       "id": "prop-decorative-separator-refused",
@@ -2442,6 +2462,14 @@
       "reason": "USS has no intrinsic sizing keywords; the projection lists these declarations uss-scalar in Controls.unsupported.json."
     },
     {
+      "id": "styles-invalid-state-modifier-lowered",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "^[.]?[a-z-]+--invalid([^a-z-]|$)" },
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "lowered",
+      "via": "uss.ts: the native invalid modifier and focus predicate project the authored color declarations."
+    },
+    {
       "id": "styles-modifier-state-selector",
       "match": ["styles:/**"],
       "declaration": { "keyPattern": "--[a-z0-9-]+:(?:hover|active|focus|focus-visible)" },
@@ -2478,11 +2506,18 @@
       "reason": "UI Toolkit has no fixed/sticky positioning; the projection lists the declaration uss-scalar and ModalSurface sets its own absolute blocking layout."
     },
     {
+      "id": "styles-invalid-state-variable-lowered",
+      "match": ["styles:/--invalid/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "lowered",
+      "via": "uss.ts: the normalized invalid binding supplies a native modifier carrier and projects the authored border color."
+    },
+    {
       "id": "styles-invalid-state-variable-pending",
       "match": ["styles:/--invalid/**"],
       "disposition": "pending",
       "phase": "P4",
-      "reason": "The invalid state variable has no native carrier on the generated text field; its declarations wait on the P4 state-carrier family and are ledgered pending."
+      "reason": "A composite field has no native invalid carrier on its wrapped input."
     },
     {
       "id": "styles-invalid-state-modifier-pending",
@@ -2490,7 +2525,7 @@
       "declaration": { "keyPattern": "^[.]?[a-z-]+--invalid([^a-z-]|$)" },
       "disposition": "pending",
       "phase": "P4",
-      "reason": "The invalid state has no native carrier on the generated text field; its modifier-state selectors wait on the P4 state-carrier family and are ledgered pending."
+      "reason": "Composite field invalid selectors have no native carrier on the wrapped input."
     },
     {
       "id": "styles-shuttle-list-size-refused",

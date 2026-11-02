@@ -17,6 +17,7 @@ import type { GodotAnatomyPlan, GodotSurfacePlan } from "./plan-types.js";
 import { godotCompositePlan } from "./composite-plan.js";
 import { godotGlyphPlan } from "./glyph-plan.js";
 import { godotGlyphCatalog } from "./glyph-catalog.js";
+import { godotFormPlan, godotFormFiles } from "./form-plan.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
 import { nativeLoopVisualPlan } from "../native-loop-visual.js";
 import { loadTargetRegistryConfigV1 } from "../../target-packs/config.js";
@@ -194,6 +195,8 @@ export function godotPlan(ir: ComponentIR) {
   if (composite) return composite;
   const action = godotActionPlan(ir);
   if (action) return action;
+  const form = godotFormPlan(ir);
+  if (form) return form;
   const staticContent = staticPlan(ir);
   if (staticContent) return staticContent;
   // A wider surface dispatches ahead of the generic shape so an overlay keeps
@@ -316,6 +319,8 @@ export function createGodotEmitter(): FrameworkEmitter {
     discoverComponentIds: root => fs.existsSync(root) ? fs.readdirSync(root).filter(n => fs.existsSync(path.join(root,n,`${n}.gd`))).sort() : [],
     emitComponent(ir, opts) {
       const plan = godotPlan(ir);
+      if (plan.operation === "text-input" || plan.operation === "associated-label")
+        return godotFormFiles(ir, plan as NonNullable<ReturnType<typeof godotFormPlan>>);
       if (plan.operation === "surface" && "anchor" in plan)
         return surfaceFiles(ir, plan as GodotSurfacePlan, themeColor(ir), declaredDefaults(ir));
       if (plan.operation === "anatomy")

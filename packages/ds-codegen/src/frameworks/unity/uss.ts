@@ -57,6 +57,7 @@ import path from "node:path";
 import type { ComponentIR } from "../../ir.js";
 import type { NativeStyleDeclarationIR, NativeStylePredicateIR, NativeStyleRuleIR } from "../../native-style-rules.js";
 import { tokenSlug } from "../../token-path.js";
+import { nativeFormPlan } from "../native-form-plan.js";
 import { disabledProp, hasChannel, unityLowering, type UnityLowering } from "./behaviors.js";
 import { parseTokenCss, resolveTokenScalar, type ScalarResolution, type TokenCssScopes, type TokenLookup } from "./token-sources.js";
 
@@ -736,6 +737,12 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
       case "variant": {
         if (channel !== undefined && predicate.value === "true" && predicate.axis === channel.valueProp) { failure = placeState(undefined); break; }
         if (predicate.value === "true" && predicate.axis === ctx.disabledProp) { failure = atOwner(undefined, ":disabled", hostPseudo); break; }
+        const form = lowering.behavior === "TextInput" ? nativeFormPlan(ctx.ir) : undefined;
+        if (form?.kind === "text-input" && predicate.axis === form.invalidProp && predicate.value === "true") {
+          hostVariant.push(`.${ctx.prefix}--invalid`);
+          carriers.push(predicate.axis);
+          break;
+        }
         const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === predicate.axis);
         if (!modifier || !ctx.ir.variants[predicate.axis]?.includes(predicate.value)) { failure = "uss-selector"; break; }
         hostVariant.push(`.${ctx.prefix}--${modifier.valuePrefix ?? ""}${predicate.value}`);

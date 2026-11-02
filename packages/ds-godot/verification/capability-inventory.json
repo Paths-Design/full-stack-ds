@@ -3,16 +3,16 @@
   "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
   "boundary": {
     "schema": "godot-support-boundary.v1",
-    "rules": 168,
+    "rules": 174,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8926,
+      "lowered": 8925,
       "pending": 16,
-      "refused": 8642
+      "refused": 8643
     },
     "deadRules": []
   },
-  "variances": 183,
+  "variances": 174,
   "components": [
     {
       "component": "Accordion",
@@ -1028,7 +1028,7 @@
       "component": "Input",
       "admitted": true,
       "emitted": true,
-      "operation": "anatomy",
+      "operation": "text-input",
       "diagnostic": null,
       "contractSha256": "00fe5055c6d312cff2884e38dfb0528ff7ea67b8d30045766b725dd208c68227",
       "sidecarSha256": {
@@ -1036,75 +1036,30 @@
         "styles": "ec374be2386462f276ac46b67ebfde688d7bd19ac079a8318520459d383512a9"
       },
       "receipt": {
-        "operation": "anatomy",
+        "operation": "text-input",
         "excluded": [
           "type",
-          "value",
-          "defaultValue",
-          "onChange",
-          "placeholder",
-          "disabled",
-          "invalid",
-          "required",
           "name",
-          "ariaLabel",
-          "ariaLabelledby"
+          "ariaLabel"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 42
+        "nonClaimCount": 26
       },
-      "variance": [
-        {
-          "prop": "value",
-          "rule": "prop-channel-value"
-        },
-        {
-          "prop": "defaultValue",
-          "rule": "prop-channel-default"
-        },
-        {
-          "prop": "onChange",
-          "rule": "prop-channel-change"
-        },
-        {
-          "prop": "placeholder",
-          "rule": "prop-content-string"
-        },
-        {
-          "prop": "disabled",
-          "rule": "prop-boolean-state"
-        },
-        {
-          "prop": "invalid",
-          "rule": "prop-validation-state"
-        },
-        {
-          "prop": "required",
-          "rule": "prop-validation-state"
-        },
-        {
-          "prop": "name",
-          "rule": "prop-glyph-name"
-        },
-        {
-          "prop": "ariaLabel",
-          "rule": "prop-aria-label"
-        }
-      ],
+      "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 203,
+          "lowered": 199,
           "pending": 0,
-          "refused": 129
+          "refused": 133
         },
-        "digest": "a6e6a7c4364961b2ebc3c42c68f2f7ed7debe078c8446fa997a37f157ae93746"
+        "digest": "2668dffe7db73c0d3229f75df15220a3aaa059d37990d32ad9eef81a277adb00"
       }
     },
     {
       "component": "Label",
       "admitted": true,
       "emitted": true,
-      "operation": "anatomy",
+      "operation": "associated-label",
       "diagnostic": null,
       "contractSha256": "cf5df84deb724f5172ad45afcfb880ec4702b835bff8d3e846987e6c8cfe78d3",
       "sidecarSha256": {
@@ -1112,22 +1067,21 @@
         "styles": "994f5e00ee30d60c7e473c81b8b28327912fabdb08ee62a4a14c643effa237aa"
       },
       "receipt": {
-        "operation": "anatomy",
+        "operation": "associated-label",
         "excluded": [
-          "htmlFor",
           "form"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 6
+        "nonClaimCount": 3
       },
       "variance": [],
       "boundary": {
         "counts": {
-          "lowered": 25,
+          "lowered": 28,
           "pending": 0,
-          "refused": 28
+          "refused": 25
         },
-        "digest": "3c315e25dbaa98138a8732a9a83bd54187f39ad0b33256a647cf568427b1c3a3"
+        "digest": "41a0e0d48d5cc4f85c894834f5909916bc3c29053ce38a6e9418f7cf9af122da"
       }
     },
     {
