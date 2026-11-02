@@ -82,16 +82,24 @@ const SAFE_HREF_PROTOCOLS = new Set(["http:", "https:", "mailto:"]);
  */
 export function sanitizeHref(raw: string): string | null {
   const trimmed = raw.trim();
-  if (trimmed === "") return null;
+  // Preserve existing edge-whitespace handling, then apply the URL parser's
+  // C0/space edge trim and ASCII tab/newline removal before classifying schemes.
+  // https://url.spec.whatwg.org/#concept-basic-url-parser
+  let start = 0;
+  let end = trimmed.length;
+  while (start < end && trimmed.charCodeAt(start) <= 0x20) start += 1;
+  while (end > start && trimmed.charCodeAt(end - 1) <= 0x20) end -= 1;
+  const normalized = trimmed.slice(start, end).replace(/[\t\n\r]/g, "");
+  if (normalized === "") return null;
   // A scheme is `letters [letters/digits/+/./-]* :` at the start.
-  const schemeMatch = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.exec(trimmed);
+  const schemeMatch = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.exec(normalized);
   if (schemeMatch) {
     return SAFE_HREF_PROTOCOLS.has(schemeMatch[0].toLowerCase())
-      ? trimmed
+      ? normalized
       : null;
   }
   // No scheme: anchor, query, or relative path — safe by construction.
-  return trimmed;
+  return normalized;
 }
 
 // ---------------------------------------------------------------------------

@@ -154,6 +154,35 @@ describe("sanitizeHref", () => {
     expect(sanitizeHref("unknown-scheme:whatever")).toBeNull();
     expect(sanitizeHref("   ")).toBeNull();
   });
+
+  it.each(["\t", "\n", "\r", "\r\n"])("classifies schemes after ASCII tab/newline preprocessing (%j)", control => {
+    for (const scheme of ["custom", "javascript", "data", "vbscript"]) {
+      const target = scheme.slice(0, 2) + control + scheme.slice(2) + ":unused";
+      expect(new URL(target, "https://base.example/").protocol).toBe(scheme + ":");
+      expect(sanitizeHref(target), target).toBeNull();
+    }
+    expect(sanitizeHref("ht" + control + "tps://example.com/path")).toBe("https://example.com/path");
+    expect(sanitizeHref("ma" + control + "ilto:a@example.com")).toBe("mailto:a@example.com");
+  });
+
+  it.each(Array.from({ length: 33 }, (_, point) => point))("handles URL edge code point %i before admission", point => {
+    const edge = String.fromCharCode(point);
+    const target = edge + "custom:unused" + edge;
+    expect(new URL(target, "https://base.example/").protocol).toBe("custom:");
+    expect(sanitizeHref(target)).toBeNull();
+    expect(sanitizeHref(edge + "https://example.com/path" + edge)).toBe("https://example.com/path");
+  });
+
+  it("preserves relative, query, fragment, encoded and Unicode URL content", () => {
+    for (const target of ["?q=hello world", "#عنوان", "./café/日本語", "cu%09stom:sample", "cu\u0001stom:sample", "cust\u200bom:sample", "./\u00a0name"]) {
+      expect(new URL(target, "https://base.example/").protocol).toBe("https:");
+      expect(sanitizeHref(target), target).toBe(target);
+    }
+  });
+
+  it("rejects a control-only target after URL preprocessing", () => {
+    expect(sanitizeHref("\u0000\t\r \u001f")).toBeNull();
+  });
 });
 
 describe("security doctrine", () => {
@@ -169,6 +198,13 @@ describe("security doctrine", () => {
     expect(marks).toEqual([
       { kind: "link", href: null, children: [{ kind: "text", text: "click" }] },
     ]);
+  });
+
+  it.each(["cu\tstom:unused", "\u0000custom:unused", "\u001fCuStOm:unused"])("degrades normalized unsupported document targets without losing labels (%j)", target => {
+    expect(parseMarks(`[**نص 日本語**](${target})`)).toEqual([
+      { kind: "link", href: null, children: [{ kind: "strong", children: [{ kind: "text", text: "نص 日本語" }] }] },
+    ]);
+    expect(collectMarkdownText(parseMarkdown(`[نص 日本語](${target})`))).toBe("نص 日本語");
   });
 });
 
