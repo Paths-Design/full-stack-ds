@@ -1,9 +1,10 @@
 id: NPM-ANDROID-PACKED-CONSUMER-01
 title: 'Verify an installed npm consumer in a real Android emulator'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: npm-android-consumer
 created_at: '2026-11-02T22:36:19.034Z'
-updated_at: '2026-11-02T22:36:19.034Z'
+updated_at: '2026-11-02T22:42:27.649Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
