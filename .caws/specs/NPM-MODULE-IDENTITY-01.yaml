@@ -1,0 +1,61 @@
+id: NPM-MODULE-IDENTITY-01
+title: 'Share npm implementation identity across ESM and CommonJS'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-02T04:26:22.129Z'
+updated_at: '2026-11-02T04:26:22.129Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Eight npm manifests and React Vue Lit library build pipelines and installed consumers'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-react'
+    - 'packages/ds-vue'
+    - 'packages/ds-lit'
+    - 'packages/ds-svelte/package.json'
+    - 'packages/ds-svelte/README.md'
+    - 'packages/ds-angular/package.json'
+    - 'packages/ds-angular/README.md'
+    - 'packages/ds-react-native/package.json'
+    - 'packages/ds-react-native/README.md'
+    - 'packages/ds-tokens/package.json'
+    - 'packages/ds-tokens/README.md'
+    - 'packages/ds-iconography/package.json'
+    - 'packages/ds-iconography/README.md'
+    - 'scripts/emit-commonjs-facades.mjs'
+    - 'scripts/emit-commonjs-facades.test.mjs'
+    - 'scripts/release-package-check'
+    - 'scripts/public-types-consumer'
+  out: []
+invariants:
+  - 'Public exports CSS paths declarations and authored framework behavior remain compatible; no process-global export cache or duplicate runtime implementation graph'
+  - 'Node tooling and synchronous CommonJS consumption require Node 22.19 or later as explicitly approved; browser and native runtime requirements remain separate'
+acceptance:
+  - id: A1
+    given: 'React Vue and Lit installed tarballs'
+    when: 'ESM and CommonJS entries are co-loaded in both orders on Node 22.19'
+    then: 'shared export identities translation providers and Lit registrations remain coherent without duplicate runtime graphs'
+  - id: A2
+    given: 'existing public exports declarations and browser imports'
+    when: 'clean library builds type consumers and five browser consumers execute'
+    then: 'public paths CSS fresh declaration graphs and ESM browser module consumption remain valid without CommonJS implementation chunks'
+  - id: A3
+    given: 'React and Lit library watch builds'
+    when: 'runtime and type-only sources change or declaration errors are introduced and repaired'
+    then: 'fresh ESM runtime both declaration formats and facades recover through the same watcher without concurrent cleaners or false completion'
+  - id: A4
+    given: 'all eight release packages'
+    when: 'manifests tarballs strict public type consumers native Metro and required regression gates are checked'
+    then: 'approved Node floor is explicit payloads pass and actual proof limits remain recorded'
+observability:
+  - 'Retain fresh-process load-order failures and fixes declaration diagnostics watch traces module graphs browser artifacts and exact tarball identities in ignored canonical release evidence'
+rollback:
+  - 'Revert this slice and rebuild the three affected library distributions'
+non_functional: {}
+contracts:
+  - name: 'public-module-identity'
+    type: behavior
+    path: 'scripts/release-package-check/runtime.mjs'
