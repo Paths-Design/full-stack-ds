@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFi
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { citationData, citationReact, citationVue, citationSvelteState, citationSvelteTemplate, citationAngularTemplate, citationAngularFields, citationLit, verifyBlockquote } from "./blockquote.mjs";
 
 const WEB = ["react", "vue", "svelte", "angular", "lit"];
 const imports = framework => 'import "@full-stack-ds/tokens/tokens.css";\n' + (framework === "lit" ? "" : `import "@full-stack-ds/${framework}/styles.css";\n`);
@@ -19,9 +20,12 @@ const expandedPostcardCatalog = { Postcard: { likes: "Anzahl der Gefällt-mir-Ma
 const react = `${imports("react")}
 import * as React from "react";
 import { createRoot } from "react-dom/client";
+import { Blockquote } from "@full-stack-ds/react";
 import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, useFsdsMessages, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/react";
 import { FsdsMessagesProvider } from "@full-stack-ds/react/primitives";
 ${postcardData}
+${citationData}
+${citationReact}
 function PostcardConsumer() {
   const [author, setAuthor] = React.useState(postcardAuthor);
   const [stats, setStats] = React.useState(initialPostcardStats);
@@ -56,6 +60,7 @@ function App() {
   };
   const messages = useFsdsMessages("ReleaseProbe", { label: "Untranslated" });
   return React.createElement("main", null,
+    React.createElement(CitationConsumer),
     React.createElement(PostcardConsumer),
     React.createElement(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled, onClick: () => setCount(value => value + 1) }, "Packed action"),
     React.createElement(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
@@ -93,9 +98,12 @@ createRoot(document.getElementById("app")!).render(React.createElement(FsdsMessa
 `;
 const vue = `${imports("vue")}
 import { createApp, h, ref } from "vue";
+import { Blockquote } from "@full-stack-ds/vue";
 import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/vue";
 import { provideFsdsMessages } from "@full-stack-ds/vue";
 ${postcardData}
+${citationData}
+${citationVue}
 const PostcardConsumer = { setup() {
   const author = ref(postcardAuthor);
   const stats = ref(initialPostcardStats);
@@ -131,6 +139,7 @@ createApp({ setup() {
     linkEvents.value.push({ hash: location.hash, before, after: event.defaultPrevented });
   };
   return () => h("main", null, [
+    h(CitationConsumer),
     h(PostcardConsumer),
     h(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled: disabled.value, onClick: () => { count.value += 1; } }, { default: () => "Packed action" }),
     h(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
@@ -171,9 +180,12 @@ createApp({ setup() {
 } }).mount("#app");
 `;
 const svelteApp = `<script lang="ts">
+  import { Blockquote } from "@full-stack-ds/svelte";
   import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/svelte";
   import { setFsdsMessages } from "@full-stack-ds/svelte/primitives";
   ${postcardData}
+  ${citationData}
+  ${citationSvelteState}
   let postcardCurrentAuthor = $state(postcardAuthor);
   let postcardStats = $state(initialPostcardStats);
   let postcardCatalog = $state({});
@@ -196,6 +208,7 @@ const svelteApp = `<script lang="ts">
   };
 </script>
 <main>
+  ${citationSvelteTemplate}
   <section id="postcard-consumer">
     <button id="postcard-update" onclick={() => { postcardStats = updatedPostcardStats; }}>Update post counts</button>
     <button id="postcard-translate" onclick={() => { postcardCatalog = translatedPostcardCatalog; }}>Translate post</button>
@@ -247,12 +260,15 @@ const svelteApp = `<script lang="ts">
 const angular = `${imports("angular")}
 import { Component, enableProdMode, provideZonelessChangeDetection, signal } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
+import { BlockquoteComponent } from "@full-stack-ds/angular";
 import { ButtonComponent, IconComponent, LinksComponent, PostcardComponent, type PostcardStats, type LinkActivationEvent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent } from "@full-stack-ds/angular";
 import { provideFsdsMessages, type FsdsMessageCatalog } from "@full-stack-ds/angular";
 ${postcardData}
+${citationData}
 const postcardCatalog = signal<FsdsMessageCatalog>({});
-@Component({ selector: "packed-consumer", standalone: true, imports: [ButtonComponent, IconComponent, LinksComponent, PostcardComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
+@Component({ selector: "packed-consumer", standalone: true, imports: [BlockquoteComponent, ButtonComponent, IconComponent, LinksComponent, PostcardComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
   <main>
+    ${citationAngularTemplate}
     <section id="postcard-consumer">
       <button id="postcard-update" (click)="updatePostcard()">Update post counts</button>
       <button id="postcard-translate" (click)="translatePostcard()">Translate post</button>
@@ -301,6 +317,7 @@ const postcardCatalog = signal<FsdsMessageCatalog>({});
     </fsds-table></section>
   </main>\` })
 class PackedConsumer {
+  ${citationAngularFields}
   readonly postcardAuthor = signal(postcardAuthor);
   readonly postcardStats = signal<PostcardStats>(initialPostcardStats);
   readonly postcardDirection = signal("ltr");
@@ -333,9 +350,12 @@ enableProdMode();
 bootstrapApplication(PackedConsumer, { providers: [provideZonelessChangeDetection(), provideFsdsMessages(postcardCatalog)] }).catch(error => { console.error(error); throw error; });
 `;
 const lit = `${imports("lit")}
+import { BlockquoteElement } from "@full-stack-ds/lit";
 import { ButtonElement, IconElement, LinksElement, PostcardElement, type PostcardStats, type LinkActivationEvent, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
 import { StackElement, setFsdsMessages } from "@full-stack-ds/lit/primitives";
 ${postcardData}
+${citationData}
+${citationLit}
 if (StackElement !== RootStack) throw new Error("Public entries have different Stack constructors");
 const stack = new StackElement();
 stack.id = "packed-stack";
@@ -985,6 +1005,7 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         await expect(count).toHaveText("2");
         observation.activation = { enabledCounts: [0, 1, 2], disabledCount: 1 };
         await verifyPostcard({ page, framework, evidence, expect, observation });
+        await verifyBlockquote({ page, framework, evidence, expect, observation });
         await page.screenshot({ path: join(evidence, `packed-${framework}.png`), fullPage: true });
         assert.deepEqual(failures, [], framework + ": browser failures");
         observation.passed = true;

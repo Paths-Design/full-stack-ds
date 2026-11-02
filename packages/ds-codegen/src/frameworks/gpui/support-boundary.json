@@ -1461,7 +1461,8 @@
       "match": [
         "contract:/props/*/members/*:cite",
         "contract:/props/*/members/*:cite/**",
-        "contract:/props/cite"
+        "contract:/props/cite",
+        "contract:/anatomy/dom/bindings/cite"
       ],
       "disposition": "pending",
       "reason": "citation metadata has no GPUI rendering"

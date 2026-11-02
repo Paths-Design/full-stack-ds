@@ -10,7 +10,31 @@ type LProps = Pick<LComponent, "postId" | "author" | "timestamp" | "stats">;
 const postcardBase = `const base = { postId: "packed", author: { name: "ليلى 山田", handle: "@layla", avatar: "avatar.png" }, timestamp: "2026-11-01" };`;
 const postcardNativeImports = `import type { PostcardProps, PostcardStats, PostcardStatValue } from "@full-stack-ds/react-native";`;
 
+const blockquoteWebImports = `
+import type { BlockquoteProps as R } from "@full-stack-ds/react";
+import type { BlockquoteProps as V } from "@full-stack-ds/vue";
+import type { BlockquoteProps as S } from "@full-stack-ds/svelte";
+import type { BlockquoteComponent } from "@full-stack-ds/angular";
+import type { BlockquoteElement } from "@full-stack-ds/lit";
+type A = Pick<BlockquoteComponent, "cite">;
+type L = Pick<BlockquoteElement, "cite">;
+`;
+
 export const webCases = [
+  {
+    name: "blockquote-optional-source-url",
+    source: blockquoteWebImports + ["R", "V", "S", "A", "L"].map(type => `
+const ${type.toLowerCase()}Missing: ${type} = {};
+const ${type.toLowerCase()}Source: ${type} = { cite: "https://example.test/مصدر/日本語?edition=2" };
+const ${type.toLowerCase()}Relative: ${type} = { cite: "../source?edition=3" };
+const ${type.toLowerCase()}Empty: ${type} = { cite: "" };
+const ${type.toLowerCase()}Undefined: ${type} = { cite: undefined };`).join("\n"),
+  },
+  {
+    name: "invalid-blockquote-source-url", error: 2322, count: 5, fragment: "number",
+    source: blockquoteWebImports + ["R", "V", "S", "A", "L"].map(type => `
+const ${type.toLowerCase()}: ${type} = { cite: 42 };`).join("\n"),
+  },
   {
     name: "postcard-public-message-providers",
     source: `
@@ -208,6 +232,20 @@ const s: S = { kind: "invalid", text: "text" };
 ];
 
 export const nativeCases = [
+  {
+    name: "blockquote-optional-source-url-compatibility",
+    source: `
+import type { BlockquoteProps } from "@full-stack-ds/react-native";
+const omitted: BlockquoteProps = {};
+const source: BlockquoteProps = { cite: "https://example.test/مصدر/日本語" };
+const empty: BlockquoteProps = { cite: "" };
+const cleared: BlockquoteProps = { cite: undefined };
+`,
+  },
+  {
+    name: "invalid-blockquote-source-url", error: 2322, fragment: "number",
+    source: `import type { BlockquoteProps } from "@full-stack-ds/react-native"; const quote: BlockquoteProps = { cite: 42 };`,
+  },
   {
     name: "postcard-engagement-values",
     source: postcardNativeImports + postcardBase + `

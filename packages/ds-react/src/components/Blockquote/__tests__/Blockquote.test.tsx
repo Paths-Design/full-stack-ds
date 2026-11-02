@@ -82,5 +82,18 @@ describe("Blockquote — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
-
+it("keeps citation URLs as optional metadata while preserving quotation content", () => {
+  const quote = "التصميم — 日本語 — “quoted”";
+  const passage = (cite?: string) => <Blockquote cite={cite}><span lang="ar" dir="rtl">{quote}</span></Blockquote>;
+  const { container, rerender } = render(passage());
+  const element = container.querySelector("blockquote");
+  expect(element).not.toBeNull();
+  for (const cite of [undefined, "https://example.test/مصدر?edition=2&lang=ar", "/sources/日本語#quote", "", undefined]) {
+    rerender(passage(cite));
+    expect(container.querySelector("blockquote")).toBe(element);
+    expect(element!.getAttribute("cite")).toBe(cite ?? null);
+    expect(element!.textContent).toBe(quote);
+    expect(element!.querySelector("a, button, [tabindex]")).toBeNull();
+  }
+});
 // @custom:end

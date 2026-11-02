@@ -14,6 +14,7 @@ export type BlockquoteSize = "sm" | "md" | "lg";
 
 // @generated:start props
 export interface BlockquoteProps {
+  /** Source URL metadata has no native citation carrier. */
   cite?: string;
   variant?: BlockquoteVariant;
   size?: BlockquoteSize;

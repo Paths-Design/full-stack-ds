@@ -27,7 +27,8 @@ describe("generic anatomy planner: structural projection", () => {
     expect(blockquote.excluded).toEqual(["cite"]);
     expect(blockquote.omissions).toEqual(expect.arrayContaining([
       "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
-      "cite: no executable native projection",
+      "root: attribute bindings (cite) not projected natively",
+      "cite: bound to the cite attribute; native attribute projection unverified",
     ]));
     // The root paints its own panel through the shared runtime's `_draw`.
     expect(blockquote.styles.find(rule => rule.source === "root")?.declarations).toEqual(expect.arrayContaining([

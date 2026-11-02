@@ -40,7 +40,7 @@ export function Blockquote({
   className,
   "data-testid": testId,
   children,
-  cite: _cite,
+  cite,
   ...rest
 }: BlockquoteProps) {
   const classNames = [
@@ -53,7 +53,7 @@ export function Blockquote({
     .join(" ");
 
   return (
-  <Stack layout="native" as="blockquote" className={`${classNames}`} data-testid={testId} data-fsds-component="blockquote" data-fsds-box="" {...rest}>
+  <Stack layout="native" as="blockquote" className={`${classNames}`} cite={cite} data-testid={testId} data-fsds-component="blockquote" data-fsds-box="" {...rest}>
     {children}
   </Stack>
   );

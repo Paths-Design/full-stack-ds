@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
 
 // @custom:start imports
@@ -185,7 +186,7 @@ export class BlockquoteElement extends LitElement {
   }
 
   override render() {
-    return html`<blockquote class="${this.computeClasses()}" data-fsds-box="">
+    return html`<blockquote class="${this.computeClasses()}" cite=${ifDefined(this.cite)} data-fsds-box="">
   <slot></slot>
 </blockquote>`;
   }

@@ -358,6 +358,7 @@
     "cite"
   ],
   "omissions": [
+    "root: attribute bindings (cite) not projected natively",
     "structure.padding: host root has no padded panel to inset its children",
     "structure.padding-block: host root has no padded panel to inset its children",
     "structure.padding-block-start: no Godot anatomy style mapping",
@@ -381,7 +382,7 @@
     "--lg.padding: host root has no padded panel to inset its children",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "reduced motion: native preference handling unverified",
-    "cite: no executable native projection"
+    "cite: bound to the cite attribute; native attribute projection unverified"
   ],
   "theme": "source-bearing anatomy style subset",
   "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",

@@ -120,5 +120,20 @@ async function renderElement(tagName: string, props: Record<string, unknown> = {
 // @generated:end
 
 // @custom:start tests
-
+it("updates and omits citation metadata on the shadow quotation element", async () => {
+  const quote = "التصميم — 日本語 — “quoted”";
+  const rendered = await renderElement("fsds-blockquote", {}, [{ html: `<span lang="ar" dir="rtl">${quote}</span>` }]);
+  const element = rendered.element as LitTestElement & { cite?: string };
+  const quotation = element.shadowRoot!.querySelector("blockquote");
+  expect(quotation).not.toBeNull();
+  for (const cite of [undefined, "https://example.test/مصدر?edition=2&lang=ar", "/sources/日本語#quote", "", undefined]) {
+    element.cite = cite;
+    await element.updateComplete;
+    expect(element.shadowRoot!.querySelector("blockquote")).toBe(quotation);
+    expect(quotation!.getAttribute("cite")).toBe(cite ?? null);
+    expect(element.textContent).toBe(quote);
+    expect(quotation!.querySelector("a, button, [tabindex]")).toBeNull();
+  }
+  element.remove();
+});
 // @custom:end

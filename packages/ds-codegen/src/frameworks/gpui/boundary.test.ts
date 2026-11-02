@@ -9,6 +9,11 @@ const root = path.resolve(__dirname, "../../../../..");
 const contractsRoot = path.join(root, "packages/ds-contracts");
 
 describe("GPUI support boundary", () => {
+  it("keeps source citation metadata pending without a native carrier", () => {
+    const contract = loadContractWithSidecars(root, "Blockquote");
+    (contract.anatomy as { dom: { bindings?: Record<string, string> } }).dom.bindings = { cite: "prop:cite" };
+    expect(classifyLeaves(contract, validateBoundary(boundaryJson)).find(leaf => leaf.pointer === "/anatomy/dom/bindings/cite")).toMatchObject({ rule: "prop-citation", disposition: "pending" });
+  });
   it("classifies anchor callback facts from host semantics rather than component or prop names", () => {
     const contract = loadContractWithSidecars(root, "Links");
     contract.name = "DestinationControl";

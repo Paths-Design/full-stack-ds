@@ -655,12 +655,12 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyp
   if (!node || omitted?.(node)) return;
   // DOM-metadata bindings the passive lowering does not render: a11y
   // role/aria and DOM tab-order attributes, `data-*` attributes on any node, and the
-  // root's field-association attributes (htmlFor, form). The admission boundary
+  // root's field-association and citation attributes (htmlFor, form, cite). The admission boundary
   // classifies their leaves.
   const unsupportedBindings = Object.entries(node.bindings).some(([attribute]) => {
     if (attribute === "role" || attribute === "tabindex" || attribute.startsWith("aria-")) return false;
     if (/^data-[a-z][a-z0-9-]*$/.test(attribute)) return false;
-    const rootMetadataBinding = node === ir.dom && (attribute === "htmlFor" || attribute === "form");
+    const rootMetadataBinding = node === ir.dom && (attribute === "htmlFor" || attribute === "form" || attribute === "cite");
     return !rootMetadataBinding;
   });
   const glyphNode = glyph?.node === node;

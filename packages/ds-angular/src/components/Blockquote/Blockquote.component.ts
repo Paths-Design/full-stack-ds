@@ -22,7 +22,7 @@ export type BlockquoteSize = "sm" | "md" | "lg";
   standalone: true,
   imports: [NgClass],
   host: { "data-fsds-component": "blockquote" },
-  template: `<blockquote [ngClass]="classes()" data-fsds-box="">
+  template: `<blockquote [ngClass]="classes()" [attr.cite]="cite" data-fsds-box="">
   <ng-content />
 </blockquote>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
