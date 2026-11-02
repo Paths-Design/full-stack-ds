@@ -204,7 +204,26 @@ describe("security doctrine", () => {
     expect(parseMarks(`[**نص 日本語**](${target})`)).toEqual([
       { kind: "link", href: null, children: [{ kind: "strong", children: [{ kind: "text", text: "نص 日本語" }] }] },
     ]);
-    expect(collectMarkdownText(parseMarkdown(`[نص 日本語](${target})`))).toBe("نص 日本語");
+    expect(parseMarkdown(`[نص 日本語](${target})`)).toEqual([
+      { kind: "paragraph", children: [{ kind: "link", href: null, children: [{ kind: "text", text: "نص 日本語" }] }] },
+    ]);
+  });
+
+  it.each(["\n", "\r", "\r\n"])("classifies document soft wraps after the declared whitespace grammar (%j)", newline => {
+    const href = "cu stom:unused";
+    const children = [{ kind: "link", href, children: [{ kind: "text", text: "نص 日本語" }] }];
+    // Document soft wraps become spaces before inline URL admission. The
+    // resulting target is relative, unlike the raw inline newline target.
+    expect(new URL(href, "https://base.example/").protocol).toBe("https:");
+    expect(parseMarkdown(`[نص 日本語](cu${newline}stom:unused)`)).toEqual([
+      { kind: "paragraph", children },
+    ]);
+    expect(parseMarkdown(`> [نص 日本語](cu${newline}> stom:unused)`)).toEqual([
+      { kind: "blockquote", children },
+    ]);
+    expect(parseMarks(`[نص 日本語](cu${newline}stom:unused)`)).toEqual([
+      { kind: "link", href: null, children: [{ kind: "text", text: "نص 日本語" }] },
+    ]);
   });
 });
 
