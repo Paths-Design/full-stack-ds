@@ -5,7 +5,7 @@ status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 4480a9840
+verified_at_commit: 8ad5c26d16b60b89d64d308bf3237c9568d2bc27
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -232,8 +232,11 @@ Compose has none on the JVM and does not announce it.
   each case; it is native accessibility debt, and the ledger only shrinks.
 - React Native has no role-description equivalent; `roleDescription`
   messages are not rendered there.
-- Unity and GPUI do not lower messages. None of their allowlisted components
-  declares a messages block, and no guard refuses one that does.
+- Unity and GPUI have no runtime message catalog. Unity's bounded
+  `ProjectedText` lowering substitutes one declared prop or prop-path parameter
+  into the contract-default message. GPUI records message catalogs as omitted
+  in generic anatomy receipts. Allowlisted contracts may declare messages;
+  these projections do not establish runtime translation support.
 - Walkthrough's `steps` prop defaults to English demo data, which generated
   components render when a consumer passes no steps. It is consumer content in
   a default, outside the string-prop gate. The runtime fact rail reads it,
