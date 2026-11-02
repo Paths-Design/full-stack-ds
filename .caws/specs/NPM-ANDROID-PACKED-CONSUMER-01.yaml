@@ -1,0 +1,42 @@
+id: NPM-ANDROID-PACKED-CONSUMER-01
+title: 'Verify an installed npm consumer in a real Android emulator'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-11-02T22:36:19.034Z'
+updated_at: '2026-11-02T22:36:19.034Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Pinned Android application consuming packed React Native and iconography releases'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/release-package-check/native-device'
+    - 'packages/ds-react-native/README.md'
+  out: []
+invariants:
+  - 'FSDS runtime imports resolve from real installed tarballs without workspace source aliases or test mocks'
+  - 'Build and interaction evidence identify source payload and APK while retaining native and whole-release proof boundaries'
+acceptance:
+  - id: A1
+    given: 'a clean checked candidate and pinned native host'
+    when: 'release tarballs are installed and an Android APK is built'
+    then: 'shipped public entries compile through standard native tooling and payload module APK and tool identities are retained'
+  - id: A2
+    given: 'the installed APK on the configured API36 ARM64 emulator'
+    when: 'actual Button Icon Stack and theme consumers render and receive pointer interaction'
+    then: 'visible multilingual labels count changes and disabled refusal are recorded with device and accessibility-tree facts without broad native component parity claims'
+  - id: A3
+    given: 'retained source payload build and device evidence'
+    when: 'candidate identity or command results are invalid and the harness checks run'
+    then: 'invalid evidence is refused and required package regression checks pass with explicit native OS assistive technology and whole-release limits'
+observability:
+  - 'Retain exact tarballs inventories native dependency locks build logs APK hashes emulator properties and visible interaction screenshots outside the disposable host'
+rollback:
+  - 'Remove the optional native device harness and use retained release payload evidence without claiming actual-device qualification'
+non_functional: {}
+contracts:
+  - name: 'native-packed-android'
+    type: contract-test
+    path: 'scripts/release-package-check/native-device/driver.mjs'
