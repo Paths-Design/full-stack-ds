@@ -55,3 +55,12 @@ contracts:
   - name: 'associated-label'
     type: behavior
     path: 'packages/ds-contracts/components/Label/Label.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged 2ddc64844 includes fact-derived native Input/Label plans and generated packages; native-form-plan, Godot form-plan, Unity walker/USS tests, governed:rail, and both boundary audits passed; unsupported HTML/AT facts remain named in receipts."
+    recorded_at: "2026-11-02T16:10:37.855Z"
+    test_nodeid: packages/ds-codegen/src/frameworks/native-form-plan.test.ts
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    commit_sha: "2ddc64844b5d77c991663fa3fb18eb9a4c77a2d5"
