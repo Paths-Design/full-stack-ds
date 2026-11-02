@@ -74,3 +74,11 @@ contracts:
   - name: 'source-citation'
     type: behavior
     path: 'packages/ds-contracts/components/Blockquote/Blockquote.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "All five actual web Blockquote components keep the native quotation element and Unicode content while cite follows undefined, absolute Unicode URL, changed relative URL, empty string and removal. Before logs show null URL all five (angular-before-notified.log is valid notifying fixture); angular-after.log captures undefined stringification. Final web unit logs root-after161/vue-after12/svelte-after11/lit-after10/angular-final10 pass. Packed browser25 stages confirm same element, raw attributes and content; .caws/state/release-evidence/NPM-BLOCKQUOTE-CITATION-01/runs/fsds-release-packages-Z6eQry/browser-blockquote-*.json plus screenshots and AX snapshots. Public package and consumer sources unchanged between implementation180593234 and final78123c683; landed source diff is empty."
+    recorded_at: "2026-11-02T00:27:35.401Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
