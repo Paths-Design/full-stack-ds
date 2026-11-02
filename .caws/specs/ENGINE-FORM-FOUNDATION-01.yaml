@@ -64,3 +64,11 @@ evidence:
     command: "pnpm run governed:rail"
     exit_code: 0
     commit_sha: "2ddc64844b5d77c991663fa3fb18eb9a4c77a2d5"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Author-inspected ignored local artifacts at .caws/state/engine-form-foundation/godot/{provenance.json,godot-runtime.json,godot.json} and unity/{provenance.json,results.xml}: both sourceDirty=false at bfbfa7e76, Godot exported native-form-input-label row and Unity Input/Label interaction cases passed; merged source is 2ddc64844. CAWS artifact re-derivation cannot verify ignored files."
+    recorded_at: "2026-11-02T16:11:38.139Z"
+    command: "pnpm run test:godot"
+    exit_code: 0
+    artifact_path: ".caws/state/engine-form-foundation/godot/godot.json"
+    commit_sha: "2ddc64844b5d77c991663fa3fb18eb9a4c77a2d5"
