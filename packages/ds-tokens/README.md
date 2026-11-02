@@ -1,5 +1,7 @@
 # @full-stack-ds/tokens
 
+Node 22.19 or later is required for Node tooling and Node package consumption. CSS and JSON assets retain their browser and native consumers' runtime requirements.
+
 Design tokens as CSS custom properties and resolved DTCG JSON.
 
 ## Package consumption

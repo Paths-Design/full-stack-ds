@@ -1,23 +1,34 @@
-import { defineConfig } from "tsup";
+import { build, defineConfig } from "tsup";
+import { emitCommonjsFacades } from "../../scripts/emit-commonjs-facades.mjs";
 
 /**
- * tsup config for @full-stack-ds/lit. Mirrors ds-react: ESM + CJS + DTS,
+ * tsup config for @full-stack-ds/lit. Mirrors ds-react: shared ESM + CJS facades + DTS,
  * sourcemaps, lit kept external as a peer dependency.
  *
  * Lit components are pure TypeScript classes (no SFC compilation needed),
  * so tsup handles them directly.
  */
-export default defineConfig({
+const shared = {
   entry: ["src/index.ts", "src/primitives/index.ts"],
-  format: ["esm", "cjs"],
-  // Both public entries must share custom-element constructors and controllers.
   splitting: true,
-  dts: true,
-  sourcemap: true,
-  clean: true,
   external: ["lit"],
   outDir: "dist",
-  outExtension({ format }) {
-    return { js: format === "cjs" ? ".cjs" : ".js" };
+};
+
+export default defineConfig(options => ({
+  ...shared,
+  // Register each custom element once across import and require consumers.
+  format: ["esm"],
+  dts: false,
+  sourcemap: true,
+  clean: true,
+  async onSuccess() {
+    try {
+      await build({ ...shared, config: false, format: ["esm", "cjs"], dts: { only: true }, watch: false, clean: true });
+      emitCommonjsFacades(process.cwd());
+    } catch (error) {
+      if (!options.watch) throw error;
+      console.error("Declaration build failed; CommonJS facades withheld.", error);
+    }
   },
-});
+}));

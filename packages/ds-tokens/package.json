@@ -2,6 +2,7 @@
   "name": "@full-stack-ds/tokens",
   "version": "1.0.0",
   "type": "module",
+  "engines": { "node": ">=22.19.0" },
   "description": "Design tokens as cascade-layered CSS with brand and density variants, plus resolved DTCG JSON.",
   "exports": {
     "./tokens.css": {

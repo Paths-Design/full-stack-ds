@@ -2,6 +2,7 @@
   "name": "@full-stack-ds/lit",
   "version": "0.1.0",
   "type": "module",
+  "engines": { "node": ">=22.19.0" },
   "description": "Lit implementation of Full Stack DS (Stack element + generated components)",
   "exports": {
     ".": {
@@ -26,7 +27,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "build:watch": "tsup --watch",
+    "build:watch": "tsup --watch src --watch package.json --watch tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:templates": "lit-analyzer 'src/components/**/*.ts' --format list --noColor --rules.no-incompatible-type-binding off",
     "test": "vitest run -c vitest.config.ts",
