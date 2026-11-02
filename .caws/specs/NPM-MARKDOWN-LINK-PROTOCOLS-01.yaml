@@ -54,3 +54,10 @@ evidence:
     command: pnpm test
     exit_code: 0
     commit_sha: "201379305e2caf785e5337e1b9cb0a1ab4dd0113"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected fresh15 source-browser facts plus five actual tarball-installed Markdown consumers in runs/fsds-release-packages-XE0gXg under canonical spec release evidence: only safe local-fragment anchor, direct/tab/C0 unsupported labels as literal StaticText, raw HTML literal, Arabic/Japanese RTL,7 blocks within actual240px width, focused safe link in AX. Actual Tab-before to anchor to after, ShiftTab back, Enter same-document hash and zero extra pages. Reviewed all5 PNGs and DOM/geometry/AX JSON. checks/201379305-lcsyG1/markdown-browser.log and packed.log exit0. Chromium/pinned peers only, no post-navigation focus or OS AT claim. CLI commit check is existence only."
+    recorded_at: "2026-11-02T22:22:57.539Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "201379305e2caf785e5337e1b9cb0a1ab4dd0113"
