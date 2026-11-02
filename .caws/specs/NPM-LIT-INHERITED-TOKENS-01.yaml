@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: lit-inherited-tokens
 created_at: '2026-11-02T05:42:24.178Z'
-updated_at: '2026-11-02T05:42:26.986Z'
+updated_at: '2026-11-02T14:22:52.630Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -13,12 +13,15 @@ blast_radius:
 operational_rollback_slo: 5m
 scope:
   in:
-    - 'packages/ds-codegen'
-    - 'packages/ds-lit/src'
     - 'scripts/lit-token-inheritance-consumer'
     - 'e2e/lit-token-inheritance.spec.ts'
     - 'docs/architecture'
     - 'docs/codegen-authority.md'
+    - packages/ds-codegen/src/cli.ts
+    - packages/ds-codegen/src/css.ts
+    - packages/ds-codegen/src/lit-token-fallbacks.ts
+    - packages/ds-codegen/src/lit-token-inheritance.test.ts
+    - packages/ds-lit/src/components
   out: []
 invariants:
   - 'Public component token overrides inherit and local deliberate state or variant overrides remain effective; defaults preserve reference and literal fallback semantics'
