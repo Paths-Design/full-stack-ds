@@ -68,3 +68,8 @@ evidence:
     evidence_ref: "Directly inspected Node 22.19 packed run .caws/state/release-evidence/NPM-MODULE-IDENTITY-01/runs/fsds-release-packages-6Dnp4d at f430ec09aeb26bd2314a96515fb7f08b37292647. runtime-mixed-esm.log and runtime-mixed-cjs.log exited 0 in fresh processes; named exports share identity, all React root/primitives provider-hook combinations, Vue SSR provider injection and Lit constructors/controllers remain coherent in both load orders. CLI verification below establishes commit identity only, not runtime execution."
     recorded_at: "2026-11-02T13:44:10.162Z"
     commit_sha: f430ec09aeb26bd2314a96515fb7f08b37292647
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Directly inspected Node 22.19 packed run .caws/state/release-evidence/NPM-MODULE-IDENTITY-01/runs/fsds-release-packages-6Dnp4d at f430ec09aeb26bd2314a96515fb7f08b37292647. Public payload/type consumers, reachable .d.ts/.d.cts graph checks, ESM/CJS entries and five installed browser consumers passed. Browser module inventory excludes duplicate CommonJS implementations and retains public CSS/exports. This is consumer/fixture proof, not exhaustive component accessibility or minimum-peer qualification. CLI verification below checks commit identity only."
+    recorded_at: "2026-11-02T13:44:42.152Z"
+    commit_sha: f430ec09aeb26bd2314a96515fb7f08b37292647
