@@ -79,3 +79,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01/runs/fsds-release-packages-HVQKiy/browser-angular.json"
     commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "HVQKiy five installed browsers: Arabic/Japanese labels update; 240px RTL trails wrap without overflow; hostile literal separator is escaped; AX omits decorations; empty creates no pseudo box; Tab and Enter retain native link navigation. Ten stages each, retained DOM/AX/geometry/PNGs. Chromium only, no OS AT claim."
+    recorded_at: "2026-11-02T04:19:34.183Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01/runs/fsds-release-packages-HVQKiy/browser-react.json"
+    commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
