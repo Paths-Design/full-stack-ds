@@ -96,15 +96,15 @@
     },
     "align-items": {
       "literal": "center",
-      "platforms": [
-        "web"
-      ]
+      "platforms": ["web", "ios", "android"]
     },
     "flex-wrap": {
       "literal": "wrap",
-      "platforms": [
-        "web"
-      ]
+      "platforms": ["web", "ios", "android"]
+    },
+    "flex-direction": {
+      "literal": "row",
+      "platforms": ["web", "ios", "android"]
     },
     "gap": {
       "resolvesTo": "breadcrumbs.spacing.gap",

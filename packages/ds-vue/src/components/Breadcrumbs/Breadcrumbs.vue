@@ -10,6 +10,11 @@ import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messa
 
 // @generated:start types
 
+
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
+}
 // @generated:end
 
 // @custom:start types
@@ -26,7 +31,9 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const fsdsProps = defineProps<Props>();
+const fsdsProps = withDefaults(defineProps<Props>(), {
+  separator: "/",
+});
 const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
 const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
 const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { ariaLabel: "navigationLabel" });
@@ -46,7 +53,7 @@ const classNames = computed(() => [
 
 <template>
   <nav :class="classNames" :aria-label="props.ariaLabel" :data-testid="props.dataTestid" data-fsds-component="breadcrumbs" data-fsds-box="">
-    <ol :class="'breadcrumbs__list'">
+    <ol :class="'breadcrumbs__list'" :style="{ '--fsds-breadcrumbs-child-separator': fsdsDecorativeContent(props.separator) }">
       <slot />
     </ol>
   </nav>

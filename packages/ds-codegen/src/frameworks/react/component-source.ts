@@ -54,6 +54,7 @@ import {
   type NativeTableAttr,
 } from "../../ir.js";
 import { renderSections, type Section } from "../../preserve.js";
+import { decorativeContentHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -251,7 +252,7 @@ export function generateReactComponentSource(
   // below can detect identifiers (`CSSProperties`) that appear only in
   // generated output, not in styled prop types. Mirrors the Lit emitter's
   // `usesIfDefined` pattern (line 1031).
-  const typesBody = generateTypes(ir).trimEnd();
+  const typesBody = generateTypes(ir).trimEnd() + decorativeContentHelperSource(ir);
   const propsBody = generatePropsInterface(ir);
 
   const isDisclosure = isCompound && isDisclosureContainer(ir);
@@ -974,7 +975,7 @@ function generateSubComponent(
     : part.semanticElement;
   const asProp = asElement && asElement !== "div" ? ` as="${asElement}"` : "";
   const layoutProp =
-    part.layoutVariant === "horizontal" ? ` variant="horizontal"` : "";
+    part.isProjectedCollectionItem ? ` layout="native"` : part.layoutVariant === "horizontal" ? ` variant="horizontal"` : "";
 
   return [
     `export function ${subName}({`,
@@ -3100,8 +3101,9 @@ function renderReactDomNode(
   let rootCssVarStyle: string | undefined;
   if (node.cssVarBindings.length > 0) {
     const entries: string[] = [];
-    for (const { varName, value } of node.cssVarBindings) {
-      const valueExpr = renderReactBinding("style", value, ctx);
+    for (const binding of node.cssVarBindings) {
+      const { varName, value } = binding;
+      const valueExpr = cssVariableValue(renderReactBinding("style", value, ctx), binding);
       if (valueExpr === null) continue;
       entries.push(`"${varName}": ${valueExpr}`);
     }

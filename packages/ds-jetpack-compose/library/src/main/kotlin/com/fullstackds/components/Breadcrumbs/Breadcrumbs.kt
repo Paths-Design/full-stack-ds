@@ -18,6 +18,7 @@ import com.fullstackds.tokens.LocalFsdsContentColor
 // @generated:end
 
 // @generated:start component
+// Projected separators for list are omitted; authored item content remains consumer supplied.
 @Composable
 fun Breadcrumbs(
     modifier: Modifier = Modifier,

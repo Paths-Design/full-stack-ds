@@ -3,6 +3,7 @@ import { LitElement, html, css } from 'lit';
 import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { styleMap } from 'lit/directives/style-map.js';
 // @generated:end
 
 // @custom:start imports
@@ -11,6 +12,11 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 
 // @generated:start types
 
+
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
+}
 // @generated:end
 
 // @custom:start types
@@ -71,6 +77,8 @@ export class BreadcrumbsElement extends LitElement {
     }
 
 
+    :host([hidden]) { display: none; }
+
     .breadcrumbs {
       --fsds-breadcrumbs-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-breadcrumbs-color-background-elevated: var(--fsds-semantic-color-background-elevated, #ffffff);
@@ -115,7 +123,20 @@ export class BreadcrumbsElement extends LitElement {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      flex-direction: row;
       gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
+    }
+
+    .breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
+      content: var(--fsds-breadcrumbs-child-separator, none);
+      white-space: pre-wrap;
+      margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
+    }
+
+    .breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
+      content: var(--fsds-breadcrumbs-child-separator, none);
+      white-space: pre-wrap;
+      margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
     }
   `;
@@ -124,7 +145,7 @@ export class BreadcrumbsElement extends LitElement {
 
   @property({ attribute: 'aria-label', reflect: true })
   override ariaLabel: string | null = null;
-  @property({ type: String }) separator?: string;
+  @property({ type: String }) separator?: string = "/";
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -139,7 +160,7 @@ export class BreadcrumbsElement extends LitElement {
 
   override render() {
     return html`<nav class="${this.computeClasses()}" aria-label=${ifDefined((this.ariaLabel ?? this.fsdsMessages.value.navigationLabel))} data-fsds-box="">
-  <ol class=${'breadcrumbs__list'}>
+  <ol class=${'breadcrumbs__list'} style=${styleMap({ '--fsds-breadcrumbs-child-separator': String(fsdsDecorativeContent((this.separator ?? "/"))) })}>
     <slot></slot>
   </ol>
 </nav>`;
@@ -200,6 +221,8 @@ export class BreadcrumbsListElement extends LitElement {
     }
 
 
+    :host([hidden]) { display: none; }
+
     .breadcrumbs {
       --fsds-breadcrumbs-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-breadcrumbs-color-background-elevated: var(--fsds-semantic-color-background-elevated, #ffffff);
@@ -244,7 +267,20 @@ export class BreadcrumbsListElement extends LitElement {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      flex-direction: row;
       gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
+    }
+
+    .breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
+      content: var(--fsds-breadcrumbs-child-separator, none);
+      white-space: pre-wrap;
+      margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
+    }
+
+    .breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
+      content: var(--fsds-breadcrumbs-child-separator, none);
+      white-space: pre-wrap;
+      margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
     }
   `;
@@ -307,6 +343,8 @@ export class BreadcrumbsItemElement extends LitElement {
     }
 
 
+    :host([hidden]) { display: none; }
+
     .breadcrumbs {
       --fsds-breadcrumbs-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-breadcrumbs-color-background-elevated: var(--fsds-semantic-color-background-elevated, #ffffff);
@@ -351,7 +389,20 @@ export class BreadcrumbsItemElement extends LitElement {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      flex-direction: row;
       gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
+    }
+
+    .breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
+      content: var(--fsds-breadcrumbs-child-separator, none);
+      white-space: pre-wrap;
+      margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
+    }
+
+    .breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
+      content: var(--fsds-breadcrumbs-child-separator, none);
+      white-space: pre-wrap;
+      margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
     }
   `;

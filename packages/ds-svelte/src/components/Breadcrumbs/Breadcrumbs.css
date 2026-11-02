@@ -35,7 +35,20 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  flex-direction: row;
   gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
+}
+
+.breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
+  content: var(--fsds-breadcrumbs-child-separator, none);
+  white-space: pre-wrap;
+  margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
+}
+
+.breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
+  content: var(--fsds-breadcrumbs-child-separator, none);
+  white-space: pre-wrap;
+  margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
 }
 /* @generated:end */
 

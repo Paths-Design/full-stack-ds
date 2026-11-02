@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { projectedCollections } from "../../projected-collection.js";
 import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions } from "../../transfer.js";
@@ -575,6 +576,7 @@ function emitImports(ir: ComponentIR, component: string): string {
     nativeMotionImports(component),
     component.includes("<NativeGlyph") ? `import { NativeGlyph } from "../../primitives/glyph";` : "",
     component.includes("renderTextChildren(") ? `import { renderTextChildren } from "../../primitives/text-children";` : "",
+    component.includes("renderSeparatedChildren(") ? `import { renderSeparatedChildren } from "../../primitives/text-children";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
     usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir) || ir.motion.sequence
@@ -903,6 +905,7 @@ function collectNodeRuntimeUsage(
     if (node.iconGlyph.sizeFrom) collectBindingRuntimeUsage(node.iconGlyph.sizeFrom, ir, usage);
   }
   if (node.iteration) collectBindingRuntimeUsage(node.iteration.source, ir, usage);
+  if (node.projectedCollection) collectBindingRuntimeUsage(node.projectedCollection.separator, ir, usage);
   // FEAT-CODEBLOCK-HIGHLIGHT-01: a content transform degrades to plain
   // text on React Native (no DOM spans) — only the source binding is read.
   if (node.content) {
@@ -1940,6 +1943,10 @@ function emitComponentRefNode(
 }
 
 function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number, parentComponent: string): string[] {
+  if (node.projectedCollection) {
+    const textStyle = rootTextStyleExpression(ir);
+    return [`${INDENT.repeat(depth)}{renderSeparatedChildren(children, ${bindingExpr(node.projectedCollection.separator, ir)}${textStyle ? `, { style: ${textStyle} }` : ""})}`];
+  }
   const sequence = ir.motion.sequence;
   if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} position={fsdsMessages.${sequence.labels.position}} />`];
   if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}</RNText>`];
@@ -3545,6 +3552,19 @@ function styleObjectLiteral(entries: JoinedStyleEntry[]): string {
 
 function nativeStyleForKey(ir: ComponentIR, key: string): string {
   const entries: string[] = [];
+  if (projectedCollections(ir).some(node => node.part === key)) {
+    for (const rule of ir.nativeStyleRules?.rules ?? []) {
+      if (rule.part !== key || rule.predicates.length || rule.pseudo) continue;
+      for (const declaration of rule.declarations) {
+        const platforms = declaration.platforms?.filter(platform => platform === "ios" || platform === "android");
+        if (platforms && !platforms.length) continue;
+        const property = ({ "flex-direction": "flexDirection", "flex-wrap": "flexWrap", "align-items": "alignItems", gap: "gap" } as Record<string, string>)[declaration.property];
+        if (!property) continue;
+        const value = (declaration.token ? tokenNumberAccessForStyle(ir, key, declaration.token) : undefined) ?? nativeStyleLiteral(declaration.value) ?? undefined;
+        pushStyle(entries, property, value && platforms?.length === 1 ? `Platform.select({ ${platforms[0]}: ${value} })` : value);
+      }
+    }
+  }
   if (key === "root") {
     const ios = nativeRootClipping(ir, "ios");
     const android = nativeRootClipping(ir, "android");

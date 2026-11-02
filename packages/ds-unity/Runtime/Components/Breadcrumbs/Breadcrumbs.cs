@@ -1,4 +1,5 @@
 // Generated from ComponentIR. Regenerate with pnpm run generate:unity.
+// Omitted projectedCollection: {"part":"list","itemPart":"item","separatorPart":"separator","separator":{"kind":"prop","prop":"separator"},"cssVariable":"--fsds-breadcrumbs-child-separator"}
 using System;
 using UnityEngine.UIElements;
 

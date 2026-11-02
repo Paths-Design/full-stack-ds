@@ -6150,9 +6150,9 @@
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
+    flex-direction: row;
     --fsds-gap: var(--fsds-breadcrumbs-spacing-gap, 8px);
 }
 

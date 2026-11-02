@@ -76,6 +76,11 @@
         {
           "tag": "ol",
           "part": "list",
+          "projectedCollection": {
+            "itemPart": "item",
+            "separatorPart": "separator",
+            "separator": "prop:separator"
+          },
           "children": [
             {
               "tag": "children"
@@ -104,7 +109,8 @@
         {
           "name": "separator",
           "type": "string",
-          "description": "Separator character or string rendered between items."
+          "default": "/",
+          "description": "Decorative text rendered between authored items. Defaults to slash; an empty string hides separators."
         }
       ]
     }
@@ -170,12 +176,12 @@
   "a2ui": {
     "category": "navigation",
     "usageHints": [
-      "Provide items as an array of { label, href } objects; the last item is the current page (no href)",
-      "The component automatically renders a nav[aria-label=\"Breadcrumb\"] and marks the current item with aria-current=\"page\"",
+      "Compose ordered children with Breadcrumbs.item or native list items; each item contains an ancestor link or the current-page label",
+      "Set ariaLabel to the localized landmark name. Author aria-current=\"page\" on a current-page link; it is optional for a terminal non-link label",
       "Use separator to customize the divider character"
     ],
     "children": {
-      "allowed": false
+      "allowed": true
     }
   }
 }

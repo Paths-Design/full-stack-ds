@@ -59,6 +59,12 @@ export const breadcrumbsTokenScopes = {
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
+    "breadcrumbs.spacing.gap": {
+      name: "breadcrumbs.spacing.gap",
+      cssVar: "--fsds-breadcrumbs-spacing-gap",
+      ref: "core.spacing.size.04",
+      fallback: 8,
+    },
   },
 } satisfies ComponentTokenScopes;
 

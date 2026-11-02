@@ -178,7 +178,8 @@
   },
   "projectedProps": [],
   "defaults": {
-    "ariaLabel": "\"Breadcrumb\""
+    "ariaLabel": "\"Breadcrumb\"",
+    "separator": "\"/\""
   },
   "excludedProps": [
     "ariaLabel",
@@ -186,6 +187,8 @@
   ],
   "omissions": [
     "root: attribute bindings (aria-label) not projected natively",
+    "list: projected collection items item with separator separator from prop:separator not lowered",
+    "list: CSS variable bindings (--fsds-breadcrumbs-child-separator) not lowered",
     "structure.padding: host root has no padded panel to inset its children",
     "structure.padding-block: host root has no padded panel to inset its children",
     "structure.padding-block-start: no Godot anatomy style mapping",
@@ -202,8 +205,9 @@
     "list.padding: platform web only",
     "list.margin: platform web only",
     "list.display: platform web only",
-    "list.align-items: platform web only",
-    "list.flex-wrap: platform web only",
+    "list.align-items: platform web,ios,android only",
+    "list.flex-wrap: platform web,ios,android only",
+    "list.flex-direction: platform web,ios,android only",
     "layout: generated part hosts are Godot containers; CSS flow geometry and authored child order are not parity-guaranteed",
     "root accessibility role and labeling: native projection unverified",
     "reduced motion: native preference handling unverified",
@@ -214,7 +218,7 @@
     "part separator: declared but has no dom host; consumer composes it",
     "part overflow: declared but has no dom host; consumer composes it",
     "ariaLabel: bound to the aria-label attribute; native attribute projection unverified",
-    "separator: no executable native projection"
+    "separator: bound to a CSS variable; native style-variable projection unverified"
   ],
   "theme": "source-bearing anatomy style subset",
   "otherStyling": "unmapped declarations and selectors are named in omissions; scene geometry is not CSS layout parity",

@@ -222,10 +222,11 @@ describe("Godot support boundary", () => {
     expect(counts.unclassified).toBe(0);
     expect(unadjudicated).toEqual([]);
     // Anchor cancellation and discoverable disabled-link behavior remain
-    // unsupported; adding any other pending family requires adjudication.
+    // unsupported. Projected child separators retain a named semantic omission
+    // rather than being reclassified as CSS-only metadata or claimed lowered.
     for (const disposition of ["lowered", "refused"] as const) expect(counts[disposition]).toBeGreaterThan(0);
     expect(boundary.rules.filter(entry => used.has(entry.id) && entry.disposition === "pending").map(entry => entry.id).sort()).toEqual([
-      "anatomy-anchor-activation-event", "anatomy-disabled-aria-binding", "prop-anchor-activation-callback",
+      "anatomy-anchor-activation-event", "anatomy-disabled-aria-binding", "anatomy-projected-collection", "prop-anchor-activation-callback",
     ]);
     const dead = boundary.rules.filter(entry => !used.has(entry.id) && entry.catchAll !== true).map(entry => entry.id);
     expect(dead).toEqual([]);

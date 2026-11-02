@@ -368,6 +368,8 @@ export interface ContractDomNode {
    * a literal `style` attribute on the same node.
    */
   cssVariableBindings?: Record<string, string | ContractValueMapBinding>;
+  /** Decorative text between authored direct children; children retain ownership of navigation and current state. */
+  projectedCollection?: { itemPart: string; separatorPart: string; separator: string };
   /**
    * Icon-catalog glyph rendering directive — renders this `svg` node's
    * viewBox and `<path>` children from `@full-stack-ds/iconography`, looked

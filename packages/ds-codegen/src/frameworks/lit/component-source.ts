@@ -64,6 +64,7 @@ import {
   translateNonReactType,
 } from "../../non-react-types.js";
 import { renderSections, type Section } from "../../preserve.js";
+import { decorativeContentHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -346,7 +347,7 @@ function applyLitAliasRename(
 
 function generateTypes(ir: ComponentIR): string {
   const aliases = emitNonReactTypeAliases(ir).join("\n");
-  return applyLitAliasRename(aliases, litAliasRename(ir));
+  return applyLitAliasRename(aliases, litAliasRename(ir)) + decorativeContentHelperSource(ir);
 }
 
 // ---------------------------------------------------------------------------
@@ -2902,8 +2903,9 @@ function renderLitDomNode(
   // (`usesStyleMap`) so files that don't reference it stay clean.
   if (node.cssVarBindings.length > 0) {
     const entries: string[] = [];
-    for (const { varName, value } of node.cssVarBindings) {
-      const valueExpr = renderLitBindingValue(value, ctx);
+    for (const binding of node.cssVarBindings) {
+      const { varName, value } = binding;
+      const valueExpr = cssVariableValue(renderLitBindingValue(value, ctx), binding);
       if (valueExpr === null) continue;
       // styleMap value slots are typed `string | undefined`. Prop and
       // channel sources may carry non-string types (number/boolean),

@@ -6,6 +6,7 @@ import type {
   GeneratedFile,
 } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
+import { projectedCollections } from "../../projected-collection.js";
 import {
   FIGMA_COMPONENT_DESCRIPTOR_SCHEMA_VERSION,
   FIGMA_COMPONENT_DESCRIPTOR_SOURCE,
@@ -109,6 +110,7 @@ export function buildFigmaStackPrimitiveDescriptor(
 }
 
 export function toFigmaComponentDescriptor(ir: ComponentIR): FigmaComponentDescriptorV1 {
+  const collections = projectedCollections(ir).map(node => ({ containerPart: node.part!, itemPart: node.projectedCollection!.itemPart, separatorPart: node.projectedCollection!.separatorPart, separator: node.projectedCollection!.separator }));
   return {
     schemaVersion: FIGMA_COMPONENT_DESCRIPTOR_SCHEMA_VERSION,
     source: FIGMA_COMPONENT_DESCRIPTOR_SOURCE,
@@ -158,6 +160,7 @@ export function toFigmaComponentDescriptor(ir: ComponentIR): FigmaComponentDescr
     surface: ir.surface ?? null,
     pagedSet: ir.pagedSet ? { realization: "descriptor-only", facts: ir.pagedSet } : undefined,
     dateGrid: ir.dateGrid ? { realization: "descriptor-only", facts: ir.dateGrid } : undefined,
+    projectedCollections: collections.length ? { realization: "descriptor-only", facts: collections } : undefined,
     figma: {
       intendedUse: "figma-library-materialization",
       documentationFrame: `${ir.name} / Documentation`,

@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 180593234
+verified_at_commit: cc0dc8f21
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -19,6 +19,8 @@ governs:
 The anchor scaffold retains its native `Disabled` property and destination-bearing `Activated` event. It does not provide the contract's cancellable anchor callback, browser navigation, ARIA state, or authored DOM tab order; the support boundary records those capabilities separately. `SetEnabled` suppresses native activation but does not establish the Web disabled-link discovery policy.
 
 The passive walker omits root HTML `cite` bindings as document metadata. The support boundary classifies the binding and its source prop as refused because UI Toolkit has no implemented citation carrier; the generated container exposes no `Cite` property. Consumer content and carrier-backed axes retain their existing projection. Unhandled passive bindings such as `title` and `href` remain generation errors, as exercised by the citation case in `walker.test.ts`.
+
+Projected child separators are explicitly omitted. The passive walker preserves authored content and permits only the relation's owned decorative-content carrier: its variable, format, source prop and path must match the normalized collection. Unrelated CSS bindings remain generation errors. The support boundary records the relation and separator prop as refused, and generated source names the omission. This supplies no Unity separator rendering, navigation, or current-page behavior.
 
 The `ProjectedText` path preserves repeated static label parts declared `multiple`: the first public part accessor remains stable, and later occurrences receive distinct identifiers while retaining their semantic name, style class, and parent. Repeated behavior-owned parts require explicit instance addressing and are refused. A message on a projected label may contain one declared prop or prop-path parameter. Its generated string attribute stores the raw value and updates every associated label using the contract's source-language fallback. This does not supply a Unity translation catalog. A message-only host without the existing projected-property shape remains unsupported.
 
@@ -197,7 +199,7 @@ At source `63fee12cf`, fresh run `52337abb-74a0-44df-9b09-7bbdbd9f868d` passed a
 
 - `lowered`: the Unity emitter or the shared C# runtime realises the family. `via` names the mechanism, such as `RegisterValueChangedCallback` for a boolean channel's change member or pre-attachment assignment for a channel default.
 - `pending`: a later parity phase lowers the family. `phase` names it and `reason` states what is missing. The phases are P2 (generic anatomy walker), P3 (styling projection), P4 (interaction families) and P5 (corpus and admission); the file's `phases` block summarises each. P2 is discharged; P3 is currently used only by the boolean controls' withheld size axis, whose contracts carry no size-predicated style rules.
-- `refused`: UI Toolkit cannot realise the family idiomatically, and `reason` states why. Examples: HTML form submission fields have no form element to serialise into, USS has no `@keyframes`, and ARIA roles and relationships have no assistive-technology consumer.
+- `refused`: the target explicitly withholds the family, and `reason` states why. Examples: HTML form submission fields have no form element to serialise into, USS has no `@keyframes`, and ARIA roles and relationships have no assistive-technology consumer.
 
 The validator rejects a `lowered` rule without `via`, a `pending` rule without a phase and reason, and a `refused` rule without a reason. Only `pending` rules may be catch-alls.
 

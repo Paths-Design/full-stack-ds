@@ -2,7 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
-import { renderTextChildren } from "../../primitives/text-children";
+import { renderSeparatedChildren } from "../../primitives/text-children";
 import { useFsdsTheme } from "../../tokens";
 import { createBreadcrumbsStyles } from "./Breadcrumbs.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -29,6 +29,7 @@ const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
 
 export function Breadcrumbs({
   ariaLabel: ariaLabelProp,
+  separator = "/",
   children,
   style,
   testID,
@@ -49,7 +50,7 @@ export function Breadcrumbs({
       <View
         style={styles.list}
       >
-        {renderTextChildren(children, { style: styles.rootText })}
+        {renderSeparatedChildren(children, separator, { style: styles.rootText })}
       </View>
     </View>
   );
