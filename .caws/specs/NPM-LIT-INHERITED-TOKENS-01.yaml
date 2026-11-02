@@ -2,7 +2,6 @@ id: NPM-LIT-INHERITED-TOKENS-01
 title: 'Preserve inherited component token overrides in Lit shadow styles'
 mode: fix
 lifecycle_state: active
-worktree: lit-inherited-tokens
 created_at: '2026-11-02T05:42:24.178Z'
 updated_at: '2026-11-02T14:22:52.630Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
