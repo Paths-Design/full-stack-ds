@@ -2,7 +2,6 @@ id: NPM-MARKDOWN-LINK-PROTOCOLS-01
 title: 'Normalize Markdown link targets before protocol admission'
 mode: fix
 lifecycle_state: active
-worktree: markdown-link-protocols
 created_at: '2026-11-02T14:25:02.401Z'
 updated_at: '2026-11-02T14:25:44.586Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
