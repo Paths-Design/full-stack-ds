@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: Godot comparative pilot
 owner: "@darianrosebrook"
-updated: 2026-11-01
+updated: 2026-11-02
 governs:
   - packages/ds-codegen/src/frameworks/godot/
   - packages/ds-godot/
