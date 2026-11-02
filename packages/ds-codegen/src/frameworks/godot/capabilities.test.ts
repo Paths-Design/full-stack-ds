@@ -70,6 +70,8 @@ describe("Godot capability inventory", () => {
     // Carousel is a sequence component: its IR needs the corpus map to resolve
     // composed refs, so this also pins the allContracts plumbing in accountComponent.
     expect(fresh.components.find(record => record.component === "Carousel")).toMatchObject({ emitted: true });
+    expect(fresh.components.find(record => record.component === "Input")?.variance).toEqual([]);
+    expect(fresh.components.find(record => record.component === "Label")?.variance).toEqual([]);
     expect(fresh.variances).toBeGreaterThan(0);
     for (const record of fresh.components) {
       expect(record.admitted).toBe(true);

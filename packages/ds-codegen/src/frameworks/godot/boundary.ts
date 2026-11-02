@@ -46,6 +46,8 @@ export interface GodotBoundaryRule {
   id: string;
   /** Patterns `<source>:<keyed pointer>`; `*` matches within one segment, a whole `**` segment matches any depth. */
   match: string[];
+  /** At least one contract leaf must match a condition before this rule applies. */
+  requiresAny?: Array<{ match: string[]; valueIn?: unknown[] }>;
   disposition: GodotDisposition;
   /** lowered: the mechanism that realises the family. */
   via?: string;
@@ -203,11 +205,15 @@ export function patternMatches(pattern: string, leaf: Pick<Leaf, "source" | "key
   return segmentsMatch(segments, leaf.keyed.slice(1).split("/"));
 }
 
-function ruleMatches(rule: GodotBoundaryRule, leaf: Leaf): boolean {
-  return rule.match.some(pattern => patternMatches(pattern, leaf));
+function ruleMatches(rule: GodotBoundaryRule, leaf: Leaf, context?: Leaf[]): boolean {
+  if (!rule.match.some(pattern => patternMatches(pattern, leaf))) return false;
+  if (!rule.requiresAny) return true;
+  return !!context && rule.requiresAny.some(condition => context.some(candidate =>
+    condition.match.some(pattern => patternMatches(pattern, candidate)) &&
+    (!condition.valueIn || condition.valueIn.some(value => Object.is(value, candidate.value)))));
 }
 
-const RULE_KEYS = new Set(["id", "match", "disposition", "via", "reason", "catchAll"]);
+const RULE_KEYS = new Set(["id", "match", "requiresAny", "disposition", "via", "reason", "catchAll"]);
 
 /** Structural validation of a boundary document. Throws on the first defect. */
 export function validateBoundary(doc: unknown): GodotBoundary {
@@ -244,6 +250,18 @@ export function validateBoundary(doc: unknown): GodotBoundary {
         throw new Error(`GODOT_BOUNDARY_INVALID: ${where}: pattern ${pattern} must carry a pointer starting with /`);
       patternMatches(pattern, { source: source as GodotLeafSource, keyed: "/" });
     }
+    if (rule.requiresAny !== undefined) {
+      if (!Array.isArray(rule.requiresAny) || rule.requiresAny.length === 0)
+        throw new Error(`GODOT_BOUNDARY_INVALID: ${where}: requiresAny must be a non-empty array`);
+      for (const condition of rule.requiresAny) {
+        if (!condition || typeof condition !== "object" || Array.isArray(condition) ||
+            !Array.isArray(condition.match) || condition.match.length === 0 ||
+            condition.match.some(pattern => typeof pattern !== "string" || !pattern.startsWith("contract:/")))
+          throw new Error(`GODOT_BOUNDARY_INVALID: ${where}: requiresAny needs contract pointer patterns`);
+        if (condition.valueIn !== undefined && (!Array.isArray(condition.valueIn) || condition.valueIn.length === 0))
+          throw new Error(`GODOT_BOUNDARY_INVALID: ${where}: requiresAny.valueIn must be a non-empty array`);
+      }
+    }
     if (rule.catchAll !== undefined && typeof rule.catchAll !== "boolean")
       throw new Error(`GODOT_BOUNDARY_INVALID: ${where}: catchAll must be a boolean`);
     if (rule.catchAll) {
@@ -272,8 +290,8 @@ export function loadBoundary(): GodotBoundary {
 }
 
 /** First matching rule wins; rule order in the file is authoritative. */
-export function classifyLeaf(leaf: Leaf, boundary: GodotBoundary = loadBoundary()): ClassifiedLeaf {
-  const rule = boundary.rules.find(candidate => ruleMatches(candidate, leaf));
+export function classifyLeaf(leaf: Leaf, boundary: GodotBoundary = loadBoundary(), context?: Leaf[]): ClassifiedLeaf {
+  const rule = boundary.rules.find(candidate => ruleMatches(candidate, leaf, context));
   return rule
     ? { ...leaf, rule: rule.id, disposition: rule.disposition, catchAll: rule.catchAll === true }
     : { ...leaf, rule: null, disposition: "unclassified", catchAll: false };
@@ -294,7 +312,8 @@ export function contractLeaves(contract: ContractWithSidecars): Leaf[] {
 
 /** Every leaf of one contract classified, including any that match no rule. */
 export function classifyLeaves(contract: ContractWithSidecars, boundary: GodotBoundary = loadBoundary()): ClassifiedLeaf[] {
-  return contractLeaves(contract).map(leaf => classifyLeaf(leaf, boundary));
+  const leaves = contractLeaves(contract);
+  return leaves.map(leaf => classifyLeaf(leaf, boundary, leaves));
 }
 
 const describe = (leaves: ClassifiedLeaf[]): string =>
