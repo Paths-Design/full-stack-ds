@@ -51,3 +51,11 @@ contracts:
   - name: 'lit-public-token-inheritance'
     type: behavior
     path: 'packages/ds-codegen/src/css.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected clean Node22.19 candidate3600da7a3 packed Lit3.3.3 browser run runs/fsds-lit-token-inheritance-azJfWS under .caws/state/release-evidence/NPM-LIT-INHERITED-TOKENS-01: Card default12px, Canary16px, ancestor27px/host31px/nested19px, clearing restores12px. checks/3600da7a3-02kdcu/lit-browser.log exit0; commit citation verifies existence only."
+    recorded_at: "2026-11-02T19:48:18.651Z"
+    command: pnpm exec playwright test --config /Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/lit-inherited-tokens/scripts/lit-token-inheritance-consumer/playwright.config.ts
+    exit_code: 0
+    commit_sha: "3600da7a3178d82f0aeca1dbda4b16fda6a72ab7"
