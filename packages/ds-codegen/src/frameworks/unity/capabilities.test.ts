@@ -7,13 +7,13 @@ import { loadBoundary, loadContractWithSidecars, type Boundary, type BoundaryRul
 import { accountComponent, auditUnityTarget, declaredLeaves, inventory, ledgerViolations, unsupportedLedgerPath } from "./capabilities.js";
 const root = path.resolve(__dirname, "../../../../..");
 const fixture = (name: string) => loadContractWithSidecars(root, name);
-// The corpus case builds and classifies every contract twice (inventory, then
-// auditUnityTarget): about 2s alone, and it overran vitest's 5s default under
-// the root suite's parallel load. The budget covers that work; it relaxes no
-// assertion.
+// The corpus checks can occupy a worker long enough to starve Vitest's RPC
+// acknowledgement. Yield between independent synchronous traversals without
+// changing the assertions or the corpus being checked.
 const CORPUS_TIMEOUT_MS = 240_000;
+const yieldToWorker = () => new Promise<void>(resolve => setImmediate(resolve));
 describe("Unity capability accounting", () => {
-  it("accounts for the actual corpus and keeps unadmitted shapes distinct", () => {
+  it("accounts for the actual corpus and keeps unadmitted shapes distinct", async () => {
     const rows = inventory(root);
     expect(rows.map(r => r.component)).toEqual(listComponentContracts(path.join(root, "packages/ds-contracts")).map(e => e.name));
     expect(rows.find(r => r.component === "Text")!.status).toBe("pilot-partial");
@@ -30,6 +30,7 @@ describe("Unity capability accounting", () => {
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
     expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Calendar", null], ["Card", null], ["Carousel", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Command", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["Markdown", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["PageNavigator", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Spinner", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Truncate", null], ["Walkthrough", null]]);
+    await yieldToWorker();
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -100,10 +101,11 @@ describe("Unity capability accounting", () => {
     expect(prop(divider, "decorative")).toMatchObject({ disposition: "not-emitted", boundary: { disposition: "refused", rule: "prop-passive-semantic-options" } });
     expect(prop(divider, "thickness")).toMatchObject({ disposition: "not-emitted", boundary: { disposition: "pending", rule: "prop-passive-rule-override" } });
   });
-  it("finds no ledgered declaration behind a lowered leaf, and names the entry when a rule claims one", () => {
+  it("finds no ledgered declaration behind a lowered leaf, and names the entry when a rule claims one", async () => {
     const ledger = JSON.parse(fs.readFileSync(unsupportedLedgerPath(root), "utf8")) as { entries: { reason: string }[] };
     expect(ledger.entries.filter(e => e.reason !== "uss-design-slot").length).toBeGreaterThan(20);
     expect(ledgerViolations(root)).toEqual([]);
+    await yieldToWorker();
     const committed = loadBoundary();
     const entriesOf = (boundary: Boundary) => [...new Set(ledgerViolations(root, boundary).map(v => v.slice(0, v.indexOf("):") + 1)))].sort();
     // A box-shadow lowering placed ahead of its refusal contradicts both shadow rows.
@@ -128,9 +130,11 @@ describe("Unity capability accounting", () => {
       "ledger Toast item box-shadow (uss-property)",
       "ledger Walkthrough root box-shadow (uss-property)",
     ]);
+    await yieldToWorker();
     expect(ledgerViolations(root, lowered)).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
     // The join's findings fail the corpus audit (audit:unity-boundary --check).
     expect(auditUnityTarget(root, lowered).violations).toEqual(expect.arrayContaining(ledgerViolations(root, lowered)));
+    await yieldToWorker();
     // Without the token and selector refusals, token rows and refused-selector rows fall to the blanket lowered rules.
     const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
     expect(entriesOf(without("tokens-non-scalar"))).toEqual([
@@ -158,6 +162,7 @@ describe("Unity capability accounting", () => {
       "ledger Toast tokens toast.surface.shadow (uss-scalar)",
       "ledger Walkthrough tokens walkthrough.surface.shadow (uss-scalar)",
     ]);
+    await yieldToWorker();
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
       "ledger Accordion @starting-style (uss-selector)",

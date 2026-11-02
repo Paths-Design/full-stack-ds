@@ -493,7 +493,7 @@ namespace FullStackDS.Tests
             label.text = "Capacity";
             Assert.That(label.text, Is.EqualTo("Capacity"));
             Assert.That(label.ClassListContains("label"), Is.True);
-            Assert.That(typeof(FullStackDS.Label).GetProperty("HtmlFor"), Is.Null);
+            Assert.That(typeof(FullStackDS.Label).GetProperty("HtmlFor"), Is.Not.Null);
             Assert.That(typeof(FullStackDS.Label).GetProperty("Form"), Is.Null);
             var crumbs = Mount(new FullStackDS.Breadcrumbs());
             var list = new FullStackDS.BreadcrumbsList();
@@ -764,24 +764,47 @@ namespace FullStackDS.Tests
             var input = Mount(new FullStackDS.Input());
             Assert.That(input, Is.InstanceOf<UnityEngine.UIElements.TextField>());
             Assert.That(input.ClassListContains("input"), Is.True);
+            input.DefaultValue = "initial";
+            Assert.That(input.Value, Is.EqualTo("initial"));
             input.Placeholder = "Search";
             Assert.That(input.textEdition.placeholder, Is.EqualTo("Search"));
             input.SetValueWithoutNotify("typed");
             Assert.That(input.Value, Is.EqualTo("typed"));
+            string requested = null;
+            int requests = 0;
+            input.ValueRequested += next => { requested = next; requests++; };
             using (var evt = ChangeEvent<string>.GetPooled("", "edited")) { evt.target = input; input.SendEvent(evt); }
             Assert.That(input.Value, Is.EqualTo("edited"));
+            Assert.That(requested, Is.EqualTo("edited"));
+            Assert.That(requests, Is.EqualTo(1));
             input.Controlled = true;
-            string requested = null;
-            input.ValueRequested += next => requested = next;
             using (var evt = ChangeEvent<string>.GetPooled("edited", "blocked")) { evt.target = input; input.SendEvent(evt); }
             Assert.That(requested, Is.EqualTo("blocked"));
             Assert.That(input.Value, Is.EqualTo("edited"));
+            Assert.That(requests, Is.EqualTo(2));
             input.SetValueWithoutNotify("committed");
             Assert.That(input.Value, Is.EqualTo("committed"));
+            input.Invalid = true;
+            Assert.That(input.ClassListContains("input--invalid"), Is.True);
             input.Disabled = true;
             Assert.That(input.enabledSelf, Is.False);
-            foreach (var prop in new[] { "Type", "Name", "Required", "Invalid", "AriaLabel" })
+            using (var evt = ChangeEvent<string>.GetPooled("committed", "ignored")) { evt.target = input; input.SendEvent(evt); }
+            Assert.That(input.Value, Is.EqualTo("committed"));
+            Assert.That(requests, Is.EqualTo(2));
+            foreach (var prop in new[] { "Type", "Name", "Required", "AriaLabel" })
                 Assert.That(typeof(FullStackDS.Input).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void LabelActivationFocusesAssociatedInput()
+        {
+            var input = Mount(new FullStackDS.Input());
+            input.name = "search";
+            var label = Mount(new FullStackDS.Label { HtmlFor = "search" });
+            Click(label);
+            Assert.That(window.rootVisualElement.focusController.focusedElement, Is.SameAs(input));
+            label.HtmlFor = "missing";
+            label.AssociatedControl = input;
+            Click(label);
+            Assert.That(window.rootVisualElement.focusController.focusedElement, Is.SameAs(input));
         }
         [Test] public void TextFieldWrapsItsNativeFieldAndExposesNamedSlots()
         {

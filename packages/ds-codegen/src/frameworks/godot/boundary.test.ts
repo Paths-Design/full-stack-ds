@@ -43,6 +43,22 @@ const catchAll = rule({
 const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Godot support boundary", () => {
+  it("uses source facts to classify native input and label bindings without changing other controls", () => {
+    const input = classifyLeaves(load("Input"));
+    expect(input.find(leaf => leaf.pointer === "/anatomy/dom/bindings/aria-invalid"))
+      .toMatchObject({ rule: "anatomy-native-input-invalid-paint", disposition: "lowered" });
+    expect(input.find(leaf => leaf.pointer === "/anatomy/dom/bindings/aria-label"))
+      .toMatchObject({ rule: "anatomy-native-input-aria-name-refused", disposition: "refused" });
+    const label = classifyLeaves(load("Label"));
+    expect(label.find(leaf => leaf.pointer === "/anatomy/dom/bindings/htmlFor"))
+      .toMatchObject({ rule: "anatomy-native-label-association", disposition: "lowered" });
+    expect(label.find(leaf => leaf.pointer === "/anatomy/dom/bindings/form"))
+      .toMatchObject({ rule: "anatomy-association-binding", disposition: "refused" });
+    const altered = load("Label");
+    (altered.anatomy as { dom: { tag: string } }).dom.tag = "span";
+    expect(classifyLeaves(altered).find(leaf => leaf.pointer === "/anatomy/dom/bindings/htmlFor"))
+      .toMatchObject({ rule: "anatomy-association-binding", disposition: "refused" });
+  });
   it("keeps source citation metadata explicitly refused without a native carrier", () => {
     const contract = load("Blockquote");
     (contract.anatomy as { dom: { bindings?: Record<string, string> } }).dom.bindings = { cite: "prop:cite" };
@@ -96,6 +112,8 @@ describe("Godot support boundary", () => {
     // Unknown rule members are rejected so a typo cannot silently change meaning.
     expect(() => boundaryOf([rule({} as GodotBoundaryRule)])).not.toThrow();
     expect(() => validateBoundary({ schema: "godot-support-boundary.v1", rules: [{ ...rule({}), propMatch: ["x"] }] })).toThrow(/unknown member/);
+    expect(() => boundaryOf([rule({ requiresAny: [] })])).toThrow(/requiresAny/);
+    expect(() => boundaryOf([rule({ requiresAny: [{ match: ["styles:/root"] }] })])).toThrow(/contract pointer/);
     // The catch-all must be refused: an unadjudicated family is never supported.
     expect(() => boundaryOf([rule({ catchAll: true, disposition: "pending", reason: "later" })])).toThrow(/catch-all/);
   });

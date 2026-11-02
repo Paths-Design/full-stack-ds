@@ -84,6 +84,19 @@ namespace FullStackDS.Tests
             Assert.That(sheet.importedWithWarnings, Is.False);
         }
 
+        [UnityTest] public IEnumerator InputInvalidStatePaintsTheAuthoredBorderColor()
+        {
+            var root = EditorRoot();
+            var scope = new VisualElement(); Theme.Attach(scope); root.Add(scope);
+            var input = new FullStackDS.Input(); scope.Add(input);
+            yield return Settle();
+            ColorIs(input.resolvedStyle.borderTopColor, "#a0a0a1", "default input border");
+            input.Invalid = true; yield return Settle();
+            ColorIs(input.resolvedStyle.borderTopColor, "#b31b1b", "invalid input border");
+            input.Invalid = false; yield return Settle();
+            ColorIs(input.resolvedStyle.borderTopColor, "#a0a0a1", "restored input border");
+        }
+
         [UnityTest] public IEnumerator PassiveTextAndRuleComposeWithTokenBackedStyles()
         {
             var root = EditorRoot();

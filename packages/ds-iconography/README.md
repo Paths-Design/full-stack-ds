@@ -1,5 +1,7 @@
 # @full-stack-ds/iconography
 
+Node 22.19 or later is required for Node tooling and Node package consumption. Browser and native application runtime requirements follow their framework peers.
+
 Governed icon contracts and projection emitters for Full Stack DS.
 
 ## Package consumption

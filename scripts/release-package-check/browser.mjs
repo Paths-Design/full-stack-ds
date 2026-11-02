@@ -678,6 +678,7 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
       assert.ok(!id.includes("/@angular/compiler/"), "Browser bundle contains Angular JIT compiler");
       assert.ok(!/\/packages\/ds-(?:react|vue|svelte|angular|lit|tokens|iconography)\//.test(id), "Workspace FSDS implementation reached bundle: " + id);
       if (id.includes("/node_modules/@full-stack-ds/")) assert.ok(id.startsWith(consumer + "/node_modules/@full-stack-ds/"), "FSDS module escaped installed consumer: " + id);
+      if (id.includes("/node_modules/@full-stack-ds/")) assert.ok(!/\.cjs(?:$|\?)/.test(id), "ESM browser consumer acquired a CommonJS FSDS implementation: " + id);
     }
   }
   writeFileSync(join(evidence, "browser-bundle-modules.json"), JSON.stringify({ linkedModules, modules: [...moduleIDs].sort() }, null, 2));

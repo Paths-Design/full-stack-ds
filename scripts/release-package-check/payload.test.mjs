@@ -9,6 +9,7 @@ function fixture() {
   const manifest = {
     name: "@full-stack-ds/vue", version: "0.1.0", type: "module",
     license: "MIT", author: "DesignPaths, LLC", description: "Vue component library",
+    engines: { node: ">=22.19.0" },
     publishConfig: { access: "public" },
     repository: { type: "git", url: "git+https://github.com/Paths-Design/full-stack-ds.git", directory: "packages/ds-vue" },
     homepage: "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-vue",
@@ -60,6 +61,8 @@ const mutations = [
   ["unknown package", "PACKAGE_NAME", p => { p.manifest.name = "@full-stack-ds/unowned"; }],
   ["private package", "PACKAGE_PRIVATE", p => { p.manifest.private = true; }],
   ["wrong SPDX", "PACKAGE_LICENSE", p => { p.manifest.license = "UNLICENSED"; }],
+  ["missing Node baseline", "PACKAGE_NODE", p => { delete p.manifest.engines; }],
+  ["unsupported Node floor", "PACKAGE_NODE", p => { p.manifest.engines.node = ">=18"; }],
   ["wrong owner", "PACKAGE_AUTHOR", p => { p.manifest.author = "Other Owner"; }],
   ["restricted scoped publication", "PACKAGE_ACCESS", p => { p.manifest.publishConfig.access = "restricted"; }],
   ["incorrect repository directory", "PACKAGE_REPOSITORY", p => { p.manifest.repository.directory = "packages/ds-react"; }],

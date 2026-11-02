@@ -1,5 +1,7 @@
 # @full-stack-ds/react
 
+Node 22.19 or later is required for Node tooling and package consumption. Browser runtime requirements follow the framework peers. ESM imports and synchronous CommonJS requires share one ESM implementation and its providers and contexts.
+
 Full Stack DS components for react.
 
 Install the framework peer dependencies declared in package.json and @full-stack-ds/tokens. Component props and public data types are exported from the package root.
