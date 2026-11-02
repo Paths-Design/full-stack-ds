@@ -72,6 +72,7 @@ import {
   translateNonReactType,
 } from "../../non-react-types.js";
 import { renderSections, type Section } from "../../preserve.js";
+import { cssStringHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -1670,7 +1671,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   importLines.push(...vueMessageImports(ir));
   const importsBody = importLines.join("\n");
 
-  const typesBody = emitNonReactTypeAliases(ir).join("\n");
+  const typesBody = emitNonReactTypeAliases(ir).join("\n") + cssStringHelperSource(ir);
   const propsInterfaceBody = generatePropsInterface(ir);
   const definePropsBody = (ir.dom?.disabledActivation ? "defineOptions({ inheritAttrs: false });\n\n" : "") + generateDefineProps(ir);
 
@@ -2433,8 +2434,9 @@ function renderVueDomNode(
   // the IR builder, so the object can be built fresh here.
   if (node.cssVarBindings.length > 0) {
     const entries: string[] = [];
-    for (const { varName, value } of node.cssVarBindings) {
-      const valueExpr = renderVueBindingValue(value, ctx);
+    for (const binding of node.cssVarBindings) {
+      const { varName, value } = binding;
+      const valueExpr = cssVariableValue(renderVueBindingValue(value, ctx), binding);
       if (valueExpr === null) continue;
       entries.push(`'${varName}': ${valueExpr}`);
     }

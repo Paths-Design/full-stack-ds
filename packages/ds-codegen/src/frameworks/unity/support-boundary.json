@@ -908,6 +908,12 @@
       "reason": "Repeated rendering is not lowered; the walker refuses an iterated node (UNITY_UNSUPPORTED_ANATOMY)."
     },
     {
+      "id": "anatomy-projected-collection",
+      "match": ["contract:/anatomy/dom/projectedCollection/**", "contract:/anatomy/dom/**/children/*/projectedCollection/**"],
+      "disposition": "refused",
+      "reason": "Projected child separators are omitted; the passive wrapper preserves authored content without a native between-item decoration model. Its owned CSS-string carrier is withheld."
+    },
+    {
       "id": "anatomy-css-var-bindings",
       "match": ["contract:/anatomy/dom/cssVariableBindings/**", "contract:/anatomy/dom/**/children/*/cssVariableBindings/**"],
       "disposition": "pending",
@@ -1437,7 +1443,7 @@
       "id": "prop-decorative-separator-refused",
       "match": ["contract:/props/*/members/plain:separator/**"],
       "disposition": "refused",
-      "reason": "Breadcrumb separators are consumer-composed decoration with no native item-separator model; the generated wrapper exposes no Separator property."
+      "reason": "Projected child separators are omitted because there is no native between-item decoration model; the generated wrapper exposes no Separator property."
     },
     {
       "id": "prop-dismiss-chrome-refused",

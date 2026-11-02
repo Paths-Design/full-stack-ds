@@ -209,6 +209,12 @@
       "reason": "no glyph/svg rendering is realized; anatomy parts render without their glyph"
     },
     {
+      "id": "anatomy-projected-collection",
+      "match": ["contract:/anatomy/dom/**/projectedCollection/**"],
+      "disposition": "pending",
+      "reason": "Projected child separator insertion has no GPUI lowering; the anatomy projection records and removes this relation without claiming between-item decoration."
+    },
+    {
       "id": "anatomy-css-variable-bindings",
       "match": [
         "contract:/anatomy/dom/**/cssVariableBindings/**"

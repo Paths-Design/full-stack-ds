@@ -240,6 +240,12 @@ function transformNode(node: DomNodeIR, state: AnatomyState): DomNodeIR | null {
     return null;
   }
   const copy: DomNodeIR = structuredClone(node);
+  if (copy.projectedCollection) {
+    const collection = copy.projectedCollection;
+    const support = boundaryReason(state.boundary, 'anatomy-projected-collection', 'projected child separator insertion has no GPUI lowering');
+    omit(state, { kind: 'projectedCollection', source: `${copy.part ?? 'root'}/projectedCollection`, ...support, reason: `${support.reason}; omitted facts: ${JSON.stringify(collection)}` });
+    copy.projectedCollection = undefined;
+  }
   if (copy.tag === 'slot' && copy.slotName && !state.realizedSlots.includes(copy.slotName)) {
     omit(state, { kind: 'slot', source: copy.slotName, ...boundaryReason(state.boundary, 'slots', 'slot identifier cannot be projected onto a Rust slot key') });
     return null;

@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import { useFsdsMessages } from "../../primitives/messages";
 import "./Breadcrumbs.css";
@@ -11,6 +11,10 @@ import "./Breadcrumbs.css";
 
 // @generated:start types
 
+
+function fsdsCssString(value: unknown): string {
+  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+}
 // @generated:end
 
 // @custom:start types
@@ -75,7 +79,7 @@ export function Breadcrumbs({
   "data-testid": testId,
   children,
   ariaLabel: ariaLabelProp,
-  separator: _separator,
+  separator = "/",
   ...rest
 }: BreadcrumbsProps) {
   const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
@@ -89,7 +93,7 @@ export function Breadcrumbs({
 
   return (
   <Stack layout="native" as="nav" className={`${classNames}`} aria-label={ariaLabel} data-testid={testId} data-fsds-component="breadcrumbs" data-fsds-box="" {...rest}>
-    <ol className="breadcrumbs__list">
+    <ol className="breadcrumbs__list" style={{ "--fsds-breadcrumbs-child-separator": fsdsCssString(separator) } as CSSProperties}>
       {children}
     </ol>
   </Stack>

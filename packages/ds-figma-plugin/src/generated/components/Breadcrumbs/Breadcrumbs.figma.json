@@ -81,8 +81,8 @@
       "safeName": "separator",
       "type": "string",
       "required": false,
-      "description": "Separator character or string rendered between items.",
-      "defaultExpr": null,
+      "description": "Decorative text rendered between authored items. Defaults to slash; an empty string hides separators.",
+      "defaultExpr": "\"/\"",
       "nodeKind": null
     }
   ],
@@ -355,6 +355,7 @@
           "display": "flex",
           "align-items": "center",
           "flex-wrap": "wrap",
+          "flex-direction": "row",
           "gap": "var(--fsds-breadcrumbs-spacing-gap, 8px)"
         }
       }
@@ -370,6 +371,20 @@
     "portal": null
   },
   "surface": null,
+  "projectedCollections": {
+    "realization": "descriptor-only",
+    "facts": [
+      {
+        "containerPart": "list",
+        "itemPart": "item",
+        "separatorPart": "separator",
+        "separator": {
+          "kind": "prop",
+          "prop": "separator"
+        }
+      }
+    ]
+  },
   "figma": {
     "intendedUse": "figma-library-materialization",
     "documentationFrame": "Breadcrumbs / Documentation",

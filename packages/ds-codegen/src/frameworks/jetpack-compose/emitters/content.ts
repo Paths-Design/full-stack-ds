@@ -8,6 +8,7 @@ import { emitComponentReference, referenceImports, referenceNodes, referencePara
 import type { ComponentIR } from "../../../ir.js";
 import { kotlinMetadataText, kotlinStringDefault } from "../messages.js";
 import { nativeMetadataTextPlan } from "../../../native-metadata-text.js";
+import { projectedCollections } from "../../../projected-collection.js";
 import { conventionalProp, domGlyph, expansionChannel, hasBooleanConventionalProp, orientationEnumValues } from "../../native-emission-class.js";
 
 /**
@@ -158,6 +159,7 @@ export function emitStaticContent(ir: ComponentIR): string {
   lines.push(`// @generated:end`);
   lines.push(``);
   lines.push(`// @generated:start component`);
+  for (const node of projectedCollections(ir)) lines.push(`// Projected separators for ${node.part} are omitted; authored item content remains consumer supplied.`);
   for (const axis of axes) {
     lines.push(
       `/** ${axis.propName} axis lowered from the contract's ${axis.propName} variant. */`,

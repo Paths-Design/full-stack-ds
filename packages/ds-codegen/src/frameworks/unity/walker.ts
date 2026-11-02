@@ -17,6 +17,7 @@ import { disabledProp, findNode, hasChannel, triggerParts, unityLowering, type U
 import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
 import { unityGlyphPlan, type UnityGlyphPlan } from "./glyph-plan.js";
 import { nativeLoopVisualPlan } from "../native-loop-visual.js";
+import { isOwnedProjectedCollectionCssBinding, projectedCollections } from "../../projected-collection.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 export const pascal = (s: string): string => s.replace(/(^|[-_])([a-z])/g, (_, _sep: string, c: string) => c.toUpperCase());
@@ -669,7 +670,8 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyp
   // every static-attribute leaf.
   const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length ||
     node.componentRef !== undefined || (node.iconGlyph !== undefined && !glyphNode) || node.activation !== undefined || node.focusContainer === true ||
-    !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
+    !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true ||
+    node.cssVarBindings.some(binding => !isOwnedProjectedCollectionCssBinding(node, binding)) ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
     (node.content !== undefined && !(node === ir.dom && textProp !== undefined && "kind" in node.content && node.content.kind === "prop" && node.content.prop === textProp) &&
       (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
@@ -1869,7 +1871,8 @@ export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);
   const blocks = classes.map((cls, index) => emitClass(ctx, cls, index === 0 ? api : undefined));
-  const source = `// Generated from ComponentIR. Regenerate with pnpm run generate:unity.\nusing System;\nusing UnityEngine.UIElements;\n\nnamespace FullStackDS\n{\n${blocks.join("\n\n")}\n}\n`;
+  const omissionComments = projectedCollections(ir).map(node => "// Omitted projectedCollection: " + JSON.stringify({ part: node.part ?? "root", ...node.projectedCollection })).join("\n");
+  const source = `// Generated from ComponentIR. Regenerate with pnpm run generate:unity.\n${omissionComments}${omissionComments ? "\n" : ""}using System;\nusing UnityEngine.UIElements;\n\nnamespace FullStackDS\n{\n${blocks.join("\n\n")}\n}\n`;
   return { lowering, classes: classes.map(c => c.name), hosts: ctx.hosts, source };
 }
 

@@ -20,7 +20,29 @@ type A = Pick<BlockquoteComponent, "cite">;
 type L = Pick<BlockquoteElement, "cite">;
 `;
 
+const breadcrumbsWebImports = `
+import type { BreadcrumbsProps as R } from "@full-stack-ds/react";
+import type { BreadcrumbsProps as V } from "@full-stack-ds/vue";
+import type { BreadcrumbsProps as S } from "@full-stack-ds/svelte";
+import type { BreadcrumbsComponent } from "@full-stack-ds/angular";
+import type { BreadcrumbsElement } from "@full-stack-ds/lit";
+type A = Pick<BreadcrumbsComponent, "separator">;
+type L = Pick<BreadcrumbsElement, "separator">;
+`;
+
 export const webCases = [
+  {
+    name: "breadcrumbs-localized-optional-separator",
+    source: breadcrumbsWebImports + ["R", "V", "S", "A", "L"].map(type => `
+const ${type.toLowerCase()}Missing: ${type} = {};
+const ${type.toLowerCase()}Literal: ${type} = { separator: "日本語" };
+const ${type.toLowerCase()}Empty: ${type} = { separator: "" };
+const ${type.toLowerCase()}Cleared: ${type} = { separator: undefined };`).join("\n"),
+  },
+  {
+    name: "invalid-breadcrumbs-separator", error: 2322, count: 5, fragment: "number",
+    source: breadcrumbsWebImports + ["R", "V", "S", "A", "L"].map(type => `const ${type.toLowerCase()}: ${type} = { separator: 42 };`).join("\n"),
+  },
   {
     name: "blockquote-optional-source-url",
     source: blockquoteWebImports + ["R", "V", "S", "A", "L"].map(type => `
@@ -232,6 +254,18 @@ const s: S = { kind: "invalid", text: "text" };
 ];
 
 export const nativeCases = [
+  {
+    name: "breadcrumbs-localized-optional-separator",
+    source: `import type { BreadcrumbsProps } from "@full-stack-ds/react-native";
+const omitted: BreadcrumbsProps = {};
+const literal: BreadcrumbsProps = { separator: "日本語", ariaLabel: "مسار التنقل" };
+const empty: BreadcrumbsProps = { separator: "" };
+const cleared: BreadcrumbsProps = { separator: undefined };`,
+  },
+  {
+    name: "invalid-breadcrumbs-separator", error: 2322, fragment: "number",
+    source: `import type { BreadcrumbsProps } from "@full-stack-ds/react-native"; const trail: BreadcrumbsProps = { separator: 42 };`,
+  },
   {
     name: "blockquote-optional-source-url-compatibility",
     source: `

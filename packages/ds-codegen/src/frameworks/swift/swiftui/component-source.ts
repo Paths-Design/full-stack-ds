@@ -72,6 +72,7 @@ import { swiftLiteral } from "./icon-glyph.js";
 import { emitSwiftNativeTextRules, nativeTextPart } from "./native-text-rules.js";
 import { swiftMessage, swiftMetadataText, swiftStringProp, withSwiftMessagesEnvironment } from "./messages.js";
 import { nativeMetadataTextPlan } from "../../../native-metadata-text.js";
+import { projectedCollections } from "../../../projected-collection.js";
 import {
   channelToggledText,
   contentMessages,
@@ -3300,6 +3301,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
     `/// Emitted through the static-content path: passive ` +
       `${ir.dom!.tag} root with a single consumer content region.`,
   );
+  for (const node of projectedCollections(ir)) lines.push(`/// Projected separators for ${node.part} are omitted; authored item content remains consumer supplied.`);
   if (exportName !== ir.name) {
     lines.push(
       `/// SwiftUI reserves the \`${ir.name}\` type name; this target ` +

@@ -209,6 +209,12 @@
       "via": "glyph name and size facts project into the emitted glyph catalog mount"
     },
     {
+      "id": "anatomy-projected-collection",
+      "match": ["contract:/anatomy/dom/**/projectedCollection/**"],
+      "disposition": "pending",
+      "reason": "Projected child separator insertion is not lowered; anatomy preserves the consumer content host and records the omitted item, separator and source facts."
+    },
+    {
       "id": "anatomy-css-variable-bindings",
       "match": [
         "contract:/anatomy/dom/**/cssVariableBindings/**"

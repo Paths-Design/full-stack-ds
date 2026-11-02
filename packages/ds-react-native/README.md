@@ -18,6 +18,8 @@ Component-specific semantics, composition examples, and supported behavior are d
 
 `Blockquote.cite` remains an optional source URL compatibility prop. React Native has no implemented citation metadata carrier; this prop does not render attribution text or activate a URL. Compose visible attribution or links separately when needed.
 
+`Breadcrumbs` separates authored native children with decorative text (`separator`, default `/`; an empty string hides it). Use `ariaLabel` for the localized label. Arrays and fragments preserve their key scopes. A supplied component counts as one item, even if it renders multiple nodes or nothing; conditionally include each item in the children collection when hiding it.
+
 ## License
 
 MIT, copyright DesignPaths, LLC. The bundled THIRD_PARTY_NOTICES preserves the Lucide and Feather notices applicable to adapted icon geometry.

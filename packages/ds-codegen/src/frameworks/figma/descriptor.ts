@@ -1,6 +1,6 @@
 import type { DateGridIR } from '../../date-grid.js';
 import type { DesignBindingIR } from '../../design-properties.js';
-import type { MotionIR } from '../../ir.js';
+import type { BindingExpression, MotionIR } from '../../ir.js';
 import type { MessageIR } from '../../messages.js';
 export const FIGMA_COMPONENT_DESCRIPTOR_SCHEMA_VERSION = 1 as const;
 export const FIGMA_COMPONENT_DESCRIPTOR_SOURCE = "@full-stack-ds/codegen/frameworks/figma" as const;
@@ -65,6 +65,7 @@ export type FigmaComponentDescriptorV1 = {
   surface: unknown;
   pagedSet?: { realization: "descriptor-only"; facts: { channel: string; itemsProp: string; countProp?: string; disabledProp?: string } };
   dateGrid?: { realization: "descriptor-only"; facts: DateGridIR };
+  projectedCollections?: { realization: "descriptor-only"; facts: Array<{ containerPart: string; itemPart: string; separatorPart: string; separator: BindingExpression }> };
   figma: {
     intendedUse: "figma-library-materialization";
     documentationFrame: string;
@@ -129,6 +130,17 @@ export function assertFigmaComponentDescriptorV1(
   }
 
   if (!isRecord(descriptor.css)) throw new Error("css block is required.");
+  if (descriptor.projectedCollections !== undefined) {
+    const metadata = descriptor.projectedCollections;
+    if (!isRecord(metadata) || metadata.realization !== "descriptor-only") throw new Error("projectedCollections must contain descriptor-only normalized facts.");
+    assertArray(metadata.facts, "projectedCollections.facts");
+    for (const fact of metadata.facts) {
+      if (!isRecord(fact)) throw new Error("projectedCollections facts must be objects.");
+      for (const field of ["containerPart", "itemPart", "separatorPart"]) assertString(fact[field], `projectedCollections.facts.${field}`);
+      if (!isRecord(fact.separator) || fact.separator.kind !== "prop") throw new Error("projectedCollections separator must be a prop binding.");
+      assertString(fact.separator.prop, "projectedCollections.facts.separator.prop");
+    }
+  }
   if (descriptor.pagedSet !== undefined) {
     if (!isRecord(descriptor.pagedSet) || descriptor.pagedSet.realization !== "descriptor-only" || !isRecord(descriptor.pagedSet.facts)) throw new Error("pagedSet must contain descriptor-only normalized facts.");
     assertString(descriptor.pagedSet.facts.channel, "pagedSet.facts.channel");

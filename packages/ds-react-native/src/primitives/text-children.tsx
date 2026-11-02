@@ -72,3 +72,43 @@ function renderScope(prepared: Prepared, textProps: ProjectedTextProps): ReactNo
 export function renderTextChildren(children: ReactNode, textProps: ProjectedTextProps = {}): ReactNode {
   return renderScope(prepare(children), textProps);
 }
+
+/** Separates authored leaves; opaque elements count once without inspecting their output. */
+export function renderSeparatedChildren(children: ReactNode, separator: string, textProps: ProjectedTextProps = {}): ReactNode {
+  let hasPrevious = false;
+  function authoredKey(entry: Prepared): string | undefined {
+    if (entry.kind === "collection") return undefined;
+    return isValidElement(entry.node) ? entry.node.key ?? undefined : undefined;
+  }
+  function visit(entry: Prepared, key?: string): ReactNode {
+    if (entry.kind === "collection") {
+      const occupied = new Set<string>();
+      for (const child of entry.entries) {
+        const existing = authoredKey(child);
+        if (existing !== undefined) occupied.add(existing);
+      }
+      return entry.entries.map((child, index) => {
+        let childKey = authoredKey(child);
+        if (childKey === undefined) {
+          childKey = `fsds:separated:${index}`;
+          while (occupied.has(childKey)) childKey += ":";
+          occupied.add(childKey);
+        }
+        return visit(child, childKey);
+      });
+    }
+    if (entry.kind === "fragment") {
+      return cloneElement(entry.node, key === undefined ? undefined : { key }, visit(entry.content));
+    }
+    const node = entry.node;
+    if (node == null || typeof node === "boolean" || node === "") return node;
+    const prepend = hasPrevious && separator !== "";
+    hasPrevious = true;
+    // Stable positions retain consumer state when the item becomes first or decoration disappears.
+    return <Fragment key={key ?? authoredKey(entry)}>
+      {prepend ? <Text style={textProps.style} accessible={false} accessibilityElementsHidden={true} importantForAccessibility="no-hide-descendants">{separator}</Text> : null}
+      {entry.hasText ? renderTextChildren(node, textProps) : node}
+    </Fragment>;
+  }
+  return visit(prepare(children));
+}

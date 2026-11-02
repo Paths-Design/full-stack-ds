@@ -1,4 +1,5 @@
 import { emitBoxModelBoundaryCss } from './box-model.js';
+import { projectedCollectionCssBlocks } from './projected-collection.js';
 import { analyzeCssTokenConsumption, onlyConsumedDeclarations } from './css-token-consumption.js';
 /**
  * CSS string formatting from IR.
@@ -391,7 +392,7 @@ function webCssBlocks(ir: ComponentIR): ComponentIR["cssBlocks"] {
   const rootSelector = `.${ir.cssPrefix}`;
   const defaults = ir.cssBlocks.find(block => block.selector === rootSelector)?.declarations ?? {};
   const bindings = ir.designBindings ?? [];
-  const blocks: ComponentIR["cssBlocks"] = [...ir.cssBlocks, ...loopCss(ir)];
+  const blocks: ComponentIR["cssBlocks"] = [...ir.cssBlocks, ...loopCss(ir), ...projectedCollectionCssBlocks(ir)];
   return blocks.map(block => {
     // Starting states carry verbatim resting values, not overridable surface.
     // A starting selector usually repeats a resting selector (that is the
@@ -658,6 +659,8 @@ export function emitLitInlineCss(ir: ComponentIR): string {
   const startingStyleBody = startingStyleBlock(webCssBlocks(ir));
 
   const parts: string[] = [emitBoxModelBoundaryCss(true)];
+  // A collection item's display:contents host must retain the native hidden contract.
+  if (projectedCollectionCssBlocks(ir).length) parts.push(":host([hidden]) { display: none; }");
   if (tokensGroups.length > 0) parts.push(tokensGroups.join("\n\n"));
   if (propertyGroups.length > 0) parts.push(`@layer components.defaults {\n${propertyGroups.join("\n\n")}\n}`);
   // Entry states share the resting rules' layer so the cascade treats them

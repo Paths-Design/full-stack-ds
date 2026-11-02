@@ -482,6 +482,10 @@ function walkAnatomy(ir: ComponentIR, dom: DomNodeIR): AnatomyWalk {
   };
 
   const collectNodeFacts = (node: DomNodeIR, host: string): void => {
+    if (node.projectedCollection) {
+      const collection = node.projectedCollection;
+      add(`${host}: projected collection items ${collection.itemPart} with separator ${collection.separatorPart} from ${describeExpression(collection.separator)} not lowered`);
+    }
     const attrs = Object.keys(node.attrs);
     if (attrs.length) add(`${host}: attributes (${attrs.join(", ")}) not projected natively`);
     const bindings = Object.keys(node.bindings);

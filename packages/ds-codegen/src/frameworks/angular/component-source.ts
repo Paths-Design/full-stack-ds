@@ -69,6 +69,7 @@ import {
   translateNonReactType,
 } from "../../non-react-types.js";
 import { renderSections, type Section } from "../../preserve.js";
+import { cssStringHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -142,7 +143,7 @@ export function generateAngularComponentSource(ir: ComponentIR): string {
   // Body first: import specifier sets are derived from the assembled body
   // (CODEGEN-EMIT-LINT-HYGIENE-01), so no specifier is emitted that the
   // file body never references.
-  const typesBody = generateTypes(ir);
+  const typesBody = generateTypes(ir) + cssStringHelperSource(ir);
   const compoundClasses = ir.compoundParts
     .map((part) => generateCompoundPartComponent(ir, part))
     .join("\n\n");
@@ -1153,11 +1154,29 @@ function generateCompoundPartComponent(
     isExplicitSubcomponent?: true;
     layoutVariant?: string;
     nativeTag?: string;
+    isProjectedCollectionItem?: true;
   },
 ): string {
   const subName = `${ir.name}${part.name[0].toUpperCase()}${part.name.slice(1)}`;
   const className = `${subName}Component`;
   const cssClass = `${ir.cssPrefix}__${part.name}`;
+
+  if (part.isProjectedCollectionItem && part.nativeTag === "li") {
+    return [
+      `@Component({`,
+      `  selector: "li[fsds${subName}], fsds-${toKebab(subName)}",`,
+      `  standalone: true,`,
+      `  template: \`<ng-content />\`,`,
+      `  host: { "[class]": "classes()", "role": "listitem", "[attr.data-testid]": "dataTestid" },`,
+      `  changeDetection: ChangeDetectionStrategy.OnPush,`,
+      `})`,
+      `export class ${className} {`,
+      `  @Input() class?: string;`,
+      `  @Input() dataTestid?: string;`,
+      `  classes(): string { return ["${cssClass}", this.class].filter(Boolean).join(" "); }`,
+      `}`,
+    ].join("\n");
+  }
 
   // Native-tag branch: emit an attribute selector so the host element
   // IS the native tag, supplied by the consumer's template. This is
@@ -1977,6 +1996,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   } else {
     lines.push(`export class ${className} {`);
   }
+  if (cssStringHelperSource(ir)) lines.push(`  protected readonly fsdsCssString = fsdsCssString;`);
   // Resolved messages: a computed signal over the injected catalog, read by
   // template (`fsdsMessages().key`) and class (`this.fsdsMessages().key`).
   if (ir.messages.length > 0) {
@@ -3006,8 +3026,9 @@ function renderAngularDomNode(
   // names through the `[style.<name>]` syntax. A literal `style` attr
   // coexisting with cssVarBindings is rejected by the IR builder, so
   // we don't need to compose with an existing `style` declaration.
-  for (const { varName, value } of node.cssVarBindings) {
-    const valueExpr = renderAngularBindingValue(value, ctx);
+  for (const binding of node.cssVarBindings) {
+    const { varName, value } = binding;
+    const valueExpr = cssVariableValue(renderAngularBindingValue(value, ctx), binding);
     if (valueExpr === null) continue;
     attrs.push(`[style.${varName}]="${valueExpr}"`);
   }

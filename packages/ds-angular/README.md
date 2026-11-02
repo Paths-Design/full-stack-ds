@@ -21,6 +21,17 @@ export class Example {}
 
 The library ships partial Angular compilation for the standard Angular linker. Use a compatible Angular compiler and build pipeline.
 
+For breadcrumb composition, add `BreadcrumbsComponent` and `BreadcrumbsItemComponent` to the consumer's standalone imports. The attribute selector preserves native ordered-list ancestry:
+
+```html
+<fsds-breadcrumbs ariaLabel="Page location" separator="›">
+  <li fsdsBreadcrumbsItem><a href="/">Home</a></li>
+  <li fsdsBreadcrumbsItem><span>Settings</span></li>
+</fsds-breadcrumbs>
+```
+
+The existing `<fsds-breadcrumbs-item>` selector also exposes list-item semantics. Localize `ariaLabel`; author `aria-current="page"` on a current-page link. A terminal non-link label can omit that attribute. `separator=""` hides the decorative dividers.
+
 Component-specific semantics, composition examples, and supported behavior are documented in the [repository](https://github.com/Paths-Design/full-stack-ds). A package build alone does not establish accessibility or native device compatibility for every component.
 
 ## License

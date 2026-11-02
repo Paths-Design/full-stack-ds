@@ -28,6 +28,7 @@ enum BreadcrumbsNativeTextRules {
 }
 
 /// Emitted through the static-content path: passive nav root with a single consumer content region.
+/// Projected separators for list are omitted; authored item content remains consumer supplied.
 public struct Breadcrumbs<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         BreadcrumbsTokens.scopes

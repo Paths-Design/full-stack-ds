@@ -3,12 +3,12 @@
   "limitations": "API presence is not semantic support. A lowered disposition states the family has a lowering; pending and refused leaves block full-parity claims, and a component's emitted flag says whether the planner admits it at all. variance records plan-shape exclusions of target-lowered facts; it is a recorded disagreement, not support. Regenerate with --write; --check fails on drift.",
   "boundary": {
     "schema": "godot-support-boundary.v1",
-    "rules": 167,
+    "rules": 168,
     "corpusComponents": 55,
     "counts": {
-      "lowered": 8925,
-      "pending": 13,
-      "refused": 8634
+      "lowered": 8926,
+      "pending": 16,
+      "refused": 8642
     },
     "deadRules": []
   },
@@ -256,10 +256,10 @@
       "emitted": true,
       "operation": "anatomy",
       "diagnostic": null,
-      "contractSha256": "272b238f1a5faf5f21a640729057fc05ec784976bb59358bec3d1f9941528697",
+      "contractSha256": "cc2c831f88ecefd49588559d8536058e09338b40554831c9f69e9181f7941da8",
       "sidecarSha256": {
         "tokens": "70e9876dc7658d8fec28c120409dc48b68f24703b5c1dd1a284bf8ca89ef259d",
-        "styles": "e7016c7ba170b6a64d54a4f67ad501ccf3402cae0827dbd16f64aa593d40fe07"
+        "styles": "f850a6065d615ce946a0a3dc5f2955bd1a774e99d19ed83cbfd754d86aa8d97d"
       },
       "receipt": {
         "operation": "anatomy",
@@ -268,7 +268,7 @@
           "separator"
         ],
         "proof": "requires-runtime-witness",
-        "nonClaimCount": 22
+        "nonClaimCount": 25
       },
       "variance": [
         {
@@ -282,11 +282,11 @@
       ],
       "boundary": {
         "counts": {
-          "lowered": 83,
-          "pending": 0,
-          "refused": 79
+          "lowered": 84,
+          "pending": 3,
+          "refused": 87
         },
-        "digest": "4e9d14a09416cc62ca19b25500bf508d518b58c3ebafcd5d54d246a513544360"
+        "digest": "b1c0e08b04120d7481290d3d11ee87a7dcf82eed2f993ce209e9d04c1057c943"
       }
     },
     {

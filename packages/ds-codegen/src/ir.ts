@@ -82,6 +82,8 @@ import { buildMotionPorts, type MotionPortIR } from "./motion-ports.js";
 // ---------------------------------------------------------------------------
 
 export interface PartIR {
+  /** Authored item of a projected collection; native list hosts preserve its content model. */
+  isProjectedCollectionItem?: true;
   name: string;
   /** The HTML element this part maps to, when a known semantic is recognized. */
   semanticElement: string | undefined;
@@ -761,6 +763,8 @@ export function collectContentTransforms(
  * away from consumer CSS variables.
  */
 export interface CssVarBindingIR {
+  /** Serialize literal text as a CSS string token rather than CSS source. */
+  format?: "css-string";
   /** Full CSS custom-property name, including the --fsds- prefix. */
   varName: string;
   /** Binding expression resolved from the prop:/channel:/literal: grammar. */
@@ -1060,6 +1064,7 @@ export interface DomNodeIR {
    * contract for deterministic emission.
    */
   cssVarBindings: CssVarBindingIR[];
+  projectedCollection?: { itemPart: string; separatorPart: string; separator: BindingExpression; cssVariable: string };
   /**
    * Icon-catalog glyph directive. When set (only legal on `tag: "svg"`),
    * the framework emitter renders this node's viewBox and `<path>` children
@@ -2931,6 +2936,20 @@ function validateDomNode(
   // bind a `--fsds-truncate-…` var (and so renames of one component's
   // prefix never silently collide with another's). Also confirm that
   // every binding's source resolves to a declared prop/channel/alias.
+  if (node.projectedCollection) {
+    const collection = node.projectedCollection;
+    const insertion = node.children[0];
+    if (!node.part || !["ol", "ul"].includes(node.tag) || node.componentRef || node.iteration || node.content ||
+        node.children.length !== 1 || !insertion || !["children", "slot"].includes(insertion.tag) || insertion.slotName ||
+        collection.separator.kind !== "prop" || collection.separator.path?.length || propTypes.get(collection.separator.prop) !== "string" ||
+        anatomyDetails[collection.itemPart]?.tag !== "li" || anatomyDetails[collection.itemPart]?.subcomponent !== true ||
+        anatomyDetails[collection.separatorPart]?.role !== "decoration") {
+      throw new Error(`[${componentName}] projectedCollection requires a named native list containing only default children, an explicit li item part, a decorative separator part, and a string prop separator.`);
+    }
+    if (node.cssVarBindings.filter(binding => binding.varName === collection.cssVariable).length !== 1) {
+      throw new Error(`[${componentName}] projectedCollection owns ${collection.cssVariable}; remove the competing CSS binding.`);
+    }
+  }
   if (node.cssVarBindings.length > 0) {
     const expected = new RegExp(`^--fsds-${cssPrefix}(-[a-z0-9]+)+$`);
     for (const { varName, value } of node.cssVarBindings) {
@@ -3475,7 +3494,7 @@ function buildDomTree(contract: ComponentContract): DomNodeIR | undefined {
   if (!contract.anatomy || Array.isArray(contract.anatomy)) return undefined;
   const dom = contract.anatomy.dom;
   if (!dom) return undefined;
-  const root = parseDomNode(dom);
+  const root = parseDomNode(dom, getCssPrefix(contract));
   // Post-walk: rewrite legacy `prop:index` / `prop:item` references that sit
   // inside an iteration scope to their `iterationLocal` semantic equivalent.
   // Done as a separate pass because `parseDomNode` recurses bottom-up — a
@@ -3717,7 +3736,7 @@ const DOM_PROPERTY_HOST_REQUIREMENTS: Record<
   indeterminate: { tag: "input", attrs: { type: "checkbox" } },
 };
 
-function parseDomNode(node: ContractDomNode): DomNodeIR {
+function parseDomNode(node: ContractDomNode, cssPrefix = ""): DomNodeIR {
   // A node declares EITHER a native `tag` OR a `componentRef` to another
   // design-system component, never both. The schema's `oneOf` enforces this
   // for file-loaded contracts; the IR builder re-checks because it also runs
@@ -3813,7 +3832,7 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
       events[evt] = parseBindingExpression(expr);
     }
   }
-  const children = (node.children ?? []).map(parseDomNode);
+  const children = (node.children ?? []).map(child => parseDomNode(child, cssPrefix));
   const content = parseContentDirective(node.content, node);
   if (content !== undefined && children.length > 0) {
     throw new Error(
@@ -3842,6 +3861,14 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
     }
   }
   const cssVarBindings = parseCssVarBindings(node);
+  const projectedCollection = node.projectedCollection ? {
+    ...node.projectedCollection,
+    separator: parseDomBindingExpression(node.projectedCollection.separator),
+    cssVariable: `--fsds-${cssPrefix}-child-separator`,
+  } : undefined;
+  if (projectedCollection) {
+    cssVarBindings.push({ varName: projectedCollection.cssVariable, value: projectedCollection.separator, format: "css-string" });
+  }
   if (cssVarBindings.length > 0 && node.attrs?.style !== undefined) {
     throw new Error(
       `anatomy.dom node (tag="${node.tag}", part="${node.part ?? "?"}"): ` +
@@ -3883,6 +3910,7 @@ function parseDomNode(node: ContractDomNode): DomNodeIR {
     ...parseIfGuard(node.if),
     iteration,
     cssVarBindings,
+    ...(projectedCollection ? { projectedCollection } : {}),
     iconGlyph,
     generatedIdSlug: undefined,
     idRefAttrs: [],
@@ -5830,6 +5858,12 @@ function buildEventsIR(
 // ---------------------------------------------------------------------------
 
 function buildParts(contract: ComponentContract): PartIR[] {
+  const projectedItemParts = new Set<string>();
+  const collectItems = (node: ContractDomNode): void => {
+    if (node.projectedCollection) projectedItemParts.add(node.projectedCollection.itemPart);
+    node.children?.forEach(collectItems);
+  };
+  if (contract.anatomy && !Array.isArray(contract.anatomy) && contract.anatomy.dom) collectItems(contract.anatomy.dom);
   const allDetails = getPartDetails(contract.anatomy);
   const domTagByPart = collectDomTagsByPart(contract);
   const domComponentRefByPart = collectDomComponentRefsByPart(contract);
@@ -5885,6 +5919,7 @@ function buildParts(contract: ComponentContract): PartIR[] {
     const isExplicitSubcomponent = details?.subcomponent === true;
     return {
       name,
+      ...(projectedItemParts.has(name) ? { isProjectedCollectionItem: true as const } : {}),
       semanticElement,
       isCompound:
         isExplicitSubcomponent ||
