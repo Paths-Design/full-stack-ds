@@ -14,6 +14,8 @@ namespace FullStackDS
         private string current;
         private string placeholder;
         private bool syncing;
+        private bool valueAssigned;
+        private string defaultValue = "";
         public bool Controlled { get; set; }
         public event Action<string> ValueRequested;
 
@@ -25,6 +27,12 @@ namespace FullStackDS
             {
                 if (syncing) return;
                 var next = evt.newValue ?? "";
+                if (next == current) return;
+                if (!host.enabledInHierarchy)
+                {
+                    SetValueWithoutNotify(current);
+                    return;
+                }
                 if (Controlled)
                 {
                     SetValueWithoutNotify(current);
@@ -33,6 +41,8 @@ namespace FullStackDS
                 else
                 {
                     current = next;
+                    valueAssigned = true;
+                    ValueRequested?.Invoke(next);
                 }
             });
         }
@@ -44,6 +54,8 @@ namespace FullStackDS
             get => current;
             set
             {
+                value ??= "";
+                valueAssigned = true;
                 if (current == value) return;
                 using (var evt = ChangeEvent<string>.GetPooled(current, value))
                 {
@@ -51,6 +63,16 @@ namespace FullStackDS
                     evt.target = host;
                     host.SendEvent(evt);
                 }
+            }
+        }
+
+        public string DefaultValue
+        {
+            get => defaultValue;
+            set
+            {
+                defaultValue = value ?? "";
+                if (!valueAssigned && !Controlled) SetValueWithoutNotify(defaultValue);
             }
         }
 
@@ -75,6 +97,7 @@ namespace FullStackDS
         public void SetValueWithoutNotify(string next)
         {
             next ??= "";
+            valueAssigned = true;
             syncing = true;
             try
             {

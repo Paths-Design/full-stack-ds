@@ -17,6 +17,7 @@ import { disabledProp, findNode, hasChannel, triggerParts, unityLowering, type U
 import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
 import { unityGlyphPlan, type UnityGlyphPlan } from "./glyph-plan.js";
 import { nativeLoopVisualPlan } from "../native-loop-visual.js";
+import { nativeFormPlan } from "../native-form-plan.js";
 import { isOwnedProjectedCollectionCssBinding, projectedCollections } from "../../projected-collection.js";
 
 const quote = (s: string): string => JSON.stringify(s);
@@ -623,6 +624,7 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
  * emitted-property realization check in the boundary. */
 function passiveRootApi(ctx: Context): RootApi {
   const members: string[] = [];
+  const attach: string[] = ["Theme.AddStyleSheet(this);"];
   const defaults: string[] = [];
   const glyph = ctx.glyph;
   if (glyph) {
@@ -649,7 +651,14 @@ function passiveRootApi(ctx: Context): RootApi {
     const literal = prop === undefined ? undefined : defaultLiteral(ctx.ir, prop);
     if (literal !== undefined && typeof literal === "string") defaults.push(`${name} = ${literal};`);
   }
-  return { members, attach: ["Theme.AddStyleSheet(this);"], defaults };
+  const form = nativeFormPlan(ctx.ir);
+  if (form?.kind === "associated-label") {
+    const target = identifier(pascal(form.targetProp));
+    members.push(`        [UxmlAttribute] public string ${target} { get; set; }`);
+    members.push("        public VisualElement AssociatedControl { get; set; }");
+    attach.push(`RegisterCallback<ClickEvent>(_ => { var target = AssociatedControl ?? (string.IsNullOrEmpty(${target}) ? null : panel?.visualTree.Q<VisualElement>(${target})); if (target != null && target.enabledInHierarchy) target.Focus(); });`);
+  }
+  return { members, attach, defaults };
 }
 
 function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean, textProp?: string): void {
@@ -805,8 +814,11 @@ function textInputRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (controlRef === undefined) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its text field ${lowering.control.name} outside the root class`);
   const attach: string[] = [`Control = TextControl.Attach(${controlRef});`];
   const defaults: string[] = [];
+  const form = nativeFormPlan(ir);
+  if (form?.kind === "text-input") attach.push("Theme.AddStyleSheet(this);");
   const channel = lowering.channel;
   members.push(`        [UxmlAttribute] public string ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`);
+  if (form?.kind === "text-input" && form.defaultValueProp) members.push(`        [UxmlAttribute] public string ${identifier(pascal(form.defaultValueProp))} { get => Control.DefaultValue; set => Control.DefaultValue = value; }`);
   members.push(
     "        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }",
     "        public event Action<string> ValueRequested { add => Control.ValueRequested += value; remove => Control.ValueRequested -= value; }",
@@ -818,6 +830,7 @@ function textInputRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   }
   const disabled = disabledProp(ir);
   if (disabled !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(disabled))} { get => !enabledSelf; set => SetEnabled(!value); }`);
+  if (form?.kind === "text-input" && form.invalidProp) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(form.invalidProp))} { get => ClassListContains(${quote(`${ir.classRecipe.base}--invalid`)}); set => EnableInClassList(${quote(`${ir.classRecipe.base}--invalid`)}, value); }`);
   for (const prop of ir.styledProps) {
     const values = ir.variants[prop.name];
     if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;

@@ -30,11 +30,13 @@ import { createGodotEmitter } from "./factory.js";
 import {
   classifyLeaves,
   classifyProp,
+  escape,
   godotAllowlist,
   loadBoundary,
   loadContractWithSidecars,
   type GodotBoundary,
   type GodotDisposition,
+  type ClassifiedLeaf,
 } from "./boundary.js";
 
 /** The minimal emitter surface the audit drives; injectable so refusals are testable. */
@@ -191,7 +193,9 @@ function accountDetailed(
       proof: receipt.proof,
       nonClaimCount: receipt.nonClaims.length,
     },
-    variance: receipt ? receiptAccount(name, receipt, boundary).variance.map(({ prop, rule }) => ({ prop, rule })) : [],
+    variance: receipt ? receiptAccount(name, receipt, boundary,
+      receipt.operation === "text-input" || receipt.operation === "associated-label" ? classified : undefined)
+      .variance.map(({ prop, rule }) => ({ prop, rule })) : [],
     boundary: {
       counts,
       digest: stable(classified.map(leaf => [leaf.keyed, leaf.disposition, leaf.rule ?? "", leaf.source])),
@@ -264,13 +268,16 @@ export interface ReceiptAccount {
  *     (`omissions`, else `fidelityGaps`) — a silently dropped prop is a defect;
  *  3. an exclusion of a `lowered` prop is a recorded variance, not a failure.
  */
-export function receiptAccount(component: string, receipt: GodotReceipt, boundary: GodotBoundary = loadBoundary()): ReceiptAccount {
+export function receiptAccount(component: string, receipt: GodotReceipt, boundary: GodotBoundary = loadBoundary(), classified?: ClassifiedLeaf[]): ReceiptAccount {
   const violations: string[] = [];
   const variance: { component: string; prop: string; rule: string }[] = [];
   for (const prop of receipt.excluded) {
     let classification: ReturnType<typeof classifyProp>;
     try {
-      classification = classifyProp(boundary, prop);
+      const contextual = classified?.find(leaf => leaf.source === "contract" && leaf.keyed.includes("/members/") && leaf.keyed.endsWith(`:${escape(prop)}/name`));
+      classification = contextual && contextual.rule && contextual.disposition !== "unclassified"
+        ? { disposition: contextual.disposition, rule: contextual.rule, catchAll: contextual.catchAll }
+        : classifyProp(boundary, prop);
     } catch (error) {
       violations.push(`receipt ${component}: excluded prop ${prop} is not named by an adjudicated boundary rule (${error instanceof Error ? error.message : String(error)})`);
       continue;
@@ -409,7 +416,9 @@ export function auditGodotTarget(root: string, options: { boundary?: GodotBounda
       result.violations.push(`unemitted ${record.component}: ${message}`);
       continue;
     }
-    const account = receiptAccount(record.component, receipt, boundary);
+    const nativeForm = receipt.operation === "text-input" || receipt.operation === "associated-label";
+    const account = receiptAccount(record.component, receipt, boundary,
+      nativeForm ? classifyLeaves(loadContractWithSidecars(root, record.component), boundary) : undefined);
     result.receiptViolations.push(...account.violations);
     result.violations.push(...account.violations);
     result.variance.push(...account.variance);

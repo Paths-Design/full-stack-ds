@@ -7667,6 +7667,15 @@
     border-color: var(--fsds-input-focus-ring-color, #0566fe);
 }
 
+.input.input--invalid {
+    border-color: var(--fsds-input-color-invalid, #b31b1b);
+}
+
+.input.input--invalid:focus {
+    border-color: var(--fsds-input-color-invalid, #b31b1b);
+    border-color: var(--fsds-semantic-focus-ring-intent-danger, #b31b1b);
+}
+
 .input:disabled {
     background-color: var(--fsds-input-color-bg-disabled, #b8b8b8);
     border-color: var(--fsds-input-color-border-disabled, #b8b8b8);

@@ -594,19 +594,42 @@ func _ready() -> void:
 	check(form_checkbox.trigger.get_meta("aria_required", false), "required did not project aria_required")
 	check(form_checkbox.trigger.get_meta("aria_invalid", false), "invalid did not project aria_invalid")
 	check(form_checkbox.trigger.accessibility_labeled_by_nodes.has(form_label.get_path()), "ariaLabelledby prop did not wire a labeled-by relation")
+	rows.append({"id":"form-checkbox-aria-validation","required":true,"invalid":true,"labelled":1})
 	var form_input = make_control("Input")
+	var native_label = make_control("Label")
 	add_child(form_input)
+	add_child(native_label)
 	await get_tree().process_frame
-	form_input.set_contract_prop("required", true)
+	check(form_input is LineEdit, "Generated text input is not a native LineEdit")
+	check(native_label is Label, "Generated associated label is not a native Label")
+	check(form_input.set_contract_prop("defaultValue", "seed") and form_input.text == "seed", "Uncontrolled default did not initialize native text")
+	form_input.set_contract_prop("placeholder", "Find a setting")
+	check(form_input.placeholder_text == "Find a setting", "Placeholder did not reach native text edition")
+	var requested: Array[String] = []
+	form_input.value_requested.connect(func(next: String) -> void: requested.append(next))
+	form_input.text = "edited"
+	form_input.text_changed.emit("edited")
+	check(form_input.get_contract_prop("value") == "edited" and requested == ["edited"], "Uncontrolled native edit did not commit and notify once")
+	form_input.set_contract_prop("value", "owned")
+	form_input.text = "refused"
+	form_input.text_changed.emit("refused")
+	check(form_input.text == "owned" and requested == ["edited", "refused"], "Controlled edit changed native text before owner commit")
 	form_input.set_contract_prop("invalid", true)
-	form_input.set_contract_prop("ariaLabelledby", form_label.get_path())
-	await get_tree().process_frame
-	check(form_input.get_meta("aria_required", false), "anatomy required did not project aria_required")
-	check(form_input.get_meta("aria_invalid", false), "anatomy invalid did not project aria_invalid")
-	check(form_input.accessibility_labeled_by_nodes.has(form_label.get_path()), "anatomy ariaLabelledby did not wire a labeled-by relation")
-	rows.append({"id":"form-aria-validation","required":true,"invalid":true,"labelled":1})
+	check((form_input.get_theme_stylebox("normal") as StyleBoxFlat).border_color.is_equal_approx(Color("#b31b1b")), "Invalid state did not paint the authored border color")
+	form_input.set_contract_prop("disabled", true)
+	form_input.text = "disabled edit"
+	form_input.text_changed.emit("disabled edit")
+	check(form_input.text == "owned" and requested.size() == 2, "Disabled edit was not suppressed")
+	check(not form_input.set_contract_prop("required", true), "Unsupported HTML required state was silently accepted")
+	form_input.set_contract_prop("disabled", false)
+	native_label.text = "Search"
+	native_label.set_contract_prop("htmlFor", str(form_input.name))
+	native_label.activate()
+	check(get_viewport().gui_get_focus_owner() == form_input, "Associated label did not focus its native input")
+	rows.append({"id":"native-form-input-label","default":"seed","edited":"edited","controlled":"owned","invalidBorder":"#b31b1b","labelFocused":true})
 	form_checkbox.queue_free()
 	form_input.queue_free()
+	native_label.queue_free()
 	form_label.queue_free()
 	await get_tree().process_frame
 

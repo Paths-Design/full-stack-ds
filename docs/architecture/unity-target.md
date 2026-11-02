@@ -48,6 +48,8 @@ The initial graphics-disabled run failed during panel setup; it supplied no beha
 
 The local evidence files are `tmp/unity-pilot/results.xml` and `tmp/unity-pilot/editor.log`, reproduced by the command above. They are not committed build artifacts. The existing root/framework suites and admission rail also passed during the slice; those checks do not extend Unity's narrow runtime claim. Player builds, screen-reader behavior and full visual parity remain outside this pilot.
 
+The native form plan derives a root text input and associated label from normalized form-control, channel, DOM and binding facts. Input exposes `DefaultValue` and `Invalid`: TextControl seeds the native TextField until an explicit value is assigned, delivers uncontrolled edits through `ValueRequested`, reverts controlled edits until the owner commits, and suppresses disabled edits. The generated USS carries the source invalid border declaration. Label exposes `HtmlFor` and `AssociatedControl`; activation focuses the named or directly supplied control. These are UI Toolkit control semantics, not HTML form participation, validation or screen-reader delivery. The local EditMode lane exercises default and updated values, disabled edits, invalid border resolution and label focus.
+
 The passive-family Editor run on Unity 6000.5.3f1 passed 43/43 cases, including composed Text content, token-backed font size and color, Divider orientation/layout, and dark-theme rule paint. `tmp/unity-pilot/provenance.json` records clean source `76d711a74`, the Editor path and the NUnit XML digest; `results.xml` names the passive case. This is an Editor witness. The separately retained standalone Player run predates the passive components and does not prove them there.
 
 ## Styling projection

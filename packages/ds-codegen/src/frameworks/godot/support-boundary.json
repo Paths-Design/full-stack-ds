@@ -249,6 +249,13 @@
       "reason": "Authored DOM properties are not applied: the runtime projects declared props, not element properties."
     },
     {
+      "id": "anatomy-native-input-aria-name-refused",
+      "match": ["contract:/anatomy/dom/bindings/aria-label", "contract:/anatomy/dom/bindings/aria-labelledby"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "refused",
+      "reason": "The native text input projects visible text and paint; its ARIA naming relation is not exposed or screen-reader verified."
+    },
+    {
       "id": "anatomy-aria-label-binding",
       "match": [
         "contract:/anatomy/dom/**/bindings/aria-label"
@@ -344,6 +351,13 @@
       "reason": "disclosureFacts does not extract aria-disabled and the anatomy runtime has no discoverable disabled-anchor focus policy; this binding is not realized."
     },
     {
+      "id": "anatomy-native-input-invalid-paint",
+      "match": ["contract:/anatomy/dom/bindings/aria-invalid"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "lowered",
+      "via": "the bound invalid prop selects the source-derived native border color, without claiming ARIA exposure"
+    },
+    {
       "id": "anatomy-aria-binding",
       "match": [
         "contract:/anatomy/dom/**/bindings/aria-expanded",
@@ -376,11 +390,15 @@
       "reason": "Authored validation bindings are not evaluated; a consumer sets the projected required/invalid state instead."
     },
     {
+      "id": "anatomy-native-label-association",
+      "match": ["contract:/anatomy/dom/bindings/htmlFor"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["label"] }],
+      "disposition": "lowered",
+      "via": "the generated native label resolves the named control and focuses it on activation"
+    },
+    {
       "id": "anatomy-association-binding",
-      "match": [
-        "contract:/anatomy/dom/**/bindings/htmlFor",
-        "contract:/anatomy/dom/**/bindings/form"
-      ],
+      "match": ["contract:/anatomy/dom/**/bindings/htmlFor", "contract:/anatomy/dom/**/bindings/form"],
       "disposition": "refused",
       "reason": "Authored form-association bindings are not projected; association is consumer-owned."
     },
@@ -871,6 +889,20 @@
       ],
       "disposition": "refused",
       "reason": "A data-model entity describes the shape of consumer data; no target emits a data schema, so the declaration is not lowered."
+    },
+    {
+      "id": "prop-native-input-supported",
+      "match": ["contract:/props/*/members/plain:placeholder/**", "contract:/props/*/members/plain:disabled/**", "contract:/props/*/members/plain:invalid/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "lowered",
+      "via": "the native LineEdit applies placeholder, editable state and source-derived invalid paint"
+    },
+    {
+      "id": "prop-native-input-html-refused",
+      "match": ["contract:/props/*/members/plain:type/**", "contract:/props/*/members/plain:name/**", "contract:/props/*/members/plain:required/**", "contract:/props/*/members/plain:ariaLabel/**", "contract:/props/*/members/plain:ariaLabelledby/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "refused",
+      "reason": "HTML input type, name and required state and ARIA naming have no verified native form or assistive-technology projection"
     },
     {
       "id": "prop-channel-value",
@@ -1615,6 +1647,13 @@
       ],
       "disposition": "refused",
       "reason": "The remaining ARIA props (aria-expanded/checked state mirrors) are structural state the runtime derives from channels and states, not from a consumer-set prop; the realised labelling props are split out above."
+    },
+    {
+      "id": "prop-native-label-association",
+      "match": ["contract:/props/*/members/*:htmlFor", "contract:/props/*/members/*:htmlFor/**", "contract:/props/htmlFor"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["label"] }],
+      "disposition": "lowered",
+      "via": "the native Label resolves and focuses its associated named control"
     },
     {
       "id": "prop-field-association",
