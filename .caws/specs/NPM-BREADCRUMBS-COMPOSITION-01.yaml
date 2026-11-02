@@ -87,3 +87,9 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01/runs/fsds-release-packages-HVQKiy/browser-react.json"
     commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Packed8ad HVQKiy: eight payloads, strict public positive/negative types, isolated ESM/CJS entries, five Chromium consumers, Metro iOS619/android621 modules passed. Native actual Breadcrumbs plus helper 29 tests pass with hidden noninteractive separators and preserved authored identity. Full check neHOBY: rail/frameworks/types/lint/build/token/icon/all realization/engine audits passed; root RPC timeout resolved by both unchanged shards --maxWorkers=1 (2685+3076 pass); docs and generated final logs pass at bfd5d1ee6. No OS AT/device/minimum-peer or mixed-format co-load claim; co-load remains the next release blocker."
+    recorded_at: "2026-11-02T04:20:26.620Z"
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01/packed-complete.log"
+    commit_sha: bfd5d1ee656816070a984fc758d74f951acb38d7
