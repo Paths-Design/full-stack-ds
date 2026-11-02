@@ -66,3 +66,10 @@ evidence:
     command: pnpm exec playwright test --config /Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/lit-inherited-tokens/scripts/lit-token-inheritance-consumer/playwright.config.ts
     exit_code: 0
     commit_sha: "3600da7a3178d82f0aeca1dbda4b16fda6a72ab7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected runs/fsds-lit-token-inheritance-azJfWS nested Card31px/19px then12px restoration, Button gap8/17/21/25px then8px, small28px/large48px, real Tab/Enter increments once and disabled pointer does not increment; settled actual spinner16x16/gap21px under reduced motion transform none. Full checks/3600da7a3-02kdcu packed.log verifies all five web consumers, other generated target bytes unchanged. Chromium/pinned-peer scope only. Commit existence citation does not execute checks."
+    recorded_at: "2026-11-02T19:49:05.222Z"
+    command: pnpm exec playwright test --config /Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/lit-inherited-tokens/scripts/lit-token-inheritance-consumer/playwright.config.ts
+    exit_code: 0
+    commit_sha: "3600da7a3178d82f0aeca1dbda4b16fda6a72ab7"
