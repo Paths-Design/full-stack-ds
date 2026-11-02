@@ -1411,18 +1411,44 @@ test.describe("Runtime rail — Markdown URL preprocessing", () => {
         document.documentElement.dir = "rtl";
         document.body.style.width = "240px";
         document.body.style.margin = "0";
+        document.body.style.padding = "0";
+        document.body.style.display = "block";
         const before = document.createElement("button"), after = document.createElement("button");
         before.id = "md-rail-before"; before.textContent = "قبل";
         after.id = "md-rail-after"; after.textContent = "بعد";
         document.body.prepend(before); document.body.append(after);
       });
-      const geometry = await root.evaluate(element => ({
-        clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
-        direction: getComputedStyle(element).direction, language: document.documentElement.lang,
-      }));
+      const geometry = await root.evaluate(element => {
+        const bounds = element.getBoundingClientRect();
+        const text = [...element.querySelectorAll("h2, p")].map(block => {
+          const range = document.createRange();
+          range.selectNodeContents(block);
+          return { text: block.textContent, rects: [...range.getClientRects()].map(rect => ({
+            left: rect.left, right: rect.right, width: rect.width, height: rect.height,
+          })) };
+        });
+        return {
+          left: bounds.left, right: bounds.right, width: bounds.width, viewportWidth: innerWidth,
+          clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
+          direction: getComputedStyle(element).direction, language: document.documentElement.lang, text,
+        };
+      });
       expect(geometry.direction).toBe("rtl");
       expect(geometry.language).toBe("ar");
+      expect(geometry.width).toBeCloseTo(240, 0);
+      expect(geometry.left).toBeGreaterThanOrEqual(0);
+      expect(geometry.right).toBeLessThanOrEqual(geometry.viewportWidth);
       expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
+      expect(geometry.text).toHaveLength(6);
+      for (const block of geometry.text) {
+        expect(block.rects.length).toBeGreaterThan(0);
+        for (const rect of block.rects) {
+          expect(rect.width).toBeGreaterThan(0);
+          expect(rect.height).toBeGreaterThan(0);
+          expect(rect.left).toBeGreaterThanOrEqual(geometry.left - 1);
+          expect(rect.right).toBeLessThanOrEqual(geometry.right + 1);
+        }
+      }
       const anchor = root.getByRole("link", { name: "آمن 日本語", exact: true });
       await page.locator("#md-rail-before").focus();
       await page.keyboard.press("Tab");
