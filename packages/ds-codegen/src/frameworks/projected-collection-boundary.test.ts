@@ -67,7 +67,7 @@ describe("projected collections outside the npm renderers", () => {
       case "path": binding.value = { kind: "prop", prop: "dividerText", path: ["nested"] }; break;
       case "literal": binding.value = { kind: "literal", value: "/" }; break;
       case "missing relation": delete node.projectedCollection; break;
-      case "unrelated binding": node.cssVarBindings.push({ varName: "--fsds-renamed-trail-other", format: "css-string", value: { kind: "prop", prop: "dividerText" } }); break;
+      case "unrelated binding": node.cssVarBindings.push({ varName: "--fsds-renamed-trail-other", format: "decorative-content", value: { kind: "prop", prop: "dividerText" } }); break;
     }
     expect(() => unitySource(ir)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: RenamedTrail trail has unlowered authored facts");
   });

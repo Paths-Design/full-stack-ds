@@ -29,7 +29,7 @@ const classNames = computed(() =>
 </script>
 
 <template>
-  <Stack as="li" :class="classNames" :data-testid="props.dataTestid">
+  <Stack as="li" layout="native" :class="classNames" :data-testid="props.dataTestid">
     <slot />
   </Stack>
 </template>

@@ -26,6 +26,6 @@ const classes = $derived(["breadcrumbs__item", className].filter(Boolean).join("
 // @custom:end
 </script>
 
-<Stack as="li" class={classes} data-testid={dataTestid}>
+<Stack as="li" layout="native" class={classes} data-testid={dataTestid}>
   {@render children?.()}
 </Stack>

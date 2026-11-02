@@ -54,7 +54,7 @@ import {
   type NativeTableAttr,
 } from "../../ir.js";
 import { renderSections, type Section } from "../../preserve.js";
-import { cssStringHelperSource, cssVariableValue } from "../../projected-collection.js";
+import { decorativeContentHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -252,7 +252,7 @@ export function generateReactComponentSource(
   // below can detect identifiers (`CSSProperties`) that appear only in
   // generated output, not in styled prop types. Mirrors the Lit emitter's
   // `usesIfDefined` pattern (line 1031).
-  const typesBody = generateTypes(ir).trimEnd() + cssStringHelperSource(ir);
+  const typesBody = generateTypes(ir).trimEnd() + decorativeContentHelperSource(ir);
   const propsBody = generatePropsInterface(ir);
 
   const isDisclosure = isCompound && isDisclosureContainer(ir);
@@ -975,7 +975,7 @@ function generateSubComponent(
     : part.semanticElement;
   const asProp = asElement && asElement !== "div" ? ` as="${asElement}"` : "";
   const layoutProp =
-    part.layoutVariant === "horizontal" ? ` variant="horizontal"` : "";
+    part.isProjectedCollectionItem ? ` layout="native"` : part.layoutVariant === "horizontal" ? ` variant="horizontal"` : "";
 
   return [
     `export function ${subName}({`,

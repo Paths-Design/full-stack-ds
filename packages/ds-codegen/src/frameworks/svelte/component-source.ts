@@ -77,7 +77,7 @@ import { translateNonReactType } from "../../non-react-types.js";
 import { SVELTE_SKIP_PROPS, sveltePublicTypeAliases, emitSveltePublicTypeModule } from "./public-types.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
 import { renderSections, type Section } from "../../preserve.js";
-import { cssStringHelperSource, cssVariableValue } from "../../projected-collection.js";
+import { decorativeContentHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -1225,6 +1225,7 @@ export function generateSvelteCompoundPartSource(
     isExplicitSubcomponent?: true;
     layoutVariant?: string;
     nativeTag?: string;
+    isProjectedCollectionItem?: true;
   },
 ): string {
   const cssClass = `${cssPrefix}__${part.name}`;
@@ -1283,7 +1284,7 @@ export function generateSvelteCompoundPartSource(
       ? ` as="${renderedTag}"`
       : "";
   const variantAttr =
-    part.layoutVariant === "horizontal" ? ` variant="horizontal"` : "";
+    part.isProjectedCollectionItem ? ` layout="native"` : part.layoutVariant === "horizontal" ? ` variant="horizontal"` : "";
 
   return [
     `<script lang="ts">`,
@@ -1467,7 +1468,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   importLines.push(...svelteMessageImports(ir));
   const importsBody = importLines.join("\n");
 
-  const typesBody = generateTypeAliases(ir) + cssStringHelperSource(ir);
+  const typesBody = generateTypeAliases(ir) + decorativeContentHelperSource(ir);
   const propsBody = generatePropsBlock(ir);
 
   const hookLines: string[] = [];
@@ -1731,7 +1732,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: cssStringHelperSource(ir) },
+          { kind: "generated" as const, id: "types", body: decorativeContentHelperSource(ir) },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),

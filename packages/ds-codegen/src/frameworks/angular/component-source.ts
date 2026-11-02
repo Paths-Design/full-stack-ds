@@ -69,7 +69,7 @@ import {
   translateNonReactType,
 } from "../../non-react-types.js";
 import { renderSections, type Section } from "../../preserve.js";
-import { cssStringHelperSource, cssVariableValue } from "../../projected-collection.js";
+import { decorativeContentHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -143,7 +143,7 @@ export function generateAngularComponentSource(ir: ComponentIR): string {
   // Body first: import specifier sets are derived from the assembled body
   // (CODEGEN-EMIT-LINT-HYGIENE-01), so no specifier is emitted that the
   // file body never references.
-  const typesBody = generateTypes(ir) + cssStringHelperSource(ir);
+  const typesBody = generateTypes(ir) + decorativeContentHelperSource(ir);
   const compoundClasses = ir.compoundParts
     .map((part) => generateCompoundPartComponent(ir, part))
     .join("\n\n");
@@ -1996,7 +1996,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   } else {
     lines.push(`export class ${className} {`);
   }
-  if (cssStringHelperSource(ir)) lines.push(`  protected readonly fsdsCssString = fsdsCssString;`);
+  if (decorativeContentHelperSource(ir)) lines.push(`  protected readonly fsdsDecorativeContent = fsdsDecorativeContent;`);
   // Resolved messages: a computed signal over the injected catalog, read by
   // template (`fsdsMessages().key`) and class (`this.fsdsMessages().key`).
   if (ir.messages.length > 0) {

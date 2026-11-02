@@ -11,8 +11,9 @@ import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messa
 // @generated:start types
 
 
-function fsdsCssString(value: unknown): string {
-  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
 }
 // @generated:end
 
@@ -52,7 +53,7 @@ const classNames = computed(() => [
 
 <template>
   <nav :class="classNames" :aria-label="props.ariaLabel" :data-testid="props.dataTestid" data-fsds-component="breadcrumbs" data-fsds-box="">
-    <ol :class="'breadcrumbs__list'" :style="{ '--fsds-breadcrumbs-child-separator': fsdsCssString(props.separator) }">
+    <ol :class="'breadcrumbs__list'" :style="{ '--fsds-breadcrumbs-child-separator': fsdsDecorativeContent(props.separator) }">
       <slot />
     </ol>
   </nav>

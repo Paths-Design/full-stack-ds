@@ -763,8 +763,8 @@ export function collectContentTransforms(
  * away from consumer CSS variables.
  */
 export interface CssVarBindingIR {
-  /** Serialize literal text as a CSS string token rather than CSS source. */
-  format?: "css-string";
+  /** Serialize literal decorative content with an empty accessibility alternative or no box. */
+  format?: "decorative-content";
   /** Full CSS custom-property name, including the --fsds- prefix. */
   varName: string;
   /** Binding expression resolved from the prop:/channel:/literal: grammar. */
@@ -3867,7 +3867,7 @@ function parseDomNode(node: ContractDomNode, cssPrefix = ""): DomNodeIR {
     cssVariable: `--fsds-${cssPrefix}-child-separator`,
   } : undefined;
   if (projectedCollection) {
-    cssVarBindings.push({ varName: projectedCollection.cssVariable, value: projectedCollection.separator, format: "css-string" });
+    cssVarBindings.push({ varName: projectedCollection.cssVariable, value: projectedCollection.separator, format: "decorative-content" });
   }
   if (cssVarBindings.length > 0 && node.attrs?.style !== undefined) {
     throw new Error(

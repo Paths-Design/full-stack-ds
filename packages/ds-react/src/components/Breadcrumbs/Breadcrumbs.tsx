@@ -12,8 +12,9 @@ import "./Breadcrumbs.css";
 // @generated:start types
 
 
-function fsdsCssString(value: unknown): string {
-  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
 }
 // @generated:end
 
@@ -64,7 +65,7 @@ export function BreadcrumbsItem({
 }: BreadcrumbsItemProps) {
   const classNames = ["breadcrumbs__item", className].filter(Boolean).join(" ");
   return (
-    <Stack as="li" className={classNames} data-testid={testId}>
+    <Stack as="li" layout="native" className={classNames} data-testid={testId}>
       {children}
     </Stack>
   );
@@ -93,7 +94,7 @@ export function Breadcrumbs({
 
   return (
   <Stack layout="native" as="nav" className={`${classNames}`} aria-label={ariaLabel} data-testid={testId} data-fsds-component="breadcrumbs" data-fsds-box="" {...rest}>
-    <ol className="breadcrumbs__list" style={{ "--fsds-breadcrumbs-child-separator": fsdsCssString(separator) } as CSSProperties}>
+    <ol className="breadcrumbs__list" style={{ "--fsds-breadcrumbs-child-separator": fsdsDecorativeContent(separator) } as CSSProperties}>
       {children}
     </ol>
   </Stack>

@@ -13,8 +13,9 @@ import { styleMap } from 'lit/directives/style-map.js';
 // @generated:start types
 
 
-function fsdsCssString(value: unknown): string {
-  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
 }
 // @generated:end
 
@@ -127,13 +128,13 @@ export class BreadcrumbsElement extends LitElement {
     }
 
     .breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
-      content: var(--fsds-breadcrumbs-child-separator, "") / "";
+      content: var(--fsds-breadcrumbs-child-separator, none);
       white-space: pre-wrap;
       margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
 
     .breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
-      content: var(--fsds-breadcrumbs-child-separator, "") / "";
+      content: var(--fsds-breadcrumbs-child-separator, none);
       white-space: pre-wrap;
       margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
@@ -159,7 +160,7 @@ export class BreadcrumbsElement extends LitElement {
 
   override render() {
     return html`<nav class="${this.computeClasses()}" aria-label=${ifDefined((this.ariaLabel ?? this.fsdsMessages.value.navigationLabel))} data-fsds-box="">
-  <ol class=${'breadcrumbs__list'} style=${styleMap({ '--fsds-breadcrumbs-child-separator': String(fsdsCssString((this.separator ?? "/"))) })}>
+  <ol class=${'breadcrumbs__list'} style=${styleMap({ '--fsds-breadcrumbs-child-separator': String(fsdsDecorativeContent((this.separator ?? "/"))) })}>
     <slot></slot>
   </ol>
 </nav>`;
@@ -271,13 +272,13 @@ export class BreadcrumbsListElement extends LitElement {
     }
 
     .breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
-      content: var(--fsds-breadcrumbs-child-separator, "") / "";
+      content: var(--fsds-breadcrumbs-child-separator, none);
       white-space: pre-wrap;
       margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
 
     .breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
-      content: var(--fsds-breadcrumbs-child-separator, "") / "";
+      content: var(--fsds-breadcrumbs-child-separator, none);
       white-space: pre-wrap;
       margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
@@ -393,13 +394,13 @@ export class BreadcrumbsItemElement extends LitElement {
     }
 
     .breadcrumbs__list > :not(slot):nth-child(n + 2 of :not([hidden]))::before {
-      content: var(--fsds-breadcrumbs-child-separator, "") / "";
+      content: var(--fsds-breadcrumbs-child-separator, none);
       white-space: pre-wrap;
       margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }
 
     .breadcrumbs__list > slot::slotted(:nth-child(n + 2 of :not([hidden])))::before {
-      content: var(--fsds-breadcrumbs-child-separator, "") / "";
+      content: var(--fsds-breadcrumbs-child-separator, none);
       white-space: pre-wrap;
       margin-inline-end: var(--fsds-breadcrumbs-spacing-gap, 8px);
     }

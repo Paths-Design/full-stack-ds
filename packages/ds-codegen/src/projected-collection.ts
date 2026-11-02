@@ -13,7 +13,7 @@ export function projectedCollections(ir: ComponentIR): DomNodeIR[] {
 /** Only the normalized collection's own carrier may accompany a bounded native omission. */
 export function isOwnedProjectedCollectionCssBinding(node: DomNodeIR, binding: CssVarBindingIR): boolean {
   const collection = node.projectedCollection;
-  if (!collection || binding.varName !== collection.cssVariable || binding.format !== "css-string" ||
+  if (!collection || binding.varName !== collection.cssVariable || binding.format !== "decorative-content" ||
       binding.value.kind !== "prop" || collection.separator.kind !== "prop" ||
       binding.value.prop !== collection.separator.prop) return false;
   const actual = binding.value.path ?? [];
@@ -21,18 +21,19 @@ export function isOwnedProjectedCollectionCssBinding(node: DomNodeIR, binding: C
   return actual.length === expected.length && actual.every((segment, index) => segment === expected[index]);
 }
 
-/** CSS string tokens cannot interpret authored text as declarations or selectors. */
-export function cssStringHelperSource(ir: ComponentIR): string {
+/** Literal decorative text has an empty accessibility alternative; empty text creates no box. */
+export function decorativeContentHelperSource(ir: ComponentIR): string {
   if (!projectedCollections(ir).length) return "";
   return String.raw`
 
-function fsdsCssString(value: unknown): string {
-  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
 }`;
 }
 
 export function cssVariableValue(value: string | null, binding: CssVarBindingIR): string | null {
-  return value === null || binding.format !== "css-string" ? value : `fsdsCssString(${value})`;
+  return value === null || binding.format !== "decorative-content" ? value : `fsdsDecorativeContent(${value})`;
 }
 
 /** Web realization: direct items and Lit-assigned items share decoration and empty alternative text. */
@@ -42,7 +43,7 @@ export function projectedCollectionCssBlocks(ir: ComponentIR): CssBlockIR[] {
     const selector = node === ir.dom ? `.${ir.cssPrefix}` : `.${ir.cssPrefix}__${node.part}`;
     const gap = ir.cssBlocks.find(block => block.selector === selector)?.declarations.gap ?? "0";
     const declarations = {
-      content: `var(${collection.cssVariable}, "") / ""`,
+      content: `var(${collection.cssVariable}, none)`,
       "white-space": "pre-wrap",
       "margin-inline-end": gap,
     };

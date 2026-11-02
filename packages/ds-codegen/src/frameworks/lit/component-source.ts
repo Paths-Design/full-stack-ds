@@ -64,7 +64,7 @@ import {
   translateNonReactType,
 } from "../../non-react-types.js";
 import { renderSections, type Section } from "../../preserve.js";
-import { cssStringHelperSource, cssVariableValue } from "../../projected-collection.js";
+import { decorativeContentHelperSource, cssVariableValue } from "../../projected-collection.js";
 import {
   resolveSurfaceAutoDismiss,
   portalsRootToBody,
@@ -347,7 +347,7 @@ function applyLitAliasRename(
 
 function generateTypes(ir: ComponentIR): string {
   const aliases = emitNonReactTypeAliases(ir).join("\n");
-  return applyLitAliasRename(aliases, litAliasRename(ir)) + cssStringHelperSource(ir);
+  return applyLitAliasRename(aliases, litAliasRename(ir)) + decorativeContentHelperSource(ir);
 }
 
 // ---------------------------------------------------------------------------

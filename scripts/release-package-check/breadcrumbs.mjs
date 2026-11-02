@@ -269,7 +269,10 @@ export async function verifyBreadcrumbs({ page, framework, evidence, expect, obs
           for (let index = 0; index < candidates.length; index++) {
             if (candidates[index].shadowRoot) candidates.push(...candidates[index].shadowRoot.querySelectorAll("*"));
           }
+          const host = candidates.find(node => node.tagName === "LI" && getComputedStyle(node).display !== "contents" && node.getBoundingClientRect().height > 0) ?? element;
+          const anchor = element.querySelector("a");
           return { className: element.className, tag: element.tagName,
+            layout: { hostTag: host.tagName, display: getComputedStyle(host).display, item: host.getBoundingClientRect().toJSON(), anchor: anchor?.getBoundingClientRect().toJSON(), lineHeight: parseFloat(getComputedStyle(host).lineHeight) },
             pseudo: candidates.map(node => ({ tag: node.tagName, content: getComputedStyle(node, "::before").content }))
               .filter(item => !["none", "normal"].includes(item.content)) };
         })),
@@ -325,10 +328,16 @@ export async function verifyBreadcrumbs({ page, framework, evidence, expect, obs
           assert.equal(await anchor.evaluate((element, previous) => element === previous, old.anchor), true, framework + ": retained authored anchor identity");
         } else retained.set(id, { item: await item.elementHandle(), anchor: await anchor.elementHandle() });
         const pseudo = facts.roots[index].pseudo;
-        if (index === 0) assert.deepEqual(pseudo, [], framework + ": first direct item has no separator");
+        if (index === 0 || separator === "") assert.deepEqual(pseudo, [], framework + ": first item or empty separator creates no decoration box");
         else {
           assert.equal(pseudo.length, 1, framework + ": one decorative separator per subsequent direct item");
           assert.equal(decorativeText(pseudo[0].content), separator);
+        }
+        if (id === "b" && separator !== HOSTILE) {
+          const layout = facts.roots[index].layout;
+          assert.ok(layout.item.height > 0 && layout.anchor?.height > 0, framework + ": compound item has measurable rendered content");
+          // Font bounds can extend beyond a line box; a second flex row cannot.
+          assert.ok(Math.abs(layout.anchor.top - layout.item.top) <= Math.max(2, layout.lineHeight / 4), framework + ": compound divider must stay on the label's line");
         }
       }
       for (const [id, handles] of retained) if (!ids.includes(id)) {

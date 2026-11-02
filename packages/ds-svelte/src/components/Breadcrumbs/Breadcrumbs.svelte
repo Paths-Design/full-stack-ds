@@ -10,8 +10,9 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:start types
 
 
-function fsdsCssString(value: unknown): string {
-  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
 }
 // @generated:end
 
@@ -48,7 +49,7 @@ const classes = $derived(
 </script>
 
 <nav class={classes} aria-label={ariaLabel} data-fsds-component="breadcrumbs" data-fsds-box="">
-  <ol class={'breadcrumbs__list'} style:--fsds-breadcrumbs-child-separator={fsdsCssString(separator)}>
+  <ol class={'breadcrumbs__list'} style:--fsds-breadcrumbs-child-separator={fsdsDecorativeContent(separator)}>
     {@render children?.()}
   </ol>
 </nav>

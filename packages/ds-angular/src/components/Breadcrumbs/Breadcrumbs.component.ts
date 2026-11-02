@@ -12,8 +12,9 @@ import { StackComponent } from "../../primitives/index.js";
 // @generated:start types
 
 
-function fsdsCssString(value: unknown): string {
-  return '"' + Array.from(String(value ?? ""), character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '"';
+function fsdsDecorativeContent(value: unknown): string {
+  const text = String(value ?? "");
+  return text === "" ? "none" : '"' + Array.from(text, character => "\\" + character.codePointAt(0)!.toString(16) + " ").join("") + '" / ""';
 }
 // @generated:end
 
@@ -30,14 +31,14 @@ const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
   imports: [NgClass],
   host: { "data-fsds-component": "breadcrumbs" },
   template: `<nav [ngClass]="classes()" [attr.aria-label]="(ariaLabel ?? fsdsMessages().navigationLabel)" data-fsds-box="">
-  <ol [ngClass]="'breadcrumbs__list'" [style.--fsds-breadcrumbs-child-separator]="fsdsCssString((separator ?? '/'))">
+  <ol [ngClass]="'breadcrumbs__list'" [style.--fsds-breadcrumbs-child-separator]="fsdsDecorativeContent((separator ?? '/'))">
     <ng-content />
   </ol>
 </nav>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BreadcrumbsComponent {
-  protected readonly fsdsCssString = fsdsCssString;
+  protected readonly fsdsDecorativeContent = fsdsDecorativeContent;
   protected readonly fsdsMessages = injectFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
   @Input() ariaLabel?: string;
   @Input() separator?: string = "/";

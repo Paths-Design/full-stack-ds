@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import ts from "typescript";
 import { buildComponentIR } from "./ir.js";
 import { emitCss, emitLitInlineCss } from "./css.js";
-import { cssStringHelperSource } from "./projected-collection.js";
+import { decorativeContentHelperSource } from "./projected-collection.js";
 import { loadCorpusContract } from "./frameworks/corpus-fixtures.js";
 import { generateReactComponentSource } from "./frameworks/react/component-source.js";
-import { generateVueComponentSource } from "./frameworks/vue/component-source.js";
-import { generateSvelteComponentSource } from "./frameworks/svelte/component-source.js";
+import { generateVueComponentSource, generateVueCompoundPartSource } from "./frameworks/vue/component-source.js";
+import { generateSvelteComponentSource, generateSvelteCompoundPartSource } from "./frameworks/svelte/component-source.js";
 import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
 import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
 import { generateReactNativeComponentSource } from "./frameworks/react-native/component-source.js";
@@ -22,7 +22,7 @@ describe("authored projected collection decoration", () => {
     const list = ir.dom!.children[0];
     expect(list.children.map(node => node.tag)).toEqual(["children"]);
     expect(list.projectedCollection).toEqual({ itemPart: "item", separatorPart: "separator", separator: { kind: "prop", prop: "separator" }, cssVariable: "--fsds-breadcrumbs-child-separator" });
-    expect(list.cssVarBindings).toEqual([{ varName: "--fsds-breadcrumbs-child-separator", value: { kind: "prop", prop: "separator" }, format: "css-string" }]);
+    expect(list.cssVarBindings).toEqual([{ varName: "--fsds-breadcrumbs-child-separator", value: { kind: "prop", prop: "separator" }, format: "decorative-content" }]);
     expect(ir.compoundParts.find(part => part.name === "item")?.isProjectedCollectionItem).toBe(true);
   });
   it.each(["missing item", "interactive separator", "wrong source type", "named slot", "mixed content", "competing style"])("rejects %s", invalid => {
@@ -42,14 +42,18 @@ describe("authored projected collection decoration", () => {
     const ir = buildComponentIR(contract);
     const sources = [generateReactComponentSource(ir, "../../primitives"), generateVueComponentSource(ir), generateSvelteComponentSource(ir), generateAngularComponentSource(ir), generateLitComponentSource(ir)];
     for (const source of sources) {
-      expect(source).toContain("fsdsCssString(");
-      expect(source).toContain("function fsdsCssString(value: unknown): string");
+      expect(source).toContain("fsdsDecorativeContent(");
+      expect(source).toContain("function fsdsDecorativeContent(value: unknown): string");
       expect(source).toContain("--fsds-trail-child-separator");
     }
     expect(sources[3]).toContain('selector: "li[fsdsTrailItem], fsds-trail-item"');
     expect(sources[3]).toContain('"role": "listitem"');
+    const item = ir.compoundParts.find(part => part.name === "item")!;
+    for (const source of [sources[0], generateVueCompoundPartSource(ir.cssPrefix, item), generateSvelteCompoundPartSource(ir.cssPrefix, item)]) {
+      expect(source).toContain('<Stack as="li" layout="native"');
+    }
     for (const css of [emitCss(ir), emitLitInlineCss(ir)]) {
-      expect(css).toContain('content: var(--fsds-trail-child-separator, "") / ""');
+      expect(css).toContain('content: var(--fsds-trail-child-separator, none)');
       expect(css).toContain("slot::slotted(:nth-child(n + 2 of :not([hidden])))::before");
     }
     const native = generateReactNativeComponentSource(ir);
@@ -74,12 +78,12 @@ describe("authored projected collection decoration", () => {
     expect(toFigmaComponentDescriptor(ir).projectedCollections).toBeUndefined();
   });
   it("serializes every character of hostile text as a CSS string escape", () => {
-    const source = cssStringHelperSource(buildComponentIR(fixture()));
+    const source = decorativeContentHelperSource(buildComponentIR(fixture()));
     const javascript = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
-    const serialize = new Function(javascript + "; return fsdsCssString;")() as (value: unknown) => string;
-    expect(serialize('←"\\\n終')).toBe('"\\2190 \\22 \\5c \\a \\7d42 "');
-    expect(serialize("" )).toBe('""');
-    expect(serialize(undefined)).toBe('""');
+    const serialize = new Function(javascript + "; return fsdsDecorativeContent;")() as (value: unknown) => string;
+    expect(serialize('←"\\\n終')).toBe('"\\2190 \\22 \\5c \\a \\7d42 " / ""');
+    expect(serialize("" )).toBe('none');
+    expect(serialize(undefined)).toBe('none');
     expect(serialize('"; color:red; /*')).not.toContain("; color:red");
   });
 });
