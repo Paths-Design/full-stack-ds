@@ -123,6 +123,26 @@ describe("Lit inherited component token defaults", () => {
       expect(css).not.toContain("--_fsds-fixture-padding");
     });
   }
+
+  for (const keyword of ["initial", "inherit", "unset", "revert", "revert-layer", "revert-rule", String.raw`\69 nitial`]) {
+    for (const priority of ["!important", "! IMPORTANT", "!/**/important"]) {
+      it(`preserves public reset identity and priority for ${keyword} ${priority}`, () => {
+        const ir = fixture();
+        const value = `${keyword} ${priority}`;
+        ir.cssBlocks.find(block => block.selector === ".fixture")!.declarations["--fsds-fixture-padding"] = value;
+        const css = emitLitInlineCss(ir);
+        expect(css).toContain(`--fsds-fixture-padding: ${value};`);
+        expect(css).not.toContain("--_fsds-fixture-padding");
+        const reset: Array<{ value: string; important: boolean }> = [];
+        postcss.parse(css).walkDecls("--fsds-fixture-padding", declaration => {
+          if (declaration.parent?.type === "rule" && declaration.parent.selector === ".fixture") {
+            reset.push({ value: declaration.value, important: !!declaration.important });
+          }
+        });
+        expect(reset).toEqual([{ value: keyword, important: true }]);
+      });
+    }
+  }
 });
 
 describe("Lit fallback reference syntax", () => {

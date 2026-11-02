@@ -59,7 +59,15 @@ export async function prepareLitTokenConsumer() {
       "--compact": { "syntaxProbe.base": { literal: "7px", platforms: ["web"] } },
     },
   });
-  writeFileSync(join(consumer, "synthetic.css"), emitLitInlineCss(synthetic));
+  const resetProbe = buildComponentIR({ name: "ResetProbe", cssPrefix: "reset-probe", layer: "primitive",
+    anatomy: { parts: ["root"] },
+    tokens: { "resetProbe.padding": { resolvesTo: "core.spacing.size.04", fallback: "8px", layer: "core" } },
+    styles: { root: {
+      "resetProbe.padding": { literal: "initial !important", platforms: ["web"] },
+      padding: { resolvesTo: "resetProbe.padding", fallback: "3px", platforms: ["web"] },
+    } },
+  });
+  writeFileSync(join(consumer, "synthetic.css"), emitLitInlineCss(synthetic) + "\n" + emitLitInlineCss(resetProbe));
   writeFileSync(join(consumer, "app.ts"), String.raw`
 import { CardElement, ButtonElement } from "@full-stack-ds/lit";
 import syntaxCss from "./synthetic.css?raw";
@@ -86,7 +94,9 @@ class SyntaxProbe extends HTMLElement {
     const root = document.createElement("div"), child = document.createElement("div");
     root.className = "syntax-probe"; root.id = "syntax-box"; root.append("CSS scope probe");
     child.className = "syntax-probe__child"; child.id = "syntax-child"; child.textContent = "Alias scope";
-    root.append(child); shadow.append(style, root);
+    const reset = document.createElement("div");
+    reset.className = "reset-probe"; reset.id = "reset-box"; reset.textContent = "Important reset";
+    root.append(child); shadow.append(style, root, reset);
   }
 }
 customElements.define("fsds-syntax-probe", SyntaxProbe);

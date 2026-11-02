@@ -13,8 +13,15 @@ function identifierValue(value: string): string {
 // Moving an explicit inherit/reset to a different property changes its meaning.
 // https://www.w3.org/TR/css-variables-1/#defining-variables
 function isCascadeReset(value: string): boolean {
-  const identifier = identifierValue(value.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^[ \t\r\n\f]+|[ \t\r\n\f]+$/g, ""));
-  return /^(initial|inherit|unset|revert|revert-layer|revert-rule)$/i.test(identifier);
+  const normalized = value.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^[ \t\r\n\f]+|[ \t\r\n\f]+$/g, "");
+  const identifier = normalized.match(IDENTIFIER)?.[0];
+  if (!identifier || !/^(initial|inherit|unset|revert|revert-layer|revert-rule)$/i.test(identifierValue(identifier))) return false;
+  const remainder = normalized.slice(identifier.length).replace(/^[ \t\r\n\f]+/, "");
+  if (!remainder) return true;
+  if (!remainder.startsWith("!")) return false;
+  const priority = remainder.slice(1).replace(/^[ \t\r\n\f]+/, "");
+  const priorityIdentifier = priority.match(IDENTIFIER)?.[0];
+  return !!priorityIdentifier && /^important$/i.test(identifierValue(priorityIdentifier)) && priorityIdentifier.length === priority.length;
 }
 
 /**

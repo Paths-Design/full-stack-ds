@@ -188,6 +188,17 @@ test("bare package defaults and alias scopes remain valid without optional token
   await expect(probe).toHaveCSS("padding-top", "7px");
   await setToken(page, "syntax", "--fsds-syntax-probe-alias", "21px");
   await expect(probe).toHaveCSS("padding-top", "21px");
+  await setToken(page, "syntax", "--fsds-reset-probe-padding", "27px");
+  const reset = page.locator("#reset-box");
+  await expect(reset).toHaveCSS("padding-top", "3px");
+  const resetFacts = await reset.evaluate(element => ({
+    padding: getComputedStyle(element).paddingTop,
+    publicValue: getComputedStyle(element).getPropertyValue("--fsds-reset-probe-padding").trim(),
+    inheritedValue: getComputedStyle(element.getRootNode() instanceof ShadowRoot ? (element.getRootNode() as ShadowRoot).host : element).getPropertyValue("--fsds-reset-probe-padding").trim(),
+  }));
+  expect(resetFacts).toEqual({ padding: "3px", publicValue: "", inheritedValue: "27px" });
+  writeFileSync(join(consumer.evidence, "important-reset.json"), JSON.stringify(resetFacts, null, 2));
+  await test.info().attach("important-reset", { body: JSON.stringify(resetFacts), contentType: "application/json" });
   await capture(page, "bare-defaults-and-alias-scopes");
   await page.locator("#proof").screenshot({ path: join(consumer.evidence, "bare-defaults.png") });
 });
