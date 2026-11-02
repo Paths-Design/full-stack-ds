@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: npm-module-identity
 created_at: '2026-11-02T04:26:22.129Z'
-updated_at: '2026-11-02T04:26:25.612Z'
+updated_at: '2026-11-02T05:31:11.683Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -30,6 +30,7 @@ scope:
     - 'scripts/emit-commonjs-facades.test.mjs'
     - 'scripts/release-package-check'
     - 'scripts/public-types-consumer'
+    - packages/ds-iconography/emission-ledger.json
   out: []
 invariants:
   - 'Public exports CSS paths declarations and authored framework behavior remain compatible; no process-global export cache or duplicate runtime implementation graph'
