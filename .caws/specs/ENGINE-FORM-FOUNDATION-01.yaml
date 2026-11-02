@@ -72,3 +72,11 @@ evidence:
     exit_code: 0
     artifact_path: ".caws/state/engine-form-foundation/godot/godot.json"
     commit_sha: "2ddc64844b5d77c991663fa3fb18eb9a4c77a2d5"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Clean-tree bfbfa7e76 Unity 6000.5.3f1 EditMode results.xml passed 103/103 with Input default/updated/placeholder, invalid border and label focus cases; Godot 4.7.2 runtime/export at .caws/state/engine-form-foundation/godot/godot.json passed the matching native-form row. pnpm run governed:rail and focused codegen tests passed. HTML form validation, screen-reader delivery and other platforms remain unproved; artifacts are ignored local evidence, not CAWS tracked-artifact re-derivation."
+    recorded_at: "2026-11-02T16:11:54.162Z"
+    command: "pnpm run test:unity"
+    exit_code: 0
+    artifact_path: ".caws/state/engine-form-foundation/unity/results.xml"
+    commit_sha: "2ddc64844b5d77c991663fa3fb18eb9a4c77a2d5"
