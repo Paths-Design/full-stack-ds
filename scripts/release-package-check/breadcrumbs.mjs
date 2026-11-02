@@ -269,7 +269,7 @@ export async function verifyBreadcrumbs({ page, framework, evidence, expect, obs
           for (let index = 0; index < candidates.length; index++) {
             if (candidates[index].shadowRoot) candidates.push(...candidates[index].shadowRoot.querySelectorAll("*"));
           }
-          const host = candidates.find(node => node.tagName === "LI" && getComputedStyle(node).display !== "contents" && node.getBoundingClientRect().height > 0) ?? element;
+          const host = candidates.find(node => !["contents", "none"].includes(getComputedStyle(node).display) && node.tagName !== "SLOT" && node.getBoundingClientRect().height > 0) ?? element;
           const anchor = element.querySelector("a");
           return { className: element.className, tag: element.tagName,
             layout: { hostTag: host.tagName, display: getComputedStyle(host).display, item: host.getBoundingClientRect().toJSON(), anchor: anchor?.getBoundingClientRect().toJSON(), lineHeight: parseFloat(getComputedStyle(host).lineHeight) },
