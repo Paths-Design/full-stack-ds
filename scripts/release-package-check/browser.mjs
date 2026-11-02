@@ -8,6 +8,21 @@ import { crumbsData, crumbsReact, crumbsVue, crumbsSvelteState, crumbsSvelteTemp
 import { citationData, citationReact, citationVue, citationSvelteState, citationSvelteTemplate, citationAngularTemplate, citationAngularFields, citationLit, verifyBlockquote } from "./blockquote.mjs";
 
 const WEB = ["react", "vue", "svelte", "angular", "lit"];
+const MARKDOWN_HEADING = "دليل 日本語";
+const MARKDOWN_SAFE = "انتقال آمن 日本語";
+const MARKDOWN_UNSUPPORTED = ["مباشر 日本語", "تبويب 日本語", "تحكم 日本語"];
+const MARKDOWN_LITERAL = "<b>نص خام 日本語</b>";
+const MARKDOWN_PARAGRAPHS = ["مرحبا بالعالم 日本語", MARKDOWN_SAFE, ...MARKDOWN_UNSUPPORTED, MARKDOWN_LITERAL];
+const MARKDOWN_SOURCE = [
+  "## " + MARKDOWN_HEADING,
+  MARKDOWN_PARAGRAPHS[0],
+  `[${MARKDOWN_SAFE}](#packed-markdown-approved)`,
+  `[${MARKDOWN_UNSUPPORTED[0]}](custom:sample)`,
+  `[${MARKDOWN_UNSUPPORTED[1]}](cu\tstom:sample)`,
+  `[${MARKDOWN_UNSUPPORTED[2]}](\u0000custom:sample)`,
+  MARKDOWN_LITERAL,
+].join("\n\n");
+const markdownData = `const markdownSource = ${JSON.stringify(MARKDOWN_SOURCE)};\n`;
 const imports = framework => 'import "@full-stack-ds/tokens/tokens.css";\n' + (framework === "lit" ? "" : `import "@full-stack-ds/${framework}/styles.css";\n`);
 const postcardData = `
 const postcardAuthor = { name: "ليلى 山田", handle: "@layla.yamada", avatar: "avatar.png" };
@@ -21,10 +36,11 @@ const expandedPostcardCatalog = { Postcard: { likes: "Anzahl der Gefällt-mir-Ma
 const react = `${imports("react")}
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { Blockquote } from "@full-stack-ds/react";
+import { Blockquote, Markdown } from "@full-stack-ds/react";
 import { Breadcrumbs, BreadcrumbsItem } from "@full-stack-ds/react";
 import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, useFsdsMessages, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/react";
 import { FsdsMessagesProvider } from "@full-stack-ds/react/primitives";
+${markdownData}
 ${postcardData}
 ${citationData}
 ${citationReact}
@@ -67,6 +83,11 @@ function App() {
     React.createElement(CitationConsumer),
     React.createElement(CrumbsConsumer),
     React.createElement(PostcardConsumer),
+    React.createElement("section", { id: "markdown-consumer", lang: "ar", dir: "rtl", style: { width: "240px" } },
+      React.createElement("button", { id: "before-markdown" }, "Before Markdown"),
+      React.createElement(Markdown, { content: markdownSource }),
+      React.createElement("button", { id: "after-markdown" }, "After Markdown"),
+      React.createElement("span", { id: "packed-markdown-approved" }, "وجهة 日本語")),
     React.createElement(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled, onClick: () => setCount(value => value + 1) }, "Packed action"),
     React.createElement(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
     React.createElement("button", { id: "toggle-disabled", onClick: () => setDisabled(value => !value) }, "Toggle disabled"),
@@ -103,10 +124,11 @@ createRoot(document.getElementById("app")!).render(React.createElement(FsdsMessa
 `;
 const vue = `${imports("vue")}
 import { createApp, h, ref } from "vue";
-import { Blockquote } from "@full-stack-ds/vue";
+import { Blockquote, Markdown } from "@full-stack-ds/vue";
 import { Breadcrumbs, BreadcrumbsItem } from "@full-stack-ds/vue";
 import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/vue";
 import { provideFsdsMessages } from "@full-stack-ds/vue";
+${markdownData}
 ${postcardData}
 ${citationData}
 ${citationVue}
@@ -150,6 +172,12 @@ createApp({ setup() {
     h(CitationConsumer),
     h(CrumbsConsumer),
     h(PostcardConsumer),
+    h("section", { id: "markdown-consumer", lang: "ar", dir: "rtl", style: "width:240px" }, [
+      h("button", { id: "before-markdown" }, "Before Markdown"),
+      h(Markdown, { content: markdownSource }),
+      h("button", { id: "after-markdown" }, "After Markdown"),
+      h("span", { id: "packed-markdown-approved" }, "وجهة 日本語"),
+    ]),
     h(Button, { variant: "primary", size: "large", ariaLabel: "Packed action", disabled: disabled.value, onClick: () => { count.value += 1; } }, { default: () => "Packed action" }),
     h(Icon, { name: "alarm", size: "lg", decorative: false, ariaLabel: "Packed alarm" }),
     h("button", { id: "toggle-disabled", onClick: () => { disabled.value = !disabled.value; } }, "Toggle disabled"),
@@ -189,10 +217,11 @@ createApp({ setup() {
 } }).mount("#app");
 `;
 const svelteApp = `<script lang="ts">
-  import { Blockquote } from "@full-stack-ds/svelte";
+  import { Blockquote, Markdown } from "@full-stack-ds/svelte";
   import { Breadcrumbs, BreadcrumbsItem } from "@full-stack-ds/svelte";
   import { Button, Icon, Links, Postcard, type PostcardStats, type LinkActivationEvent, Table, TableCaption, TableHead, TableBody, TableFooter, TableRow, TableHeaderCell, TableCell } from "@full-stack-ds/svelte";
   import { setFsdsMessages } from "@full-stack-ds/svelte/primitives";
+  ${markdownData}
   ${postcardData}
   ${citationData}
   ${citationSvelteState}
@@ -222,6 +251,12 @@ const svelteApp = `<script lang="ts">
 <main>
   ${citationSvelteTemplate}
   ${crumbsSvelteTemplate}
+  <section id="markdown-consumer" lang="ar" dir="rtl" style="width:240px">
+    <button id="before-markdown">Before Markdown</button>
+    <Markdown content={markdownSource} />
+    <button id="after-markdown">After Markdown</button>
+    <span id="packed-markdown-approved">وجهة 日本語</span>
+  </section>
   <section id="postcard-consumer">
     <button id="postcard-update" onclick={() => { postcardStats = updatedPostcardStats; }}>Update post counts</button>
     <button id="postcard-translate" onclick={() => { postcardCatalog = translatedPostcardCatalog; }}>Translate post</button>
@@ -273,18 +308,25 @@ const svelteApp = `<script lang="ts">
 const angular = `${imports("angular")}
 import { Component, enableProdMode, provideZonelessChangeDetection, signal } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
-import { BlockquoteComponent } from "@full-stack-ds/angular";
+import { BlockquoteComponent, MarkdownComponent } from "@full-stack-ds/angular";
 import { BreadcrumbsComponent, BreadcrumbsItemComponent } from "@full-stack-ds/angular";
 import { ButtonComponent, IconComponent, LinksComponent, PostcardComponent, type PostcardStats, type LinkActivationEvent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent } from "@full-stack-ds/angular";
 import { provideFsdsMessages, type FsdsMessageCatalog } from "@full-stack-ds/angular";
+${markdownData}
 ${postcardData}
 ${citationData}
 ${crumbsData}
 const postcardCatalog = signal<FsdsMessageCatalog>({});
-@Component({ selector: "packed-consumer", standalone: true, imports: [BreadcrumbsComponent, BreadcrumbsItemComponent, BlockquoteComponent, ButtonComponent, IconComponent, LinksComponent, PostcardComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
+@Component({ selector: "packed-consumer", standalone: true, imports: [BreadcrumbsComponent, BreadcrumbsItemComponent, BlockquoteComponent, MarkdownComponent, ButtonComponent, IconComponent, LinksComponent, PostcardComponent, TableComponent, TableCaptionComponent, TableHeadComponent, TableBodyComponent, TableFooterComponent, TableRowComponent, TableHeaderCellComponent, TableCellComponent], template: \`
   <main>
     ${citationAngularTemplate}
     ${crumbsAngularTemplate}
+    <section id="markdown-consumer" lang="ar" dir="rtl" style="width:240px">
+      <button id="before-markdown">Before Markdown</button>
+      <fsds-markdown [content]="markdownSource" />
+      <button id="after-markdown">After Markdown</button>
+      <span id="packed-markdown-approved">وجهة 日本語</span>
+    </section>
     <section id="postcard-consumer">
       <button id="postcard-update" (click)="updatePostcard()">Update post counts</button>
       <button id="postcard-translate" (click)="translatePostcard()">Translate post</button>
@@ -333,6 +375,7 @@ const postcardCatalog = signal<FsdsMessageCatalog>({});
     </fsds-table></section>
   </main>\` })
 class PackedConsumer {
+  readonly markdownSource = markdownSource;
   ${citationAngularFields}
   ${crumbsAngularFields}
   readonly postcardAuthor = signal(postcardAuthor);
@@ -367,15 +410,29 @@ enableProdMode();
 bootstrapApplication(PackedConsumer, { providers: [provideZonelessChangeDetection(), provideFsdsMessages(postcardCatalog)] }).catch(error => { console.error(error); throw error; });
 `;
 const lit = `${imports("lit")}
-import { BlockquoteElement } from "@full-stack-ds/lit";
+import { BlockquoteElement, MarkdownElement } from "@full-stack-ds/lit";
 import { BreadcrumbsElement, BreadcrumbsItemElement } from "@full-stack-ds/lit";
 import { ButtonElement, IconElement, LinksElement, PostcardElement, type PostcardStats, type LinkActivationEvent, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
 import { StackElement, setFsdsMessages } from "@full-stack-ds/lit/primitives";
+${markdownData}
 ${postcardData}
 ${citationData}
 ${citationLit}
 ${crumbsData}
 ${crumbsLit}
+const markdownConsumer = document.createElement("section");
+Object.assign(markdownConsumer, { id: "markdown-consumer", lang: "ar", dir: "rtl" });
+markdownConsumer.style.width = "240px";
+const markdown = new MarkdownElement();
+markdown.content = markdownSource;
+const beforeMarkdown = document.createElement("button");
+Object.assign(beforeMarkdown, { id: "before-markdown", textContent: "Before Markdown" });
+const afterMarkdown = document.createElement("button");
+Object.assign(afterMarkdown, { id: "after-markdown", textContent: "After Markdown" });
+const markdownDestination = document.createElement("span");
+Object.assign(markdownDestination, { id: "packed-markdown-approved", textContent: "وجهة 日本語" });
+markdownConsumer.append(beforeMarkdown, markdown, afterMarkdown, markdownDestination);
+document.getElementById("app")!.append(markdownConsumer);
 if (StackElement !== RootStack) throw new Error("Public entries have different Stack constructors");
 const stack = new StackElement();
 stack.id = "packed-stack";
@@ -500,6 +557,121 @@ const controls = ([
 });
 document.getElementById("app")!.append(...controls, viewport, tableCount);
 `;
+
+async function verifyMarkdown({ page, framework, evidence, expect, observation }) {
+  const viewport = page.locator("#markdown-consumer");
+  const markdown = viewport.locator(".markdown");
+  const anchor = viewport.getByRole("link", { name: MARKDOWN_SAFE, exact: true });
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    await page.setViewportSize({ width: 304, height: 960 });
+    await expect(markdown).toBeVisible();
+    await expect(viewport.getByRole("heading", { name: MARKDOWN_HEADING, exact: true })).toHaveCount(1);
+    await expect(viewport.locator(".markdown__paragraph")).toHaveText(MARKDOWN_PARAGRAPHS);
+    await expect(viewport.locator("a")).toHaveCount(1);
+    await expect(anchor).toHaveAttribute("href", "#packed-markdown-approved");
+    await expect(markdown.locator("b")).toHaveCount(0);
+    await page.evaluate(() => history.replaceState(null, "", location.pathname + location.search));
+    const documentURL = page.url();
+    const pageCount = page.context().pages().length;
+    const keyboard = [];
+    await page.locator("#before-markdown").focus();
+    await page.keyboard.press("Tab");
+    const anchorFocused = await anchor.evaluate(element => element.getRootNode().activeElement === element);
+    assert.equal(anchorFocused, true, framework + ": real Tab must reach the sole safe Markdown anchor");
+    keyboard.push({ stage: "before-navigation", input: "Tab from before", anchorFocused });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    });
+    const facts = {
+      stage: "focused-before-navigation",
+      limits: "Installed public Markdown; inert unsupported schemes, safe local-fragment keyboard activation, Chromium DOM/layout/AX only. No post-navigation focus, OS screen-reader or native Markdown qualification.",
+      viewport: await viewport.evaluate(element => {
+        const bounds = element.getBoundingClientRect();
+        return { language: element.lang, direction: getComputedStyle(element).direction,
+          left: bounds.left, right: bounds.right, width: bounds.width,
+          clientWidth: element.clientWidth, scrollWidth: element.scrollWidth };
+      }),
+      markdown: await markdown.evaluate(element => {
+        const style = getComputedStyle(element);
+        return { outerHTML: element.outerHTML, text: element.textContent, direction: style.direction,
+          color: style.color, fontSize: style.fontSize, lineHeight: style.lineHeight,
+          clientWidth: element.clientWidth, scrollWidth: element.scrollWidth };
+      }),
+      anchor: await anchor.evaluate(element => ({
+        tag: element.tagName, href: element.getAttribute("href"), text: element.textContent,
+        focused: element.getRootNode().activeElement === element,
+        outlineWidth: getComputedStyle(element).outlineWidth, outlineStyle: getComputedStyle(element).outlineStyle,
+      })),
+      textGeometry: await viewport.locator(".markdown__heading, .markdown__paragraph").evaluateAll(elements =>
+        elements.map(element => {
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          return { text: element.textContent, visibility: getComputedStyle(element).visibility,
+            clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
+            rects: [...range.getClientRects()].map(rect => ({
+              left: rect.left, right: rect.right, width: rect.width, height: rect.height,
+            })) };
+        })),
+      keyboard,
+    };
+    observation.markdown = facts;
+    const ax = await cdp.send("Accessibility.getFullAXTree");
+    writeFileSync(join(evidence, `browser-markdown-${framework}-focused-before-navigation-AX.json`), JSON.stringify(ax, null, 2));
+    await viewport.screenshot({ path: join(evidence, `packed-markdown-${framework}-focused-before-navigation-rtl-240.png`) });
+    assert.equal(facts.viewport.language, "ar");
+    assert.equal(facts.viewport.direction, "rtl");
+    assert.equal(facts.markdown.direction, "rtl");
+    assert.equal(facts.anchor.tag, "A");
+    assert.equal(facts.anchor.focused, true);
+    assert.ok(Math.abs(facts.viewport.width - 240) <= 1);
+    assert.ok(facts.viewport.scrollWidth <= facts.viewport.clientWidth + 1, framework + ": Markdown must fit its 240px wrapper");
+    assert.ok(facts.markdown.scrollWidth <= facts.markdown.clientWidth + 1);
+    assert.equal(facts.textGeometry.length, 7);
+    for (const item of facts.textGeometry) {
+      assert.equal(item.visibility, "visible");
+      assert.ok(item.rects.length > 0);
+      assert.ok(item.scrollWidth <= item.clientWidth + 1, framework + ": Markdown text must not overflow: " + item.text);
+      for (const rect of item.rects) {
+        assert.ok(rect.width > 0 && rect.height > 0);
+        assert.ok(rect.left >= facts.viewport.left - 1 && rect.right <= facts.viewport.right + 1,
+          framework + ": Markdown text must stay inside its wrapper: " + item.text);
+      }
+    }
+    assert.ok(ax.nodes.some(node => !node.ignored && node.role?.value === "heading" && node.name?.value === MARKDOWN_HEADING));
+    const axLinks = ax.nodes.filter(node => !node.ignored && node.role?.value === "link" && node.name?.value === MARKDOWN_SAFE);
+    assert.equal(axLinks.length, 1);
+    assert.ok(axLinks[0].properties?.some(property => property.name === "focused" && property.value?.value === true),
+      framework + ": safe Markdown anchor must expose focus before navigation");
+    for (const text of [...MARKDOWN_UNSUPPORTED, MARKDOWN_LITERAL]) {
+      assert.ok(ax.nodes.some(node => !node.ignored && node.role?.value === "StaticText" && node.name?.value === text),
+        framework + ": literal Markdown content must reach Chromium AX: " + text);
+      assert.ok(!ax.nodes.some(node => !node.ignored && node.role?.value === "link" && node.name?.value === text));
+    }
+    await page.keyboard.press("Tab");
+    await expect(page.locator("#after-markdown")).toBeFocused();
+    keyboard.push({ stage: "before-navigation", input: "Tab from anchor", afterFocused: true });
+    await page.keyboard.press("Shift+Tab");
+    const returnedToAnchor = await anchor.evaluate(element => element.getRootNode().activeElement === element);
+    assert.equal(returnedToAnchor, true, framework + ": Shift+Tab must return to the safe Markdown anchor");
+    keyboard.push({ stage: "before-navigation", input: "Shift+Tab from after", anchorFocused: returnedToAnchor });
+    await page.keyboard.press("Enter");
+    await expect.poll(() => page.evaluate(() => location.hash)).toBe("#packed-markdown-approved");
+    const navigation = {
+      stage: "after-navigation", input: "Enter", hash: await page.evaluate(() => location.hash),
+      documentURL: page.url().split("#")[0], openedPages: page.context().pages().length - pageCount,
+    };
+    keyboard.push(navigation);
+    assert.equal(navigation.documentURL, documentURL, framework + ": Markdown activation must stay in this document");
+    assert.equal(navigation.openedPages, 0);
+    writeFileSync(join(evidence, `browser-markdown-${framework}.json`), JSON.stringify(facts, null, 2));
+  } finally {
+    await cdp.detach();
+    await page.evaluate(() => history.replaceState(null, "", location.pathname + location.search));
+    await page.setViewportSize({ width: 1280, height: 720 });
+  }
+}
 
 async function verifyPostcard({ page, framework, evidence, expect, observation }) {
   const viewport = page.locator("#postcard-viewport");
@@ -1028,11 +1200,12 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         await verifyPostcard({ page, framework, evidence, expect, observation });
         await verifyBlockquote({ page, framework, evidence, expect, observation });
         await verifyBreadcrumbs({ page, framework, evidence, expect, observation });
+        await verifyMarkdown({ page, framework, evidence, expect, observation });
         await page.screenshot({ path: join(evidence, `packed-${framework}.png`), fullPage: true });
         assert.deepEqual(failures, [], framework + ": browser failures");
         observation.passed = true;
         observations.push(observation);
-        console.log(`Installed ${framework}: Button, Icon, Links activation/focus/navigation, Table metadata, Postcard engagement/messages/narrow RTL, tokens and styles verified`);
+        console.log(`Installed ${framework}: Button, Icon, Links activation/focus/navigation, Table metadata, Postcard engagement/messages/narrow RTL, Blockquote metadata, Breadcrumbs navigation, Markdown inert-protocol/local-fragment/RTL facts, tokens and styles verified`);
       } catch (error) { observation.error = error.stack ?? String(error); throw error; }
       finally { observation.failures = failures; writeFileSync(join(evidence, `browser-${framework}.json`), JSON.stringify(observation, null, 2)); await page.close(); }
     }
