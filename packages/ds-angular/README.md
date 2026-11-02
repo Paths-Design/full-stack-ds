@@ -1,5 +1,7 @@
 # @full-stack-ds/angular
 
+Node 22.19 or later is required for Node tooling and package consumption. Browser runtime requirements follow the framework peers.
+
 Full Stack DS components for angular.
 
 Install the framework peer dependencies declared in package.json and @full-stack-ds/tokens. Component props and public data types are exported from the package root.

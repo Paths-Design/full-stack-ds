@@ -10,8 +10,9 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { assertReleasePayload } from "./payload.mjs";
 import { verifyBrowsers } from "./browser.mjs";
-import { runtimeFixture } from "./runtime.mjs";
+import { mixedRuntimeFixture, runtimeFixture } from "./runtime.mjs";
 import { verifyNativeBundles } from "./native.mjs";
+import { verifyPackageWatch } from "./watch.mjs";
 import { nativeCases, webCases } from "../public-types-consumer/fixtures.mjs";
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -28,6 +29,15 @@ function run(label, command, args, cwd) {
   assert.equal(result.status, 0, label + " failed; inspect " + evidence);
   return result.stdout;
 }
+
+if (process.argv.includes("--watch-only")) {
+  await verifyPackageWatch({ repo, evidence });
+  console.log("Library watch builds verified: " + evidence);
+  process.exit(0);
+}
+
+// The build and payload helpers are exercised before the expensive consumer checks.
+run("module-build-unit", process.execPath, ["--test", join(repo, "scripts/emit-commonjs-facades.test.mjs"), join(repo, "scripts/release-package-check/payload.test.mjs")], repo);
 
 // Pack runs each package's prepack build before checking its emitted payload.
 const names = ["iconography", "tokens", "react", "vue", "svelte", "angular", "lit", "react-native"];
@@ -65,13 +75,41 @@ for (const name of names) {
     ...(name === "tokens" ? {} : { noticeText }),
     dependencies: name === "tokens" || name === "iconography" ? {} : { "@full-stack-ds/iconography": sources.iconography.version },
     requiredExports: Object.keys(source.exports),
-    requiredFiles: name === "iconography" ? [...iconOutputs.keys(), ...iconInputs] : [],
+    requiredFiles: name === "iconography" ? [...iconOutputs.keys(), ...iconInputs] :
+      ["react", "lit"].includes(name) ? ["dist/index.d.cts", "dist/primitives/index.d.cts"] : [],
     wildcardWitnesses: name === "iconography" ? {
       "./icons/*": iconInputs.map(path => path.slice(6)),
       "./generated/*": [...iconOutputs.keys()].filter(path => path.startsWith("generated/")).map(path => path.slice(10)),
     } : {},
   };
   const checked = assertReleasePayload({ manifest, files, expected });
+  if (["react", "vue", "lit"].includes(name)) {
+    const facadeTargets = Object.values(manifest.exports).filter(value => value && typeof value === "object" && typeof value.require === "string").map(value => value.require.slice(2));
+    assert.deepEqual([...files.keys()].filter(path => path.endsWith(".cjs")).sort(), facadeTargets.sort(), name + ": only public CommonJS facades may be packed");
+    for (const path of facadeTargets) assert.match(files.get(path).toString("utf8"), /^"use strict";\n\/\/ Node >=22\.19: share the canonical ESM implementation\.\nmodule\.exports = require\("\.\/index\.js"\);\n$/, name + ": CommonJS entry must forward to its ESM sibling");
+    assert.ok(![...files.keys()].some(path => path.endsWith(".cjs.map")), name + ": stale CommonJS implementation map packed");
+  }
+  if (["react", "lit"].includes(name)) {
+    const queue = ["dist/index.d.ts", "dist/primitives/index.d.ts", "dist/index.d.cts", "dist/primitives/index.d.cts"];
+    const visited = new Set();
+    for (const entry of queue) {
+      if (visited.has(entry)) continue;
+      visited.add(entry);
+      const source = files.get(entry);
+      assert.ok(source, "Missing reachable declaration: " + name + "/" + entry);
+      for (const imported of ts.preProcessFile(source.toString("utf8"), true, true).importedFiles) {
+        if (!imported.fileName.startsWith(".")) continue;
+        const found = ts.resolveModuleName(imported.fileName, join(unpacked, "package", entry), {
+          moduleResolution: ts.ModuleResolutionKind.NodeNext, module: ts.ModuleKind.NodeNext,
+        }, ts.sys).resolvedModule;
+        assert.ok(found, "Unresolved declaration edge: " + name + "/" + entry + " -> " + imported.fileName);
+        const path = found.resolvedFileName.slice(join(unpacked, "package").length + 1);
+        assert.ok(files.has(path) && /\.d\.(?:ts|mts|cts)$/.test(path), "Declaration edge escapes packed graph: " + path);
+        queue.push(path);
+      }
+    }
+    writeFileSync(join(evidence, "declarations-" + name + ".json"), JSON.stringify({ entries: [...visited].sort(), passed: true }, null, 2));
+  }
   if (name === "iconography") for (const [path, hash] of iconOutputs) assert.equal("sha256:" + createHash("sha256").update(files.get(path)).digest("hex"), hash, "Packed icon output differs from committed ledger: " + path);
   payloads.push({ ...checked, sha256: createHash("sha256").update(readFileSync(tarball)).digest("hex"), files: [...files.keys()].sort() });
   console.log(name + ": packed exports, notices, and file inventory verified");
@@ -145,6 +183,12 @@ for (const format of ["esm", "cjs"]) {
   writeFileSync(join(consumer, file), runtimeFixture(format));
   run("runtime-" + format, process.execPath, [file], consumer);
 }
+for (const first of ["esm", "cjs"]) {
+  const file = "runtime-mixed-" + first + ".mjs";
+  writeFileSync(join(consumer, file), mixedRuntimeFixture(first));
+  run("runtime-mixed-" + first, process.execPath, [file], consumer);
+}
 await verifyBrowsers({ repo, consumer, evidence });
 await verifyNativeBundles({ repo, consumer, evidence });
+await verifyPackageWatch({ repo, evidence });
 console.log("Release payload verified against pinned local peers; no registry publication or native-device qualification: " + evidence);

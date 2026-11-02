@@ -2,6 +2,7 @@
   "name": "@full-stack-ds/react",
   "version": "1.0.0",
   "type": "module",
+  "engines": { "node": ">=22.19.0" },
   "description": "React implementation of Full Stack DS (Stack primitive + generated components)",
   "exports": {
     ".": {
@@ -28,7 +29,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "build:watch": "tsup --watch",
+    "build:watch": "tsup --watch src --watch package.json --watch tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prepack": "pnpm run build"
   },

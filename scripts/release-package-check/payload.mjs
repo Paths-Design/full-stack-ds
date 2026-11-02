@@ -24,6 +24,7 @@ export function assertReleasePayload({ manifest, files, expected }) {
   requireThat(manifest.version === expected.version, "PACKAGE_VERSION", `expected unchanged version ${expected.version}`);
   requireThat(manifest.private === undefined || manifest.private === false, "PACKAGE_PRIVATE", "release package is private");
   requireThat(manifest.license === "MIT", "PACKAGE_LICENSE", "SPDX license must be MIT");
+  requireThat(manifest.engines?.node === ">=22.19.0", "PACKAGE_NODE", "release Node baseline must be >=22.19.0");
   requireThat((typeof manifest.author === "string" ? manifest.author : manifest.author?.name) === "DesignPaths, LLC", "PACKAGE_AUTHOR", "owner metadata differs");
   requireThat(manifest.publishConfig?.access === "public", "PACKAGE_ACCESS", "scoped package must declare public access");
   requireThat(manifest.repository?.type === "git" && manifest.repository.url === "git+https://github.com/Paths-Design/full-stack-ds.git" && manifest.repository.directory === expected.directory, "PACKAGE_REPOSITORY", "repository coordinates differ");
