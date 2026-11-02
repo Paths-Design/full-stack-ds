@@ -1,0 +1,48 @@
+id: NPM-MARKDOWN-LINK-PROTOCOLS-01
+title: 'Normalize Markdown link targets before protocol admission'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-02T14:25:02.401Z'
+updated_at: '2026-11-02T14:25:02.401Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Canonical Markdown URL admission and five Web runtime copies with actual consumer witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/markdown'
+    - 'packages/ds-react/src/primitives/markdown'
+    - 'packages/ds-vue/src/primitives/markdown'
+    - 'packages/ds-svelte/src/primitives/markdown'
+    - 'packages/ds-angular/src/primitives/markdown'
+    - 'packages/ds-lit/src/primitives/markdown'
+    - 'e2e/runtime-rail.spec.ts'
+    - 'scripts/release-package-check/browser.mjs'
+  out: []
+invariants:
+  - 'Unsupported protocols degrade to literal text after browser-equivalent C0 and ASCII tab/newline preprocessing; permitted relative query fragment and http https mailto targets remain usable'
+  - 'Canonical parser owns admission with no per-component emitter special cases or executable-link activation required for proof'
+acceptance:
+  - id: A1
+    given: 'link targets containing C0 edge characters or ASCII tab and newline characters'
+    when: 'the canonical sanitizer and document parser admit links'
+    then: 'protocol classification uses browser-equivalent normalization and unsupported protocols degrade to literal text while allowed targets retain their intended behavior'
+  - id: A2
+    given: 'actual Markdown consumers in all five web frameworks'
+    when: 'normalized unsupported targets safe links literal markup and Arabic RTL content render and safe fragment links receive keyboard activation'
+    then: 'unsupported anchors are absent literal text is retained safe navigation works and narrow layout and accessibility facts are recorded'
+  - id: A3
+    given: 'generated runtime copies and installed release packages'
+    when: 'source equality generation type payload browser and regression checks execute'
+    then: 'admitted output is bound to the canonical fix without changing public props or claiming native structured Markdown OS assistive technology or whole-release completion'
+observability:
+  - 'Retain inert pre-fix custom-scheme DOM and AX observations plus before-after unit browser packed-consumer and generation logs in ignored canonical evidence'
+rollback:
+  - 'Revert the canonical sanitizer change and regenerate the five Web runtime copies'
+non_functional: {}
+contracts:
+  - name: 'markdown-link-protocols'
+    type: behavior
+    path: 'packages/ds-codegen/src/markdown/markdown.ts'
