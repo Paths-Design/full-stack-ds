@@ -82,3 +82,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Eight fresh tarballs, exact payload/license/export checks, public cite optional-string positives and numeric negatives across five web frameworks and native, five installed browser consumers and production ios/android Metro all pass: packed-full.log and runs/fsds-release-packages-Z6eQry/. Browser all25 citation stages at240px inherited RTL preserve text, element, Tab/ShiftTab passage and non-action metadata with no overflow or page errors; screenshots for each framework source stage visually inspected. Compiled native dist/index.d.ts retains the citation limitation comment. Actual pinned peers only; not minimum-version, native OS or screen-reader qualification."
+    recorded_at: "2026-11-02T00:27:36.183Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "78123c683e859979864540dbc5bbb809dbbd4f11"
