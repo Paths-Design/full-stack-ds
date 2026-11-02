@@ -59,3 +59,10 @@ evidence:
     command: pnpm exec playwright test --config /Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/lit-inherited-tokens/scripts/lit-token-inheritance-consumer/playwright.config.ts
     exit_code: 0
     commit_sha: "3600da7a3178d82f0aeca1dbda4b16fda6a72ab7"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected source and45 focused tests plus installed emitted-CSS bare/alias/reset browser case in checks/3600da7a3-02kdcu/lit-browser.log and runs/fsds-lit-token-inheritance-azJfWS: bare8px/core22px, aliases same-scope17/7 and descendant29, present-invalid value gives0px, public initial !important overrides inherited27px and selects3px fallback. Corpus cycle/missing-private checks pass. No arbitrary CSS-value validity or descendant alias recomputation claim. Commit verification is existence only."
+    recorded_at: "2026-11-02T19:48:19.369Z"
+    command: pnpm exec playwright test --config /Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/lit-inherited-tokens/scripts/lit-token-inheritance-consumer/playwright.config.ts
+    exit_code: 0
+    commit_sha: "3600da7a3178d82f0aeca1dbda4b16fda6a72ab7"
