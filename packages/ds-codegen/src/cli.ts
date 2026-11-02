@@ -136,6 +136,7 @@ const SHARED_EMITTER_SOURCES: readonly string[] = [
   "packages/ds-codegen/src/highlight/source-model.ts",
   "packages/ds-codegen/src/highlight/tokenize.ts",
   "packages/ds-codegen/src/ir.ts",
+  "packages/ds-codegen/src/lit-token-fallbacks.ts",
   "packages/ds-codegen/src/preserve.ts",
   "packages/ds-codegen/src/projected-collection.ts",
   "packages/ds-codegen/src/registry.ts",

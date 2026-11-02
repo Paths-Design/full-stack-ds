@@ -73,18 +73,18 @@ export class ImageElement extends LitElement {
 
 
     .image {
-      --fsds-image-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-image-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-image-size-xs: 24px;
-      --fsds-image-size-sm: 32px;
-      --fsds-image-size-md: 48px;
-      --fsds-image-size-lg: 64px;
-      --fsds-image-size-xl: 96px;
-      --fsds-image-radius-none: var(--fsds-semantic-shape-radius-none, 0px);
-      --fsds-image-radius-sm: var(--fsds-semantic-shape-radius-small, 4px);
-      --fsds-image-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-image-radius-lg: var(--fsds-semantic-shape-radius-large, 16px);
-      --fsds-image-radius-full: var(--fsds-semantic-shape-radius-full, 9999px);
+      --_fsds-image-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-image-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-image-size-xs: 24px;
+      --_fsds-image-size-sm: 32px;
+      --_fsds-image-size-md: 48px;
+      --_fsds-image-size-lg: 64px;
+      --_fsds-image-size-xl: 96px;
+      --_fsds-image-radius-none: var(--fsds-semantic-shape-radius-none, 0px);
+      --_fsds-image-radius-sm: var(--fsds-semantic-shape-radius-small, 4px);
+      --_fsds-image-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+      --_fsds-image-radius-lg: var(--fsds-semantic-shape-radius-large, 16px);
+      --_fsds-image-radius-full: var(--fsds-semantic-shape-radius-full, 9999px);
     }
 
     @layer components.defaults {
@@ -104,33 +104,33 @@ export class ImageElement extends LitElement {
       aspect-ratio: var(--fsds-image-design-root-sizing-aspect-ratio, var(--fsds-image-prop-aspect-ratio, auto));
       object-fit: var(--fsds-image-design-root-media-fit, var(--fsds-image-prop-object-fit, fill));
       object-position: var(--fsds-image-design-root-media-position, var(--fsds-image-prop-object-position, 50% 50%));
-      background-color: var(--fsds-image-design-root-background-fill, var(--fsds-image-color-background, #f7f7f7));
-      color: var(--fsds-image-design-root-foreground-color, var(--fsds-image-color-foreground-primary, #141414));
+      background-color: var(--fsds-image-design-root-background-fill, var(--fsds-image-color-background, var(--_fsds-image-color-background, #f7f7f7)));
+      color: var(--fsds-image-design-root-foreground-color, var(--fsds-image-color-foreground-primary, var(--_fsds-image-color-foreground-primary, #141414)));
     }
 
     .image--size-xs {
-      width: var(--fsds-image-design-condition-97f4094db01a-sizing-width, var(--fsds-image-size-xs, 24px));
-      height: var(--fsds-image-design-condition-97f4094db01a-sizing-height, var(--fsds-image-size-xs, 24px));
+      width: var(--fsds-image-design-condition-97f4094db01a-sizing-width, var(--fsds-image-size-xs, var(--_fsds-image-size-xs, 24px)));
+      height: var(--fsds-image-design-condition-97f4094db01a-sizing-height, var(--fsds-image-size-xs, var(--_fsds-image-size-xs, 24px)));
     }
 
     .image--size-sm {
-      width: var(--fsds-image-design-condition-2d67a81a05e1-sizing-width, var(--fsds-image-size-sm, 32px));
-      height: var(--fsds-image-design-condition-2d67a81a05e1-sizing-height, var(--fsds-image-size-sm, 32px));
+      width: var(--fsds-image-design-condition-2d67a81a05e1-sizing-width, var(--fsds-image-size-sm, var(--_fsds-image-size-sm, 32px)));
+      height: var(--fsds-image-design-condition-2d67a81a05e1-sizing-height, var(--fsds-image-size-sm, var(--_fsds-image-size-sm, 32px)));
     }
 
     .image--size-md {
-      width: var(--fsds-image-design-condition-8e1efb4eb84e-sizing-width, var(--fsds-image-size-md, 48px));
-      height: var(--fsds-image-design-condition-8e1efb4eb84e-sizing-height, var(--fsds-image-size-md, 48px));
+      width: var(--fsds-image-design-condition-8e1efb4eb84e-sizing-width, var(--fsds-image-size-md, var(--_fsds-image-size-md, 48px)));
+      height: var(--fsds-image-design-condition-8e1efb4eb84e-sizing-height, var(--fsds-image-size-md, var(--_fsds-image-size-md, 48px)));
     }
 
     .image--size-lg {
-      width: var(--fsds-image-design-condition-d030467f8081-sizing-width, var(--fsds-image-size-lg, 64px));
-      height: var(--fsds-image-design-condition-d030467f8081-sizing-height, var(--fsds-image-size-lg, 64px));
+      width: var(--fsds-image-design-condition-d030467f8081-sizing-width, var(--fsds-image-size-lg, var(--_fsds-image-size-lg, 64px)));
+      height: var(--fsds-image-design-condition-d030467f8081-sizing-height, var(--fsds-image-size-lg, var(--_fsds-image-size-lg, 64px)));
     }
 
     .image--size-xl {
-      width: var(--fsds-image-design-condition-f5bb7eeb08f7-sizing-width, var(--fsds-image-size-xl, 96px));
-      height: var(--fsds-image-design-condition-f5bb7eeb08f7-sizing-height, var(--fsds-image-size-xl, 96px));
+      width: var(--fsds-image-design-condition-f5bb7eeb08f7-sizing-width, var(--fsds-image-size-xl, var(--_fsds-image-size-xl, 96px)));
+      height: var(--fsds-image-design-condition-f5bb7eeb08f7-sizing-height, var(--fsds-image-size-xl, var(--_fsds-image-size-xl, 96px)));
     }
 
     .image--size-full {
@@ -139,23 +139,23 @@ export class ImageElement extends LitElement {
     }
 
     .image--radius-none {
-      border-radius: var(--fsds-image-design-condition-7ff92e698786-shape-radius, var(--fsds-image-radius-none, 0px));
+      border-radius: var(--fsds-image-design-condition-7ff92e698786-shape-radius, var(--fsds-image-radius-none, var(--_fsds-image-radius-none, 0px)));
     }
 
     .image--radius-sm {
-      border-radius: var(--fsds-image-design-condition-82add41f9b7f-shape-radius, var(--fsds-image-radius-sm, 4px));
+      border-radius: var(--fsds-image-design-condition-82add41f9b7f-shape-radius, var(--fsds-image-radius-sm, var(--_fsds-image-radius-sm, 4px)));
     }
 
     .image--radius-md {
-      border-radius: var(--fsds-image-design-condition-7453c4d117a5-shape-radius, var(--fsds-image-radius-md, 8px));
+      border-radius: var(--fsds-image-design-condition-7453c4d117a5-shape-radius, var(--fsds-image-radius-md, var(--_fsds-image-radius-md, 8px)));
     }
 
     .image--radius-lg {
-      border-radius: var(--fsds-image-design-condition-339951a6bd4f-shape-radius, var(--fsds-image-radius-lg, 16px));
+      border-radius: var(--fsds-image-design-condition-339951a6bd4f-shape-radius, var(--fsds-image-radius-lg, var(--_fsds-image-radius-lg, 16px)));
     }
 
     .image--radius-full {
-      border-radius: var(--fsds-image-design-condition-6872d88ea9c6-shape-radius, var(--fsds-image-radius-full, 9999px));
+      border-radius: var(--fsds-image-design-condition-6872d88ea9c6-shape-radius, var(--fsds-image-radius-full, var(--_fsds-image-radius-full, 9999px)));
     }
     }
   `;

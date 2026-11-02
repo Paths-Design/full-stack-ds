@@ -73,23 +73,23 @@ export class TextElement extends LitElement {
 
 
     .text {
-      --fsds-text-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-text-typography-font-weight-light: var(--fsds-semantic-typography-font-weight-light, 300);
-      --fsds-text-typography-font-weight-regular: var(--fsds-semantic-typography-font-weight-regular, 400);
-      --fsds-text-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-text-typography-font-weight-bold: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-text-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
-      --fsds-text-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-text-typography-line-height-tight: var(--fsds-semantic-typography-line-height-tight, 1.2);
-      --fsds-text-typography-letter-spacing-wide: var(--fsds-semantic-typography-letter-spacing-wide, 0.018rem);
-      --fsds-text-typography-letter-spacing-tight: var(--fsds-semantic-typography-letter-spacing-tight, -0.018rem);
-      --fsds-text-size-xs: var(--fsds-core-typography-ramp-2, 0.75rem);
-      --fsds-text-size-sm: var(--fsds-core-typography-ramp-3, 0.875rem);
-      --fsds-text-size-md: var(--fsds-core-typography-ramp-4, 1rem);
-      --fsds-text-size-lg: var(--fsds-core-typography-ramp-5, 1.125rem);
-      --fsds-text-size-xl: var(--fsds-core-typography-ramp-6, 1.25rem);
-      --fsds-text-size-2xl: var(--fsds-core-typography-ramp-7, 1.5rem);
-      --fsds-text-size-3xl: var(--fsds-core-typography-ramp-8, 2rem);
+      --_fsds-text-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-text-typography-font-weight-light: var(--fsds-semantic-typography-font-weight-light, 300);
+      --_fsds-text-typography-font-weight-regular: var(--fsds-semantic-typography-font-weight-regular, 400);
+      --_fsds-text-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-text-typography-font-weight-bold: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-text-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
+      --_fsds-text-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-text-typography-line-height-tight: var(--fsds-semantic-typography-line-height-tight, 1.2);
+      --_fsds-text-typography-letter-spacing-wide: var(--fsds-semantic-typography-letter-spacing-wide, 0.018rem);
+      --_fsds-text-typography-letter-spacing-tight: var(--fsds-semantic-typography-letter-spacing-tight, -0.018rem);
+      --_fsds-text-size-xs: var(--fsds-core-typography-ramp-2, 0.75rem);
+      --_fsds-text-size-sm: var(--fsds-core-typography-ramp-3, 0.875rem);
+      --_fsds-text-size-md: var(--fsds-core-typography-ramp-4, 1rem);
+      --_fsds-text-size-lg: var(--fsds-core-typography-ramp-5, 1.125rem);
+      --_fsds-text-size-xl: var(--fsds-core-typography-ramp-6, 1.25rem);
+      --_fsds-text-size-2xl: var(--fsds-core-typography-ramp-7, 1.5rem);
+      --_fsds-text-size-3xl: var(--fsds-core-typography-ramp-8, 2rem);
     }
 
     .text--display {
@@ -127,11 +127,11 @@ export class TextElement extends LitElement {
     }
 
     .text--xs {
-      --fsds-text-size-md: var(--fsds-text-size-xs, 0.75rem);
+      --fsds-text-size-md: var(--fsds-text-size-xs, var(--_fsds-text-size-xs, 0.75rem));
     }
 
     .text--sm {
-      --fsds-text-size-md: var(--fsds-text-size-sm, 0.875rem);
+      --fsds-text-size-md: var(--fsds-text-size-sm, var(--_fsds-text-size-sm, 0.875rem));
     }
 
     .text--md {
@@ -139,19 +139,19 @@ export class TextElement extends LitElement {
     }
 
     .text--lg {
-      --fsds-text-size-md: var(--fsds-text-size-lg, 1.125rem);
+      --fsds-text-size-md: var(--fsds-text-size-lg, var(--_fsds-text-size-lg, 1.125rem));
     }
 
     .text--xl {
-      --fsds-text-size-md: var(--fsds-text-size-xl, 1.25rem);
+      --fsds-text-size-md: var(--fsds-text-size-xl, var(--_fsds-text-size-xl, 1.25rem));
     }
 
     .text--2xl {
-      --fsds-text-size-md: var(--fsds-text-size-2xl, 1.5rem);
+      --fsds-text-size-md: var(--fsds-text-size-2xl, var(--_fsds-text-size-2xl, 1.5rem));
     }
 
     .text--3xl {
-      --fsds-text-size-md: var(--fsds-text-size-3xl, 2rem);
+      --fsds-text-size-md: var(--fsds-text-size-3xl, var(--_fsds-text-size-3xl, 2rem));
     }
 
     .text--light {
@@ -187,9 +187,9 @@ export class TextElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-text-design-root-foreground-color, var(--fsds-text-color-foreground-primary, #141414));
-      font-size: var(--fsds-text-design-root-typography-size, var(--fsds-text-size-md, 1rem));
-      line-height: var(--fsds-text-design-root-typography-line-height, var(--fsds-text-typography-line-height-body, 1.5));
+      color: var(--fsds-text-design-root-foreground-color, var(--fsds-text-color-foreground-primary, var(--_fsds-text-color-foreground-primary, #141414)));
+      font-size: var(--fsds-text-design-root-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      line-height: var(--fsds-text-design-root-typography-line-height, var(--fsds-text-typography-line-height-body, var(--_fsds-text-typography-line-height-body, 1.5)));
       margin: 0;
 
       &[data-truncate="true"] {
@@ -200,97 +200,97 @@ export class TextElement extends LitElement {
     }
 
     .text--display {
-      font-size: var(--fsds-text-design-condition-7aecafa55fab-typography-size, var(--fsds-text-size-md, 1rem));
-      font-weight: var(--fsds-text-design-condition-7aecafa55fab-typography-weight, var(--fsds-text-typography-font-weight-bold, 700));
-      line-height: var(--fsds-text-design-condition-7aecafa55fab-typography-line-height, var(--fsds-text-typography-line-height-heading, 1));
-      letter-spacing: var(--fsds-text-design-condition-7aecafa55fab-typography-tracking, var(--fsds-text-typography-letter-spacing-tight, -0.018rem));
+      font-size: var(--fsds-text-design-condition-7aecafa55fab-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      font-weight: var(--fsds-text-design-condition-7aecafa55fab-typography-weight, var(--fsds-text-typography-font-weight-bold, var(--_fsds-text-typography-font-weight-bold, 700)));
+      line-height: var(--fsds-text-design-condition-7aecafa55fab-typography-line-height, var(--fsds-text-typography-line-height-heading, var(--_fsds-text-typography-line-height-heading, 1)));
+      letter-spacing: var(--fsds-text-design-condition-7aecafa55fab-typography-tracking, var(--fsds-text-typography-letter-spacing-tight, var(--_fsds-text-typography-letter-spacing-tight, -0.018rem)));
     }
 
     .text--headline {
-      font-size: var(--fsds-text-design-condition-8819f782ecc4-typography-size, var(--fsds-text-size-md, 1rem));
-      font-weight: var(--fsds-text-design-condition-8819f782ecc4-typography-weight, var(--fsds-text-typography-font-weight-bold, 700));
-      line-height: var(--fsds-text-design-condition-8819f782ecc4-typography-line-height, var(--fsds-text-typography-line-height-heading, 1));
-      letter-spacing: var(--fsds-text-design-condition-8819f782ecc4-typography-tracking, var(--fsds-text-typography-letter-spacing-tight, -0.018rem));
+      font-size: var(--fsds-text-design-condition-8819f782ecc4-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      font-weight: var(--fsds-text-design-condition-8819f782ecc4-typography-weight, var(--fsds-text-typography-font-weight-bold, var(--_fsds-text-typography-font-weight-bold, 700)));
+      line-height: var(--fsds-text-design-condition-8819f782ecc4-typography-line-height, var(--fsds-text-typography-line-height-heading, var(--_fsds-text-typography-line-height-heading, 1)));
+      letter-spacing: var(--fsds-text-design-condition-8819f782ecc4-typography-tracking, var(--fsds-text-typography-letter-spacing-tight, var(--_fsds-text-typography-letter-spacing-tight, -0.018rem)));
     }
 
     .text--title {
-      font-size: var(--fsds-text-design-condition-ad1d0c32b0fa-typography-size, var(--fsds-text-size-md, 1rem));
-      font-weight: var(--fsds-text-design-condition-ad1d0c32b0fa-typography-weight, var(--fsds-text-typography-font-weight-bold, 700));
-      line-height: var(--fsds-text-design-condition-ad1d0c32b0fa-typography-line-height, var(--fsds-text-typography-line-height-heading, 1));
+      font-size: var(--fsds-text-design-condition-ad1d0c32b0fa-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      font-weight: var(--fsds-text-design-condition-ad1d0c32b0fa-typography-weight, var(--fsds-text-typography-font-weight-bold, var(--_fsds-text-typography-font-weight-bold, 700)));
+      line-height: var(--fsds-text-design-condition-ad1d0c32b0fa-typography-line-height, var(--fsds-text-typography-line-height-heading, var(--_fsds-text-typography-line-height-heading, 1)));
     }
 
     .text--body {
-      font-size: var(--fsds-text-design-condition-2ccff328366e-typography-size, var(--fsds-text-size-md, 1rem));
-      font-weight: var(--fsds-text-design-condition-2ccff328366e-typography-weight, var(--fsds-text-typography-font-weight-regular, 400));
-      line-height: var(--fsds-text-design-condition-2ccff328366e-typography-line-height, var(--fsds-text-typography-line-height-body, 1.5));
+      font-size: var(--fsds-text-design-condition-2ccff328366e-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      font-weight: var(--fsds-text-design-condition-2ccff328366e-typography-weight, var(--fsds-text-typography-font-weight-regular, var(--_fsds-text-typography-font-weight-regular, 400)));
+      line-height: var(--fsds-text-design-condition-2ccff328366e-typography-line-height, var(--fsds-text-typography-line-height-body, var(--_fsds-text-typography-line-height-body, 1.5)));
     }
 
     .text--caption {
-      font-size: var(--fsds-text-design-condition-e697e79ba40b-typography-size, var(--fsds-text-size-md, 1rem));
-      font-weight: var(--fsds-text-design-condition-e697e79ba40b-typography-weight, var(--fsds-text-typography-font-weight-regular, 400));
-      line-height: var(--fsds-text-design-condition-e697e79ba40b-typography-line-height, var(--fsds-text-typography-line-height-tight, 1.2));
+      font-size: var(--fsds-text-design-condition-e697e79ba40b-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      font-weight: var(--fsds-text-design-condition-e697e79ba40b-typography-weight, var(--fsds-text-typography-font-weight-regular, var(--_fsds-text-typography-font-weight-regular, 400)));
+      line-height: var(--fsds-text-design-condition-e697e79ba40b-typography-line-height, var(--fsds-text-typography-line-height-tight, var(--_fsds-text-typography-line-height-tight, 1.2)));
     }
 
     .text--overline {
-      font-size: var(--fsds-text-design-condition-9b05002ba0aa-typography-size, var(--fsds-text-size-md, 1rem));
-      font-weight: var(--fsds-text-design-condition-9b05002ba0aa-typography-weight, var(--fsds-text-typography-font-weight-medium, 500));
-      line-height: var(--fsds-text-design-condition-9b05002ba0aa-typography-line-height, var(--fsds-text-typography-line-height-tight, 1.2));
+      font-size: var(--fsds-text-design-condition-9b05002ba0aa-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
+      font-weight: var(--fsds-text-design-condition-9b05002ba0aa-typography-weight, var(--fsds-text-typography-font-weight-medium, var(--_fsds-text-typography-font-weight-medium, 500)));
+      line-height: var(--fsds-text-design-condition-9b05002ba0aa-typography-line-height, var(--fsds-text-typography-line-height-tight, var(--_fsds-text-typography-line-height-tight, 1.2)));
       text-transform: uppercase;
-      letter-spacing: var(--fsds-text-design-condition-9b05002ba0aa-typography-tracking, var(--fsds-text-typography-letter-spacing-wide, 0.018rem));
+      letter-spacing: var(--fsds-text-design-condition-9b05002ba0aa-typography-tracking, var(--fsds-text-typography-letter-spacing-wide, var(--_fsds-text-typography-letter-spacing-wide, 0.018rem)));
     }
 
     .text--code {
-      font-size: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
       font-family: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-family, var(--fsds-semantic-typography-semantic-family-mono, "Monaspace", ui-monospace, SFMono-Regular, Menlo, monospace));
-      line-height: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-line-height, var(--fsds-text-typography-line-height-body, 1.5));
+      line-height: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-line-height, var(--fsds-text-typography-line-height-body, var(--_fsds-text-typography-line-height-body, 1.5)));
     }
 
     .text--xs {
-      font-size: var(--fsds-text-design-condition-ac39d57baace-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-ac39d57baace-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--sm {
-      font-size: var(--fsds-text-design-condition-24964d7ed3a7-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-24964d7ed3a7-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--md {
-      font-size: var(--fsds-text-design-condition-dc35d39122c5-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-dc35d39122c5-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--lg {
-      font-size: var(--fsds-text-design-condition-72800fd5573d-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-72800fd5573d-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--xl {
-      font-size: var(--fsds-text-design-condition-bcfaa22e125a-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-bcfaa22e125a-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--2xl {
-      font-size: var(--fsds-text-design-condition-b6534e1dde7a-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-b6534e1dde7a-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--3xl {
-      font-size: var(--fsds-text-design-condition-c64026a43137-typography-size, var(--fsds-text-size-md, 1rem));
+      font-size: var(--fsds-text-design-condition-c64026a43137-typography-size, var(--fsds-text-size-md, var(--_fsds-text-size-md, 1rem)));
     }
 
     .text--light {
-      font-weight: var(--fsds-text-design-condition-2f78ecef044e-typography-weight, var(--fsds-text-typography-font-weight-light, 300));
+      font-weight: var(--fsds-text-design-condition-2f78ecef044e-typography-weight, var(--fsds-text-typography-font-weight-light, var(--_fsds-text-typography-font-weight-light, 300)));
     }
 
     .text--normal {
-      font-weight: var(--fsds-text-design-condition-223331540ae2-typography-weight, var(--fsds-text-typography-font-weight-regular, 400));
+      font-weight: var(--fsds-text-design-condition-223331540ae2-typography-weight, var(--fsds-text-typography-font-weight-regular, var(--_fsds-text-typography-font-weight-regular, 400)));
     }
 
     .text--medium {
-      font-weight: var(--fsds-text-design-condition-a9821c9eea70-typography-weight, var(--fsds-text-typography-font-weight-medium, 500));
+      font-weight: var(--fsds-text-design-condition-a9821c9eea70-typography-weight, var(--fsds-text-typography-font-weight-medium, var(--_fsds-text-typography-font-weight-medium, 500)));
     }
 
     .text--semibold {
-      font-weight: var(--fsds-text-design-condition-eae8588b0e7e-typography-weight, var(--fsds-text-typography-font-weight-medium, 500));
+      font-weight: var(--fsds-text-design-condition-eae8588b0e7e-typography-weight, var(--fsds-text-typography-font-weight-medium, var(--_fsds-text-typography-font-weight-medium, 500)));
     }
 
     .text--bold {
-      font-weight: var(--fsds-text-design-condition-7e6b52652555-typography-weight, var(--fsds-text-typography-font-weight-bold, 700));
+      font-weight: var(--fsds-text-design-condition-7e6b52652555-typography-weight, var(--fsds-text-typography-font-weight-bold, var(--_fsds-text-typography-font-weight-bold, 700)));
     }
 
     .text--left {

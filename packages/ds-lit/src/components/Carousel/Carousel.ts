@@ -77,11 +77,11 @@ export class CarouselElement extends LitElement {
 
 
     .carousel {
-      --fsds-carousel-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-carousel-color-progress: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-carousel-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-carousel-size-control-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-carousel-size-radius: var(--fsds-core-shape-radius-full, 9999px);
+      --_fsds-carousel-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-carousel-color-progress: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-carousel-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-carousel-size-control-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-carousel-size-radius: var(--fsds-core-shape-radius-full, 9999px);
     }
 
     @layer components.defaults {
@@ -90,7 +90,7 @@ export class CarouselElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-carousel-design-root-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
+      gap: var(--fsds-carousel-design-root-spacing-gap, var(--fsds-carousel-spacing-gap, var(--_fsds-carousel-spacing-gap, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -99,7 +99,7 @@ export class CarouselElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      color: var(--fsds-carousel-design-root-foreground-color, var(--fsds-carousel-color-foreground, #141414));
+      color: var(--fsds-carousel-design-root-foreground-color, var(--fsds-carousel-color-foreground, var(--_fsds-carousel-color-foreground, #141414)));
 
       &:not([data-sequence-root]) > .carousel__viewport {
         visibility: hidden;
@@ -120,7 +120,7 @@ export class CarouselElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--fsds-carousel-design-controls-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
+      gap: var(--fsds-carousel-design-controls-spacing-gap, var(--fsds-carousel-spacing-gap, var(--_fsds-carousel-spacing-gap, 8px)));
     }
 
     .carousel__ring {
@@ -129,7 +129,7 @@ export class CarouselElement extends LitElement {
       border-radius: var(--fsds-carousel-design-ring-shape-radius, 50%);
       background: conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0);
       mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
-      color: var(--fsds-carousel-design-ring-foreground-color, var(--fsds-carousel-color-progress, #141414));
+      color: var(--fsds-carousel-design-ring-foreground-color, var(--fsds-carousel-color-progress, var(--_fsds-carousel-color-progress, #141414)));
       pointer-events: none;
       display: none;
     }
@@ -143,10 +143,10 @@ export class CarouselElement extends LitElement {
       align-items: center;
       justify-content: center;
       position: relative;
-      min-width: var(--fsds-carousel-design-next-sizing-min-width, var(--fsds-carousel-size-control-size, 32px));
-      min-height: var(--fsds-carousel-design-next-sizing-min-height, var(--fsds-carousel-size-control-size, 32px));
+      min-width: var(--fsds-carousel-design-next-sizing-min-width, var(--fsds-carousel-size-control-size, var(--_fsds-carousel-size-control-size, 32px)));
+      min-height: var(--fsds-carousel-design-next-sizing-min-height, var(--fsds-carousel-size-control-size, var(--_fsds-carousel-size-control-size, 32px)));
       border: 1px solid currentColor;
-      border-radius: var(--fsds-carousel-design-next-shape-radius, var(--fsds-carousel-size-radius, 9999px));
+      border-radius: var(--fsds-carousel-design-next-shape-radius, var(--fsds-carousel-size-radius, var(--_fsds-carousel-size-radius, 9999px)));
       background: transparent;
       color: var(--fsds-carousel-design-next-foreground-color, inherit);
       cursor: pointer;
@@ -157,10 +157,10 @@ export class CarouselElement extends LitElement {
       align-items: center;
       justify-content: center;
       position: relative;
-      min-width: var(--fsds-carousel-design-previous-sizing-min-width, var(--fsds-carousel-size-control-size, 32px));
-      min-height: var(--fsds-carousel-design-previous-sizing-min-height, var(--fsds-carousel-size-control-size, 32px));
+      min-width: var(--fsds-carousel-design-previous-sizing-min-width, var(--fsds-carousel-size-control-size, var(--_fsds-carousel-size-control-size, 32px)));
+      min-height: var(--fsds-carousel-design-previous-sizing-min-height, var(--fsds-carousel-size-control-size, var(--_fsds-carousel-size-control-size, 32px)));
       border: 1px solid currentColor;
-      border-radius: var(--fsds-carousel-design-previous-shape-radius, var(--fsds-carousel-size-radius, 9999px));
+      border-radius: var(--fsds-carousel-design-previous-shape-radius, var(--fsds-carousel-size-radius, var(--_fsds-carousel-size-radius, 9999px)));
       background: transparent;
       color: var(--fsds-carousel-design-previous-foreground-color, inherit);
       cursor: pointer;
@@ -171,10 +171,10 @@ export class CarouselElement extends LitElement {
       align-items: center;
       justify-content: center;
       position: relative;
-      min-width: var(--fsds-carousel-design-rotation-sizing-min-width, var(--fsds-carousel-size-control-size, 32px));
-      min-height: var(--fsds-carousel-design-rotation-sizing-min-height, var(--fsds-carousel-size-control-size, 32px));
+      min-width: var(--fsds-carousel-design-rotation-sizing-min-width, var(--fsds-carousel-size-control-size, var(--_fsds-carousel-size-control-size, 32px)));
+      min-height: var(--fsds-carousel-design-rotation-sizing-min-height, var(--fsds-carousel-size-control-size, var(--_fsds-carousel-size-control-size, 32px)));
       border: 1px solid currentColor;
-      border-radius: var(--fsds-carousel-design-rotation-shape-radius, var(--fsds-carousel-size-radius, 9999px));
+      border-radius: var(--fsds-carousel-design-rotation-shape-radius, var(--fsds-carousel-size-radius, var(--_fsds-carousel-size-radius, 9999px)));
       background: transparent;
       color: var(--fsds-carousel-design-rotation-foreground-color, inherit);
       cursor: pointer;

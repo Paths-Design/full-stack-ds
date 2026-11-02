@@ -68,16 +68,16 @@ export class CodeSnippetElement extends LitElement {
 
 
     .code-snippet {
-      --fsds-code-snippet-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-code-snippet-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-code-snippet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-code-snippet-size-padding-inline: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-code-snippet-size-padding-block: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-code-snippet-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-code-snippet-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-code-snippet-size-font-size: var(--fsds-core-typography-ramp-3, 0.875rem);
-      --fsds-code-snippet-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-code-snippet-elevation-kbd: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
+      --_fsds-code-snippet-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-code-snippet-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-code-snippet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-code-snippet-size-padding-inline: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-code-snippet-size-padding-block: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-code-snippet-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-code-snippet-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-code-snippet-size-font-size: var(--fsds-core-typography-ramp-3, 0.875rem);
+      --_fsds-code-snippet-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-code-snippet-elevation-kbd: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
     }
 
     @layer components.defaults {
@@ -93,23 +93,23 @@ export class CodeSnippetElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-code-snippet-design-root-background-fill, var(--fsds-code-snippet-color-background, #f7f7f7));
-      border-color: var(--fsds-code-snippet-design-root-border-color, var(--fsds-code-snippet-color-border, #d0d0d0));
+      background-color: var(--fsds-code-snippet-design-root-background-fill, var(--fsds-code-snippet-color-background, var(--_fsds-code-snippet-color-background, #f7f7f7)));
+      border-color: var(--fsds-code-snippet-design-root-border-color, var(--fsds-code-snippet-color-border, var(--_fsds-code-snippet-color-border, #d0d0d0)));
       border-style: var(--fsds-code-snippet-design-root-border-style, solid);
-      border-width: var(--fsds-code-snippet-design-root-border-width, var(--fsds-code-snippet-size-border, 1px));
-      border-radius: var(--fsds-code-snippet-design-root-shape-radius, var(--fsds-code-snippet-size-radius, 6px));
-      color: var(--fsds-code-snippet-design-root-foreground-color, var(--fsds-code-snippet-color-foreground-primary, #141414));
+      border-width: var(--fsds-code-snippet-design-root-border-width, var(--fsds-code-snippet-size-border, var(--_fsds-code-snippet-size-border, 1px)));
+      border-radius: var(--fsds-code-snippet-design-root-shape-radius, var(--fsds-code-snippet-size-radius, var(--_fsds-code-snippet-size-radius, 6px)));
+      color: var(--fsds-code-snippet-design-root-foreground-color, var(--fsds-code-snippet-color-foreground-primary, var(--_fsds-code-snippet-color-foreground-primary, #141414)));
       font-family: var(--fsds-code-snippet-design-root-typography-family, var(--fsds-semantic-typography-semantic-family-mono, "Monaspace", ui-monospace, SFMono-Regular, Menlo, monospace));
-      font-size: var(--fsds-code-snippet-design-root-typography-size, var(--fsds-code-snippet-size-font-size, 0.875rem));
-      line-height: var(--fsds-code-snippet-design-root-typography-line-height, var(--fsds-code-snippet-typography-line-height, 1.5));
+      font-size: var(--fsds-code-snippet-design-root-typography-size, var(--fsds-code-snippet-size-font-size, var(--_fsds-code-snippet-size-font-size, 0.875rem)));
+      line-height: var(--fsds-code-snippet-design-root-typography-line-height, var(--fsds-code-snippet-typography-line-height, var(--_fsds-code-snippet-typography-line-height, 1.5)));
       margin: 0;
-      padding-block: var(--fsds-code-snippet-design-root-spacing-padding-block, var(--fsds-code-snippet-size-padding-block, 1px));
-      padding-inline: var(--fsds-code-snippet-design-root-spacing-padding-inline, var(--fsds-code-snippet-size-padding-inline, 2px));
+      padding-block: var(--fsds-code-snippet-design-root-spacing-padding-block, var(--fsds-code-snippet-size-padding-block, var(--_fsds-code-snippet-size-padding-block, 1px)));
+      padding-inline: var(--fsds-code-snippet-design-root-spacing-padding-inline, var(--fsds-code-snippet-size-padding-inline, var(--_fsds-code-snippet-size-padding-inline, 2px)));
       white-space: nowrap;
     }
 
     .code-snippet--kbd {
-      box-shadow: var(--fsds-code-snippet-design-condition-7b91481c8112-elevation-shadow, var(--fsds-code-snippet-elevation-kbd, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a));
+      box-shadow: var(--fsds-code-snippet-design-condition-7b91481c8112-elevation-shadow, var(--fsds-code-snippet-elevation-kbd, var(--_fsds-code-snippet-elevation-kbd, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)));
       font-weight: var(--fsds-code-snippet-design-condition-7b91481c8112-typography-weight, var(--fsds-semantic-typography-font-weight-medium, 500));
     }
 

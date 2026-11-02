@@ -71,37 +71,37 @@ export class TextFieldElement extends LitElement {
 
 
     .text-field {
-      --fsds-text-field-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-text-field-field-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
-      --fsds-text-field-field-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
-      --fsds-text-field-field-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
-      --fsds-text-field-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-text-field-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-text-field-color-input-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-text-field-color-input-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-text-field-color-input-placeholder: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-text-field-color-input-border: var(--fsds-semantic-color-border-default, #a0a0a1);
-      --fsds-text-field-color-input-border-hover: var(--fsds-semantic-color-border-hover, #888889);
-      --fsds-text-field-color-input-background-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
-      --fsds-text-field-color-input-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
-      --fsds-text-field-color-input-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
-      --fsds-text-field-color-input-border-error: var(--fsds-semantic-color-status-danger, #d92d2e);
-      --fsds-text-field-color-error: var(--fsds-semantic-color-foreground-danger, #d92d2e);
-      --fsds-text-field-color-supporting-text: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-text-field-typography-label-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
-      --fsds-text-field-typography-label-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-text-field-typography-label-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-text-field-typography-field-size: var(--fsds-semantic-typography-body-02, 1rem);
-      --fsds-text-field-typography-field-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-text-field-typography-supporting-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
-      --fsds-text-field-typography-supporting-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-text-field-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-text-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-text-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-text-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-text-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-text-field-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
-      --fsds-text-field-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+      --_fsds-text-field-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-text-field-field-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+      --_fsds-text-field-field-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+      --_fsds-text-field-field-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+      --_fsds-text-field-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-text-field-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-text-field-color-input-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-text-field-color-input-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-text-field-color-input-placeholder: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-text-field-color-input-border: var(--fsds-semantic-color-border-default, #a0a0a1);
+      --_fsds-text-field-color-input-border-hover: var(--fsds-semantic-color-border-hover, #888889);
+      --_fsds-text-field-color-input-background-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
+      --_fsds-text-field-color-input-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+      --_fsds-text-field-color-input-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
+      --_fsds-text-field-color-input-border-error: var(--fsds-semantic-color-status-danger, #d92d2e);
+      --_fsds-text-field-color-error: var(--fsds-semantic-color-foreground-danger, #d92d2e);
+      --_fsds-text-field-color-supporting-text: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-text-field-typography-label-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
+      --_fsds-text-field-typography-label-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-text-field-typography-label-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-text-field-typography-field-size: var(--fsds-semantic-typography-body-02, 1rem);
+      --_fsds-text-field-typography-field-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-text-field-typography-supporting-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
+      --_fsds-text-field-typography-supporting-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-text-field-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-text-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-text-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-text-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-text-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-text-field-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+      --_fsds-text-field-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     @layer components.defaults {
@@ -110,7 +110,7 @@ export class TextFieldElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-input-size-medium-padding-block, 4px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
-      gap: var(--fsds-text-field-design-root-spacing-gap, var(--fsds-text-field-spacing-gap, 8px));
+      gap: var(--fsds-text-field-design-root-spacing-gap, var(--fsds-text-field-spacing-gap, var(--_fsds-text-field-spacing-gap, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -123,10 +123,10 @@ export class TextFieldElement extends LitElement {
 
     .text-field__label {
       display: inline-block;
-      font-size: var(--fsds-text-field-design-label-typography-size, var(--fsds-text-field-typography-label-size, 0.875rem));
-      font-weight: var(--fsds-text-field-design-label-typography-weight, var(--fsds-text-field-typography-label-weight, 500));
-      line-height: var(--fsds-text-field-design-label-typography-line-height, var(--fsds-text-field-typography-label-line-height, 1.5));
-      color: var(--fsds-text-field-design-label-foreground-color, var(--fsds-text-field-color-input-text, #141414));
+      font-size: var(--fsds-text-field-design-label-typography-size, var(--fsds-text-field-typography-label-size, var(--_fsds-text-field-typography-label-size, 0.875rem)));
+      font-weight: var(--fsds-text-field-design-label-typography-weight, var(--fsds-text-field-typography-label-weight, var(--_fsds-text-field-typography-label-weight, 500)));
+      line-height: var(--fsds-text-field-design-label-typography-line-height, var(--fsds-text-field-typography-label-line-height, var(--_fsds-text-field-typography-label-line-height, 1.5)));
+      color: var(--fsds-text-field-design-label-foreground-color, var(--fsds-text-field-color-input-text, var(--_fsds-text-field-color-input-text, #141414)));
     }
 
     .text-field__field {
@@ -134,65 +134,65 @@ export class TextFieldElement extends LitElement {
       width: 100%;
       box-sizing: border-box;
       border-style: var(--fsds-text-field-design-field-border-style, solid);
-      background-color: var(--fsds-text-field-design-field-background-fill, var(--fsds-text-field-color-input-background, #ffffff));
-      border-color: var(--fsds-text-field-design-field-border-color, var(--fsds-text-field-color-input-border, #a0a0a1));
-      border-width: var(--fsds-text-field-design-field-border-width, var(--fsds-text-field-border-width, 1px));
-      border-radius: var(--fsds-text-field-design-field-shape-radius, var(--fsds-text-field-border-radius, 6px));
-      color: var(--fsds-text-field-design-field-foreground-color, var(--fsds-text-field-color-input-text, #141414));
-      font-size: var(--fsds-text-field-design-field-typography-size, var(--fsds-text-field-typography-field-size, 1rem));
-      line-height: var(--fsds-text-field-design-field-typography-line-height, var(--fsds-text-field-typography-field-line-height, 1.5));
-      min-height: var(--fsds-text-field-design-field-sizing-min-height, var(--fsds-text-field-field-min-height, 32px));
-      padding-block: var(--fsds-text-field-design-field-spacing-padding-block, var(--fsds-text-field-field-padding-block, 4px));
-      padding-inline: var(--fsds-text-field-design-field-spacing-padding-inline, var(--fsds-text-field-field-padding-inline, 8px));
+      background-color: var(--fsds-text-field-design-field-background-fill, var(--fsds-text-field-color-input-background, var(--_fsds-text-field-color-input-background, #ffffff)));
+      border-color: var(--fsds-text-field-design-field-border-color, var(--fsds-text-field-color-input-border, var(--_fsds-text-field-color-input-border, #a0a0a1)));
+      border-width: var(--fsds-text-field-design-field-border-width, var(--fsds-text-field-border-width, var(--_fsds-text-field-border-width, 1px)));
+      border-radius: var(--fsds-text-field-design-field-shape-radius, var(--fsds-text-field-border-radius, var(--_fsds-text-field-border-radius, 6px)));
+      color: var(--fsds-text-field-design-field-foreground-color, var(--fsds-text-field-color-input-text, var(--_fsds-text-field-color-input-text, #141414)));
+      font-size: var(--fsds-text-field-design-field-typography-size, var(--fsds-text-field-typography-field-size, var(--_fsds-text-field-typography-field-size, 1rem)));
+      line-height: var(--fsds-text-field-design-field-typography-line-height, var(--fsds-text-field-typography-field-line-height, var(--_fsds-text-field-typography-field-line-height, 1.5)));
+      min-height: var(--fsds-text-field-design-field-sizing-min-height, var(--fsds-text-field-field-min-height, var(--_fsds-text-field-field-min-height, 32px)));
+      padding-block: var(--fsds-text-field-design-field-spacing-padding-block, var(--fsds-text-field-field-padding-block, var(--_fsds-text-field-field-padding-block, 4px)));
+      padding-inline: var(--fsds-text-field-design-field-spacing-padding-inline, var(--fsds-text-field-field-padding-inline, var(--_fsds-text-field-field-padding-inline, 8px)));
       transition-property: background-color, border-color, color, outline-color;
-      transition-duration: var(--fsds-text-field-design-field-motion-duration, var(--fsds-text-field-motion-duration-fast, 150ms));
-      transition-timing-function: var(--fsds-text-field-design-field-motion-easing, var(--fsds-text-field-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1)));
+      transition-duration: var(--fsds-text-field-design-field-motion-duration, var(--fsds-text-field-motion-duration-fast, var(--_fsds-text-field-motion-duration-fast, 150ms)));
+      transition-timing-function: var(--fsds-text-field-design-field-motion-easing, var(--fsds-text-field-motion-easing-standard, var(--_fsds-text-field-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1))));
     }
 
     .text-field__description {
       display: block;
-      font-size: var(--fsds-text-field-design-description-typography-size, var(--fsds-text-field-typography-supporting-size, 0.875rem));
-      line-height: var(--fsds-text-field-design-description-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, 1.5));
-      color: var(--fsds-text-field-design-description-foreground-color, var(--fsds-text-field-color-supporting-text, #727272));
+      font-size: var(--fsds-text-field-design-description-typography-size, var(--fsds-text-field-typography-supporting-size, var(--_fsds-text-field-typography-supporting-size, 0.875rem)));
+      line-height: var(--fsds-text-field-design-description-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, var(--_fsds-text-field-typography-supporting-line-height, 1.5)));
+      color: var(--fsds-text-field-design-description-foreground-color, var(--fsds-text-field-color-supporting-text, var(--_fsds-text-field-color-supporting-text, #727272)));
     }
 
     .text-field__error {
       display: block;
-      font-size: var(--fsds-text-field-design-error-typography-size, var(--fsds-text-field-typography-supporting-size, 0.875rem));
-      line-height: var(--fsds-text-field-design-error-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, 1.5));
-      color: var(--fsds-text-field-design-error-foreground-color, var(--fsds-text-field-color-error, #d92d2e));
+      font-size: var(--fsds-text-field-design-error-typography-size, var(--fsds-text-field-typography-supporting-size, var(--_fsds-text-field-typography-supporting-size, 0.875rem)));
+      line-height: var(--fsds-text-field-design-error-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, var(--_fsds-text-field-typography-supporting-line-height, 1.5)));
+      color: var(--fsds-text-field-design-error-foreground-color, var(--fsds-text-field-color-error, var(--_fsds-text-field-color-error, #d92d2e)));
     }
 
     .text-field__field::placeholder {
-      color: var(--fsds-text-field-design-condition-cd558e65951a-foreground-color, var(--fsds-text-field-color-input-placeholder, #727272));
+      color: var(--fsds-text-field-design-condition-cd558e65951a-foreground-color, var(--fsds-text-field-color-input-placeholder, var(--_fsds-text-field-color-input-placeholder, #727272)));
     }
 
     .text-field__field:hover:not(:disabled) {
-      border-color: var(--fsds-text-field-design-condition-42d441aafe9d-border-color, var(--fsds-text-field-color-input-border-hover, #888889));
+      border-color: var(--fsds-text-field-design-condition-42d441aafe9d-border-color, var(--fsds-text-field-color-input-border-hover, var(--_fsds-text-field-color-input-border-hover, #888889)));
     }
 
     .text-field__field:focus-visible:not([aria-disabled="true"]) {
-      border-color: var(--fsds-text-field-design-condition-77dab6d6abaf-border-color, var(--fsds-text-field-focus-ring-color, #0566fe));
-      outline-width: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-width, var(--fsds-text-field-focus-ring-width, 2px));
-      outline-color: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-color, var(--fsds-text-field-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-style, var(--fsds-text-field-focus-ring-style, solid));
-      outline-offset: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-offset, var(--fsds-text-field-focus-ring-offset, 2px));
+      border-color: var(--fsds-text-field-design-condition-77dab6d6abaf-border-color, var(--fsds-text-field-focus-ring-color, var(--_fsds-text-field-focus-ring-color, #0566fe)));
+      outline-width: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-width, var(--fsds-text-field-focus-ring-width, var(--_fsds-text-field-focus-ring-width, 2px)));
+      outline-color: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-color, var(--fsds-text-field-focus-ring-color, var(--_fsds-text-field-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-style, var(--fsds-text-field-focus-ring-style, var(--_fsds-text-field-focus-ring-style, solid)));
+      outline-offset: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-offset, var(--fsds-text-field-focus-ring-offset, var(--_fsds-text-field-focus-ring-offset, 2px)));
     }
 
     .text-field--invalid .text-field__field {
-      border-color: var(--fsds-text-field-design-condition-552c09ee517a-border-color, var(--fsds-text-field-color-input-border-error, #d92d2e));
+      border-color: var(--fsds-text-field-design-condition-552c09ee517a-border-color, var(--fsds-text-field-color-input-border-error, var(--_fsds-text-field-color-input-border-error, #d92d2e)));
     }
 
     .text-field--invalid .text-field__field:focus-visible:not([aria-disabled="true"]) {
-      border-color: var(--fsds-text-field-design-condition-2e4a716b9443-border-color, var(--fsds-text-field-color-input-border-error, #d92d2e));
-      outline-color: var(--fsds-text-field-design-condition-2e4a716b9443-focus-color, var(--fsds-text-field-color-input-border-error, #d92d2e));
+      border-color: var(--fsds-text-field-design-condition-2e4a716b9443-border-color, var(--fsds-text-field-color-input-border-error, var(--_fsds-text-field-color-input-border-error, #d92d2e)));
+      outline-color: var(--fsds-text-field-design-condition-2e4a716b9443-focus-color, var(--fsds-text-field-color-input-border-error, var(--_fsds-text-field-color-input-border-error, #d92d2e)));
     }
 
     .text-field__field:disabled {
-      background-color: var(--fsds-text-field-design-condition-6d2f506c00a2-background-fill, var(--fsds-text-field-color-input-background-disabled, #b8b8b8));
-      border-color: var(--fsds-text-field-design-condition-6d2f506c00a2-border-color, var(--fsds-text-field-color-input-border-disabled, #b8b8b8));
-      color: var(--fsds-text-field-design-condition-6d2f506c00a2-foreground-color, var(--fsds-text-field-color-input-text-disabled, #727272));
-      opacity: var(--fsds-text-field-design-condition-6d2f506c00a2-appearance-opacity, var(--fsds-text-field-opacity-disabled, 0.5));
+      background-color: var(--fsds-text-field-design-condition-6d2f506c00a2-background-fill, var(--fsds-text-field-color-input-background-disabled, var(--_fsds-text-field-color-input-background-disabled, #b8b8b8)));
+      border-color: var(--fsds-text-field-design-condition-6d2f506c00a2-border-color, var(--fsds-text-field-color-input-border-disabled, var(--_fsds-text-field-color-input-border-disabled, #b8b8b8)));
+      color: var(--fsds-text-field-design-condition-6d2f506c00a2-foreground-color, var(--fsds-text-field-color-input-text-disabled, var(--_fsds-text-field-color-input-text-disabled, #727272)));
+      opacity: var(--fsds-text-field-design-condition-6d2f506c00a2-appearance-opacity, var(--fsds-text-field-opacity-disabled, var(--_fsds-text-field-opacity-disabled, 0.5)));
       cursor: not-allowed;
     }
     }
@@ -309,37 +309,37 @@ export class TextFieldDescriptionElement extends LitElement {
 
 
     .text-field {
-      --fsds-text-field-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-text-field-field-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
-      --fsds-text-field-field-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
-      --fsds-text-field-field-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
-      --fsds-text-field-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-text-field-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-text-field-color-input-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-text-field-color-input-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-text-field-color-input-placeholder: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-text-field-color-input-border: var(--fsds-semantic-color-border-default, #a0a0a1);
-      --fsds-text-field-color-input-border-hover: var(--fsds-semantic-color-border-hover, #888889);
-      --fsds-text-field-color-input-background-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
-      --fsds-text-field-color-input-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
-      --fsds-text-field-color-input-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
-      --fsds-text-field-color-input-border-error: var(--fsds-semantic-color-status-danger, #d92d2e);
-      --fsds-text-field-color-error: var(--fsds-semantic-color-foreground-danger, #d92d2e);
-      --fsds-text-field-color-supporting-text: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-text-field-typography-label-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
-      --fsds-text-field-typography-label-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-text-field-typography-label-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-text-field-typography-field-size: var(--fsds-semantic-typography-body-02, 1rem);
-      --fsds-text-field-typography-field-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-text-field-typography-supporting-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
-      --fsds-text-field-typography-supporting-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-text-field-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-text-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-text-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-text-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-text-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-text-field-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
-      --fsds-text-field-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+      --_fsds-text-field-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-text-field-field-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+      --_fsds-text-field-field-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+      --_fsds-text-field-field-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+      --_fsds-text-field-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-text-field-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-text-field-color-input-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-text-field-color-input-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-text-field-color-input-placeholder: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-text-field-color-input-border: var(--fsds-semantic-color-border-default, #a0a0a1);
+      --_fsds-text-field-color-input-border-hover: var(--fsds-semantic-color-border-hover, #888889);
+      --_fsds-text-field-color-input-background-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
+      --_fsds-text-field-color-input-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+      --_fsds-text-field-color-input-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
+      --_fsds-text-field-color-input-border-error: var(--fsds-semantic-color-status-danger, #d92d2e);
+      --_fsds-text-field-color-error: var(--fsds-semantic-color-foreground-danger, #d92d2e);
+      --_fsds-text-field-color-supporting-text: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-text-field-typography-label-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
+      --_fsds-text-field-typography-label-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-text-field-typography-label-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-text-field-typography-field-size: var(--fsds-semantic-typography-body-02, 1rem);
+      --_fsds-text-field-typography-field-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-text-field-typography-supporting-size: var(--fsds-semantic-typography-caption-01, 0.875rem);
+      --_fsds-text-field-typography-supporting-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-text-field-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-text-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-text-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-text-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-text-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-text-field-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+      --_fsds-text-field-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     @layer components.defaults {
@@ -348,7 +348,7 @@ export class TextFieldDescriptionElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-input-size-medium-padding-block, 4px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
-      gap: var(--fsds-text-field-design-root-spacing-gap, var(--fsds-text-field-spacing-gap, 8px));
+      gap: var(--fsds-text-field-design-root-spacing-gap, var(--fsds-text-field-spacing-gap, var(--_fsds-text-field-spacing-gap, 8px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -361,10 +361,10 @@ export class TextFieldDescriptionElement extends LitElement {
 
     .text-field__label {
       display: inline-block;
-      font-size: var(--fsds-text-field-design-label-typography-size, var(--fsds-text-field-typography-label-size, 0.875rem));
-      font-weight: var(--fsds-text-field-design-label-typography-weight, var(--fsds-text-field-typography-label-weight, 500));
-      line-height: var(--fsds-text-field-design-label-typography-line-height, var(--fsds-text-field-typography-label-line-height, 1.5));
-      color: var(--fsds-text-field-design-label-foreground-color, var(--fsds-text-field-color-input-text, #141414));
+      font-size: var(--fsds-text-field-design-label-typography-size, var(--fsds-text-field-typography-label-size, var(--_fsds-text-field-typography-label-size, 0.875rem)));
+      font-weight: var(--fsds-text-field-design-label-typography-weight, var(--fsds-text-field-typography-label-weight, var(--_fsds-text-field-typography-label-weight, 500)));
+      line-height: var(--fsds-text-field-design-label-typography-line-height, var(--fsds-text-field-typography-label-line-height, var(--_fsds-text-field-typography-label-line-height, 1.5)));
+      color: var(--fsds-text-field-design-label-foreground-color, var(--fsds-text-field-color-input-text, var(--_fsds-text-field-color-input-text, #141414)));
     }
 
     .text-field__field {
@@ -372,65 +372,65 @@ export class TextFieldDescriptionElement extends LitElement {
       width: 100%;
       box-sizing: border-box;
       border-style: var(--fsds-text-field-design-field-border-style, solid);
-      background-color: var(--fsds-text-field-design-field-background-fill, var(--fsds-text-field-color-input-background, #ffffff));
-      border-color: var(--fsds-text-field-design-field-border-color, var(--fsds-text-field-color-input-border, #a0a0a1));
-      border-width: var(--fsds-text-field-design-field-border-width, var(--fsds-text-field-border-width, 1px));
-      border-radius: var(--fsds-text-field-design-field-shape-radius, var(--fsds-text-field-border-radius, 6px));
-      color: var(--fsds-text-field-design-field-foreground-color, var(--fsds-text-field-color-input-text, #141414));
-      font-size: var(--fsds-text-field-design-field-typography-size, var(--fsds-text-field-typography-field-size, 1rem));
-      line-height: var(--fsds-text-field-design-field-typography-line-height, var(--fsds-text-field-typography-field-line-height, 1.5));
-      min-height: var(--fsds-text-field-design-field-sizing-min-height, var(--fsds-text-field-field-min-height, 32px));
-      padding-block: var(--fsds-text-field-design-field-spacing-padding-block, var(--fsds-text-field-field-padding-block, 4px));
-      padding-inline: var(--fsds-text-field-design-field-spacing-padding-inline, var(--fsds-text-field-field-padding-inline, 8px));
+      background-color: var(--fsds-text-field-design-field-background-fill, var(--fsds-text-field-color-input-background, var(--_fsds-text-field-color-input-background, #ffffff)));
+      border-color: var(--fsds-text-field-design-field-border-color, var(--fsds-text-field-color-input-border, var(--_fsds-text-field-color-input-border, #a0a0a1)));
+      border-width: var(--fsds-text-field-design-field-border-width, var(--fsds-text-field-border-width, var(--_fsds-text-field-border-width, 1px)));
+      border-radius: var(--fsds-text-field-design-field-shape-radius, var(--fsds-text-field-border-radius, var(--_fsds-text-field-border-radius, 6px)));
+      color: var(--fsds-text-field-design-field-foreground-color, var(--fsds-text-field-color-input-text, var(--_fsds-text-field-color-input-text, #141414)));
+      font-size: var(--fsds-text-field-design-field-typography-size, var(--fsds-text-field-typography-field-size, var(--_fsds-text-field-typography-field-size, 1rem)));
+      line-height: var(--fsds-text-field-design-field-typography-line-height, var(--fsds-text-field-typography-field-line-height, var(--_fsds-text-field-typography-field-line-height, 1.5)));
+      min-height: var(--fsds-text-field-design-field-sizing-min-height, var(--fsds-text-field-field-min-height, var(--_fsds-text-field-field-min-height, 32px)));
+      padding-block: var(--fsds-text-field-design-field-spacing-padding-block, var(--fsds-text-field-field-padding-block, var(--_fsds-text-field-field-padding-block, 4px)));
+      padding-inline: var(--fsds-text-field-design-field-spacing-padding-inline, var(--fsds-text-field-field-padding-inline, var(--_fsds-text-field-field-padding-inline, 8px)));
       transition-property: background-color, border-color, color, outline-color;
-      transition-duration: var(--fsds-text-field-design-field-motion-duration, var(--fsds-text-field-motion-duration-fast, 150ms));
-      transition-timing-function: var(--fsds-text-field-design-field-motion-easing, var(--fsds-text-field-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1)));
+      transition-duration: var(--fsds-text-field-design-field-motion-duration, var(--fsds-text-field-motion-duration-fast, var(--_fsds-text-field-motion-duration-fast, 150ms)));
+      transition-timing-function: var(--fsds-text-field-design-field-motion-easing, var(--fsds-text-field-motion-easing-standard, var(--_fsds-text-field-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1))));
     }
 
     .text-field__description {
       display: block;
-      font-size: var(--fsds-text-field-design-description-typography-size, var(--fsds-text-field-typography-supporting-size, 0.875rem));
-      line-height: var(--fsds-text-field-design-description-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, 1.5));
-      color: var(--fsds-text-field-design-description-foreground-color, var(--fsds-text-field-color-supporting-text, #727272));
+      font-size: var(--fsds-text-field-design-description-typography-size, var(--fsds-text-field-typography-supporting-size, var(--_fsds-text-field-typography-supporting-size, 0.875rem)));
+      line-height: var(--fsds-text-field-design-description-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, var(--_fsds-text-field-typography-supporting-line-height, 1.5)));
+      color: var(--fsds-text-field-design-description-foreground-color, var(--fsds-text-field-color-supporting-text, var(--_fsds-text-field-color-supporting-text, #727272)));
     }
 
     .text-field__error {
       display: block;
-      font-size: var(--fsds-text-field-design-error-typography-size, var(--fsds-text-field-typography-supporting-size, 0.875rem));
-      line-height: var(--fsds-text-field-design-error-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, 1.5));
-      color: var(--fsds-text-field-design-error-foreground-color, var(--fsds-text-field-color-error, #d92d2e));
+      font-size: var(--fsds-text-field-design-error-typography-size, var(--fsds-text-field-typography-supporting-size, var(--_fsds-text-field-typography-supporting-size, 0.875rem)));
+      line-height: var(--fsds-text-field-design-error-typography-line-height, var(--fsds-text-field-typography-supporting-line-height, var(--_fsds-text-field-typography-supporting-line-height, 1.5)));
+      color: var(--fsds-text-field-design-error-foreground-color, var(--fsds-text-field-color-error, var(--_fsds-text-field-color-error, #d92d2e)));
     }
 
     .text-field__field::placeholder {
-      color: var(--fsds-text-field-design-condition-cd558e65951a-foreground-color, var(--fsds-text-field-color-input-placeholder, #727272));
+      color: var(--fsds-text-field-design-condition-cd558e65951a-foreground-color, var(--fsds-text-field-color-input-placeholder, var(--_fsds-text-field-color-input-placeholder, #727272)));
     }
 
     .text-field__field:hover:not(:disabled) {
-      border-color: var(--fsds-text-field-design-condition-42d441aafe9d-border-color, var(--fsds-text-field-color-input-border-hover, #888889));
+      border-color: var(--fsds-text-field-design-condition-42d441aafe9d-border-color, var(--fsds-text-field-color-input-border-hover, var(--_fsds-text-field-color-input-border-hover, #888889)));
     }
 
     .text-field__field:focus-visible:not([aria-disabled="true"]) {
-      border-color: var(--fsds-text-field-design-condition-77dab6d6abaf-border-color, var(--fsds-text-field-focus-ring-color, #0566fe));
-      outline-width: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-width, var(--fsds-text-field-focus-ring-width, 2px));
-      outline-color: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-color, var(--fsds-text-field-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-style, var(--fsds-text-field-focus-ring-style, solid));
-      outline-offset: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-offset, var(--fsds-text-field-focus-ring-offset, 2px));
+      border-color: var(--fsds-text-field-design-condition-77dab6d6abaf-border-color, var(--fsds-text-field-focus-ring-color, var(--_fsds-text-field-focus-ring-color, #0566fe)));
+      outline-width: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-width, var(--fsds-text-field-focus-ring-width, var(--_fsds-text-field-focus-ring-width, 2px)));
+      outline-color: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-color, var(--fsds-text-field-focus-ring-color, var(--_fsds-text-field-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-style, var(--fsds-text-field-focus-ring-style, var(--_fsds-text-field-focus-ring-style, solid)));
+      outline-offset: var(--fsds-text-field-design-condition-77dab6d6abaf-focus-offset, var(--fsds-text-field-focus-ring-offset, var(--_fsds-text-field-focus-ring-offset, 2px)));
     }
 
     .text-field--invalid .text-field__field {
-      border-color: var(--fsds-text-field-design-condition-552c09ee517a-border-color, var(--fsds-text-field-color-input-border-error, #d92d2e));
+      border-color: var(--fsds-text-field-design-condition-552c09ee517a-border-color, var(--fsds-text-field-color-input-border-error, var(--_fsds-text-field-color-input-border-error, #d92d2e)));
     }
 
     .text-field--invalid .text-field__field:focus-visible:not([aria-disabled="true"]) {
-      border-color: var(--fsds-text-field-design-condition-2e4a716b9443-border-color, var(--fsds-text-field-color-input-border-error, #d92d2e));
-      outline-color: var(--fsds-text-field-design-condition-2e4a716b9443-focus-color, var(--fsds-text-field-color-input-border-error, #d92d2e));
+      border-color: var(--fsds-text-field-design-condition-2e4a716b9443-border-color, var(--fsds-text-field-color-input-border-error, var(--_fsds-text-field-color-input-border-error, #d92d2e)));
+      outline-color: var(--fsds-text-field-design-condition-2e4a716b9443-focus-color, var(--fsds-text-field-color-input-border-error, var(--_fsds-text-field-color-input-border-error, #d92d2e)));
     }
 
     .text-field__field:disabled {
-      background-color: var(--fsds-text-field-design-condition-6d2f506c00a2-background-fill, var(--fsds-text-field-color-input-background-disabled, #b8b8b8));
-      border-color: var(--fsds-text-field-design-condition-6d2f506c00a2-border-color, var(--fsds-text-field-color-input-border-disabled, #b8b8b8));
-      color: var(--fsds-text-field-design-condition-6d2f506c00a2-foreground-color, var(--fsds-text-field-color-input-text-disabled, #727272));
-      opacity: var(--fsds-text-field-design-condition-6d2f506c00a2-appearance-opacity, var(--fsds-text-field-opacity-disabled, 0.5));
+      background-color: var(--fsds-text-field-design-condition-6d2f506c00a2-background-fill, var(--fsds-text-field-color-input-background-disabled, var(--_fsds-text-field-color-input-background-disabled, #b8b8b8)));
+      border-color: var(--fsds-text-field-design-condition-6d2f506c00a2-border-color, var(--fsds-text-field-color-input-border-disabled, var(--_fsds-text-field-color-input-border-disabled, #b8b8b8)));
+      color: var(--fsds-text-field-design-condition-6d2f506c00a2-foreground-color, var(--fsds-text-field-color-input-text-disabled, var(--_fsds-text-field-color-input-text-disabled, #727272)));
+      opacity: var(--fsds-text-field-design-condition-6d2f506c00a2-appearance-opacity, var(--fsds-text-field-opacity-disabled, var(--_fsds-text-field-opacity-disabled, 0.5)));
       cursor: not-allowed;
     }
     }

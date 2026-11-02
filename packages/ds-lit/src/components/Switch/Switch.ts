@@ -70,40 +70,40 @@ export class SwitchElement extends LitElement {
 
 
     .switch {
-      --fsds-switch-motion-duration: var(--fsds-semantic-motion-interaction-press-duration, 100ms);
-      --fsds-switch-motion-easing: var(--fsds-semantic-motion-interaction-press-easing, cubic-bezier(0.4, 0, 0.2, 1));
-      --fsds-switch-color-track-background: var(--fsds-semantic-color-background-tertiary, #d0d0d0);
-      --fsds-switch-color-track-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-switch-color-thumb-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-switch-color-thumb-shadow: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
-      --fsds-switch-size-md-track-width: var(--fsds-core-spacing-size-09, 48px);
-      --fsds-switch-size-md-track-height: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-switch-size-md-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-      --fsds-switch-size-md-track-padding: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-switch-size-md-thumb-size: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-switch-size-md-thumb-height: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-switch-size-sm-track-width: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-switch-size-sm-track-height: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-switch-size-sm-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-      --fsds-switch-size-sm-track-padding: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-switch-size-sm-thumb-size: var(--fsds-core-spacing-size-05, 12px);
-      --fsds-switch-size-sm-thumb-height: var(--fsds-core-spacing-size-05, 12px);
-      --fsds-switch-size-lg-track-width: var(--fsds-core-spacing-size-10, 64px);
-      --fsds-switch-size-lg-track-height: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-switch-size-lg-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-      --fsds-switch-size-lg-track-padding: var(--fsds-core-spacing-size-01, 1px);
-      --fsds-switch-size-lg-thumb-size: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-switch-size-lg-thumb-height: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-switch-size-sm-thumb-translate-off: 0;
-      --fsds-switch-size-sm-thumb-translate-on: 16px;
-      --fsds-switch-size-md-thumb-translate-off: 0;
-      --fsds-switch-size-md-thumb-translate-on: 24px;
-      --fsds-switch-size-lg-thumb-translate-off: 0;
-      --fsds-switch-size-lg-thumb-translate-on: 36px;
-      --fsds-switch-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-switch-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-switch-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-switch-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-switch-motion-duration: var(--fsds-semantic-motion-interaction-press-duration, 100ms);
+      --_fsds-switch-motion-easing: var(--fsds-semantic-motion-interaction-press-easing, cubic-bezier(0.4, 0, 0.2, 1));
+      --_fsds-switch-color-track-background: var(--fsds-semantic-color-background-tertiary, #d0d0d0);
+      --_fsds-switch-color-track-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-switch-color-thumb-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-switch-color-thumb-shadow: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
+      --_fsds-switch-size-md-track-width: var(--fsds-core-spacing-size-09, 48px);
+      --_fsds-switch-size-md-track-height: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-switch-size-md-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --_fsds-switch-size-md-track-padding: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-switch-size-md-thumb-size: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-switch-size-md-thumb-height: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-switch-size-sm-track-width: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-switch-size-sm-track-height: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-switch-size-sm-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --_fsds-switch-size-sm-track-padding: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-switch-size-sm-thumb-size: var(--fsds-core-spacing-size-05, 12px);
+      --_fsds-switch-size-sm-thumb-height: var(--fsds-core-spacing-size-05, 12px);
+      --_fsds-switch-size-lg-track-width: var(--fsds-core-spacing-size-10, 64px);
+      --_fsds-switch-size-lg-track-height: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-switch-size-lg-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --_fsds-switch-size-lg-track-padding: var(--fsds-core-spacing-size-01, 1px);
+      --_fsds-switch-size-lg-thumb-size: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-switch-size-lg-thumb-height: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-switch-size-sm-thumb-translate-off: 0;
+      --_fsds-switch-size-sm-thumb-translate-on: 16px;
+      --_fsds-switch-size-md-thumb-translate-off: 0;
+      --_fsds-switch-size-md-thumb-translate-on: 24px;
+      --_fsds-switch-size-lg-thumb-translate-off: 0;
+      --_fsds-switch-size-lg-thumb-translate-on: 36px;
+      --_fsds-switch-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-switch-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-switch-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-switch-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
 
       &:has(.switch__input:checked) .switch__track {
         --fsds-switch-color-track-background: var(--fsds-semantic-color-foreground-accent, #d92d2e);
@@ -137,7 +137,7 @@ export class SwitchElement extends LitElement {
       position: relative;
 
       &:has(.switch__input:checked) .switch__thumb {
-        translate: var(--fsds-switch-size-md-thumb-translate-on, 24px);
+        translate: var(--fsds-switch-size-md-thumb-translate-on, var(--_fsds-switch-size-md-thumb-translate-on, 24px));
       }
 
       &:dir(rtl) .switch__track {
@@ -145,21 +145,21 @@ export class SwitchElement extends LitElement {
       }
 
       &:has(.switch__input:focus-visible) .switch__track {
-        outline-width: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-width, var(--fsds-switch-focus-ring-width, 2px));
-        outline-color: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-color, var(--fsds-switch-focus-ring-color, #0566fe));
-        outline-style: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-style, var(--fsds-switch-focus-ring-style, solid));
-        outline-offset: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-offset, var(--fsds-switch-focus-ring-offset, 2px));
+        outline-width: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-width, var(--fsds-switch-focus-ring-width, var(--_fsds-switch-focus-ring-width, 2px)));
+        outline-color: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-color, var(--fsds-switch-focus-ring-color, var(--_fsds-switch-focus-ring-color, #0566fe)));
+        outline-style: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-style, var(--fsds-switch-focus-ring-style, var(--_fsds-switch-focus-ring-style, solid)));
+        outline-offset: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-offset, var(--fsds-switch-focus-ring-offset, var(--_fsds-switch-focus-ring-offset, 2px)));
       }
     }
 
     .switch__track {
-      transition: background-color var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing);
-      background-color: var(--fsds-switch-design-track-background-fill, var(--fsds-switch-color-track-background, #d0d0d0));
-      border-color: var(--fsds-switch-design-track-border-color, var(--fsds-switch-color-track-border, #d0d0d0));
-      width: var(--fsds-switch-design-track-sizing-width, var(--fsds-switch-size-md-track-width, 48px));
-      height: var(--fsds-switch-design-track-sizing-height, var(--fsds-switch-size-md-track-height, 24px));
-      border-radius: var(--fsds-switch-design-track-shape-radius, var(--fsds-switch-size-md-track-radius, 9999px));
-      padding: var(--fsds-switch-design-track-spacing-padding, var(--fsds-switch-size-md-track-padding, 1px));
+      transition: background-color var(--fsds-switch-motion-duration, var(--_fsds-switch-motion-duration)) var(--fsds-switch-motion-easing, var(--_fsds-switch-motion-easing));
+      background-color: var(--fsds-switch-design-track-background-fill, var(--fsds-switch-color-track-background, var(--_fsds-switch-color-track-background, #d0d0d0)));
+      border-color: var(--fsds-switch-design-track-border-color, var(--fsds-switch-color-track-border, var(--_fsds-switch-color-track-border, #d0d0d0)));
+      width: var(--fsds-switch-design-track-sizing-width, var(--fsds-switch-size-md-track-width, var(--_fsds-switch-size-md-track-width, 48px)));
+      height: var(--fsds-switch-design-track-sizing-height, var(--fsds-switch-size-md-track-height, var(--_fsds-switch-size-md-track-height, 24px)));
+      border-radius: var(--fsds-switch-design-track-shape-radius, var(--fsds-switch-size-md-track-radius, var(--_fsds-switch-size-md-track-radius, 9999px)));
+      padding: var(--fsds-switch-design-track-spacing-padding, var(--fsds-switch-size-md-track-padding, var(--_fsds-switch-size-md-track-padding, 1px)));
       display: inline-block;
       position: relative;
       box-sizing: border-box;
@@ -168,14 +168,14 @@ export class SwitchElement extends LitElement {
     }
 
     .switch__thumb {
-      transition: translate var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing), background-color var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing);
-      background-color: var(--fsds-switch-design-thumb-background-fill, var(--fsds-switch-color-thumb-background, #ffffff));
-      box-shadow: var(--fsds-switch-design-thumb-elevation-shadow, var(--fsds-switch-color-thumb-shadow, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a));
-      width: var(--fsds-switch-design-thumb-sizing-width, var(--fsds-switch-size-md-thumb-size, 16px));
-      height: var(--fsds-switch-design-thumb-sizing-height, var(--fsds-switch-size-md-thumb-height, 16px));
+      transition: translate var(--fsds-switch-motion-duration, var(--_fsds-switch-motion-duration)) var(--fsds-switch-motion-easing, var(--_fsds-switch-motion-easing)), background-color var(--fsds-switch-motion-duration, var(--_fsds-switch-motion-duration)) var(--fsds-switch-motion-easing, var(--_fsds-switch-motion-easing));
+      background-color: var(--fsds-switch-design-thumb-background-fill, var(--fsds-switch-color-thumb-background, var(--_fsds-switch-color-thumb-background, #ffffff)));
+      box-shadow: var(--fsds-switch-design-thumb-elevation-shadow, var(--fsds-switch-color-thumb-shadow, var(--_fsds-switch-color-thumb-shadow, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)));
+      width: var(--fsds-switch-design-thumb-sizing-width, var(--fsds-switch-size-md-thumb-size, var(--_fsds-switch-size-md-thumb-size, 16px)));
+      height: var(--fsds-switch-design-thumb-sizing-height, var(--fsds-switch-size-md-thumb-height, var(--_fsds-switch-size-md-thumb-height, 16px)));
       top: 50%;
-      left: var(--fsds-switch-size-md-track-padding, 1px);
-      translate: var(--fsds-switch-size-md-thumb-translate-off, 0);
+      left: var(--fsds-switch-size-md-track-padding, var(--_fsds-switch-size-md-track-padding, 1px));
+      translate: var(--fsds-switch-size-md-thumb-translate-off, var(--_fsds-switch-size-md-thumb-translate-off, 0));
       display: block;
       position: absolute;
       border-radius: var(--fsds-switch-design-thumb-shape-radius, 50%);
@@ -226,39 +226,39 @@ export class SwitchElement extends LitElement {
     }
 
     .switch--sm .switch__track {
-      width: var(--fsds-switch-design-condition-3199c3ad1795-sizing-width, var(--fsds-switch-size-sm-track-width, 32px));
-      height: var(--fsds-switch-design-condition-3199c3ad1795-sizing-height, var(--fsds-switch-size-sm-track-height, 16px));
-      border-radius: var(--fsds-switch-design-condition-3199c3ad1795-shape-radius, var(--fsds-switch-size-sm-track-radius, 9999px));
-      padding: var(--fsds-switch-design-condition-3199c3ad1795-spacing-padding, var(--fsds-switch-size-sm-track-padding, 1px));
+      width: var(--fsds-switch-design-condition-3199c3ad1795-sizing-width, var(--fsds-switch-size-sm-track-width, var(--_fsds-switch-size-sm-track-width, 32px)));
+      height: var(--fsds-switch-design-condition-3199c3ad1795-sizing-height, var(--fsds-switch-size-sm-track-height, var(--_fsds-switch-size-sm-track-height, 16px)));
+      border-radius: var(--fsds-switch-design-condition-3199c3ad1795-shape-radius, var(--fsds-switch-size-sm-track-radius, var(--_fsds-switch-size-sm-track-radius, 9999px)));
+      padding: var(--fsds-switch-design-condition-3199c3ad1795-spacing-padding, var(--fsds-switch-size-sm-track-padding, var(--_fsds-switch-size-sm-track-padding, 1px)));
     }
 
     .switch--sm .switch__thumb {
-      width: var(--fsds-switch-design-condition-97b936929ea8-sizing-width, var(--fsds-switch-size-sm-thumb-size, 12px));
-      height: var(--fsds-switch-design-condition-97b936929ea8-sizing-height, var(--fsds-switch-size-sm-thumb-height, 12px));
-      left: var(--fsds-switch-size-sm-track-padding, 1px);
-      translate: var(--fsds-switch-size-sm-thumb-translate-off, 0);
+      width: var(--fsds-switch-design-condition-97b936929ea8-sizing-width, var(--fsds-switch-size-sm-thumb-size, var(--_fsds-switch-size-sm-thumb-size, 12px)));
+      height: var(--fsds-switch-design-condition-97b936929ea8-sizing-height, var(--fsds-switch-size-sm-thumb-height, var(--_fsds-switch-size-sm-thumb-height, 12px)));
+      left: var(--fsds-switch-size-sm-track-padding, var(--_fsds-switch-size-sm-track-padding, 1px));
+      translate: var(--fsds-switch-size-sm-thumb-translate-off, var(--_fsds-switch-size-sm-thumb-translate-off, 0));
     }
 
     .switch--sm:has(.switch__input:checked) .switch__thumb {
-      translate: var(--fsds-switch-size-sm-thumb-translate-on, 16px);
+      translate: var(--fsds-switch-size-sm-thumb-translate-on, var(--_fsds-switch-size-sm-thumb-translate-on, 16px));
     }
 
     .switch--lg .switch__track {
-      width: var(--fsds-switch-design-condition-88d6e6531fe5-sizing-width, var(--fsds-switch-size-lg-track-width, 64px));
-      height: var(--fsds-switch-design-condition-88d6e6531fe5-sizing-height, var(--fsds-switch-size-lg-track-height, 32px));
-      border-radius: var(--fsds-switch-design-condition-88d6e6531fe5-shape-radius, var(--fsds-switch-size-lg-track-radius, 9999px));
-      padding: var(--fsds-switch-design-condition-88d6e6531fe5-spacing-padding, var(--fsds-switch-size-lg-track-padding, 1px));
+      width: var(--fsds-switch-design-condition-88d6e6531fe5-sizing-width, var(--fsds-switch-size-lg-track-width, var(--_fsds-switch-size-lg-track-width, 64px)));
+      height: var(--fsds-switch-design-condition-88d6e6531fe5-sizing-height, var(--fsds-switch-size-lg-track-height, var(--_fsds-switch-size-lg-track-height, 32px)));
+      border-radius: var(--fsds-switch-design-condition-88d6e6531fe5-shape-radius, var(--fsds-switch-size-lg-track-radius, var(--_fsds-switch-size-lg-track-radius, 9999px)));
+      padding: var(--fsds-switch-design-condition-88d6e6531fe5-spacing-padding, var(--fsds-switch-size-lg-track-padding, var(--_fsds-switch-size-lg-track-padding, 1px)));
     }
 
     .switch--lg .switch__thumb {
-      width: var(--fsds-switch-design-condition-9a61de98af78-sizing-width, var(--fsds-switch-size-lg-thumb-size, 24px));
-      height: var(--fsds-switch-design-condition-9a61de98af78-sizing-height, var(--fsds-switch-size-lg-thumb-height, 24px));
-      left: var(--fsds-switch-size-lg-track-padding, 1px);
-      translate: var(--fsds-switch-size-lg-thumb-translate-off, 0);
+      width: var(--fsds-switch-design-condition-9a61de98af78-sizing-width, var(--fsds-switch-size-lg-thumb-size, var(--_fsds-switch-size-lg-thumb-size, 24px)));
+      height: var(--fsds-switch-design-condition-9a61de98af78-sizing-height, var(--fsds-switch-size-lg-thumb-height, var(--_fsds-switch-size-lg-thumb-height, 24px)));
+      left: var(--fsds-switch-size-lg-track-padding, var(--_fsds-switch-size-lg-track-padding, 1px));
+      translate: var(--fsds-switch-size-lg-thumb-translate-off, var(--_fsds-switch-size-lg-thumb-translate-off, 0));
     }
 
     .switch--lg:has(.switch__input:checked) .switch__thumb {
-      translate: var(--fsds-switch-size-lg-thumb-translate-on, 36px);
+      translate: var(--fsds-switch-size-lg-thumb-translate-on, var(--_fsds-switch-size-lg-thumb-translate-on, 36px));
     }
     }
 

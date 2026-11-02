@@ -90,24 +90,24 @@ export class AccordionElement extends LitElement {
 
 
     .accordion {
-      --fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
-      --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
-      --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
+      --_fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
+      --_fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
+      --_fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
+      --_fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
     }
 
     @layer components.defaults {
@@ -116,7 +116,7 @@ export class AccordionElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, 24px));
+      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, var(--_fsds-accordion-spacing-gap, 24px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -125,24 +125,15 @@ export class AccordionElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-    }
-
-    .accordion__content:not([hidden]) {
-      grid-template-rows: 0fr;
-      opacity: 0;
-    }
-
-    .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: 0;
+      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, var(--_fsds-accordion-border-color, #d0d0d0)));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
-      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
+      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
       overflow: hidden;
     }
 
@@ -155,37 +146,37 @@ export class AccordionElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       background: transparent;
       border: 0;
       cursor: pointer;
-      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
-      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
-      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
+      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, var(--_fsds-accordion-text-size, 16px)));
+      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, var(--_fsds-accordion-text-weight, 500)));
+      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, var(--_fsds-accordion-color-text, #141414)));
       text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
-      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
+      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, var(--_fsds-accordion-text-line-height, 1.5)));
     }
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, var(--_fsds-accordion-color-background-hover, #f7f7f7)));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
+      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, var(--_fsds-accordion-focus-width, 2px)));
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, var(--_fsds-accordion-focus-color, #0566fe)));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, var(--_fsds-accordion-focus-offset, -2px)));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
       align-items: center;
       justify-content: center;
       transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
-      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
+      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, var(--_fsds-accordion-color-icon, #727272)));
     }
 
     .accordion__trigger[aria-expanded="true"] .accordion__chevron {
@@ -209,20 +200,20 @@ export class AccordionElement extends LitElement {
     .accordion__contentInner {
       min-height: 0;
       overflow: hidden;
-      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
       transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
-      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
-      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, var(--_fsds-accordion-color-text-secondary, #474647)));
+      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, var(--_fsds-accordion-text-size-content, 14px)));
+      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, var(--_fsds-accordion-text-line-height-content, 1.8)));
     }
 
     .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
     }
 
     .accordion--disabled {
-      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, 0.5));
+      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, var(--_fsds-accordion-opacity-disabled, 0.5)));
       pointer-events: none;
     }
 
@@ -407,24 +398,24 @@ export class AccordionItemElement extends LitElement {
 
 
     .accordion {
-      --fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
-      --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
-      --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
+      --_fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
+      --_fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
+      --_fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
+      --_fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
     }
 
     @layer components.defaults {
@@ -433,7 +424,7 @@ export class AccordionItemElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, 24px));
+      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, var(--_fsds-accordion-spacing-gap, 24px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -442,24 +433,15 @@ export class AccordionItemElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-    }
-
-    .accordion__content:not([hidden]) {
-      grid-template-rows: 0fr;
-      opacity: 0;
-    }
-
-    .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: 0;
+      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, var(--_fsds-accordion-border-color, #d0d0d0)));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
-      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
+      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
       overflow: hidden;
     }
 
@@ -472,37 +454,37 @@ export class AccordionItemElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       background: transparent;
       border: 0;
       cursor: pointer;
-      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
-      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
-      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
+      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, var(--_fsds-accordion-text-size, 16px)));
+      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, var(--_fsds-accordion-text-weight, 500)));
+      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, var(--_fsds-accordion-color-text, #141414)));
       text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
-      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
+      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, var(--_fsds-accordion-text-line-height, 1.5)));
     }
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, var(--_fsds-accordion-color-background-hover, #f7f7f7)));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
+      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, var(--_fsds-accordion-focus-width, 2px)));
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, var(--_fsds-accordion-focus-color, #0566fe)));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, var(--_fsds-accordion-focus-offset, -2px)));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
       align-items: center;
       justify-content: center;
       transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
-      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
+      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, var(--_fsds-accordion-color-icon, #727272)));
     }
 
     .accordion__trigger[aria-expanded="true"] .accordion__chevron {
@@ -526,20 +508,20 @@ export class AccordionItemElement extends LitElement {
     .accordion__contentInner {
       min-height: 0;
       overflow: hidden;
-      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
       transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
-      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
-      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, var(--_fsds-accordion-color-text-secondary, #474647)));
+      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, var(--_fsds-accordion-text-size-content, 14px)));
+      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, var(--_fsds-accordion-text-line-height-content, 1.8)));
     }
 
     .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
     }
 
     .accordion--disabled {
-      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, 0.5));
+      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, var(--_fsds-accordion-opacity-disabled, 0.5)));
       pointer-events: none;
     }
 
@@ -632,24 +614,24 @@ export class AccordionTriggerElement extends LitElement {
 
 
     .accordion {
-      --fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
-      --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
-      --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
+      --_fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
+      --_fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
+      --_fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
+      --_fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
     }
 
     @layer components.defaults {
@@ -658,7 +640,7 @@ export class AccordionTriggerElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, 24px));
+      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, var(--_fsds-accordion-spacing-gap, 24px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -667,24 +649,15 @@ export class AccordionTriggerElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-    }
-
-    .accordion__content:not([hidden]) {
-      grid-template-rows: 0fr;
-      opacity: 0;
-    }
-
-    .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: 0;
+      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, var(--_fsds-accordion-border-color, #d0d0d0)));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
-      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
+      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
       overflow: hidden;
     }
 
@@ -697,37 +670,37 @@ export class AccordionTriggerElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       background: transparent;
       border: 0;
       cursor: pointer;
-      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
-      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
-      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
+      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, var(--_fsds-accordion-text-size, 16px)));
+      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, var(--_fsds-accordion-text-weight, 500)));
+      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, var(--_fsds-accordion-color-text, #141414)));
       text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
-      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
+      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, var(--_fsds-accordion-text-line-height, 1.5)));
     }
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, var(--_fsds-accordion-color-background-hover, #f7f7f7)));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
+      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, var(--_fsds-accordion-focus-width, 2px)));
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, var(--_fsds-accordion-focus-color, #0566fe)));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, var(--_fsds-accordion-focus-offset, -2px)));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
       align-items: center;
       justify-content: center;
       transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
-      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
+      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, var(--_fsds-accordion-color-icon, #727272)));
     }
 
     .accordion__trigger[aria-expanded="true"] .accordion__chevron {
@@ -751,20 +724,20 @@ export class AccordionTriggerElement extends LitElement {
     .accordion__contentInner {
       min-height: 0;
       overflow: hidden;
-      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
       transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
-      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
-      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, var(--_fsds-accordion-color-text-secondary, #474647)));
+      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, var(--_fsds-accordion-text-size-content, 14px)));
+      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, var(--_fsds-accordion-text-line-height-content, 1.8)));
     }
 
     .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
     }
 
     .accordion--disabled {
-      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, 0.5));
+      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, var(--_fsds-accordion-opacity-disabled, 0.5)));
       pointer-events: none;
     }
 
@@ -902,24 +875,24 @@ export class AccordionContentElement extends LitElement {
 
 
     .accordion {
-      --fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
-      --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
-      --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-accordion-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
+      --_fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
+      --_fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-accordion-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-accordion-text-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
+      --_fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
+      --_fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
+      --_fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
     }
 
     @layer components.defaults {
@@ -928,7 +901,7 @@ export class AccordionContentElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, 24px));
+      gap: var(--fsds-accordion-design-root-spacing-gap, var(--fsds-accordion-spacing-gap, var(--_fsds-accordion-spacing-gap, 24px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
@@ -937,24 +910,15 @@ export class AccordionContentElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-    }
-
-    .accordion__content:not([hidden]) {
-      grid-template-rows: 0fr;
-      opacity: 0;
-    }
-
-    .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: 0;
+      border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, var(--_fsds-accordion-border-color, #d0d0d0)));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
-      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
+      border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, var(--_fsds-accordion-border-radius, 4px)));
       overflow: hidden;
     }
 
@@ -967,37 +931,37 @@ export class AccordionContentElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding: var(--fsds-accordion-design-trigger-spacing-padding, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       background: transparent;
       border: 0;
       cursor: pointer;
-      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
-      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
-      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
+      font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, var(--_fsds-accordion-text-size, 16px)));
+      font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, var(--_fsds-accordion-text-weight, 500)));
+      color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, var(--_fsds-accordion-color-text, #141414)));
       text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
-      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
+      line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, var(--_fsds-accordion-text-line-height, 1.5)));
     }
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
-      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
+      background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, var(--_fsds-accordion-color-background-hover, #f7f7f7)));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
+      outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, var(--_fsds-accordion-focus-width, 2px)));
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, var(--_fsds-accordion-focus-color, #0566fe)));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, var(--_fsds-accordion-focus-offset, -2px)));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, var(--_fsds-accordion-icon-size, 16px)));
       align-items: center;
       justify-content: center;
       transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
-      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
+      color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, var(--_fsds-accordion-color-icon, #727272)));
     }
 
     .accordion__trigger[aria-expanded="true"] .accordion__chevron {
@@ -1021,20 +985,20 @@ export class AccordionContentElement extends LitElement {
     .accordion__contentInner {
       min-height: 0;
       overflow: hidden;
-      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
       padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
       transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
-      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
-      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+      color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, var(--_fsds-accordion-color-text-secondary, #474647)));
+      font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, var(--_fsds-accordion-text-size-content, 14px)));
+      line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, var(--_fsds-accordion-text-line-height-content, 1.8)));
     }
 
     .accordion__content:not([hidden]) .accordion__contentInner {
-      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, var(--_fsds-accordion-spacing-padding-y, 8px)));
     }
 
     .accordion--disabled {
-      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, 0.5));
+      opacity: var(--fsds-accordion-design-condition-1a120a363d7a-appearance-opacity, var(--fsds-accordion-opacity-disabled, var(--_fsds-accordion-opacity-disabled, 0.5)));
       pointer-events: none;
     }
 
