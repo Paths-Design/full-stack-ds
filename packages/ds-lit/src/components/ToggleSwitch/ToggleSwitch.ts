@@ -70,18 +70,18 @@ export class ToggleSwitchElement extends LitElement {
 
 
     .toggle-switch {
-      --fsds-toggle-switch-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-toggle-switch-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-toggle-switch-color-border: var(--fsds-semantic-color-border-default, #a0a0a1);
-      --fsds-toggle-switch-border-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-      --fsds-toggle-switch-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
-      --fsds-toggle-switch-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-toggle-switch-color-background-checked: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
-      --fsds-toggle-switch-color-background-disabled: var(--fsds-semantic-color-background-disabled, #d0d0d0);
-      --fsds-toggle-switch-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-toggle-switch-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-toggle-switch-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-toggle-switch-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-toggle-switch-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-toggle-switch-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-toggle-switch-color-border: var(--fsds-semantic-color-border-default, #a0a0a1);
+      --_fsds-toggle-switch-border-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --_fsds-toggle-switch-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+      --_fsds-toggle-switch-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-toggle-switch-color-background-checked: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+      --_fsds-toggle-switch-color-background-disabled: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+      --_fsds-toggle-switch-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-toggle-switch-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-toggle-switch-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-toggle-switch-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     @layer components.defaults {
@@ -99,34 +99,34 @@ export class ToggleSwitchElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: inline-flex;
       align-items: center;
-      background-color: var(--fsds-toggle-switch-design-root-background-fill, var(--fsds-toggle-switch-color-background-default, #f7f7f7));
-      color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground, #141414));
-      border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border, #a0a0a1));
-      border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius, 9999px));
-      transition-duration: var(--fsds-toggle-switch-design-root-motion-duration, var(--fsds-toggle-switch-motion-duration-fast, 150ms));
+      background-color: var(--fsds-toggle-switch-design-root-background-fill, var(--fsds-toggle-switch-color-background-default, var(--_fsds-toggle-switch-color-background-default, #f7f7f7)));
+      color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground, var(--_fsds-toggle-switch-color-foreground, #141414)));
+      border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border, var(--_fsds-toggle-switch-color-border, #a0a0a1)));
+      border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius, var(--_fsds-toggle-switch-border-radius, 9999px)));
+      transition-duration: var(--fsds-toggle-switch-design-root-motion-duration, var(--fsds-toggle-switch-motion-duration-fast, var(--_fsds-toggle-switch-motion-duration-fast, 150ms)));
       border-style: var(--fsds-toggle-switch-design-root-border-style, solid);
       border-width: var(--fsds-toggle-switch-design-root-border-width, 1px);
       cursor: pointer;
       box-sizing: border-box;
 
       &:hover:not(:disabled) {
-        background-color: var(--fsds-toggle-switch-design-hover-background-fill, var(--fsds-toggle-switch-color-background-hover, #f7f7f7));
+        background-color: var(--fsds-toggle-switch-design-hover-background-fill, var(--fsds-toggle-switch-color-background-hover, var(--_fsds-toggle-switch-color-background-hover, #f7f7f7)));
       }
 
       &[aria-checked="true"] {
-        background-color: var(--fsds-toggle-switch-design-condition-0530483abaa8-background-fill, var(--fsds-toggle-switch-color-background-checked, #0566fe));
+        background-color: var(--fsds-toggle-switch-design-condition-0530483abaa8-background-fill, var(--fsds-toggle-switch-color-background-checked, var(--_fsds-toggle-switch-color-background-checked, #0566fe)));
       }
 
       &:disabled {
-        background-color: var(--fsds-toggle-switch-design-disabled-background-fill, var(--fsds-toggle-switch-color-background-disabled, #d0d0d0));
+        background-color: var(--fsds-toggle-switch-design-disabled-background-fill, var(--fsds-toggle-switch-color-background-disabled, var(--_fsds-toggle-switch-color-background-disabled, #d0d0d0)));
         cursor: not-allowed;
       }
 
       &:focus-visible:not(:disabled) {
-        outline-width: var(--fsds-toggle-switch-design-focus-focus-width, var(--fsds-toggle-switch-focus-ring-width, 2px));
-        outline-color: var(--fsds-toggle-switch-design-focus-focus-color, var(--fsds-toggle-switch-focus-ring-color, #0566fe));
-        outline-style: var(--fsds-toggle-switch-design-focus-focus-style, var(--fsds-toggle-switch-focus-ring-style, solid));
-        outline-offset: var(--fsds-toggle-switch-design-focus-focus-offset, var(--fsds-toggle-switch-focus-ring-offset, 2px));
+        outline-width: var(--fsds-toggle-switch-design-focus-focus-width, var(--fsds-toggle-switch-focus-ring-width, var(--_fsds-toggle-switch-focus-ring-width, 2px)));
+        outline-color: var(--fsds-toggle-switch-design-focus-focus-color, var(--fsds-toggle-switch-focus-ring-color, var(--_fsds-toggle-switch-focus-ring-color, #0566fe)));
+        outline-style: var(--fsds-toggle-switch-design-focus-focus-style, var(--fsds-toggle-switch-focus-ring-style, var(--_fsds-toggle-switch-focus-ring-style, solid)));
+        outline-offset: var(--fsds-toggle-switch-design-focus-focus-offset, var(--fsds-toggle-switch-focus-ring-offset, var(--_fsds-toggle-switch-focus-ring-offset, 2px)));
       }
     }
     }

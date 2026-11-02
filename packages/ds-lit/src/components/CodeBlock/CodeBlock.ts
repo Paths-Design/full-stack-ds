@@ -103,25 +103,25 @@ export class CodeBlockElement extends LitElement {
 
 
     .code-block {
-      --fsds-code-block-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-code-block-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-code-block-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-code-block-size-padding: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-code-block-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-code-block-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-code-block-size-font-size: var(--fsds-core-typography-ramp-3, 0.875rem);
-      --fsds-code-block-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-code-block-token-color-plain: var(--fsds-semantic-color-foreground-syntax-plain, #141414);
-      --fsds-code-block-token-color-comment: var(--fsds-semantic-color-foreground-syntax-comment-color, #474647);
-      --fsds-code-block-token-color-keyword: var(--fsds-semantic-color-foreground-syntax-keyword, #013ab0);
-      --fsds-code-block-token-color-definition: var(--fsds-semantic-color-foreground-syntax-definition, #900909);
-      --fsds-code-block-token-color-punctuation: var(--fsds-semantic-color-foreground-syntax-punctuation, #013ab0);
-      --fsds-code-block-token-color-property: var(--fsds-semantic-color-foreground-syntax-property, #6c3a00);
-      --fsds-code-block-token-color-static: var(--fsds-semantic-color-foreground-syntax-static, #900909);
-      --fsds-code-block-token-color-string: var(--fsds-semantic-color-foreground-syntax-string, #900909);
-      --fsds-code-block-token-color-tag: var(--fsds-semantic-color-foreground-syntax-tag, #900909);
-      --fsds-code-block-gutter-color-number: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-code-block-gutter-size-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-code-block-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-code-block-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-code-block-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-code-block-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-code-block-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-code-block-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-code-block-size-font-size: var(--fsds-core-typography-ramp-3, 0.875rem);
+      --_fsds-code-block-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-code-block-token-color-plain: var(--fsds-semantic-color-foreground-syntax-plain, #141414);
+      --_fsds-code-block-token-color-comment: var(--fsds-semantic-color-foreground-syntax-comment-color, #474647);
+      --_fsds-code-block-token-color-keyword: var(--fsds-semantic-color-foreground-syntax-keyword, #013ab0);
+      --_fsds-code-block-token-color-definition: var(--fsds-semantic-color-foreground-syntax-definition, #900909);
+      --_fsds-code-block-token-color-punctuation: var(--fsds-semantic-color-foreground-syntax-punctuation, #013ab0);
+      --_fsds-code-block-token-color-property: var(--fsds-semantic-color-foreground-syntax-property, #6c3a00);
+      --_fsds-code-block-token-color-static: var(--fsds-semantic-color-foreground-syntax-static, #900909);
+      --_fsds-code-block-token-color-string: var(--fsds-semantic-color-foreground-syntax-string, #900909);
+      --_fsds-code-block-token-color-tag: var(--fsds-semantic-color-foreground-syntax-tag, #900909);
+      --_fsds-code-block-gutter-color-number: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-code-block-gutter-size-gap: var(--fsds-core-spacing-size-03, 4px);
     }
 
     @layer components.defaults {
@@ -137,26 +137,26 @@ export class CodeBlockElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-code-block-design-root-background-fill, var(--fsds-code-block-color-background, #f7f7f7));
-      border-color: var(--fsds-code-block-design-root-border-color, var(--fsds-code-block-color-border, #d0d0d0));
+      background-color: var(--fsds-code-block-design-root-background-fill, var(--fsds-code-block-color-background, var(--_fsds-code-block-color-background, #f7f7f7)));
+      border-color: var(--fsds-code-block-design-root-border-color, var(--fsds-code-block-color-border, var(--_fsds-code-block-color-border, #d0d0d0)));
       border-style: var(--fsds-code-block-design-root-border-style, solid);
-      border-width: var(--fsds-code-block-design-root-border-width, var(--fsds-code-block-size-border, 1px));
-      border-radius: var(--fsds-code-block-design-root-shape-radius, var(--fsds-code-block-size-radius, 6px));
-      color: var(--fsds-code-block-design-root-foreground-color, var(--fsds-code-block-color-foreground-primary, #141414));
+      border-width: var(--fsds-code-block-design-root-border-width, var(--fsds-code-block-size-border, var(--_fsds-code-block-size-border, 1px)));
+      border-radius: var(--fsds-code-block-design-root-shape-radius, var(--fsds-code-block-size-radius, var(--_fsds-code-block-size-radius, 6px)));
+      color: var(--fsds-code-block-design-root-foreground-color, var(--fsds-code-block-color-foreground-primary, var(--_fsds-code-block-color-foreground-primary, #141414)));
       font-family: var(--fsds-code-block-design-root-typography-family, var(--fsds-semantic-typography-semantic-family-mono, "Monaspace", ui-monospace, SFMono-Regular, Menlo, monospace));
-      font-size: var(--fsds-code-block-design-root-typography-size, var(--fsds-code-block-size-font-size, 0.875rem));
-      line-height: var(--fsds-code-block-design-root-typography-line-height, var(--fsds-code-block-typography-line-height, 1.5));
+      font-size: var(--fsds-code-block-design-root-typography-size, var(--fsds-code-block-size-font-size, var(--_fsds-code-block-size-font-size, 0.875rem)));
+      line-height: var(--fsds-code-block-design-root-typography-line-height, var(--fsds-code-block-typography-line-height, var(--_fsds-code-block-typography-line-height, 1.5)));
       margin: 0;
       overflow-x: auto;
-      padding: var(--fsds-code-block-design-root-spacing-padding, var(--fsds-code-block-size-padding, 16px));
+      padding: var(--fsds-code-block-design-root-spacing-padding, var(--fsds-code-block-size-padding, var(--_fsds-code-block-size-padding, 16px)));
       tab-size: 2;
       white-space: pre;
 
       &[data-line-numbers="true"] .code-block__gutter {
         display: inline-block;
         min-width: 4ch;
-        padding-inline-end: var(--fsds-code-block-design-condition-37b3a6622954-spacing-padding-inline-end, var(--fsds-code-block-gutter-size-gap, 4px));
-        color: var(--fsds-code-block-design-condition-37b3a6622954-foreground-color, var(--fsds-code-block-gutter-color-number, #474647));
+        padding-inline-end: var(--fsds-code-block-design-condition-37b3a6622954-spacing-padding-inline-end, var(--fsds-code-block-gutter-size-gap, var(--_fsds-code-block-gutter-size-gap, 4px)));
+        color: var(--fsds-code-block-design-condition-37b3a6622954-foreground-color, var(--fsds-code-block-gutter-color-number, var(--_fsds-code-block-gutter-color-number, #474647)));
         text-align: var(--fsds-code-block-design-condition-37b3a6622954-typography-alignment, right);
         user-select: none;
       }
@@ -181,39 +181,39 @@ export class CodeBlockElement extends LitElement {
     }
 
     .code-block__token[data-token="plain"] {
-      color: var(--fsds-code-block-design-condition-b26259dbe6d6-foreground-color, var(--fsds-code-block-token-color-plain, #141414));
+      color: var(--fsds-code-block-design-condition-b26259dbe6d6-foreground-color, var(--fsds-code-block-token-color-plain, var(--_fsds-code-block-token-color-plain, #141414)));
     }
 
     .code-block__token[data-token="comment"] {
-      color: var(--fsds-code-block-design-condition-8d8c610b44f8-foreground-color, var(--fsds-code-block-token-color-comment, #474647));
+      color: var(--fsds-code-block-design-condition-8d8c610b44f8-foreground-color, var(--fsds-code-block-token-color-comment, var(--_fsds-code-block-token-color-comment, #474647)));
     }
 
     .code-block__token[data-token="keyword"] {
-      color: var(--fsds-code-block-design-condition-4b23b87f0ae5-foreground-color, var(--fsds-code-block-token-color-keyword, #013ab0));
+      color: var(--fsds-code-block-design-condition-4b23b87f0ae5-foreground-color, var(--fsds-code-block-token-color-keyword, var(--_fsds-code-block-token-color-keyword, #013ab0)));
     }
 
     .code-block__token[data-token="definition"] {
-      color: var(--fsds-code-block-design-condition-e64795b05064-foreground-color, var(--fsds-code-block-token-color-definition, #900909));
+      color: var(--fsds-code-block-design-condition-e64795b05064-foreground-color, var(--fsds-code-block-token-color-definition, var(--_fsds-code-block-token-color-definition, #900909)));
     }
 
     .code-block__token[data-token="punctuation"] {
-      color: var(--fsds-code-block-design-condition-6acac665cbb0-foreground-color, var(--fsds-code-block-token-color-punctuation, #013ab0));
+      color: var(--fsds-code-block-design-condition-6acac665cbb0-foreground-color, var(--fsds-code-block-token-color-punctuation, var(--_fsds-code-block-token-color-punctuation, #013ab0)));
     }
 
     .code-block__token[data-token="property"] {
-      color: var(--fsds-code-block-design-condition-bb5556a6dabf-foreground-color, var(--fsds-code-block-token-color-property, #6c3a00));
+      color: var(--fsds-code-block-design-condition-bb5556a6dabf-foreground-color, var(--fsds-code-block-token-color-property, var(--_fsds-code-block-token-color-property, #6c3a00)));
     }
 
     .code-block__token[data-token="static"] {
-      color: var(--fsds-code-block-design-condition-460d112a4b91-foreground-color, var(--fsds-code-block-token-color-static, #900909));
+      color: var(--fsds-code-block-design-condition-460d112a4b91-foreground-color, var(--fsds-code-block-token-color-static, var(--_fsds-code-block-token-color-static, #900909)));
     }
 
     .code-block__token[data-token="string"] {
-      color: var(--fsds-code-block-design-condition-02a586e46f1c-foreground-color, var(--fsds-code-block-token-color-string, #900909));
+      color: var(--fsds-code-block-design-condition-02a586e46f1c-foreground-color, var(--fsds-code-block-token-color-string, var(--_fsds-code-block-token-color-string, #900909)));
     }
 
     .code-block__token[data-token="tag"] {
-      color: var(--fsds-code-block-design-condition-106897d75995-foreground-color, var(--fsds-code-block-token-color-tag, #900909));
+      color: var(--fsds-code-block-design-condition-106897d75995-foreground-color, var(--fsds-code-block-token-color-tag, var(--_fsds-code-block-token-color-tag, #900909)));
     }
     }
   `;

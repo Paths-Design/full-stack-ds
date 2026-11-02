@@ -75,22 +75,22 @@ export class SelectElement extends LitElement {
 
 
     .select {
-      --fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
-      --fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
-      --fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
-      --fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
-      --fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
+      --_fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
+      --_fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
+      --_fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
+      --_fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
@@ -154,34 +154,34 @@ export class SelectElement extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-trigger-border-style, solid);
-      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, 16px));
-      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
+      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
       cursor: pointer;
       width: 100%;
       box-sizing: border-box;
     }
 
     .select__content {
-      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
       border-style: var(--fsds-select-design-content-border-style, solid);
-      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, #a0a0a1));
+      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
       box-shadow: var(--fsds-select-design-content-elevation-shadow, 0 4px 16px rgba(0,0,0,0.12));
-      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       max-height: 320px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
     }
 
     .select__search {
@@ -201,29 +201,29 @@ export class SelectElement extends LitElement {
     .select__option {
       display: flex;
       align-items: center;
-      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, 4px));
-      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, 6px));
-      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, #141414));
+      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
       cursor: pointer;
       border: 0;
       width: 100%;
       text-align: var(--fsds-select-design-option-typography-alignment, start);
       font: inherit;
-      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
     }
 
     .select__emptyState {
       text-align: var(--fsds-select-design-empty-state-typography-alignment, center);
-      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, 4px));
-      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, #474647));
+      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, var(--_fsds-select-color-placeholder, #474647)));
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
 
     .select--disabled .select__trigger {
@@ -232,38 +232,38 @@ export class SelectElement extends LitElement {
     }
 
     .select--sm .select__trigger {
-      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, 24px));
+      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, var(--_fsds-select-size-sm-height, 24px)));
     }
 
     .select--md .select__trigger {
-      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, 32px));
+      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, var(--_fsds-select-size-md-height, 32px)));
     }
 
     .select--lg .select__trigger {
-      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, var(--_fsds-select-size-lg-height, 48px)));
     }
 
     .select__searchInput {
-      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-search-input-border-style, solid);
-      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, 16px));
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
       width: 100%;
       min-width: 0;
       box-sizing: border-box;
       font-family: var(--fsds-select-design-search-input-typography-family, inherit);
-      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
     }
 
     .select__searchInput:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
     }
   `;
@@ -404,22 +404,22 @@ export class SelectTriggerElement extends LitElement {
 
 
     .select {
-      --fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
-      --fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
-      --fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
-      --fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
-      --fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
+      --_fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
+      --_fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
+      --_fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
+      --_fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
@@ -483,34 +483,34 @@ export class SelectTriggerElement extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-trigger-border-style, solid);
-      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, 16px));
-      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
+      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
       cursor: pointer;
       width: 100%;
       box-sizing: border-box;
     }
 
     .select__content {
-      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
       border-style: var(--fsds-select-design-content-border-style, solid);
-      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, #a0a0a1));
+      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
       box-shadow: var(--fsds-select-design-content-elevation-shadow, 0 4px 16px rgba(0,0,0,0.12));
-      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       max-height: 320px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
     }
 
     .select__search {
@@ -530,29 +530,29 @@ export class SelectTriggerElement extends LitElement {
     .select__option {
       display: flex;
       align-items: center;
-      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, 4px));
-      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, 6px));
-      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, #141414));
+      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
       cursor: pointer;
       border: 0;
       width: 100%;
       text-align: var(--fsds-select-design-option-typography-alignment, start);
       font: inherit;
-      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
     }
 
     .select__emptyState {
       text-align: var(--fsds-select-design-empty-state-typography-alignment, center);
-      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, 4px));
-      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, #474647));
+      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, var(--_fsds-select-color-placeholder, #474647)));
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
 
     .select--disabled .select__trigger {
@@ -561,38 +561,38 @@ export class SelectTriggerElement extends LitElement {
     }
 
     .select--sm .select__trigger {
-      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, 24px));
+      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, var(--_fsds-select-size-sm-height, 24px)));
     }
 
     .select--md .select__trigger {
-      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, 32px));
+      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, var(--_fsds-select-size-md-height, 32px)));
     }
 
     .select--lg .select__trigger {
-      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, var(--_fsds-select-size-lg-height, 48px)));
     }
 
     .select__searchInput {
-      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-search-input-border-style, solid);
-      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, 16px));
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
       width: 100%;
       min-width: 0;
       box-sizing: border-box;
       font-family: var(--fsds-select-design-search-input-typography-family, inherit);
-      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
     }
 
     .select__searchInput:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
     }
   `;
@@ -656,22 +656,22 @@ export class SelectContentElement extends LitElement {
 
 
     .select {
-      --fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
-      --fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
-      --fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
-      --fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
-      --fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
+      --_fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
+      --_fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
+      --_fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
+      --_fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
@@ -735,34 +735,34 @@ export class SelectContentElement extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-trigger-border-style, solid);
-      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, 16px));
-      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
+      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
       cursor: pointer;
       width: 100%;
       box-sizing: border-box;
     }
 
     .select__content {
-      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
       border-style: var(--fsds-select-design-content-border-style, solid);
-      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, #a0a0a1));
+      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
       box-shadow: var(--fsds-select-design-content-elevation-shadow, 0 4px 16px rgba(0,0,0,0.12));
-      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       max-height: 320px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
     }
 
     .select__search {
@@ -782,29 +782,29 @@ export class SelectContentElement extends LitElement {
     .select__option {
       display: flex;
       align-items: center;
-      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, 4px));
-      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, 6px));
-      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, #141414));
+      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
       cursor: pointer;
       border: 0;
       width: 100%;
       text-align: var(--fsds-select-design-option-typography-alignment, start);
       font: inherit;
-      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
     }
 
     .select__emptyState {
       text-align: var(--fsds-select-design-empty-state-typography-alignment, center);
-      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, 4px));
-      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, #474647));
+      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, var(--_fsds-select-color-placeholder, #474647)));
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
 
     .select--disabled .select__trigger {
@@ -813,38 +813,38 @@ export class SelectContentElement extends LitElement {
     }
 
     .select--sm .select__trigger {
-      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, 24px));
+      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, var(--_fsds-select-size-sm-height, 24px)));
     }
 
     .select--md .select__trigger {
-      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, 32px));
+      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, var(--_fsds-select-size-md-height, 32px)));
     }
 
     .select--lg .select__trigger {
-      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, var(--_fsds-select-size-lg-height, 48px)));
     }
 
     .select__searchInput {
-      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-search-input-border-style, solid);
-      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, 16px));
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
       width: 100%;
       min-width: 0;
       box-sizing: border-box;
       font-family: var(--fsds-select-design-search-input-typography-family, inherit);
-      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
     }
 
     .select__searchInput:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
     }
   `;
@@ -908,22 +908,22 @@ export class SelectOptionElement extends LitElement {
 
 
     .select {
-      --fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
-      --fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
-      --fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
-      --fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
-      --fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
-      --fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
+      --_fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
+      --_fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
+      --_fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
+      --_fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
+      --_fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-select-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
@@ -987,34 +987,34 @@ export class SelectOptionElement extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-trigger-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-trigger-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-trigger-border-style, solid);
-      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, 16px));
-      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      border-width: var(--fsds-select-design-trigger-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-trigger-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-trigger-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-trigger-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-trigger-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-trigger-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
+      line-height: var(--fsds-select-design-trigger-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
       cursor: pointer;
       width: 100%;
       box-sizing: border-box;
     }
 
     .select__content {
-      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-content-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
       border-style: var(--fsds-select-design-content-border-style, solid);
-      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, #a0a0a1));
+      border-width: var(--fsds-select-design-content-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-content-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-content-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
       box-shadow: var(--fsds-select-design-content-elevation-shadow, 0 4px 16px rgba(0,0,0,0.12));
-      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-content-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       max-height: 320px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, 4px));
+      gap: var(--fsds-select-design-content-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
     }
 
     .select__search {
@@ -1034,29 +1034,29 @@ export class SelectOptionElement extends LitElement {
     .select__option {
       display: flex;
       align-items: center;
-      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, 4px));
-      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, 4px));
-      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, 6px));
-      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, #141414));
+      gap: var(--fsds-select-design-option-spacing-gap, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      padding: var(--fsds-select-design-option-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      border-radius: var(--fsds-select-design-option-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      color: var(--fsds-select-design-option-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
       cursor: pointer;
       border: 0;
       width: 100%;
       text-align: var(--fsds-select-design-option-typography-alignment, start);
       font: inherit;
-      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, #ffffff));
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
     }
 
     .select__emptyState {
       text-align: var(--fsds-select-design-empty-state-typography-alignment, center);
-      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, 4px));
-      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, #474647));
+      padding: var(--fsds-select-design-empty-state-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
+      color: var(--fsds-select-design-empty-state-foreground-color, var(--fsds-select-color-placeholder, var(--_fsds-select-color-placeholder, #474647)));
     }
 
     .select__trigger:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-c1f07e6a65af-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-c1f07e6a65af-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-c1f07e6a65af-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-c1f07e6a65af-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
 
     .select--disabled .select__trigger {
@@ -1065,38 +1065,38 @@ export class SelectOptionElement extends LitElement {
     }
 
     .select--sm .select__trigger {
-      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, 24px));
+      height: var(--fsds-select-design-condition-37dc4084a16a-sizing-height, var(--fsds-select-size-sm-height, var(--_fsds-select-size-sm-height, 24px)));
     }
 
     .select--md .select__trigger {
-      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, 32px));
+      height: var(--fsds-select-design-condition-33ea5912860e-sizing-height, var(--fsds-select-size-md-height, var(--_fsds-select-size-md-height, 32px)));
     }
 
     .select--lg .select__trigger {
-      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+      height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, var(--_fsds-select-size-lg-height, 48px)));
     }
 
     .select__searchInput {
-      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, 4px));
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding, var(--_fsds-select-size-padding, 4px)));
       border-style: var(--fsds-select-design-search-input-border-style, solid);
-      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, 1px));
-      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, 6px));
-      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, #a0a0a1));
-      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, #ffffff));
-      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, #141414));
-      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, 16px));
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border, var(--_fsds-select-size-border, 1px)));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius, var(--_fsds-select-size-radius, 6px)));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border, var(--_fsds-select-color-border, #a0a0a1)));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background, var(--_fsds-select-color-background, #ffffff)));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground, var(--_fsds-select-color-foreground, #141414)));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size, var(--_fsds-select-font-size, 16px)));
       width: 100%;
       min-width: 0;
       box-sizing: border-box;
       font-family: var(--fsds-select-design-search-input-typography-family, inherit);
-      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, 1.5));
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height, var(--_fsds-select-font-line-height, 1.5)));
     }
 
     .select__searchInput:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, 2px));
-      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, solid));
-      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, 2px));
+      outline-width: var(--fsds-select-design-condition-2e1e5676c9c1-focus-width, var(--fsds-select-focus-ring-width, var(--_fsds-select-focus-ring-width, 2px)));
+      outline-color: var(--fsds-select-design-condition-2e1e5676c9c1-focus-color, var(--fsds-select-focus-ring-color, var(--_fsds-select-focus-ring-color, #0566fe)));
+      outline-style: var(--fsds-select-design-condition-2e1e5676c9c1-focus-style, var(--fsds-select-focus-ring-style, var(--_fsds-select-focus-ring-style, solid)));
+      outline-offset: var(--fsds-select-design-condition-2e1e5676c9c1-focus-offset, var(--fsds-select-focus-ring-offset, var(--_fsds-select-focus-ring-offset, 2px)));
     }
     }
   `;

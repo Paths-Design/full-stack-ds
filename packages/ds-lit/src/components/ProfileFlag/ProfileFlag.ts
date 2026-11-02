@@ -68,13 +68,13 @@ export class ProfileFlagElement extends LitElement {
 
 
     .profile-flag {
-      --fsds-profile-flag-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-profile-flag-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-profile-flag-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-profile-flag-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-profile-flag-spacing-gap: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-profile-flag-spacing-padding-right: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-profile-flag-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
+      --_fsds-profile-flag-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-profile-flag-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-profile-flag-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-profile-flag-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-profile-flag-spacing-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-profile-flag-spacing-padding-right: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-profile-flag-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
     }
 
     @layer components.defaults {
@@ -87,21 +87,21 @@ export class ProfileFlagElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 2px);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 4px);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 4px);
-      gap: var(--fsds-profile-flag-design-root-spacing-gap, var(--fsds-profile-flag-spacing-gap, 4px));
+      gap: var(--fsds-profile-flag-design-root-spacing-gap, var(--fsds-profile-flag-spacing-gap, var(--_fsds-profile-flag-spacing-gap, 4px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-glyph-size-medium-extent, 16px));
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-profile-flag-design-root-background-fill, var(--fsds-profile-flag-color-background, #ffffff));
-      border-color: var(--fsds-profile-flag-design-root-border-color, var(--fsds-profile-flag-color-border-default, #d0d0d0));
-      color: var(--fsds-profile-flag-design-root-foreground-color, var(--fsds-profile-flag-color-foreground-primary, #141414));
-      border-radius: var(--fsds-profile-flag-design-root-shape-radius, var(--fsds-profile-flag-size-radius, 6px));
-      padding: var(--fsds-profile-flag-design-root-spacing-padding, var(--fsds-profile-flag-spacing-padding-right, 16px));
+      background-color: var(--fsds-profile-flag-design-root-background-fill, var(--fsds-profile-flag-color-background, var(--_fsds-profile-flag-color-background, #ffffff)));
+      border-color: var(--fsds-profile-flag-design-root-border-color, var(--fsds-profile-flag-color-border-default, var(--_fsds-profile-flag-color-border-default, #d0d0d0)));
+      color: var(--fsds-profile-flag-design-root-foreground-color, var(--fsds-profile-flag-color-foreground-primary, var(--_fsds-profile-flag-color-foreground-primary, #141414)));
+      border-radius: var(--fsds-profile-flag-design-root-shape-radius, var(--fsds-profile-flag-size-radius, var(--_fsds-profile-flag-size-radius, 6px)));
+      padding: var(--fsds-profile-flag-design-root-spacing-padding, var(--fsds-profile-flag-spacing-padding-right, var(--_fsds-profile-flag-spacing-padding-right, 16px)));
 
       &:hover {
-        border-color: var(--fsds-profile-flag-design-hover-border-color, var(--fsds-profile-flag-color-border-hover, #888889));
+        border-color: var(--fsds-profile-flag-design-hover-border-color, var(--fsds-profile-flag-color-border-hover, var(--_fsds-profile-flag-color-border-hover, #888889)));
       }
     }
     }

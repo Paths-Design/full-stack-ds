@@ -76,28 +76,28 @@ export class DialogElement extends LitElement {
 
 
     .dialog {
-      --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
-      --fsds-dialog-size-sm-width: 400px;
-      --fsds-dialog-size-sm-max-width: 90vw;
-      --fsds-dialog-size-md-width: 500px;
-      --fsds-dialog-size-md-max-width: 90vw;
-      --fsds-dialog-size-lg-width: 700px;
-      --fsds-dialog-size-lg-max-width: 90vw;
-      --fsds-dialog-size-xl-width: 900px;
-      --fsds-dialog-size-xl-max-width: 95vw;
-      --fsds-dialog-size-full-width: 100vw;
-      --fsds-dialog-size-full-height: 100vh;
-      --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
-      --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
-      --fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
+      --_fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
+      --_fsds-dialog-size-sm-width: 400px;
+      --_fsds-dialog-size-sm-max-width: 90vw;
+      --_fsds-dialog-size-md-width: 500px;
+      --_fsds-dialog-size-md-max-width: 90vw;
+      --_fsds-dialog-size-lg-width: 700px;
+      --_fsds-dialog-size-lg-max-width: 90vw;
+      --_fsds-dialog-size-xl-width: 900px;
+      --_fsds-dialog-size-xl-max-width: 95vw;
+      --_fsds-dialog-size-full-width: 100vw;
+      --_fsds-dialog-size-full-height: 100vh;
+      --_fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
+      --_fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
+      --_fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
     }
 
     .dialog__backdrop {
@@ -152,15 +152,15 @@ export class DialogElement extends LitElement {
       position: relative;
       display: flex;
       flex-direction: column;
-      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, #ffffff));
-      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, #141414));
-      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, #d0d0d0));
+      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, var(--_fsds-dialog-color-background, #ffffff)));
+      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
+      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-style: var(--fsds-dialog-design-modal-border-style, solid);
       border-width: var(--fsds-dialog-design-modal-border-width, 1px);
-      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, 16px));
-      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026));
-      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, 500px));
-      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, 90vw));
+      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, var(--_fsds-dialog-size-radius, 16px)));
+      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, var(--_fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026)));
+      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, var(--_fsds-dialog-size-md-width, 500px)));
+      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, var(--_fsds-dialog-size-md-max-width, 90vw)));
       max-height: var(--fsds-dialog-design-modal-sizing-max-height, 90dvh);
       pointer-events: auto;
       box-sizing: border-box;
@@ -171,11 +171,11 @@ export class DialogElement extends LitElement {
     .dialog__header {
       display: flex;
       align-items: center;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, #d0d0d0));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-dialog-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-dialog-design-header-border-bottom-width, 1px);
       flex-shrink: 0;
@@ -183,18 +183,18 @@ export class DialogElement extends LitElement {
 
     .dialog__title {
       margin: 0;
-      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, 18px));
-      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, 700));
-      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, 1));
-      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, #141414));
+      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, var(--_fsds-dialog-typography-title-font-size, 18px)));
+      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, var(--_fsds-dialog-typography-title-font-weight, 700)));
+      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, var(--_fsds-dialog-typography-title-line-height, 1)));
+      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
     }
 
     .dialog__body {
       flex: 1 1 auto;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
       overflow-y: auto;
       min-width: var(--fsds-dialog-design-body-sizing-min-width, 0);
       min-height: var(--fsds-dialog-design-body-sizing-min-height, 0);
@@ -205,12 +205,12 @@ export class DialogElement extends LitElement {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, 4px));
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, #d0d0d0));
+      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, var(--_fsds-dialog-spacing-footer-gap, 4px)));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-top-style: var(--fsds-dialog-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-dialog-design-footer-border-top-width, 1px);
       flex-shrink: 0;
@@ -218,10 +218,10 @@ export class DialogElement extends LitElement {
 
     .dialog__closeButton {
       position: absolute;
-      top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
-      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
+      top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
+      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -232,23 +232,23 @@ export class DialogElement extends LitElement {
     }
 
     .dialog--sm .dialog__modal {
-      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, 400px));
-      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, var(--_fsds-dialog-size-sm-width, 400px)));
+      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, var(--_fsds-dialog-size-sm-max-width, 90vw)));
     }
 
     .dialog--lg .dialog__modal {
-      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, 700px));
-      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, var(--_fsds-dialog-size-lg-width, 700px)));
+      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, var(--_fsds-dialog-size-lg-max-width, 90vw)));
     }
 
     .dialog--xl .dialog__modal {
-      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, 900px));
-      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, 95vw));
+      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, var(--_fsds-dialog-size-xl-width, 900px)));
+      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, var(--_fsds-dialog-size-xl-max-width, 95vw)));
     }
 
     .dialog--full .dialog__modal {
-      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, 100vw));
-      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, 100vh));
+      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, var(--_fsds-dialog-size-full-width, 100vw)));
+      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, var(--_fsds-dialog-size-full-height, 100vh)));
       max-width: 100vw;
       max-height: 100vh;
       border-radius: var(--fsds-dialog-design-condition-aa10b66155cb-shape-radius, 0);
@@ -420,28 +420,28 @@ export class DialogHeaderElement extends LitElement {
 
 
     .dialog {
-      --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
-      --fsds-dialog-size-sm-width: 400px;
-      --fsds-dialog-size-sm-max-width: 90vw;
-      --fsds-dialog-size-md-width: 500px;
-      --fsds-dialog-size-md-max-width: 90vw;
-      --fsds-dialog-size-lg-width: 700px;
-      --fsds-dialog-size-lg-max-width: 90vw;
-      --fsds-dialog-size-xl-width: 900px;
-      --fsds-dialog-size-xl-max-width: 95vw;
-      --fsds-dialog-size-full-width: 100vw;
-      --fsds-dialog-size-full-height: 100vh;
-      --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
-      --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
-      --fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
+      --_fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
+      --_fsds-dialog-size-sm-width: 400px;
+      --_fsds-dialog-size-sm-max-width: 90vw;
+      --_fsds-dialog-size-md-width: 500px;
+      --_fsds-dialog-size-md-max-width: 90vw;
+      --_fsds-dialog-size-lg-width: 700px;
+      --_fsds-dialog-size-lg-max-width: 90vw;
+      --_fsds-dialog-size-xl-width: 900px;
+      --_fsds-dialog-size-xl-max-width: 95vw;
+      --_fsds-dialog-size-full-width: 100vw;
+      --_fsds-dialog-size-full-height: 100vh;
+      --_fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
+      --_fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
+      --_fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
     }
 
     .dialog__backdrop {
@@ -496,15 +496,15 @@ export class DialogHeaderElement extends LitElement {
       position: relative;
       display: flex;
       flex-direction: column;
-      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, #ffffff));
-      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, #141414));
-      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, #d0d0d0));
+      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, var(--_fsds-dialog-color-background, #ffffff)));
+      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
+      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-style: var(--fsds-dialog-design-modal-border-style, solid);
       border-width: var(--fsds-dialog-design-modal-border-width, 1px);
-      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, 16px));
-      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026));
-      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, 500px));
-      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, 90vw));
+      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, var(--_fsds-dialog-size-radius, 16px)));
+      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, var(--_fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026)));
+      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, var(--_fsds-dialog-size-md-width, 500px)));
+      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, var(--_fsds-dialog-size-md-max-width, 90vw)));
       max-height: var(--fsds-dialog-design-modal-sizing-max-height, 90dvh);
       pointer-events: auto;
       box-sizing: border-box;
@@ -515,11 +515,11 @@ export class DialogHeaderElement extends LitElement {
     .dialog__header {
       display: flex;
       align-items: center;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, #d0d0d0));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-dialog-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-dialog-design-header-border-bottom-width, 1px);
       flex-shrink: 0;
@@ -527,18 +527,18 @@ export class DialogHeaderElement extends LitElement {
 
     .dialog__title {
       margin: 0;
-      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, 18px));
-      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, 700));
-      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, 1));
-      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, #141414));
+      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, var(--_fsds-dialog-typography-title-font-size, 18px)));
+      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, var(--_fsds-dialog-typography-title-font-weight, 700)));
+      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, var(--_fsds-dialog-typography-title-line-height, 1)));
+      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
     }
 
     .dialog__body {
       flex: 1 1 auto;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
       overflow-y: auto;
       min-width: var(--fsds-dialog-design-body-sizing-min-width, 0);
       min-height: var(--fsds-dialog-design-body-sizing-min-height, 0);
@@ -549,12 +549,12 @@ export class DialogHeaderElement extends LitElement {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, 4px));
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, #d0d0d0));
+      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, var(--_fsds-dialog-spacing-footer-gap, 4px)));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-top-style: var(--fsds-dialog-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-dialog-design-footer-border-top-width, 1px);
       flex-shrink: 0;
@@ -562,10 +562,10 @@ export class DialogHeaderElement extends LitElement {
 
     .dialog__closeButton {
       position: absolute;
-      top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
-      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
+      top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
+      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -576,23 +576,23 @@ export class DialogHeaderElement extends LitElement {
     }
 
     .dialog--sm .dialog__modal {
-      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, 400px));
-      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, var(--_fsds-dialog-size-sm-width, 400px)));
+      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, var(--_fsds-dialog-size-sm-max-width, 90vw)));
     }
 
     .dialog--lg .dialog__modal {
-      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, 700px));
-      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, var(--_fsds-dialog-size-lg-width, 700px)));
+      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, var(--_fsds-dialog-size-lg-max-width, 90vw)));
     }
 
     .dialog--xl .dialog__modal {
-      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, 900px));
-      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, 95vw));
+      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, var(--_fsds-dialog-size-xl-width, 900px)));
+      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, var(--_fsds-dialog-size-xl-max-width, 95vw)));
     }
 
     .dialog--full .dialog__modal {
-      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, 100vw));
-      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, 100vh));
+      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, var(--_fsds-dialog-size-full-width, 100vw)));
+      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, var(--_fsds-dialog-size-full-height, 100vh)));
       max-width: 100vw;
       max-height: 100vh;
       border-radius: var(--fsds-dialog-design-condition-aa10b66155cb-shape-radius, 0);
@@ -659,28 +659,28 @@ export class DialogTitleElement extends LitElement {
 
 
     .dialog {
-      --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
-      --fsds-dialog-size-sm-width: 400px;
-      --fsds-dialog-size-sm-max-width: 90vw;
-      --fsds-dialog-size-md-width: 500px;
-      --fsds-dialog-size-md-max-width: 90vw;
-      --fsds-dialog-size-lg-width: 700px;
-      --fsds-dialog-size-lg-max-width: 90vw;
-      --fsds-dialog-size-xl-width: 900px;
-      --fsds-dialog-size-xl-max-width: 95vw;
-      --fsds-dialog-size-full-width: 100vw;
-      --fsds-dialog-size-full-height: 100vh;
-      --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
-      --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
-      --fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
+      --_fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
+      --_fsds-dialog-size-sm-width: 400px;
+      --_fsds-dialog-size-sm-max-width: 90vw;
+      --_fsds-dialog-size-md-width: 500px;
+      --_fsds-dialog-size-md-max-width: 90vw;
+      --_fsds-dialog-size-lg-width: 700px;
+      --_fsds-dialog-size-lg-max-width: 90vw;
+      --_fsds-dialog-size-xl-width: 900px;
+      --_fsds-dialog-size-xl-max-width: 95vw;
+      --_fsds-dialog-size-full-width: 100vw;
+      --_fsds-dialog-size-full-height: 100vh;
+      --_fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
+      --_fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
+      --_fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
     }
 
     .dialog__backdrop {
@@ -735,15 +735,15 @@ export class DialogTitleElement extends LitElement {
       position: relative;
       display: flex;
       flex-direction: column;
-      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, #ffffff));
-      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, #141414));
-      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, #d0d0d0));
+      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, var(--_fsds-dialog-color-background, #ffffff)));
+      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
+      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-style: var(--fsds-dialog-design-modal-border-style, solid);
       border-width: var(--fsds-dialog-design-modal-border-width, 1px);
-      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, 16px));
-      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026));
-      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, 500px));
-      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, 90vw));
+      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, var(--_fsds-dialog-size-radius, 16px)));
+      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, var(--_fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026)));
+      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, var(--_fsds-dialog-size-md-width, 500px)));
+      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, var(--_fsds-dialog-size-md-max-width, 90vw)));
       max-height: var(--fsds-dialog-design-modal-sizing-max-height, 90dvh);
       pointer-events: auto;
       box-sizing: border-box;
@@ -754,11 +754,11 @@ export class DialogTitleElement extends LitElement {
     .dialog__header {
       display: flex;
       align-items: center;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, #d0d0d0));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-dialog-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-dialog-design-header-border-bottom-width, 1px);
       flex-shrink: 0;
@@ -766,18 +766,18 @@ export class DialogTitleElement extends LitElement {
 
     .dialog__title {
       margin: 0;
-      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, 18px));
-      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, 700));
-      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, 1));
-      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, #141414));
+      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, var(--_fsds-dialog-typography-title-font-size, 18px)));
+      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, var(--_fsds-dialog-typography-title-font-weight, 700)));
+      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, var(--_fsds-dialog-typography-title-line-height, 1)));
+      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
     }
 
     .dialog__body {
       flex: 1 1 auto;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
       overflow-y: auto;
       min-width: var(--fsds-dialog-design-body-sizing-min-width, 0);
       min-height: var(--fsds-dialog-design-body-sizing-min-height, 0);
@@ -788,12 +788,12 @@ export class DialogTitleElement extends LitElement {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, 4px));
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, #d0d0d0));
+      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, var(--_fsds-dialog-spacing-footer-gap, 4px)));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-top-style: var(--fsds-dialog-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-dialog-design-footer-border-top-width, 1px);
       flex-shrink: 0;
@@ -801,10 +801,10 @@ export class DialogTitleElement extends LitElement {
 
     .dialog__closeButton {
       position: absolute;
-      top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
-      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
+      top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
+      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -815,23 +815,23 @@ export class DialogTitleElement extends LitElement {
     }
 
     .dialog--sm .dialog__modal {
-      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, 400px));
-      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, var(--_fsds-dialog-size-sm-width, 400px)));
+      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, var(--_fsds-dialog-size-sm-max-width, 90vw)));
     }
 
     .dialog--lg .dialog__modal {
-      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, 700px));
-      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, var(--_fsds-dialog-size-lg-width, 700px)));
+      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, var(--_fsds-dialog-size-lg-max-width, 90vw)));
     }
 
     .dialog--xl .dialog__modal {
-      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, 900px));
-      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, 95vw));
+      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, var(--_fsds-dialog-size-xl-width, 900px)));
+      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, var(--_fsds-dialog-size-xl-max-width, 95vw)));
     }
 
     .dialog--full .dialog__modal {
-      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, 100vw));
-      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, 100vh));
+      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, var(--_fsds-dialog-size-full-width, 100vw)));
+      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, var(--_fsds-dialog-size-full-height, 100vh)));
       max-width: 100vw;
       max-height: 100vh;
       border-radius: var(--fsds-dialog-design-condition-aa10b66155cb-shape-radius, 0);
@@ -898,28 +898,28 @@ export class DialogBodyElement extends LitElement {
 
 
     .dialog {
-      --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
-      --fsds-dialog-size-sm-width: 400px;
-      --fsds-dialog-size-sm-max-width: 90vw;
-      --fsds-dialog-size-md-width: 500px;
-      --fsds-dialog-size-md-max-width: 90vw;
-      --fsds-dialog-size-lg-width: 700px;
-      --fsds-dialog-size-lg-max-width: 90vw;
-      --fsds-dialog-size-xl-width: 900px;
-      --fsds-dialog-size-xl-max-width: 95vw;
-      --fsds-dialog-size-full-width: 100vw;
-      --fsds-dialog-size-full-height: 100vh;
-      --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
-      --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
-      --fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
+      --_fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
+      --_fsds-dialog-size-sm-width: 400px;
+      --_fsds-dialog-size-sm-max-width: 90vw;
+      --_fsds-dialog-size-md-width: 500px;
+      --_fsds-dialog-size-md-max-width: 90vw;
+      --_fsds-dialog-size-lg-width: 700px;
+      --_fsds-dialog-size-lg-max-width: 90vw;
+      --_fsds-dialog-size-xl-width: 900px;
+      --_fsds-dialog-size-xl-max-width: 95vw;
+      --_fsds-dialog-size-full-width: 100vw;
+      --_fsds-dialog-size-full-height: 100vh;
+      --_fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
+      --_fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
+      --_fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
     }
 
     .dialog__backdrop {
@@ -974,15 +974,15 @@ export class DialogBodyElement extends LitElement {
       position: relative;
       display: flex;
       flex-direction: column;
-      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, #ffffff));
-      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, #141414));
-      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, #d0d0d0));
+      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, var(--_fsds-dialog-color-background, #ffffff)));
+      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
+      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-style: var(--fsds-dialog-design-modal-border-style, solid);
       border-width: var(--fsds-dialog-design-modal-border-width, 1px);
-      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, 16px));
-      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026));
-      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, 500px));
-      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, 90vw));
+      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, var(--_fsds-dialog-size-radius, 16px)));
+      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, var(--_fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026)));
+      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, var(--_fsds-dialog-size-md-width, 500px)));
+      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, var(--_fsds-dialog-size-md-max-width, 90vw)));
       max-height: var(--fsds-dialog-design-modal-sizing-max-height, 90dvh);
       pointer-events: auto;
       box-sizing: border-box;
@@ -993,11 +993,11 @@ export class DialogBodyElement extends LitElement {
     .dialog__header {
       display: flex;
       align-items: center;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, #d0d0d0));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-dialog-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-dialog-design-header-border-bottom-width, 1px);
       flex-shrink: 0;
@@ -1005,18 +1005,18 @@ export class DialogBodyElement extends LitElement {
 
     .dialog__title {
       margin: 0;
-      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, 18px));
-      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, 700));
-      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, 1));
-      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, #141414));
+      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, var(--_fsds-dialog-typography-title-font-size, 18px)));
+      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, var(--_fsds-dialog-typography-title-font-weight, 700)));
+      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, var(--_fsds-dialog-typography-title-line-height, 1)));
+      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
     }
 
     .dialog__body {
       flex: 1 1 auto;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
       overflow-y: auto;
       min-width: var(--fsds-dialog-design-body-sizing-min-width, 0);
       min-height: var(--fsds-dialog-design-body-sizing-min-height, 0);
@@ -1027,12 +1027,12 @@ export class DialogBodyElement extends LitElement {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, 4px));
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, #d0d0d0));
+      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, var(--_fsds-dialog-spacing-footer-gap, 4px)));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-top-style: var(--fsds-dialog-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-dialog-design-footer-border-top-width, 1px);
       flex-shrink: 0;
@@ -1040,10 +1040,10 @@ export class DialogBodyElement extends LitElement {
 
     .dialog__closeButton {
       position: absolute;
-      top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
-      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
+      top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
+      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1054,23 +1054,23 @@ export class DialogBodyElement extends LitElement {
     }
 
     .dialog--sm .dialog__modal {
-      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, 400px));
-      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, var(--_fsds-dialog-size-sm-width, 400px)));
+      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, var(--_fsds-dialog-size-sm-max-width, 90vw)));
     }
 
     .dialog--lg .dialog__modal {
-      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, 700px));
-      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, var(--_fsds-dialog-size-lg-width, 700px)));
+      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, var(--_fsds-dialog-size-lg-max-width, 90vw)));
     }
 
     .dialog--xl .dialog__modal {
-      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, 900px));
-      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, 95vw));
+      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, var(--_fsds-dialog-size-xl-width, 900px)));
+      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, var(--_fsds-dialog-size-xl-max-width, 95vw)));
     }
 
     .dialog--full .dialog__modal {
-      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, 100vw));
-      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, 100vh));
+      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, var(--_fsds-dialog-size-full-width, 100vw)));
+      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, var(--_fsds-dialog-size-full-height, 100vh)));
       max-width: 100vw;
       max-height: 100vh;
       border-radius: var(--fsds-dialog-design-condition-aa10b66155cb-shape-radius, 0);
@@ -1137,28 +1137,28 @@ export class DialogFooterElement extends LitElement {
 
 
     .dialog {
-      --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
-      --fsds-dialog-size-sm-width: 400px;
-      --fsds-dialog-size-sm-max-width: 90vw;
-      --fsds-dialog-size-md-width: 500px;
-      --fsds-dialog-size-md-max-width: 90vw;
-      --fsds-dialog-size-lg-width: 700px;
-      --fsds-dialog-size-lg-max-width: 90vw;
-      --fsds-dialog-size-xl-width: 900px;
-      --fsds-dialog-size-xl-max-width: 95vw;
-      --fsds-dialog-size-full-width: 100vw;
-      --fsds-dialog-size-full-height: 100vh;
-      --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
-      --fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
-      --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
-      --fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
+      --_fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
+      --_fsds-dialog-size-sm-width: 400px;
+      --_fsds-dialog-size-sm-max-width: 90vw;
+      --_fsds-dialog-size-md-width: 500px;
+      --_fsds-dialog-size-md-max-width: 90vw;
+      --_fsds-dialog-size-lg-width: 700px;
+      --_fsds-dialog-size-lg-max-width: 90vw;
+      --_fsds-dialog-size-xl-width: 900px;
+      --_fsds-dialog-size-xl-max-width: 95vw;
+      --_fsds-dialog-size-full-width: 100vw;
+      --_fsds-dialog-size-full-height: 100vh;
+      --_fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
+      --_fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
+      --_fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
+      --_fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
     }
 
     .dialog__backdrop {
@@ -1213,15 +1213,15 @@ export class DialogFooterElement extends LitElement {
       position: relative;
       display: flex;
       flex-direction: column;
-      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, #ffffff));
-      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, #141414));
-      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, #d0d0d0));
+      background-color: var(--fsds-dialog-design-modal-background-fill, var(--fsds-dialog-color-background, var(--_fsds-dialog-color-background, #ffffff)));
+      color: var(--fsds-dialog-design-modal-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
+      border-color: var(--fsds-dialog-design-modal-border-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-style: var(--fsds-dialog-design-modal-border-style, solid);
       border-width: var(--fsds-dialog-design-modal-border-width, 1px);
-      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, 16px));
-      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026));
-      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, 500px));
-      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, 90vw));
+      border-radius: var(--fsds-dialog-design-modal-shape-radius, var(--fsds-dialog-size-radius, var(--_fsds-dialog-size-radius, 16px)));
+      box-shadow: var(--fsds-dialog-design-modal-elevation-shadow, var(--fsds-dialog-elevation, var(--_fsds-dialog-elevation, 0px 12px 16px #0000000f, 0px 25px 50px #00000026)));
+      width: var(--fsds-dialog-design-modal-sizing-width, var(--fsds-dialog-size-md-width, var(--_fsds-dialog-size-md-width, 500px)));
+      max-width: var(--fsds-dialog-design-modal-sizing-max-width, var(--fsds-dialog-size-md-max-width, var(--_fsds-dialog-size-md-max-width, 90vw)));
       max-height: var(--fsds-dialog-design-modal-sizing-max-height, 90dvh);
       pointer-events: auto;
       box-sizing: border-box;
@@ -1232,11 +1232,11 @@ export class DialogFooterElement extends LitElement {
     .dialog__header {
       display: flex;
       align-items: center;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, #d0d0d0));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-bottom-color: var(--fsds-dialog-design-header-border-bottom-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-dialog-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-dialog-design-header-border-bottom-width, 1px);
       flex-shrink: 0;
@@ -1244,18 +1244,18 @@ export class DialogFooterElement extends LitElement {
 
     .dialog__title {
       margin: 0;
-      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, 18px));
-      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, 700));
-      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, 1));
-      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, #141414));
+      font-size: var(--fsds-dialog-design-title-typography-size, var(--fsds-dialog-typography-title-font-size, var(--_fsds-dialog-typography-title-font-size, 18px)));
+      font-weight: var(--fsds-dialog-design-title-typography-weight, var(--fsds-dialog-typography-title-font-weight, var(--_fsds-dialog-typography-title-font-weight, 700)));
+      line-height: var(--fsds-dialog-design-title-typography-line-height, var(--fsds-dialog-typography-title-line-height, var(--_fsds-dialog-typography-title-line-height, 1)));
+      color: var(--fsds-dialog-design-title-foreground-color, var(--fsds-dialog-color-foreground, var(--_fsds-dialog-color-foreground, #141414)));
     }
 
     .dialog__body {
       flex: 1 1 auto;
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
       overflow-y: auto;
       min-width: var(--fsds-dialog-design-body-sizing-min-width, 0);
       min-height: var(--fsds-dialog-design-body-sizing-min-height, 0);
@@ -1266,12 +1266,12 @@ export class DialogFooterElement extends LitElement {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, 4px));
-      padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, #d0d0d0));
+      gap: var(--fsds-dialog-design-footer-spacing-gap, var(--fsds-dialog-spacing-footer-gap, var(--_fsds-dialog-spacing-footer-gap, 4px)));
+      padding-top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-right: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      padding-bottom: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      padding-left: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      border-top-color: var(--fsds-dialog-design-footer-border-top-color, var(--fsds-dialog-color-border, var(--_fsds-dialog-color-border, #d0d0d0)));
       border-top-style: var(--fsds-dialog-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-dialog-design-footer-border-top-width, 1px);
       flex-shrink: 0;
@@ -1279,10 +1279,10 @@ export class DialogFooterElement extends LitElement {
 
     .dialog__closeButton {
       position: absolute;
-      top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
-      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
-      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
+      top: var(--fsds-dialog-spacing-header-padding-top, var(--_fsds-dialog-spacing-header-padding-top, 16px));
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, var(--_fsds-dialog-spacing-body-padding-right, 24px));
+      width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
+      height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, var(--_fsds-dialog-size-close-button-size, 32px)));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1293,23 +1293,23 @@ export class DialogFooterElement extends LitElement {
     }
 
     .dialog--sm .dialog__modal {
-      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, 400px));
-      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-width, var(--fsds-dialog-size-sm-width, var(--_fsds-dialog-size-sm-width, 400px)));
+      max-width: var(--fsds-dialog-design-condition-c6049c96ab74-sizing-max-width, var(--fsds-dialog-size-sm-max-width, var(--_fsds-dialog-size-sm-max-width, 90vw)));
     }
 
     .dialog--lg .dialog__modal {
-      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, 700px));
-      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, 90vw));
+      width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-width, var(--fsds-dialog-size-lg-width, var(--_fsds-dialog-size-lg-width, 700px)));
+      max-width: var(--fsds-dialog-design-condition-3fb7229a17a8-sizing-max-width, var(--fsds-dialog-size-lg-max-width, var(--_fsds-dialog-size-lg-max-width, 90vw)));
     }
 
     .dialog--xl .dialog__modal {
-      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, 900px));
-      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, 95vw));
+      width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-width, var(--fsds-dialog-size-xl-width, var(--_fsds-dialog-size-xl-width, 900px)));
+      max-width: var(--fsds-dialog-design-condition-81887f72fc05-sizing-max-width, var(--fsds-dialog-size-xl-max-width, var(--_fsds-dialog-size-xl-max-width, 95vw)));
     }
 
     .dialog--full .dialog__modal {
-      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, 100vw));
-      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, 100vh));
+      width: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-width, var(--fsds-dialog-size-full-width, var(--_fsds-dialog-size-full-width, 100vw)));
+      height: var(--fsds-dialog-design-condition-aa10b66155cb-sizing-height, var(--fsds-dialog-size-full-height, var(--_fsds-dialog-size-full-height, 100vh)));
       max-width: 100vw;
       max-height: 100vh;
       border-radius: var(--fsds-dialog-design-condition-aa10b66155cb-shape-radius, 0);

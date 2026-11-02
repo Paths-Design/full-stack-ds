@@ -71,30 +71,30 @@ export class InputElement extends LitElement {
 
 
     .input {
-      --fsds-input-color-bg-default: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-input-color-bg-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
-      --fsds-input-color-text-default: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-input-color-text-placeholder: var(--fsds-semantic-color-foreground-placeholder, #888889);
-      --fsds-input-color-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
-      --fsds-input-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
-      --fsds-input-color-border-hover: var(--fsds-semantic-color-border-hover, #888889);
-      --fsds-input-color-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
-      --fsds-input-size-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
-      --fsds-input-size-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
-      --fsds-input-size-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
-      --fsds-input-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-input-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-input-color-focus: var(--fsds-semantic-color-border-focus, #0566fe);
-      --fsds-input-color-invalid: var(--fsds-semantic-color-border-danger, #b31b1b);
-      --fsds-input-typography-size: var(--fsds-semantic-typography-body-02, 1rem);
-      --fsds-input-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-input-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-input-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-input-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-input-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-input-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-input-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
-      --fsds-input-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+      --_fsds-input-color-bg-default: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-input-color-bg-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
+      --_fsds-input-color-text-default: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-input-color-text-placeholder: var(--fsds-semantic-color-foreground-placeholder, #888889);
+      --_fsds-input-color-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+      --_fsds-input-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
+      --_fsds-input-color-border-hover: var(--fsds-semantic-color-border-hover, #888889);
+      --_fsds-input-color-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
+      --_fsds-input-size-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+      --_fsds-input-size-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+      --_fsds-input-size-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+      --_fsds-input-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-input-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-input-color-focus: var(--fsds-semantic-color-border-focus, #0566fe);
+      --_fsds-input-color-invalid: var(--fsds-semantic-color-border-danger, #b31b1b);
+      --_fsds-input-typography-size: var(--fsds-semantic-typography-body-02, 1rem);
+      --_fsds-input-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-input-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+      --_fsds-input-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-input-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-input-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-input-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-input-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+      --_fsds-input-motion-easing-standard: var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     @layer components.defaults {
@@ -108,54 +108,54 @@ export class InputElement extends LitElement {
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
-      min-height: var(--fsds-input-design-root-sizing-min-height, var(--fsds-input-size-height, 32px));
+      min-height: var(--fsds-input-design-root-sizing-min-height, var(--fsds-input-size-height, var(--_fsds-input-size-height, 32px)));
       max-height: var(--fsds-box-model-max-height, none);
       box-sizing: border-box;
       border-style: var(--fsds-input-design-root-border-style, solid);
-      border-width: var(--fsds-input-design-root-border-width, var(--fsds-input-size-border, 1px));
-      background-color: var(--fsds-input-design-root-background-fill, var(--fsds-input-color-bg-default, #ffffff));
-      color: var(--fsds-input-design-root-foreground-color, var(--fsds-input-color-text-default, #141414));
-      border-color: var(--fsds-input-design-root-border-color, var(--fsds-input-color-border-default, #a0a0a1));
-      border-radius: var(--fsds-input-design-root-shape-radius, var(--fsds-input-size-radius, 6px));
-      font-size: var(--fsds-input-design-root-typography-size, var(--fsds-input-typography-size, 1rem));
-      line-height: var(--fsds-input-design-root-typography-line-height, var(--fsds-input-typography-line-height, 1.5));
-      padding-block: var(--fsds-input-design-root-spacing-padding-block, var(--fsds-input-size-padding-block, 4px));
-      padding-inline: var(--fsds-input-design-root-spacing-padding-inline, var(--fsds-input-size-padding-inline, 8px));
+      border-width: var(--fsds-input-design-root-border-width, var(--fsds-input-size-border, var(--_fsds-input-size-border, 1px)));
+      background-color: var(--fsds-input-design-root-background-fill, var(--fsds-input-color-bg-default, var(--_fsds-input-color-bg-default, #ffffff)));
+      color: var(--fsds-input-design-root-foreground-color, var(--fsds-input-color-text-default, var(--_fsds-input-color-text-default, #141414)));
+      border-color: var(--fsds-input-design-root-border-color, var(--fsds-input-color-border-default, var(--_fsds-input-color-border-default, #a0a0a1)));
+      border-radius: var(--fsds-input-design-root-shape-radius, var(--fsds-input-size-radius, var(--_fsds-input-size-radius, 6px)));
+      font-size: var(--fsds-input-design-root-typography-size, var(--fsds-input-typography-size, var(--_fsds-input-typography-size, 1rem)));
+      line-height: var(--fsds-input-design-root-typography-line-height, var(--fsds-input-typography-line-height, var(--_fsds-input-typography-line-height, 1.5)));
+      padding-block: var(--fsds-input-design-root-spacing-padding-block, var(--fsds-input-size-padding-block, var(--_fsds-input-size-padding-block, 4px)));
+      padding-inline: var(--fsds-input-design-root-spacing-padding-inline, var(--fsds-input-size-padding-inline, var(--_fsds-input-size-padding-inline, 8px)));
       transition-property: background-color, border-color, color, outline-color;
-      transition-duration: var(--fsds-input-design-root-motion-duration, var(--fsds-input-motion-duration-fast, 150ms));
-      transition-timing-function: var(--fsds-input-design-root-motion-easing, var(--fsds-input-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1)));
+      transition-duration: var(--fsds-input-design-root-motion-duration, var(--fsds-input-motion-duration-fast, var(--_fsds-input-motion-duration-fast, 150ms)));
+      transition-timing-function: var(--fsds-input-design-root-motion-easing, var(--fsds-input-motion-easing-standard, var(--_fsds-input-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1))));
 
       &::placeholder {
-        color: var(--fsds-input-design-condition-bd9b5883064e-foreground-color, var(--fsds-input-color-text-placeholder, #888889));
+        color: var(--fsds-input-design-condition-bd9b5883064e-foreground-color, var(--fsds-input-color-text-placeholder, var(--_fsds-input-color-text-placeholder, #888889)));
       }
 
       &:hover:not(:disabled) {
-        border-color: var(--fsds-input-design-hover-border-color, var(--fsds-input-color-border-hover, #888889));
+        border-color: var(--fsds-input-design-hover-border-color, var(--fsds-input-color-border-hover, var(--_fsds-input-color-border-hover, #888889)));
       }
 
       &:focus-visible:not(:disabled) {
-        border-color: var(--fsds-input-design-focus-border-color, var(--fsds-input-color-focus, #0566fe));
-        outline-width: var(--fsds-input-design-focus-focus-width, var(--fsds-input-focus-ring-width, 2px));
-        outline-color: var(--fsds-input-design-focus-focus-color, var(--fsds-input-focus-ring-color, #0566fe));
-        outline-style: var(--fsds-input-design-focus-focus-style, var(--fsds-input-focus-ring-style, solid));
-        outline-offset: var(--fsds-input-design-focus-focus-offset, var(--fsds-input-focus-ring-offset, 2px));
+        border-color: var(--fsds-input-design-focus-border-color, var(--fsds-input-color-focus, var(--_fsds-input-color-focus, #0566fe)));
+        outline-width: var(--fsds-input-design-focus-focus-width, var(--fsds-input-focus-ring-width, var(--_fsds-input-focus-ring-width, 2px)));
+        outline-color: var(--fsds-input-design-focus-focus-color, var(--fsds-input-focus-ring-color, var(--_fsds-input-focus-ring-color, #0566fe)));
+        outline-style: var(--fsds-input-design-focus-focus-style, var(--fsds-input-focus-ring-style, var(--_fsds-input-focus-ring-style, solid)));
+        outline-offset: var(--fsds-input-design-focus-focus-offset, var(--fsds-input-focus-ring-offset, var(--_fsds-input-focus-ring-offset, 2px)));
       }
 
       &:disabled {
-        background-color: var(--fsds-input-design-disabled-background-fill, var(--fsds-input-color-bg-disabled, #b8b8b8));
-        border-color: var(--fsds-input-design-disabled-border-color, var(--fsds-input-color-border-disabled, #b8b8b8));
-        color: var(--fsds-input-design-disabled-foreground-color, var(--fsds-input-color-text-disabled, #727272));
-        opacity: var(--fsds-input-design-disabled-appearance-opacity, var(--fsds-input-opacity-disabled, 0.5));
+        background-color: var(--fsds-input-design-disabled-background-fill, var(--fsds-input-color-bg-disabled, var(--_fsds-input-color-bg-disabled, #b8b8b8)));
+        border-color: var(--fsds-input-design-disabled-border-color, var(--fsds-input-color-border-disabled, var(--_fsds-input-color-border-disabled, #b8b8b8)));
+        color: var(--fsds-input-design-disabled-foreground-color, var(--fsds-input-color-text-disabled, var(--_fsds-input-color-text-disabled, #727272)));
+        opacity: var(--fsds-input-design-disabled-appearance-opacity, var(--fsds-input-opacity-disabled, var(--_fsds-input-opacity-disabled, 0.5)));
         cursor: not-allowed;
       }
     }
 
     .input--invalid {
-      border-color: var(--fsds-input-design-condition-273725daa81e-border-color, var(--fsds-input-color-invalid, #b31b1b));
+      border-color: var(--fsds-input-design-condition-273725daa81e-border-color, var(--fsds-input-color-invalid, var(--_fsds-input-color-invalid, #b31b1b)));
     }
 
     .input--invalid:focus-visible:not(:disabled) {
-      border-color: var(--fsds-input-design-condition-8805a1996611-border-color, var(--fsds-input-color-invalid, #b31b1b));
+      border-color: var(--fsds-input-design-condition-8805a1996611-border-color, var(--fsds-input-color-invalid, var(--_fsds-input-color-invalid, #b31b1b)));
       outline-color: var(--fsds-input-design-condition-8805a1996611-focus-color, var(--fsds-semantic-focus-ring-intent-danger, #b31b1b));
     }
     }

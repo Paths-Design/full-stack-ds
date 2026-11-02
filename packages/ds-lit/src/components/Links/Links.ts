@@ -72,25 +72,25 @@ export class LinksElement extends LitElement {
 
 
     .links {
-      --fsds-links-color-foreground-default: var(--fsds-semantic-color-foreground-link, #d92d2e);
-      --fsds-links-color-foreground-hover: var(--fsds-semantic-color-foreground-link-hover, #b31b1b);
-      --fsds-links-color-foreground-visited: var(--fsds-semantic-color-foreground-link-visited, #e55b5a);
-      --fsds-links-color-foreground-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
-      --fsds-links-color-underline: var(--fsds-semantic-color-border-light, #b8b8b8);
-      --fsds-links-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-links-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
-      --fsds-links-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-links-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-links-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-links-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-links-focus-ring-radius: var(--fsds-semantic-shape-radius-small, 4px);
-      --fsds-links-size-font-size-small: var(--fsds-core-typography-ramp-3, 0.875rem);
-      --fsds-links-size-font-size-medium: var(--fsds-core-typography-ramp-4, 1rem);
-      --fsds-links-size-font-size-large: var(--fsds-core-typography-ramp-5, 1.125rem);
+      --_fsds-links-color-foreground-default: var(--fsds-semantic-color-foreground-link, #d92d2e);
+      --_fsds-links-color-foreground-hover: var(--fsds-semantic-color-foreground-link-hover, #b31b1b);
+      --_fsds-links-color-foreground-visited: var(--fsds-semantic-color-foreground-link-visited, #e55b5a);
+      --_fsds-links-color-foreground-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+      --_fsds-links-color-underline: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --_fsds-links-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-links-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+      --_fsds-links-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-links-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-links-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --_fsds-links-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-links-focus-ring-radius: var(--fsds-semantic-shape-radius-small, 4px);
+      --_fsds-links-size-font-size-small: var(--fsds-core-typography-ramp-3, 0.875rem);
+      --_fsds-links-size-font-size-medium: var(--fsds-core-typography-ramp-4, 1rem);
+      --_fsds-links-size-font-size-large: var(--fsds-core-typography-ramp-5, 1.125rem);
     }
 
     .links--small {
-      --fsds-links-size-font-size-medium: var(--fsds-links-size-font-size-small, 0.875rem);
+      --fsds-links-size-font-size-medium: var(--fsds-links-size-font-size-small, var(--_fsds-links-size-font-size-small, 0.875rem));
     }
 
     .links--medium {
@@ -98,7 +98,7 @@ export class LinksElement extends LitElement {
     }
 
     .links--large {
-      --fsds-links-size-font-size-medium: var(--fsds-links-size-font-size-large, 1.125rem);
+      --fsds-links-size-font-size-medium: var(--fsds-links-size-font-size-large, var(--_fsds-links-size-font-size-large, 1.125rem));
     }
 
     @layer components.defaults {
@@ -107,56 +107,56 @@ export class LinksElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-links-design-root-spacing-gap, var(--fsds-links-spacing-gap, 2px));
+      gap: var(--fsds-links-design-root-spacing-gap, var(--fsds-links-spacing-gap, var(--_fsds-links-spacing-gap, 2px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-links-design-root-foreground-color, var(--fsds-links-color-foreground-default, #d92d2e));
-      font-size: var(--fsds-links-design-root-typography-size, var(--fsds-links-size-font-size-medium, 1rem));
-      text-decoration-color: var(--fsds-links-color-underline, #b8b8b8);
+      color: var(--fsds-links-design-root-foreground-color, var(--fsds-links-color-foreground-default, var(--_fsds-links-color-foreground-default, #d92d2e)));
+      font-size: var(--fsds-links-design-root-typography-size, var(--fsds-links-size-font-size-medium, var(--_fsds-links-size-font-size-medium, 1rem)));
+      text-decoration-color: var(--fsds-links-color-underline, var(--_fsds-links-color-underline, #b8b8b8));
       text-decoration-line: underline;
       text-underline-offset: 2px;
       transition-property: color, text-decoration-color;
-      transition-duration: var(--fsds-links-design-root-motion-duration, var(--fsds-links-motion-duration-fast, 150ms));
+      transition-duration: var(--fsds-links-design-root-motion-duration, var(--fsds-links-motion-duration-fast, var(--_fsds-links-motion-duration-fast, 150ms)));
       cursor: pointer;
 
       &:hover:not([aria-disabled="true"]) {
-        color: var(--fsds-links-design-hover-foreground-color, var(--fsds-links-color-foreground-hover, #b31b1b));
-        text-decoration-color: var(--fsds-links-color-foreground-hover, #b31b1b);
+        color: var(--fsds-links-design-hover-foreground-color, var(--fsds-links-color-foreground-hover, var(--_fsds-links-color-foreground-hover, #b31b1b)));
+        text-decoration-color: var(--fsds-links-color-foreground-hover, var(--_fsds-links-color-foreground-hover, #b31b1b));
       }
 
       &:visited:not([aria-disabled="true"]) {
-        color: var(--fsds-links-design-visited-foreground-color, var(--fsds-links-color-foreground-visited, #e55b5a));
+        color: var(--fsds-links-design-visited-foreground-color, var(--fsds-links-color-foreground-visited, var(--_fsds-links-color-foreground-visited, #e55b5a)));
       }
 
       &[aria-disabled="true"] {
-        color: var(--fsds-links-design-disabled-foreground-color, var(--fsds-links-color-foreground-disabled, #727272));
+        color: var(--fsds-links-design-disabled-foreground-color, var(--fsds-links-color-foreground-disabled, var(--_fsds-links-color-foreground-disabled, #727272)));
         cursor: not-allowed;
         text-decoration-line: none;
       }
 
       &:focus-visible {
-        outline-width: var(--fsds-links-design-focus-focus-width, var(--fsds-links-focus-ring-width, 2px));
-        outline-color: var(--fsds-links-design-focus-focus-color, var(--fsds-links-focus-ring-color, #0566fe));
-        outline-style: var(--fsds-links-design-focus-focus-style, var(--fsds-links-focus-ring-style, solid));
-        outline-offset: var(--fsds-links-design-focus-focus-offset, var(--fsds-links-focus-ring-offset, 2px));
-        border-radius: var(--fsds-links-design-focus-shape-radius, var(--fsds-links-focus-ring-radius, 4px));
+        outline-width: var(--fsds-links-design-focus-focus-width, var(--fsds-links-focus-ring-width, var(--_fsds-links-focus-ring-width, 2px)));
+        outline-color: var(--fsds-links-design-focus-focus-color, var(--fsds-links-focus-ring-color, var(--_fsds-links-focus-ring-color, #0566fe)));
+        outline-style: var(--fsds-links-design-focus-focus-style, var(--fsds-links-focus-ring-style, var(--_fsds-links-focus-ring-style, solid)));
+        outline-offset: var(--fsds-links-design-focus-focus-offset, var(--fsds-links-focus-ring-offset, var(--_fsds-links-focus-ring-offset, 2px)));
+        border-radius: var(--fsds-links-design-focus-shape-radius, var(--fsds-links-focus-ring-radius, var(--_fsds-links-focus-ring-radius, 4px)));
       }
     }
 
     .links--small {
-      font-size: var(--fsds-links-design-condition-42b522a9c46e-typography-size, var(--fsds-links-size-font-size-medium, 1rem));
+      font-size: var(--fsds-links-design-condition-42b522a9c46e-typography-size, var(--fsds-links-size-font-size-medium, var(--_fsds-links-size-font-size-medium, 1rem)));
     }
 
     .links--medium {
-      font-size: var(--fsds-links-design-condition-a9821c9eea70-typography-size, var(--fsds-links-size-font-size-medium, 1rem));
+      font-size: var(--fsds-links-design-condition-a9821c9eea70-typography-size, var(--fsds-links-size-font-size-medium, var(--_fsds-links-size-font-size-medium, 1rem)));
     }
 
     .links--large {
-      font-size: var(--fsds-links-design-condition-cbbd2740a3e5-typography-size, var(--fsds-links-size-font-size-medium, 1rem));
+      font-size: var(--fsds-links-design-condition-cbbd2740a3e5-typography-size, var(--fsds-links-size-font-size-medium, var(--_fsds-links-size-font-size-medium, 1rem)));
     }
     }
 

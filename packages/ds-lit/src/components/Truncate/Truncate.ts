@@ -73,9 +73,9 @@ export class TruncateElement extends LitElement {
 
 
     .truncate {
-      --fsds-truncate-color-foreground-link: var(--fsds-semantic-color-foreground-link, #d92d2e);
-      --fsds-truncate-typography-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-truncate-spacing-toggle: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-truncate-color-foreground-link: var(--fsds-semantic-color-foreground-link, #d92d2e);
+      --_fsds-truncate-typography-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-truncate-spacing-toggle: var(--fsds-core-spacing-size-02, 2px);
     }
 
     @layer components.defaults {
@@ -111,9 +111,9 @@ export class TruncateElement extends LitElement {
     .truncate__toggle {
       display: inline-flex;
       align-items: center;
-      color: var(--fsds-truncate-design-toggle-foreground-color, var(--fsds-truncate-color-foreground-link, #d92d2e));
-      font-weight: var(--fsds-truncate-design-toggle-typography-weight, var(--fsds-truncate-typography-font-weight, 500));
-      margin-top: var(--fsds-truncate-spacing-toggle, 2px);
+      color: var(--fsds-truncate-design-toggle-foreground-color, var(--fsds-truncate-color-foreground-link, var(--_fsds-truncate-color-foreground-link, #d92d2e)));
+      font-weight: var(--fsds-truncate-design-toggle-typography-weight, var(--fsds-truncate-typography-font-weight, var(--_fsds-truncate-typography-font-weight, 500)));
+      margin-top: var(--fsds-truncate-spacing-toggle, var(--_fsds-truncate-spacing-toggle, 2px));
       background: none;
       border: none;
       padding: var(--fsds-truncate-design-toggle-spacing-padding, 0);
@@ -220,9 +220,9 @@ export class TruncateContentElement extends LitElement {
 
 
     .truncate {
-      --fsds-truncate-color-foreground-link: var(--fsds-semantic-color-foreground-link, #d92d2e);
-      --fsds-truncate-typography-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-truncate-spacing-toggle: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-truncate-color-foreground-link: var(--fsds-semantic-color-foreground-link, #d92d2e);
+      --_fsds-truncate-typography-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-truncate-spacing-toggle: var(--fsds-core-spacing-size-02, 2px);
     }
 
     @layer components.defaults {
@@ -258,9 +258,9 @@ export class TruncateContentElement extends LitElement {
     .truncate__toggle {
       display: inline-flex;
       align-items: center;
-      color: var(--fsds-truncate-design-toggle-foreground-color, var(--fsds-truncate-color-foreground-link, #d92d2e));
-      font-weight: var(--fsds-truncate-design-toggle-typography-weight, var(--fsds-truncate-typography-font-weight, 500));
-      margin-top: var(--fsds-truncate-spacing-toggle, 2px);
+      color: var(--fsds-truncate-design-toggle-foreground-color, var(--fsds-truncate-color-foreground-link, var(--_fsds-truncate-color-foreground-link, #d92d2e)));
+      font-weight: var(--fsds-truncate-design-toggle-typography-weight, var(--fsds-truncate-typography-font-weight, var(--_fsds-truncate-typography-font-weight, 500)));
+      margin-top: var(--fsds-truncate-spacing-toggle, var(--_fsds-truncate-spacing-toggle, 2px));
       background: none;
       border: none;
       padding: var(--fsds-truncate-design-toggle-spacing-padding, 0);

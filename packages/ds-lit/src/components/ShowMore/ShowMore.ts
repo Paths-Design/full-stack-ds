@@ -74,12 +74,12 @@ export class ShowMoreElement extends LitElement {
 
 
     .show-more {
-      --fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-show-more-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-show-more-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     }
 
     @layer components.defaults {
@@ -95,10 +95,10 @@ export class ShowMoreElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-action-size-medium-min-height, 32px));
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-show-more-design-root-background-fill, var(--fsds-show-more-color-background, #f7f7f7));
-      color: var(--fsds-show-more-design-root-foreground-color, var(--fsds-show-more-color-foreground-secondary, #474647));
-      padding: var(--fsds-show-more-design-root-spacing-padding, var(--fsds-show-more-size-padding, 24px));
-      border-radius: var(--fsds-show-more-design-root-shape-radius, var(--fsds-show-more-size-radius, 6px));
+      background-color: var(--fsds-show-more-design-root-background-fill, var(--fsds-show-more-color-background, var(--_fsds-show-more-color-background, #f7f7f7)));
+      color: var(--fsds-show-more-design-root-foreground-color, var(--fsds-show-more-color-foreground-secondary, var(--_fsds-show-more-color-foreground-secondary, #474647)));
+      padding: var(--fsds-show-more-design-root-spacing-padding, var(--fsds-show-more-size-padding, var(--_fsds-show-more-size-padding, 24px)));
+      border-radius: var(--fsds-show-more-design-root-shape-radius, var(--fsds-show-more-size-radius, var(--_fsds-show-more-size-radius, 6px)));
     }
 
     .show-more__content {
@@ -118,11 +118,11 @@ export class ShowMoreElement extends LitElement {
     .show-more__trigger {
       display: inline-flex;
       align-items: center;
-      color: var(--fsds-show-more-design-trigger-foreground-color, var(--fsds-show-more-color-foreground-primary, #141414));
+      color: var(--fsds-show-more-design-trigger-foreground-color, var(--fsds-show-more-color-foreground-primary, var(--_fsds-show-more-color-foreground-primary, #141414)));
       background: none;
       border-style: var(--fsds-show-more-design-trigger-border-style, solid);
       border-width: var(--fsds-show-more-design-trigger-border-width, 1px);
-      border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, #d0d0d0));
+      border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, var(--_fsds-show-more-color-border, #d0d0d0)));
       padding: var(--fsds-show-more-design-trigger-spacing-padding, 0);
       cursor: pointer;
     }
@@ -224,12 +224,12 @@ export class ShowMoreContentElement extends LitElement {
 
 
     .show-more {
-      --fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-show-more-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-show-more-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     }
 
     @layer components.defaults {
@@ -245,10 +245,10 @@ export class ShowMoreContentElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-action-size-medium-min-height, 32px));
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-show-more-design-root-background-fill, var(--fsds-show-more-color-background, #f7f7f7));
-      color: var(--fsds-show-more-design-root-foreground-color, var(--fsds-show-more-color-foreground-secondary, #474647));
-      padding: var(--fsds-show-more-design-root-spacing-padding, var(--fsds-show-more-size-padding, 24px));
-      border-radius: var(--fsds-show-more-design-root-shape-radius, var(--fsds-show-more-size-radius, 6px));
+      background-color: var(--fsds-show-more-design-root-background-fill, var(--fsds-show-more-color-background, var(--_fsds-show-more-color-background, #f7f7f7)));
+      color: var(--fsds-show-more-design-root-foreground-color, var(--fsds-show-more-color-foreground-secondary, var(--_fsds-show-more-color-foreground-secondary, #474647)));
+      padding: var(--fsds-show-more-design-root-spacing-padding, var(--fsds-show-more-size-padding, var(--_fsds-show-more-size-padding, 24px)));
+      border-radius: var(--fsds-show-more-design-root-shape-radius, var(--fsds-show-more-size-radius, var(--_fsds-show-more-size-radius, 6px)));
     }
 
     .show-more__content {
@@ -268,11 +268,11 @@ export class ShowMoreContentElement extends LitElement {
     .show-more__trigger {
       display: inline-flex;
       align-items: center;
-      color: var(--fsds-show-more-design-trigger-foreground-color, var(--fsds-show-more-color-foreground-primary, #141414));
+      color: var(--fsds-show-more-design-trigger-foreground-color, var(--fsds-show-more-color-foreground-primary, var(--_fsds-show-more-color-foreground-primary, #141414)));
       background: none;
       border-style: var(--fsds-show-more-design-trigger-border-style, solid);
       border-width: var(--fsds-show-more-design-trigger-border-width, 1px);
-      border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, #d0d0d0));
+      border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, var(--_fsds-show-more-color-border, #d0d0d0)));
       padding: var(--fsds-show-more-design-trigger-spacing-padding, 0);
       cursor: pointer;
     }
@@ -338,12 +338,12 @@ export class ShowMoreTriggerElement extends LitElement {
 
 
     .show-more {
-      --fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-show-more-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-show-more-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
+      --_fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     }
 
     @layer components.defaults {
@@ -359,10 +359,10 @@ export class ShowMoreTriggerElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-action-size-medium-min-height, 32px));
       max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-show-more-design-root-background-fill, var(--fsds-show-more-color-background, #f7f7f7));
-      color: var(--fsds-show-more-design-root-foreground-color, var(--fsds-show-more-color-foreground-secondary, #474647));
-      padding: var(--fsds-show-more-design-root-spacing-padding, var(--fsds-show-more-size-padding, 24px));
-      border-radius: var(--fsds-show-more-design-root-shape-radius, var(--fsds-show-more-size-radius, 6px));
+      background-color: var(--fsds-show-more-design-root-background-fill, var(--fsds-show-more-color-background, var(--_fsds-show-more-color-background, #f7f7f7)));
+      color: var(--fsds-show-more-design-root-foreground-color, var(--fsds-show-more-color-foreground-secondary, var(--_fsds-show-more-color-foreground-secondary, #474647)));
+      padding: var(--fsds-show-more-design-root-spacing-padding, var(--fsds-show-more-size-padding, var(--_fsds-show-more-size-padding, 24px)));
+      border-radius: var(--fsds-show-more-design-root-shape-radius, var(--fsds-show-more-size-radius, var(--_fsds-show-more-size-radius, 6px)));
     }
 
     .show-more__content {
@@ -382,11 +382,11 @@ export class ShowMoreTriggerElement extends LitElement {
     .show-more__trigger {
       display: inline-flex;
       align-items: center;
-      color: var(--fsds-show-more-design-trigger-foreground-color, var(--fsds-show-more-color-foreground-primary, #141414));
+      color: var(--fsds-show-more-design-trigger-foreground-color, var(--fsds-show-more-color-foreground-primary, var(--_fsds-show-more-color-foreground-primary, #141414)));
       background: none;
       border-style: var(--fsds-show-more-design-trigger-border-style, solid);
       border-width: var(--fsds-show-more-design-trigger-border-width, 1px);
-      border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, #d0d0d0));
+      border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, var(--_fsds-show-more-color-border, #d0d0d0)));
       padding: var(--fsds-show-more-design-trigger-spacing-padding, 0);
       cursor: pointer;
     }

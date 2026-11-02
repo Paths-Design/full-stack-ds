@@ -73,21 +73,21 @@ export class TableElement extends LitElement {
 
 
     .table {
-      --fsds-table-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-table-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
-      --fsds-table-color-background-footer: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-table-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-table-spacing-cell-x: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-table-spacing-cell-y: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-table-spacing-caption: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-table-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-table-text-size: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-table-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
-      --fsds-table-text-size-caption: var(--fsds-semantic-typography-body-04, 12px);
-      --fsds-table-text-weight-head: var(--fsds-semantic-typography-font-weight-bold, 700);
-      --fsds-table-text-weight-footer: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-table-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
-      --fsds-table-color-background-selected: var(--fsds-semantic-color-background-accent-subtle, #95dafb);
+      --_fsds-table-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-table-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+      --_fsds-table-color-background-footer: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --_fsds-table-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --_fsds-table-spacing-cell-x: var(--fsds-core-spacing-size-03, 4px);
+      --_fsds-table-spacing-cell-y: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-table-spacing-caption: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-table-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-table-text-size: var(--fsds-semantic-typography-body-03, 14px);
+      --_fsds-table-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+      --_fsds-table-text-size-caption: var(--fsds-semantic-typography-body-04, 12px);
+      --_fsds-table-text-weight-head: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-table-text-weight-footer: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-table-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+      --_fsds-table-color-background-selected: var(--fsds-semantic-color-background-accent-subtle, #95dafb);
     }
 
     @layer components.defaults {
@@ -103,9 +103,9 @@ export class TableElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-table-design-root-foreground-color, var(--fsds-table-color-text, #141414));
-      font-size: var(--fsds-table-design-root-typography-size, var(--fsds-table-text-size, 14px));
-      line-height: var(--fsds-table-design-root-typography-line-height, var(--fsds-table-text-line-height, 1.5));
+      color: var(--fsds-table-design-root-foreground-color, var(--fsds-table-color-text, var(--_fsds-table-color-text, #141414)));
+      font-size: var(--fsds-table-design-root-typography-size, var(--fsds-table-text-size, var(--_fsds-table-text-size, 14px)));
+      line-height: var(--fsds-table-design-root-typography-line-height, var(--fsds-table-text-line-height, var(--_fsds-table-text-line-height, 1.5)));
       overflow-x: auto;
 
       &[data-responsive="false"] {
@@ -113,57 +113,57 @@ export class TableElement extends LitElement {
       }
 
       &:hover {
-        background-color: var(--fsds-table-design-hover-background-fill, var(--fsds-table-color-background-hover, #f7f7f7));
+        background-color: var(--fsds-table-design-hover-background-fill, var(--fsds-table-color-background-hover, var(--_fsds-table-color-background-hover, #f7f7f7)));
       }
 
       &[aria-selected="true"] {
-        background-color: var(--fsds-table-design-selected-background-fill, var(--fsds-table-color-background-selected, #95dafb));
+        background-color: var(--fsds-table-design-selected-background-fill, var(--fsds-table-color-background-selected, var(--_fsds-table-color-background-selected, #95dafb)));
       }
     }
 
     .table__container {
       border-collapse: collapse;
-      border-color: var(--fsds-table-design-container-border-color, var(--fsds-table-color-border, #d0d0d0));
-      border-width: var(--fsds-table-design-container-border-width, var(--fsds-table-border-width, 1px));
-      border-radius: var(--fsds-table-design-container-shape-radius, var(--fsds-table-size-radius, 6px));
+      border-color: var(--fsds-table-design-container-border-color, var(--fsds-table-color-border, var(--_fsds-table-color-border, #d0d0d0)));
+      border-width: var(--fsds-table-design-container-border-width, var(--fsds-table-border-width, var(--_fsds-table-border-width, 1px)));
+      border-radius: var(--fsds-table-design-container-shape-radius, var(--fsds-table-size-radius, var(--_fsds-table-size-radius, 6px)));
       width: 100%;
     }
 
     .table__caption {
-      font-size: var(--fsds-table-design-caption-typography-size, var(--fsds-table-text-size-caption, 12px));
+      font-size: var(--fsds-table-design-caption-typography-size, var(--fsds-table-text-size-caption, var(--_fsds-table-text-size-caption, 12px)));
       text-align: var(--fsds-table-design-caption-typography-alignment, start);
-      padding-bottom: var(--fsds-table-spacing-caption, 8px);
+      padding-bottom: var(--fsds-table-spacing-caption, var(--_fsds-table-spacing-caption, 8px));
     }
 
     .table__head {
-      background-color: var(--fsds-table-design-head-background-fill, var(--fsds-table-color-background-footer, #f7f7f7));
+      background-color: var(--fsds-table-design-head-background-fill, var(--fsds-table-color-background-footer, var(--_fsds-table-color-background-footer, #f7f7f7)));
     }
 
     .table__footer {
-      background-color: var(--fsds-table-design-footer-background-fill, var(--fsds-table-color-background-footer, #f7f7f7));
-      font-weight: var(--fsds-table-design-footer-typography-weight, var(--fsds-table-text-weight-footer, 500));
+      background-color: var(--fsds-table-design-footer-background-fill, var(--fsds-table-color-background-footer, var(--_fsds-table-color-background-footer, #f7f7f7)));
+      font-weight: var(--fsds-table-design-footer-typography-weight, var(--fsds-table-text-weight-footer, var(--_fsds-table-text-weight-footer, 500)));
     }
 
     .table__headerCell {
-      font-weight: var(--fsds-table-design-header-cell-typography-weight, var(--fsds-table-text-weight-head, 700));
-      color: var(--fsds-table-design-header-cell-foreground-color, var(--fsds-table-color-text, #141414));
-      padding-left: var(--fsds-table-spacing-cell-x, 4px);
-      padding-right: var(--fsds-table-spacing-cell-x, 4px);
-      padding-top: var(--fsds-table-spacing-cell-y, 2px);
-      padding-bottom: var(--fsds-table-spacing-cell-y, 2px);
-      border-bottom-width: var(--fsds-table-design-header-cell-border-bottom-width, var(--fsds-table-border-width, 1px));
-      border-bottom-color: var(--fsds-table-design-header-cell-border-bottom-color, var(--fsds-table-color-border, #d0d0d0));
+      font-weight: var(--fsds-table-design-header-cell-typography-weight, var(--fsds-table-text-weight-head, var(--_fsds-table-text-weight-head, 700)));
+      color: var(--fsds-table-design-header-cell-foreground-color, var(--fsds-table-color-text, var(--_fsds-table-color-text, #141414)));
+      padding-left: var(--fsds-table-spacing-cell-x, var(--_fsds-table-spacing-cell-x, 4px));
+      padding-right: var(--fsds-table-spacing-cell-x, var(--_fsds-table-spacing-cell-x, 4px));
+      padding-top: var(--fsds-table-spacing-cell-y, var(--_fsds-table-spacing-cell-y, 2px));
+      padding-bottom: var(--fsds-table-spacing-cell-y, var(--_fsds-table-spacing-cell-y, 2px));
+      border-bottom-width: var(--fsds-table-design-header-cell-border-bottom-width, var(--fsds-table-border-width, var(--_fsds-table-border-width, 1px)));
+      border-bottom-color: var(--fsds-table-design-header-cell-border-bottom-color, var(--fsds-table-color-border, var(--_fsds-table-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-table-design-header-cell-border-bottom-style, solid);
       text-align: var(--fsds-table-design-header-cell-typography-alignment, start);
     }
 
     .table__cell {
-      padding-left: var(--fsds-table-spacing-cell-x, 4px);
-      padding-right: var(--fsds-table-spacing-cell-x, 4px);
-      padding-top: var(--fsds-table-spacing-cell-y, 2px);
-      padding-bottom: var(--fsds-table-spacing-cell-y, 2px);
-      border-bottom-width: var(--fsds-table-design-cell-border-bottom-width, var(--fsds-table-border-width, 1px));
-      border-bottom-color: var(--fsds-table-design-cell-border-bottom-color, var(--fsds-table-color-border, #d0d0d0));
+      padding-left: var(--fsds-table-spacing-cell-x, var(--_fsds-table-spacing-cell-x, 4px));
+      padding-right: var(--fsds-table-spacing-cell-x, var(--_fsds-table-spacing-cell-x, 4px));
+      padding-top: var(--fsds-table-spacing-cell-y, var(--_fsds-table-spacing-cell-y, 2px));
+      padding-bottom: var(--fsds-table-spacing-cell-y, var(--_fsds-table-spacing-cell-y, 2px));
+      border-bottom-width: var(--fsds-table-design-cell-border-bottom-width, var(--fsds-table-border-width, var(--_fsds-table-border-width, 1px)));
+      border-bottom-color: var(--fsds-table-design-cell-border-bottom-color, var(--fsds-table-color-border, var(--_fsds-table-color-border, #d0d0d0)));
       border-bottom-style: var(--fsds-table-design-cell-border-bottom-style, solid);
     }
     }

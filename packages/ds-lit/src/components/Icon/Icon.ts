@@ -72,10 +72,10 @@ export class IconElement extends LitElement {
 
 
     .icon {
-      --fsds-icon-size-sm: var(--fsds-core-icon-size-sm, 16px);
-      --fsds-icon-size-md: var(--fsds-core-icon-size-md, 20px);
-      --fsds-icon-size-lg: var(--fsds-core-icon-size-lg, 24px);
-      --fsds-icon-size-xl: var(--fsds-core-icon-size-xl, 32px);
+      --_fsds-icon-size-sm: var(--fsds-core-icon-size-sm, 16px);
+      --_fsds-icon-size-md: var(--fsds-core-icon-size-md, 20px);
+      --_fsds-icon-size-lg: var(--fsds-core-icon-size-lg, 24px);
+      --_fsds-icon-size-xl: var(--fsds-core-icon-size-xl, 32px);
     }
 
     @layer components.defaults {
@@ -100,23 +100,23 @@ export class IconElement extends LitElement {
     }
 
     .icon--sm {
-      width: var(--fsds-icon-design-condition-24964d7ed3a7-sizing-width, var(--fsds-icon-size-sm, 16px));
-      height: var(--fsds-icon-design-condition-24964d7ed3a7-sizing-height, var(--fsds-icon-size-sm, 16px));
+      width: var(--fsds-icon-design-condition-24964d7ed3a7-sizing-width, var(--fsds-icon-size-sm, var(--_fsds-icon-size-sm, 16px)));
+      height: var(--fsds-icon-design-condition-24964d7ed3a7-sizing-height, var(--fsds-icon-size-sm, var(--_fsds-icon-size-sm, 16px)));
     }
 
     .icon--md {
-      width: var(--fsds-icon-design-condition-dc35d39122c5-sizing-width, var(--fsds-icon-size-md, 20px));
-      height: var(--fsds-icon-design-condition-dc35d39122c5-sizing-height, var(--fsds-icon-size-md, 20px));
+      width: var(--fsds-icon-design-condition-dc35d39122c5-sizing-width, var(--fsds-icon-size-md, var(--_fsds-icon-size-md, 20px)));
+      height: var(--fsds-icon-design-condition-dc35d39122c5-sizing-height, var(--fsds-icon-size-md, var(--_fsds-icon-size-md, 20px)));
     }
 
     .icon--lg {
-      width: var(--fsds-icon-design-condition-72800fd5573d-sizing-width, var(--fsds-icon-size-lg, 24px));
-      height: var(--fsds-icon-design-condition-72800fd5573d-sizing-height, var(--fsds-icon-size-lg, 24px));
+      width: var(--fsds-icon-design-condition-72800fd5573d-sizing-width, var(--fsds-icon-size-lg, var(--_fsds-icon-size-lg, 24px)));
+      height: var(--fsds-icon-design-condition-72800fd5573d-sizing-height, var(--fsds-icon-size-lg, var(--_fsds-icon-size-lg, 24px)));
     }
 
     .icon--xl {
-      width: var(--fsds-icon-design-condition-bcfaa22e125a-sizing-width, var(--fsds-icon-size-xl, 32px));
-      height: var(--fsds-icon-design-condition-bcfaa22e125a-sizing-height, var(--fsds-icon-size-xl, 32px));
+      width: var(--fsds-icon-design-condition-bcfaa22e125a-sizing-width, var(--fsds-icon-size-xl, var(--_fsds-icon-size-xl, 32px)));
+      height: var(--fsds-icon-design-condition-bcfaa22e125a-sizing-height, var(--fsds-icon-size-xl, var(--_fsds-icon-size-xl, 32px)));
     }
     }
   `;

@@ -69,15 +69,15 @@ export class StatElement extends LitElement {
 
 
     .stat {
-      --fsds-stat-color-foreground-value: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-stat-color-foreground-trend-up: var(--fsds-semantic-color-feedback-foreground-success-default, #497f21);
-      --fsds-stat-color-foreground-trend-down: var(--fsds-semantic-color-feedback-foreground-danger-default, #d92d2e);
-      --fsds-stat-color-foreground-trend-neutral: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-stat-size-value-sm: var(--fsds-semantic-typography-heading-04, 18px);
-      --fsds-stat-size-value-md: var(--fsds-semantic-typography-heading-02, 24px);
-      --fsds-stat-size-value-lg: var(--fsds-semantic-typography-heading-01, 32px);
-      --fsds-stat-typography-line-height-value: 1.1;
-      --fsds-stat-typography-weight-value: var(--fsds-semantic-typography-font-weight-bold, 700);
+      --_fsds-stat-color-foreground-value: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-stat-color-foreground-trend-up: var(--fsds-semantic-color-feedback-foreground-success-default, #497f21);
+      --_fsds-stat-color-foreground-trend-down: var(--fsds-semantic-color-feedback-foreground-danger-default, #d92d2e);
+      --_fsds-stat-color-foreground-trend-neutral: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --_fsds-stat-size-value-sm: var(--fsds-semantic-typography-heading-04, 18px);
+      --_fsds-stat-size-value-md: var(--fsds-semantic-typography-heading-02, 24px);
+      --_fsds-stat-size-value-lg: var(--fsds-semantic-typography-heading-01, 32px);
+      --_fsds-stat-typography-line-height-value: 1.1;
+      --_fsds-stat-typography-weight-value: var(--fsds-semantic-typography-font-weight-bold, 700);
     }
 
     @layer components.defaults {
@@ -94,31 +94,31 @@ export class StatElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       display: block;
-      color: var(--fsds-stat-design-root-foreground-color, var(--fsds-stat-color-foreground-value, #141414));
-      font-size: var(--fsds-stat-design-root-typography-size, var(--fsds-stat-size-value-md, 24px));
-      font-weight: var(--fsds-stat-design-root-typography-weight, var(--fsds-stat-typography-weight-value, 700));
-      line-height: var(--fsds-stat-design-root-typography-line-height, var(--fsds-stat-typography-line-height-value, 1.1));
+      color: var(--fsds-stat-design-root-foreground-color, var(--fsds-stat-color-foreground-value, var(--_fsds-stat-color-foreground-value, #141414)));
+      font-size: var(--fsds-stat-design-root-typography-size, var(--fsds-stat-size-value-md, var(--_fsds-stat-size-value-md, 24px)));
+      font-weight: var(--fsds-stat-design-root-typography-weight, var(--fsds-stat-typography-weight-value, var(--_fsds-stat-typography-weight-value, 700)));
+      line-height: var(--fsds-stat-design-root-typography-line-height, var(--fsds-stat-typography-line-height-value, var(--_fsds-stat-typography-line-height-value, 1.1)));
       letter-spacing: var(--fsds-stat-design-root-typography-tracking, -0.02em);
     }
 
     .stat--up {
-      color: var(--fsds-stat-design-condition-150f0c29952e-foreground-color, var(--fsds-stat-color-foreground-trend-up, #497f21));
+      color: var(--fsds-stat-design-condition-150f0c29952e-foreground-color, var(--fsds-stat-color-foreground-trend-up, var(--_fsds-stat-color-foreground-trend-up, #497f21)));
     }
 
     .stat--down {
-      color: var(--fsds-stat-design-condition-c3362b4b3c5b-foreground-color, var(--fsds-stat-color-foreground-trend-down, #d92d2e));
+      color: var(--fsds-stat-design-condition-c3362b4b3c5b-foreground-color, var(--fsds-stat-color-foreground-trend-down, var(--_fsds-stat-color-foreground-trend-down, #d92d2e)));
     }
 
     .stat--neutral {
-      color: var(--fsds-stat-design-condition-611d8c5b8be1-foreground-color, var(--fsds-stat-color-foreground-trend-neutral, #474647));
+      color: var(--fsds-stat-design-condition-611d8c5b8be1-foreground-color, var(--fsds-stat-color-foreground-trend-neutral, var(--_fsds-stat-color-foreground-trend-neutral, #474647)));
     }
 
     .stat--sm {
-      font-size: var(--fsds-stat-design-condition-24964d7ed3a7-typography-size, var(--fsds-stat-size-value-sm, 18px));
+      font-size: var(--fsds-stat-design-condition-24964d7ed3a7-typography-size, var(--fsds-stat-size-value-sm, var(--_fsds-stat-size-value-sm, 18px)));
     }
 
     .stat--lg {
-      font-size: var(--fsds-stat-design-condition-72800fd5573d-typography-size, var(--fsds-stat-size-value-lg, 32px));
+      font-size: var(--fsds-stat-design-condition-72800fd5573d-typography-size, var(--fsds-stat-size-value-lg, var(--_fsds-stat-size-value-lg, 32px)));
     }
     }
   `;

@@ -5,7 +5,7 @@ status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 8ad5c26d16b60b89d64d308bf3237c9568d2bc27
+verified_at_commit: 0ea69e1889d166c09a72ec2e49ba03560ebe02bc
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -61,7 +61,7 @@ Padding uses logical axes and sides so it follows writing mode. Margin belongs t
 
 - `box-model.primitive.schema.json` enumerates legal slots and authoring value shapes.
 - `primitives/BoxModel.primitive.json` defines defaults; `box-model.ts` merges them and emits shared controls from the same slot enumeration.
-- `ir.ts` retains default facts for all backends. `css.ts` places concrete fallbacks at Web consumer sites and removes shared override defaults from every component cascade block. `@starting-style` entry blocks pass through verbatim: they hold transition from-values, not box defaults.
+- `ir.ts` retains default facts for all backends. `css.ts` places concrete fallbacks at Web consumer sites and removes shared override defaults from every component cascade block. `@starting-style` entry blocks retain transition from-values rather than supplying resting box defaults. Lit applies its public-first component token fallback lowering to those reads inside the entry block.
 - `box-model.test.ts` verifies default precedence, schema rejection, non-hoisting, and variant defaults at property consumers.
 - `e2e/component-token-consumption.spec.ts` verifies that variant defaults cannot defeat shorthand, axis, and side overrides across Web targets.
 - `e2e/design-bindings.spec.ts` checks actual browser shorthand/side behavior, restoration, nested isolation, and consumer precedence without the global semantic stylesheet.
@@ -70,6 +70,14 @@ Padding uses logical axes and sides so it follows writing mode. Margin belongs t
 Portal surfaces need their own applicable boundary/selector; this does not transport an ancestor's custom properties into a portal. Native emitters project the normalized material facts down to the slots their generated code reads. Shared CSS controls do not imply a native override API, identical behavior on all host elements, or visual correctness for every possible value.
 
 The CLI brand destination validation does not change the box schema, primitive defaults, IR merge or shared reset rules. Component-specific brand variables live in a separate namespace; they do not bypass the public box-control boundary.
+
+Lit keeps consumed component root defaults in private fallback properties so
+public brand and host values can inherit into its shadow tree. This projection
+excludes the shared box-model namespace. The host reset, inner rendered box,
+layer order and property-site box defaults retain the boundary behavior above.
+The token lowering tests include shared-box exclusion and corpus boundary checks;
+installed Card and Button browser consumers exercise inherited component values
+separately from shared box controls.
 
 Motion reconciliation reviewed the declaration-custody and loading-loop changes
 since the prior stamp. `webCssBlocks` now also consumes resolved loop facts; the

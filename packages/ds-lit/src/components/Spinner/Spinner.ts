@@ -70,16 +70,16 @@ export class SpinnerElement extends LitElement {
 
 
     .spinner {
-      --fsds-spinner-size-xs: var(--fsds-semantic-glyph-size-small-extent, 12px);
-      --fsds-spinner-size-sm: var(--fsds-core-icon-size-sm, 16px);
-      --fsds-spinner-size-md: var(--fsds-core-icon-size-md, 20px);
-      --fsds-spinner-size-lg: var(--fsds-core-icon-size-lg, 24px);
-      --fsds-spinner-thickness-hairline: 2px;
-      --fsds-spinner-thickness-regular: 3px;
-      --fsds-spinner-thickness-bold: 4px;
-      --fsds-spinner-color-accent: var(--fsds-semantic-color-background-accent, #d92d2e);
-      --fsds-spinner-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-spinner-anim-duration: 800ms;
+      --_fsds-spinner-size-xs: var(--fsds-semantic-glyph-size-small-extent, 12px);
+      --_fsds-spinner-size-sm: var(--fsds-core-icon-size-sm, 16px);
+      --_fsds-spinner-size-md: var(--fsds-core-icon-size-md, 20px);
+      --_fsds-spinner-size-lg: var(--fsds-core-icon-size-lg, 24px);
+      --_fsds-spinner-thickness-hairline: 2px;
+      --_fsds-spinner-thickness-regular: 3px;
+      --_fsds-spinner-thickness-bold: 4px;
+      --_fsds-spinner-color-accent: var(--fsds-semantic-color-background-accent, #d92d2e);
+      --_fsds-spinner-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --_fsds-spinner-anim-duration: 800ms;
     }
 
     @layer components.defaults {
@@ -95,7 +95,7 @@ export class SpinnerElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      transition-duration: var(--fsds-spinner-design-root-motion-duration, var(--fsds-spinner-anim-duration, 800ms));
+      transition-duration: var(--fsds-spinner-design-root-motion-duration, var(--fsds-spinner-anim-duration, var(--_fsds-spinner-anim-duration, 800ms)));
     }
 
     .spinner__visual {
@@ -105,41 +105,41 @@ export class SpinnerElement extends LitElement {
       box-sizing: border-box;
       border-radius: var(--fsds-spinner-design-visual-shape-radius, 50%);
       border-style: var(--fsds-spinner-design-visual-border-style, solid);
-      border-width: var(--fsds-spinner-design-visual-border-width, var(--fsds-spinner-thickness-regular, 3px));
-      border-color: var(--fsds-spinner-design-visual-border-color, var(--fsds-spinner-color-track, #d0d0d0));
-      border-top-color: var(--fsds-spinner-design-visual-border-top-color, var(--fsds-spinner-color-accent, #d92d2e));
+      border-width: var(--fsds-spinner-design-visual-border-width, var(--fsds-spinner-thickness-regular, var(--_fsds-spinner-thickness-regular, 3px)));
+      border-color: var(--fsds-spinner-design-visual-border-color, var(--fsds-spinner-color-track, var(--_fsds-spinner-color-track, #d0d0d0)));
+      border-top-color: var(--fsds-spinner-design-visual-border-top-color, var(--fsds-spinner-color-accent, var(--_fsds-spinner-color-accent, #d92d2e)));
     }
 
     .spinner--xs {
-      font-size: var(--fsds-spinner-design-condition-ac39d57baace-typography-size, var(--fsds-spinner-size-xs, 12px));
+      font-size: var(--fsds-spinner-design-condition-ac39d57baace-typography-size, var(--fsds-spinner-size-xs, var(--_fsds-spinner-size-xs, 12px)));
     }
 
     .spinner--sm {
-      font-size: var(--fsds-spinner-design-condition-24964d7ed3a7-typography-size, var(--fsds-spinner-size-sm, 16px));
+      font-size: var(--fsds-spinner-design-condition-24964d7ed3a7-typography-size, var(--fsds-spinner-size-sm, var(--_fsds-spinner-size-sm, 16px)));
     }
 
     .spinner--md {
-      font-size: var(--fsds-spinner-design-condition-dc35d39122c5-typography-size, var(--fsds-spinner-size-md, 20px));
+      font-size: var(--fsds-spinner-design-condition-dc35d39122c5-typography-size, var(--fsds-spinner-size-md, var(--_fsds-spinner-size-md, 20px)));
     }
 
     .spinner--lg {
-      font-size: var(--fsds-spinner-design-condition-72800fd5573d-typography-size, var(--fsds-spinner-size-lg, 24px));
+      font-size: var(--fsds-spinner-design-condition-72800fd5573d-typography-size, var(--fsds-spinner-size-lg, var(--_fsds-spinner-size-lg, 24px)));
     }
 
     .spinner--hairline .spinner__visual {
-      border-width: var(--fsds-spinner-design-condition-ddd83ecdda11-border-width, var(--fsds-spinner-thickness-hairline, 2px));
+      border-width: var(--fsds-spinner-design-condition-ddd83ecdda11-border-width, var(--fsds-spinner-thickness-hairline, var(--_fsds-spinner-thickness-hairline, 2px)));
     }
 
     .spinner--regular .spinner__visual {
-      border-width: var(--fsds-spinner-design-condition-5fe4ba5b6059-border-width, var(--fsds-spinner-thickness-regular, 3px));
+      border-width: var(--fsds-spinner-design-condition-5fe4ba5b6059-border-width, var(--fsds-spinner-thickness-regular, var(--_fsds-spinner-thickness-regular, 3px)));
     }
 
     .spinner--bold .spinner__visual {
-      border-width: var(--fsds-spinner-design-condition-f69ec4fadb37-border-width, var(--fsds-spinner-thickness-bold, 4px));
+      border-width: var(--fsds-spinner-design-condition-f69ec4fadb37-border-width, var(--fsds-spinner-thickness-bold, var(--_fsds-spinner-thickness-bold, 4px)));
     }
 
     .spinner__visual {
-      animation: fsds-spinner-spin calc(var(--fsds-spinner-anim-duration, 800ms) * 1) cubic-bezier(0, 0, 1, 1) infinite;
+      animation: fsds-spinner-spin calc(var(--fsds-spinner-anim-duration, var(--_fsds-spinner-anim-duration, 800ms)) * 1) cubic-bezier(0, 0, 1, 1) infinite;
     }
     }
 

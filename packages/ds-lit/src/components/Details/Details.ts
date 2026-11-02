@@ -73,21 +73,21 @@ export class DetailsElement extends LitElement {
 
 
     .details {
-      --fsds-details-size-padding: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-details-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-details-size-icon: var(--fsds-core-spacing-size-05, 12px);
-      --fsds-details-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-details-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-details-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-details-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
-      --fsds-details-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
-      --fsds-details-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-details-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-details-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-details-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-details-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-details-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-details-size-padding-compact: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-details-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-details-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-details-size-icon: var(--fsds-core-spacing-size-05, 12px);
+      --_fsds-details-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-details-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
+      --_fsds-details-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-details-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
+      --_fsds-details-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
+      --_fsds-details-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-details-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-details-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-details-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-details-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-details-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-details-size-padding-compact: var(--fsds-core-spacing-size-04, 8px);
     }
 
     .details__summary:hover:not([aria-disabled="true"]) {
@@ -95,7 +95,7 @@ export class DetailsElement extends LitElement {
     }
 
     .details--compact {
-      --fsds-details-size-padding: var(--fsds-details-size-padding-compact, 8px);
+      --fsds-details-size-padding: var(--fsds-details-size-padding-compact, var(--_fsds-details-size-padding-compact, 8px));
       --fsds-details-typography-line-height-body: var(--fsds-core-spacing-size-06, 16px);
     }
 
@@ -111,27 +111,27 @@ export class DetailsElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap, 2px));
+      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap, var(--_fsds-details-spacing-gap, 2px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding, 16px));
-      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius, 6px));
-      background-color: var(--fsds-details-design-root-background-fill, var(--fsds-details-color-background-default, #ffffff));
-      line-height: var(--fsds-details-design-root-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
+      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding, var(--_fsds-details-size-padding, 16px)));
+      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius, var(--_fsds-details-size-radius, 6px)));
+      background-color: var(--fsds-details-design-root-background-fill, var(--fsds-details-color-background-default, var(--_fsds-details-color-background-default, #ffffff)));
+      line-height: var(--fsds-details-design-root-typography-line-height, var(--fsds-details-typography-line-height-body, var(--_fsds-details-typography-line-height-body, 1.5)));
       display: block;
       border-style: var(--fsds-details-design-root-border-style, solid);
       border-width: var(--fsds-details-design-root-border-width, 1px);
       box-sizing: border-box;
-      border-color: var(--fsds-details-design-root-border-color, var(--fsds-details-color-border-default, #a0a0a1));
-      color: var(--fsds-details-design-root-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
+      border-color: var(--fsds-details-design-root-border-color, var(--fsds-details-color-border-default, var(--_fsds-details-color-border-default, #a0a0a1)));
+      color: var(--fsds-details-design-root-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
 
       &:hover:not([aria-disabled="true"]) {
-        background-color: var(--fsds-details-design-hover-background-fill, var(--fsds-details-color-background-hover, #f7f7f7));
-        border-color: var(--fsds-details-design-hover-border-color, var(--fsds-details-color-border-hover, #888889));
+        background-color: var(--fsds-details-design-hover-background-fill, var(--fsds-details-color-background-hover, var(--_fsds-details-color-background-hover, #f7f7f7)));
+        border-color: var(--fsds-details-design-hover-border-color, var(--fsds-details-color-border-hover, var(--_fsds-details-color-border-hover, #888889)));
       }
 
       &[open] .details__icon {
@@ -143,37 +143,37 @@ export class DetailsElement extends LitElement {
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap, 2px));
+      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap, var(--_fsds-details-spacing-gap, 2px)));
       list-style: none;
-      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding, 16px));
-      color: var(--fsds-details-design-summary-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
-      font-weight: var(--fsds-details-design-summary-typography-weight, var(--fsds-details-typography-font-weight-medium, 500));
+      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding, var(--_fsds-details-size-padding, 16px)));
+      color: var(--fsds-details-design-summary-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
+      font-weight: var(--fsds-details-design-summary-typography-weight, var(--fsds-details-typography-font-weight-medium, var(--_fsds-details-typography-font-weight-medium, 500)));
     }
 
     .details__summary:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-details-design-condition-2b765dd646fc-focus-width, var(--fsds-details-focus-ring-width, 2px));
-      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, #0566fe));
-      outline-offset: var(--fsds-details-design-condition-2b765dd646fc-focus-offset, var(--fsds-details-focus-ring-offset, 2px));
+      outline-width: var(--fsds-details-design-condition-2b765dd646fc-focus-width, var(--fsds-details-focus-ring-width, var(--_fsds-details-focus-ring-width, 2px)));
+      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, var(--_fsds-details-focus-ring-color, #0566fe)));
+      outline-offset: var(--fsds-details-design-condition-2b765dd646fc-focus-offset, var(--fsds-details-focus-ring-offset, var(--_fsds-details-focus-ring-offset, 2px)));
       outline-style: var(--fsds-details-design-condition-2b765dd646fc-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .details__summaryContent {
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap, 2px));
+      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap, var(--_fsds-details-spacing-gap, 2px)));
       flex: 1 1 auto;
     }
 
     .details__summaryText {
       flex: 1 1 auto;
-      color: var(--fsds-details-design-summary-text-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
+      color: var(--fsds-details-design-summary-text-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
     }
 
     .details__icon {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-details-design-icon-sizing-width, var(--fsds-details-size-icon, 12px));
-      height: var(--fsds-details-design-icon-sizing-height, var(--fsds-details-size-icon, 12px));
+      width: var(--fsds-details-design-icon-sizing-width, var(--fsds-details-size-icon, var(--_fsds-details-size-icon, 12px)));
+      height: var(--fsds-details-design-icon-sizing-height, var(--fsds-details-size-icon, var(--_fsds-details-size-icon, 12px)));
       transition: transform 200ms ease;
       align-items: center;
       justify-content: center;
@@ -181,9 +181,9 @@ export class DetailsElement extends LitElement {
 
     .details__content {
       display: block;
-      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding, 16px));
-      color: var(--fsds-details-design-content-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
-      line-height: var(--fsds-details-design-content-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
+      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding, var(--_fsds-details-size-padding, 16px)));
+      color: var(--fsds-details-design-content-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
+      line-height: var(--fsds-details-design-content-typography-line-height, var(--fsds-details-typography-line-height-body, var(--_fsds-details-typography-line-height-body, 1.5)));
     }
 
     .details--none .details__icon {
@@ -309,21 +309,21 @@ export class DetailsContentElement extends LitElement {
 
 
     .details {
-      --fsds-details-size-padding: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-details-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-details-size-icon: var(--fsds-core-spacing-size-05, 12px);
-      --fsds-details-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-details-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-details-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-details-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
-      --fsds-details-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
-      --fsds-details-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-details-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-details-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-details-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-details-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
-      --fsds-details-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
-      --fsds-details-size-padding-compact: var(--fsds-core-spacing-size-04, 8px);
+      --_fsds-details-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --_fsds-details-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --_fsds-details-size-icon: var(--fsds-core-spacing-size-05, 12px);
+      --_fsds-details-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+      --_fsds-details-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
+      --_fsds-details-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+      --_fsds-details-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
+      --_fsds-details-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
+      --_fsds-details-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --_fsds-details-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --_fsds-details-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --_fsds-details-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
+      --_fsds-details-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --_fsds-details-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
+      --_fsds-details-size-padding-compact: var(--fsds-core-spacing-size-04, 8px);
     }
 
     .details__summary:hover:not([aria-disabled="true"]) {
@@ -331,7 +331,7 @@ export class DetailsContentElement extends LitElement {
     }
 
     .details--compact {
-      --fsds-details-size-padding: var(--fsds-details-size-padding-compact, 8px);
+      --fsds-details-size-padding: var(--fsds-details-size-padding-compact, var(--_fsds-details-size-padding-compact, 8px));
       --fsds-details-typography-line-height-body: var(--fsds-core-spacing-size-06, 16px);
     }
 
@@ -347,27 +347,27 @@ export class DetailsContentElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap, 2px));
+      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap, var(--_fsds-details-spacing-gap, 2px)));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding, 16px));
-      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius, 6px));
-      background-color: var(--fsds-details-design-root-background-fill, var(--fsds-details-color-background-default, #ffffff));
-      line-height: var(--fsds-details-design-root-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
+      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding, var(--_fsds-details-size-padding, 16px)));
+      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius, var(--_fsds-details-size-radius, 6px)));
+      background-color: var(--fsds-details-design-root-background-fill, var(--fsds-details-color-background-default, var(--_fsds-details-color-background-default, #ffffff)));
+      line-height: var(--fsds-details-design-root-typography-line-height, var(--fsds-details-typography-line-height-body, var(--_fsds-details-typography-line-height-body, 1.5)));
       display: block;
       border-style: var(--fsds-details-design-root-border-style, solid);
       border-width: var(--fsds-details-design-root-border-width, 1px);
       box-sizing: border-box;
-      border-color: var(--fsds-details-design-root-border-color, var(--fsds-details-color-border-default, #a0a0a1));
-      color: var(--fsds-details-design-root-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
+      border-color: var(--fsds-details-design-root-border-color, var(--fsds-details-color-border-default, var(--_fsds-details-color-border-default, #a0a0a1)));
+      color: var(--fsds-details-design-root-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
 
       &:hover:not([aria-disabled="true"]) {
-        background-color: var(--fsds-details-design-hover-background-fill, var(--fsds-details-color-background-hover, #f7f7f7));
-        border-color: var(--fsds-details-design-hover-border-color, var(--fsds-details-color-border-hover, #888889));
+        background-color: var(--fsds-details-design-hover-background-fill, var(--fsds-details-color-background-hover, var(--_fsds-details-color-background-hover, #f7f7f7)));
+        border-color: var(--fsds-details-design-hover-border-color, var(--fsds-details-color-border-hover, var(--_fsds-details-color-border-hover, #888889)));
       }
 
       &[open] .details__icon {
@@ -379,37 +379,37 @@ export class DetailsContentElement extends LitElement {
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap, 2px));
+      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap, var(--_fsds-details-spacing-gap, 2px)));
       list-style: none;
-      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding, 16px));
-      color: var(--fsds-details-design-summary-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
-      font-weight: var(--fsds-details-design-summary-typography-weight, var(--fsds-details-typography-font-weight-medium, 500));
+      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding, var(--_fsds-details-size-padding, 16px)));
+      color: var(--fsds-details-design-summary-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
+      font-weight: var(--fsds-details-design-summary-typography-weight, var(--fsds-details-typography-font-weight-medium, var(--_fsds-details-typography-font-weight-medium, 500)));
     }
 
     .details__summary:focus-visible:not([aria-disabled="true"]) {
-      outline-width: var(--fsds-details-design-condition-2b765dd646fc-focus-width, var(--fsds-details-focus-ring-width, 2px));
-      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, #0566fe));
-      outline-offset: var(--fsds-details-design-condition-2b765dd646fc-focus-offset, var(--fsds-details-focus-ring-offset, 2px));
+      outline-width: var(--fsds-details-design-condition-2b765dd646fc-focus-width, var(--fsds-details-focus-ring-width, var(--_fsds-details-focus-ring-width, 2px)));
+      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, var(--_fsds-details-focus-ring-color, #0566fe)));
+      outline-offset: var(--fsds-details-design-condition-2b765dd646fc-focus-offset, var(--fsds-details-focus-ring-offset, var(--_fsds-details-focus-ring-offset, 2px)));
       outline-style: var(--fsds-details-design-condition-2b765dd646fc-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .details__summaryContent {
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap, 2px));
+      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap, var(--_fsds-details-spacing-gap, 2px)));
       flex: 1 1 auto;
     }
 
     .details__summaryText {
       flex: 1 1 auto;
-      color: var(--fsds-details-design-summary-text-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
+      color: var(--fsds-details-design-summary-text-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
     }
 
     .details__icon {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-details-design-icon-sizing-width, var(--fsds-details-size-icon, 12px));
-      height: var(--fsds-details-design-icon-sizing-height, var(--fsds-details-size-icon, 12px));
+      width: var(--fsds-details-design-icon-sizing-width, var(--fsds-details-size-icon, var(--_fsds-details-size-icon, 12px)));
+      height: var(--fsds-details-design-icon-sizing-height, var(--fsds-details-size-icon, var(--_fsds-details-size-icon, 12px)));
       transition: transform 200ms ease;
       align-items: center;
       justify-content: center;
@@ -417,9 +417,9 @@ export class DetailsContentElement extends LitElement {
 
     .details__content {
       display: block;
-      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding, 16px));
-      color: var(--fsds-details-design-content-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
-      line-height: var(--fsds-details-design-content-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
+      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding, var(--_fsds-details-size-padding, 16px)));
+      color: var(--fsds-details-design-content-foreground-color, var(--fsds-details-color-foreground-primary, var(--_fsds-details-color-foreground-primary, #141414)));
+      line-height: var(--fsds-details-design-content-typography-line-height, var(--fsds-details-typography-line-height-body, var(--_fsds-details-typography-line-height-body, 1.5)));
     }
 
     .details--none .details__icon {
