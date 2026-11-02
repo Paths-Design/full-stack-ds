@@ -154,6 +154,35 @@ describe("sanitizeHref", () => {
     expect(sanitizeHref("unknown-scheme:whatever")).toBeNull();
     expect(sanitizeHref("   ")).toBeNull();
   });
+
+  it.each(["\t", "\n", "\r", "\r\n"])("classifies schemes after ASCII tab/newline preprocessing (%j)", control => {
+    for (const scheme of ["custom", "javascript", "data", "vbscript"]) {
+      const target = scheme.slice(0, 2) + control + scheme.slice(2) + ":unused";
+      expect(new URL(target, "https://base.example/").protocol).toBe(scheme + ":");
+      expect(sanitizeHref(target), target).toBeNull();
+    }
+    expect(sanitizeHref("ht" + control + "tps://example.com/path")).toBe("https://example.com/path");
+    expect(sanitizeHref("ma" + control + "ilto:a@example.com")).toBe("mailto:a@example.com");
+  });
+
+  it.each(Array.from({ length: 33 }, (_, point) => point))("handles URL edge code point %i before admission", point => {
+    const edge = String.fromCharCode(point);
+    const target = edge + "custom:unused" + edge;
+    expect(new URL(target, "https://base.example/").protocol).toBe("custom:");
+    expect(sanitizeHref(target)).toBeNull();
+    expect(sanitizeHref(edge + "https://example.com/path" + edge)).toBe("https://example.com/path");
+  });
+
+  it("preserves relative, query, fragment, encoded and Unicode URL content", () => {
+    for (const target of ["?q=hello world", "#عنوان", "./café/日本語", "cu%09stom:sample", "cu\u0001stom:sample", "cust\u200bom:sample", "./\u00a0name"]) {
+      expect(new URL(target, "https://base.example/").protocol).toBe("https:");
+      expect(sanitizeHref(target), target).toBe(target);
+    }
+  });
+
+  it("rejects a control-only target after URL preprocessing", () => {
+    expect(sanitizeHref("\u0000\t\r \u001f")).toBeNull();
+  });
 });
 
 describe("security doctrine", () => {
@@ -168,6 +197,32 @@ describe("security doctrine", () => {
     const marks = parseMarks("[click](javascript:alert(1))");
     expect(marks).toEqual([
       { kind: "link", href: null, children: [{ kind: "text", text: "click" }] },
+    ]);
+  });
+
+  it.each(["cu\tstom:unused", "\u0000custom:unused", "\u001fCuStOm:unused"])("degrades normalized unsupported document targets without losing labels (%j)", target => {
+    expect(parseMarks(`[**نص 日本語**](${target})`)).toEqual([
+      { kind: "link", href: null, children: [{ kind: "strong", children: [{ kind: "text", text: "نص 日本語" }] }] },
+    ]);
+    expect(parseMarkdown(`[نص 日本語](${target})`)).toEqual([
+      { kind: "paragraph", children: [{ kind: "link", href: null, children: [{ kind: "text", text: "نص 日本語" }] }] },
+    ]);
+  });
+
+  it.each(["\n", "\r", "\r\n"])("classifies document soft wraps after the declared whitespace grammar (%j)", newline => {
+    const href = "cu stom:unused";
+    const children = [{ kind: "link", href, children: [{ kind: "text", text: "نص 日本語" }] }];
+    // Document soft wraps become spaces before inline URL admission. The
+    // resulting target is relative, unlike the raw inline newline target.
+    expect(new URL(href, "https://base.example/").protocol).toBe("https:");
+    expect(parseMarkdown(`[نص 日本語](cu${newline}stom:unused)`)).toEqual([
+      { kind: "paragraph", children },
+    ]);
+    expect(parseMarkdown(`> [نص 日本語](cu${newline}> stom:unused)`)).toEqual([
+      { kind: "blockquote", children },
+    ]);
+    expect(parseMarks(`[نص 日本語](cu${newline}stom:unused)`)).toEqual([
+      { kind: "link", href: null, children: [{ kind: "text", text: "نص 日本語" }] },
     ]);
   });
 });

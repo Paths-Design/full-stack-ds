@@ -1385,6 +1385,101 @@ test.describe("Runtime rail — Markdown structural render (golden tree)", () =>
   }
 });
 
+test.describe("Runtime rail — Markdown URL preprocessing", () => {
+  for (const framework of NONDEFAULT_FRAMEWORKS) {
+    test(`${framework}: URL controls cannot disguise unsupported Markdown protocols`, async ({ page }, testInfo) => {
+      const literal = "<b>نص خام 日本語</b>";
+      await goto(page, framework, "Markdown", "markdown", {
+        content: [
+          "## عنوان 日本語",
+          "[آمن 日本語](#markdown-approved)",
+          "[مباشر](custom:sample)",
+          "[تبويب](cu\tstom:sample)",
+          "[تحكم](\u0000custom:sample)",
+          literal,
+        ].join("\n\n"),
+      });
+      const root = page.locator(".markdown").first();
+      await expect(root).toContainText("تحكم");
+      const facts = await readMarkdownFacts(page, framework);
+      expect(facts.hrefs).toEqual(["#markdown-approved"]);
+      for (const label of ["آمن 日本語", "مباشر", "تبويب", "تحكم", literal]) expect(facts.text).toContain(label);
+      await expect(root.locator("b")).toHaveCount(0);
+      await page.setViewportSize({ width: 420, height: 700 });
+      await page.evaluate(() => {
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
+        document.body.style.width = "240px";
+        document.body.style.margin = "0";
+        document.body.style.padding = "0";
+        document.body.style.display = "block";
+        const before = document.createElement("button"), after = document.createElement("button");
+        before.id = "md-rail-before"; before.textContent = "قبل";
+        after.id = "md-rail-after"; after.textContent = "بعد";
+        document.body.prepend(before); document.body.append(after);
+      });
+      const geometry = await root.evaluate(element => {
+        const bounds = element.getBoundingClientRect();
+        const text = [...element.querySelectorAll("h2, p")].map(block => {
+          const range = document.createRange();
+          range.selectNodeContents(block);
+          return { text: block.textContent, rects: [...range.getClientRects()].map(rect => ({
+            left: rect.left, right: rect.right, width: rect.width, height: rect.height,
+          })) };
+        });
+        return {
+          left: bounds.left, right: bounds.right, width: bounds.width, viewportWidth: innerWidth,
+          clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
+          direction: getComputedStyle(element).direction, language: document.documentElement.lang, text,
+        };
+      });
+      expect(geometry.direction).toBe("rtl");
+      expect(geometry.language).toBe("ar");
+      expect(geometry.width).toBeCloseTo(240, 0);
+      expect(geometry.left).toBeGreaterThanOrEqual(0);
+      expect(geometry.right).toBeLessThanOrEqual(geometry.viewportWidth);
+      expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
+      expect(geometry.text).toHaveLength(6);
+      for (const block of geometry.text) {
+        expect(block.rects.length).toBeGreaterThan(0);
+        for (const rect of block.rects) {
+          expect(rect.width).toBeGreaterThan(0);
+          expect(rect.height).toBeGreaterThan(0);
+          expect(rect.left).toBeGreaterThanOrEqual(geometry.left - 1);
+          expect(rect.right).toBeLessThanOrEqual(geometry.right + 1);
+        }
+      }
+      const anchor = root.getByRole("link", { name: "آمن 日本語", exact: true });
+      await page.locator("#md-rail-before").focus();
+      await page.keyboard.press("Tab");
+      await expect(anchor).toBeFocused();
+      const cdp = await page.context().newCDPSession(page);
+      try {
+        await testInfo.attach("markdown-dom-and-geometry", { body: Buffer.from(JSON.stringify({ facts, geometry }, null, 2)), contentType: "application/json" });
+        await testInfo.attach("markdown-focused-AX", { body: Buffer.from(JSON.stringify(await cdp.send("Accessibility.getFullAXTree"), null, 2)), contentType: "application/json" });
+        await testInfo.attach("markdown-focused-rtl-240", { body: await root.screenshot(), contentType: "image/png" });
+      } finally {
+        await cdp.detach();
+      }
+      await page.keyboard.press("Tab");
+      await expect(page.locator("#md-rail-after")).toBeFocused();
+      await page.keyboard.press("Shift+Tab");
+      await expect(anchor).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect.poll(() => page.evaluate(() => location.hash)).toBe("#markdown-approved");
+
+      // The live content prop also retains a permitted, normalized target.
+      await page.evaluate(() => window.postMessage({
+        type: "fsds:config", tokenCss: "",
+        props: { content: "[مسار 日本語](ht\ttps://example.invalid/日本語)" },
+      }, "*"));
+      await expect(root).toContainText("مسار 日本語");
+      await expect.poll(async () => (await readMarkdownFacts(page, framework)).hrefs)
+        .toEqual(["https://example.invalid/日本語"]);
+    });
+  }
+});
+
 test.describe("Runtime rail — Markdown literal-HTML doctrine", () => {
   for (const framework of NONDEFAULT_FRAMEWORKS) {
     test(`${framework}: hostile markup renders literally; unsafe hrefs degrade`, async ({ page }) => {
