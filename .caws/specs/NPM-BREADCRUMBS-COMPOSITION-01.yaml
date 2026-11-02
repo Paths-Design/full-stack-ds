@@ -1,0 +1,64 @@
+id: NPM-BREADCRUMBS-COMPOSITION-01
+title: 'Realize Breadcrumbs child separators and list composition'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-02T01:01:56.489Z'
+updated_at: '2026-11-02T01:01:56.489Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Breadcrumbs contract normalized projected collection decoration six realizations and installed consumers'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts'
+    - 'packages/ds-codegen'
+    - 'packages/ds-react'
+    - 'packages/ds-vue'
+    - 'packages/ds-svelte'
+    - 'packages/ds-angular'
+    - 'packages/ds-lit'
+    - 'packages/ds-react-native'
+    - 'packages/ds-figma-plugin'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'packages/ds-gpui'
+    - 'scripts/release-package-check'
+    - 'scripts/public-types-consumer'
+    - 'scripts/custom-region-audit/known-authored-regions.json'
+    - 'src/consumption'
+    - 'docs/codegen-authority.md'
+    - 'docs/architecture'
+  out: []
+invariants:
+  - 'Preserve authored children identity links attributes and localized landmark naming; separators are decorative and never focusable'
+  - 'No component-name emitter dispatch or hand edits to generated regions; native and engine omissions remain explicit'
+acceptance:
+  - id: A1
+    given: 'authored raw and compound breadcrumb children'
+    when: 'the separator changes and items are inserted removed or reordered'
+    then: 'all five web realizations show separators only between items and preserve content current-page attributes and links'
+  - id: A2
+    given: 'Angular BreadcrumbsItem consumers'
+    when: 'using the existing element selector or the additive native list-item selector'
+    then: 'each item has listitem semantics and the native selector preserves ol greater-than li ancestry'
+  - id: A3
+    given: 'translated narrow RTL trails and literal hostile separator strings'
+    when: 'actual installed web consumers are exercised'
+    then: 'labels and separators update without injection keyboard regressions unwanted accessibility text or horizontal overflow'
+  - id: A4
+    given: 'native authored children and the eight package tarballs'
+    when: 'native child rendering public types packed consumers and required regression gates execute'
+    then: 'native separators are accessibility-hidden advertised string props remain typed and checks pass with explicit proof boundaries'
+observability:
+  - 'Retain before and after DOM AX screenshots reactive consumer traces type diagnostics and check exits in canonical ignored release evidence'
+rollback:
+  - 'Revert this slice and regenerate affected targets'
+non_functional: {}
+contracts:
+  - name: 'projected-collection'
+    type: behavior
+    path: 'packages/ds-contracts/components/Breadcrumbs/Breadcrumbs.contract.json'
