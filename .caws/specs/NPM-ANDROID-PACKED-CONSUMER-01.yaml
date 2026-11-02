@@ -41,3 +41,8 @@ contracts:
   - name: 'native-packed-android'
     type: contract-test
     path: 'scripts/release-package-check/native-device/driver.mjs'
+evidence:
+  - criterion_id: A1
+    status: unchecked
+    evidence_ref: "User deferred Android work until off the mobile hotspot. Root canceled the Android Studio API36 AOSP ARM64 image download at24 percent and closed Add Device; Device Manager is idle and no AVD was created. Source owner01a1657d-8f2b-7202-8d26-b1d0cec2342d retains clean bound npm-android-consumer WT at41a12e30138db201a60ba8d2ebec69074d17926c with isolated frozen dependencies. No driver or app fixture has been authored, no CLI host initialized, no APK built or installed; peer driver draft is read-only unexecuted context. Resume on unmetered network: finish Small Phone/API36/default ARM64 setup, implement and verify the packed-consumer driver/App, install required SDK/NDK without automatic license acceptance, build/install and observe actual UI and accessibility facts. This pause blocks network-heavy setup and native observation, not acceptance of the already closed Lit and Markdown slices; whole eight-package component readiness remains open."
+    recorded_at: "2026-11-02T23:08:36.242Z"
