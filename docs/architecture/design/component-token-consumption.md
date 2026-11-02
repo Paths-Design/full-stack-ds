@@ -5,7 +5,7 @@ status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
 updated: 2026-11-01
-verified_at_commit: 0ea69e1889d166c09a72ec2e49ba03560ebe02bc
+verified_at_commit: 3600da7a3178d82f0aeca1dbda4b16fda6a72ab7
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
   - packages/ds-codegen/src/lit-token-fallbacks.ts
@@ -35,7 +35,7 @@ token projection does not determine which Web addresses exist.
 
 Deliberate part, state and modifier declarations retain their public property
 names and ordinary cascade precedence. Explicit CSS-wide reset declarations
-also retain their identity. A present value that is invalid for its consuming
+also retain their identity and any authored `!important` priority. A present value that is invalid for its consuming
 property does not select a `var()` fallback. Aliases resolve where declared:
 a same-element base override can change an alias default, while a descendant-only
 base override cannot recompute an inherited alias. A public alias override at the
