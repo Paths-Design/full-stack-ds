@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { execFileSync, spawn } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync } from "node:fs";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { setTimeout } from "node:timers/promises";
 
@@ -22,8 +22,15 @@ export async function verifyPackageWatch({ repo, evidence }) {
     const runtime = value => original + '\nexport type { FsdsWatchTypeProbe } from "./fsds-watch-probe.js";\nexport const fsdsWatchRuntimeProbe = () => ' + JSON.stringify(value) + ';\n';
     const type = value => 'export interface FsdsWatchTypeProbe { value: ' + JSON.stringify(value) + '; }\n';
     writeFileSync(entry, runtime("runtime-initial"));
-    writeFileSync(types, type("type-initial"));
-    mkdirSync(join(directory, "dist"));
+    writeFileSync(types, "export interface FsdsWatchTypeProbe { value: MissingWatchType; }\n");
+    const invalidBuild = spawnSync("pnpm", ["run", "build"], { cwd: directory, encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 90000 });
+    writeFileSync(join(evidence, "watch-" + name + "-invalid-build.log"), `exit: ${invalidBuild.status}\n${invalidBuild.stdout ?? ""}\n${invalidBuild.stderr ?? ""}`);
+    if (invalidBuild.error) throw invalidBuild.error;
+    assert.notEqual(invalidBuild.status, 0, name + ": ordinary builds must fail for invalid declarations");
+    assert.match(invalidBuild.stdout + invalidBuild.stderr, /MissingWatchType/);
+    assert.equal(existsSync(join(directory, "dist/index.cjs")), false);
+    assert.equal(existsSync(join(directory, "dist/primitives/index.cjs")), false);
+    mkdirSync(join(directory, "dist"), { recursive: true });
     writeFileSync(join(directory, "dist/stale.cjs"), "stale implementation");
     writeFileSync(join(directory, "dist/stale.d.cts"), "stale declaration");
     const child = spawn("pnpm", ["run", "build:watch"], { cwd: directory, detached: true, stdio: ["ignore", "pipe", "pipe"] });
@@ -48,7 +55,8 @@ export async function verifyPackageWatch({ repo, evidence }) {
     };
     const read = path => existsSync(path) ? readFileSync(path, "utf8") : "";
     const emitted = (runtimeValue, typeValue) => {
-      const js = read(join(directory, "dist/primitives/index.js"));
+      const js = existsSync(join(directory, "dist")) ? readdirSync(join(directory, "dist"), { recursive: true })
+        .filter(path => path.endsWith(".js")).map(path => read(join(directory, "dist", path))).join("\n") : "";
       const esm = read(join(directory, "dist/primitives/index.d.ts"));
       const cjs = read(join(directory, "dist/primitives/index.d.cts"));
       return js.includes(runtimeValue) && esm.includes(typeValue) && cjs.includes(typeValue) &&
@@ -59,6 +67,12 @@ export async function verifyPackageWatch({ repo, evidence }) {
     { cwd: directory, encoding: "utf8" }), expected);
     let failure;
     try {
+      await waitFor("startup declaration error with live watcher and withheld facades", () => output.includes("MissingWatchType") &&
+        output.includes("Watching for changes") && !existsSync(join(directory, "dist/index.cjs")) &&
+        !existsSync(join(directory, "dist/primitives/index.cjs")));
+      // tsup logs before its asynchronous glob scan and native watcher setup.
+      await setTimeout(1000);
+      writeFileSync(types, type("type-initial"));
       await waitFor("initial runtime and both declaration formats", () => emitted("runtime-initial", "type-initial"));
       checkRuntime("runtime-initial");
       assert.equal(existsSync(join(directory, "dist/stale.cjs")), false);
@@ -75,7 +89,6 @@ export async function verifyPackageWatch({ repo, evidence }) {
       writeFileSync(types, type("type-repaired"));
       await waitFor("same watcher recovers after repair", () => emitted("runtime-updated", "type-repaired"));
       checkRuntime("runtime-updated");
-      writeFileSync(join(evidence, "watch-" + name + ".json"), JSON.stringify({ package: name, command: "pnpm run build:watch", node: process.version, observations, passed: true }, null, 2));
     } catch (error) {
       failure = error;
     }
@@ -90,5 +103,6 @@ export async function verifyPackageWatch({ repo, evidence }) {
       throw error;
     }
     if (failure) throw failure;
+    writeFileSync(join(evidence, "watch-" + name + ".json"), JSON.stringify({ package: name, command: "pnpm run build:watch", node: process.version, observations, cleanup: "watch command closed after process-group SIGTERM", passed: true }, null, 2));
   }
 }

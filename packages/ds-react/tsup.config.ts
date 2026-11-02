@@ -8,7 +8,7 @@ const shared = {
   outDir: "dist",
 };
 
-export default defineConfig({
+export default defineConfig(options => ({
   ...shared,
   // Import and require share providers, contexts and primitive state.
   format: ["esm"],
@@ -17,7 +17,13 @@ export default defineConfig({
   clean: true,
   async onSuccess() {
     // Await both declaration graphs, including type-only watch changes.
-    await build({ ...shared, config: false, format: ["esm", "cjs"], dts: { only: true }, watch: false, clean: true });
-    emitCommonjsFacades(process.cwd());
+    try {
+      await build({ ...shared, config: false, format: ["esm", "cjs"], dts: { only: true }, watch: false, clean: true });
+      emitCommonjsFacades(process.cwd());
+    } catch (error) {
+      if (!options.watch) throw error;
+      // Keep the native watcher alive for type repairs, including startup errors.
+      console.error("Declaration build failed; CommonJS facades withheld.", error);
+    }
   },
-});
+}));

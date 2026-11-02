@@ -15,7 +15,7 @@ const shared = {
   outDir: "dist",
 };
 
-export default defineConfig({
+export default defineConfig(options => ({
   ...shared,
   // Register each custom element once across import and require consumers.
   format: ["esm"],
@@ -23,7 +23,12 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   async onSuccess() {
-    await build({ ...shared, config: false, format: ["esm", "cjs"], dts: { only: true }, watch: false, clean: true });
-    emitCommonjsFacades(process.cwd());
+    try {
+      await build({ ...shared, config: false, format: ["esm", "cjs"], dts: { only: true }, watch: false, clean: true });
+      emitCommonjsFacades(process.cwd());
+    } catch (error) {
+      if (!options.watch) throw error;
+      console.error("Declaration build failed; CommonJS facades withheld.", error);
+    }
   },
-});
+}));
