@@ -65,11 +65,8 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "8ad5c26d packed HVQKiy: all five installed Chromium consumers passed ten reactive trail stages, hidden-item cases, authored-node/input identity, native link activation, current-page DOM and AX observations; package source and fixture bytes match landed bfd5d1ee6."
-    recorded_at: "2026-11-02T04:19:06.523Z"
-    command: "pnpm run test:package:release"
-    exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01/packed-complete.log"
+    evidence_ref: "8ad5c26d packed HVQKiy: all five installed Chromium consumers passed ten reactive trail stages, hidden-item cases, authored-node/input identity, native link activation, current-page DOM and AX observations; package source and fixture bytes match landed bfd5d1ee6. Raw logs and browser artifacts under canonical .caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01 were directly inspected and remain ignored; --verify re-derives commit identity only."
+    recorded_at: "2026-11-02T04:24:03.758Z"
     commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
   - criterion_id: A2
     status: pass
