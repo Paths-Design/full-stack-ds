@@ -1,0 +1,59 @@
+id: UNITY-CONSUMER-TEST-PORTABILITY-01
+title: 'Make the Unity package test assembly hold in a consumer project that stages nothing'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-11-03T23:43:21.142Z'
+updated_at: '2026-11-03T23:43:21.142Z'
+created_by_session: '7595fd31-759a-40e1-ad95-5b82dea139a1'
+blast_radius:
+  modules:
+    - 'Unity package EditMode test assembly and its fixtures (packages/ds-unity/Tests)'
+    - 'Unity lane runner staging and provenance (scripts/unity-tests.mjs)'
+    - 'SequenceControl autoplay dwell timing (packages/ds-unity/Runtime/SequenceControl.cs)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-unity/Tests'
+    - 'packages/ds-unity/Runtime/SequenceControl.cs'
+    - 'packages/ds-unity/Runtime/AssemblyInfo.cs'
+    - 'packages/ds-unity/Runtime/AssemblyInfo.cs.meta'
+    - 'scripts/unity-tests.mjs'
+    - 'packages/ds-unity/README.md'
+    - 'docs/architecture/unity-target.md'
+  out: []
+invariants:
+  - 'A case in the shipped test assembly depends only on the package and bytes it reads from the package; nothing a runner writes into a host project may be required for it to pass.'
+  - 'A shipped test leaves the host project as it found it: no asset remains under Assets after the run and no file is written outside the project.'
+  - 'Harness-only properties (the renamed contract host, the sample script compiling in a consumer) stay executed witnesses in the Unity lane; moving them out of the shipped assembly must not delete the pin.'
+  - 'The lane rejects skipped or inconclusive cases, so a portability fix cannot be a disguised Assert.Ignore.'
+  - 'Carousel duration is milliseconds of elapsed reading time, not a count of scheduler ticks, and one elapsed budget advances exactly one slide.'
+acceptance:
+  - id: A1
+    given: 'a Unity project holding only the embedded package, with an empty Assets folder recreated for the run'
+    when: 'the full package EditMode assembly runs on Unity 6000.5.3f1 and on 6000.6.7f1'
+    then: 'every case passes with zero failed, skipped or inconclusive, and Assets is still empty afterwards.'
+  - id: A2
+    given: 'RC engine exported at its own commit with the package overlaid and RC assets only'
+    when: 'the FullStackDS EditMode cases run in batch mode on Unity 6000.6.7f1'
+    then: 'the nine cases named in the brief pass, no FullStackDS case fails or skips, no fixture remains under the project Assets, and no file appears outside the project.'
+  - id: A3
+    given: 'a host with the sample imported at its committed GUIDs and the renamed contract host compiled in'
+    when: 'the lane runs the shipped assembly plus the harness assembly'
+    then: 'the shipped cases still pass and the harness witnesses execute the renamed-host UXML reload and resolve the compiled sample script.'
+  - id: A4
+    given: 'a carousel with a declared duration'
+    when: 'elapsed time is supplied in a synchronous test across short ticks and one long stall'
+    then: 'it holds below the duration, advances at the duration, advances exactly once across the stall, gives the incoming slide a full fresh budget, and restoring the tick-counting mutation fails the case.'
+  - id: A5
+    given: 'a package test that reads a fixture only a runner staged'
+    when: 'the lane runs'
+    then: 'the clean pass fails, including when an earlier run left that fixture in the scratch project.'
+rollback:
+  - 'Revert the slice commits on main; RC is unaffected until its own spec updates engine/Packages/com.fullstackds.ui.'
+non_functional: {}
+contracts:
+  - name: 'unity-package-test-portability'
+    type: contract-test
+  - name: 'carousel-sequence-dwell'
+    type: behavior
