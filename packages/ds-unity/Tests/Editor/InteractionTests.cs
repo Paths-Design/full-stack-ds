@@ -1458,6 +1458,9 @@ namespace FullStackDS.Tests
             Assert.That(carousel.Control.SpentMs, Is.EqualTo(0));
             carousel.Control.Tick(100);
             Assert.That(carousel.Control.SpentMs, Is.EqualTo(100), "the next interval is reading time");
+            carousel.AutoPlay = true;
+            carousel.Control.Tick(50);
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(150), "reassigning the same state starts nothing");
             carousel.Duration = 200;
             carousel.Control.Tick(1000);
             Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning a budget reset precedes the new budget");

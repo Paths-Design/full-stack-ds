@@ -108,8 +108,10 @@ namespace FullStackDS
             set
             {
                 autoPlay = value;
+                var wasPlaying = playing;
                 playing = autoPlay && !focusStopped;
-                intervalPredatesBudget = true;
+                // Reassigning the same state starts nothing; a host that does so every frame must still advance.
+                if (playing != wasPlaying) intervalPredatesBudget = true;
                 Apply();
             }
         }
