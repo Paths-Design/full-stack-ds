@@ -24,7 +24,9 @@ namespace FullStackDS
         private int duration;
         private bool focusStopped;
         private bool playing;
-        private float elapsedMs;
+        private long elapsedMs;
+        private bool intervalPredatesBudget;
+        internal long SpentMs => elapsedMs;
         public bool Controlled { get; set; }
         public Action<int> IndexChanged;
         public Action<int> IndexRequested;
@@ -58,7 +60,7 @@ namespace FullStackDS
             previousButton.clicked += () => Request(index - 1);
             nextButton.clicked += () => Request(index + 1);
             host.RegisterCallback<FocusInEvent>(_ => StopRotation());
-            host.schedule.Execute(Tick).Every(50);
+            host.schedule.Execute(state => Tick(state.deltaTime)).Every(50);
             Apply();
         }
 
@@ -106,7 +108,10 @@ namespace FullStackDS
             set
             {
                 autoPlay = value;
+                var wasPlaying = playing;
                 playing = autoPlay && !focusStopped;
+                // Reassigning the same state starts nothing; a host that does so every frame must still advance.
+                if (playing != wasPlaying) intervalPredatesBudget = true;
                 Apply();
             }
         }
@@ -118,6 +123,7 @@ namespace FullStackDS
             {
                 duration = value;
                 elapsedMs = 0;
+                intervalPredatesBudget = true;
                 Apply();
             }
         }
@@ -137,13 +143,21 @@ namespace FullStackDS
         {
             focusStopped = false;
             playing = !playing;
+            intervalPredatesBudget = true;
             ApplyLabel();
         }
 
-        private void Tick()
+        /// <summary>Spends elapsed milliseconds from the slide's reading budget. Duration is time rather than a
+        /// count of ticks, so a slow frame cannot stretch a dwell, and one exhausted budget advances one slide
+        /// however late it was noticed: the excess is not charged to the incoming slide. The interval in progress
+        /// when rotation starts or the budget resets began before that reading time, so it spends nothing; a dwell
+        /// can run up to one interval long but never short.</summary>
+        internal void Tick(long elapsed)
         {
-            if (!playing || duration <= 0 || items.Length <= 1) return;
-            elapsedMs += 50f;
+            var predatesBudget = intervalPredatesBudget;
+            intervalPredatesBudget = false;
+            if (predatesBudget || !playing || duration <= 0 || items.Length <= 1) return;
+            elapsedMs += elapsed;
             if (elapsedMs < duration) return;
             elapsedMs = 0;
             Request(index + 1);

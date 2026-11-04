@@ -48,6 +48,7 @@ namespace FullStackDS.Tests
             if (host != null) UnityEngine.Object.DestroyImmediate(host);
             if (settings != null) UnityEngine.Object.DestroyImmediate(settings);
             if (texture != null) { texture.Release(); UnityEngine.Object.DestroyImmediate(texture); }
+            TestAssets.RemoveSample();
         }
         private static IEnumerator Frames(int count = 8) { for (int i = 0; i < count; i++) yield return null; }
         // The contract's transitions (switch.motion.duration 100ms, tabs indicator 150ms) animate colour and
@@ -77,11 +78,33 @@ namespace FullStackDS.Tests
         }
         [Test] public void SampleStyleSheetImportsCleanlyAndIsFoundByItsGuid()
         {
+            // The shipped bytes import cleanly under fresh GUIDs, whatever a host has done to its own copy.
+            TestAssets.StageSample();
+            var shipped = AssetDatabase.LoadAssetAtPath<StyleSheet>(TestAssets.SampleFolder + "/Sample.uss");
+            Assert.That(shipped, Is.Not.Null);
+            Assert.That(shipped.importedWithErrors, Is.False);
+            Assert.That(shipped.importedWithWarnings, Is.False);
+            // The showcase finds an imported sample wherever it was imported, by the GUID the sample's meta commits.
+            Assert.That(File.ReadAllText(TestAssets.SampleSource("Sample.uss.meta")), Does.Contain("guid: " + FullStackDS.Editor.ControlsShowcase.SampleStyleSheetGuid));
+            var expected = TestAssets.SampleSheetAtCommittedGuid();
             var sheet = FullStackDS.Editor.ControlsShowcase.SampleStyleSheet();
             Assert.That(sheet, Is.Not.Null);
-            Assert.That(AssetDatabase.GetAssetPath(sheet), Is.EqualTo("Assets/InteractiveControls/Sample.uss"));
-            Assert.That(sheet.importedWithErrors, Is.False);
-            Assert.That(sheet.importedWithWarnings, Is.False);
+            Assert.That(AssetDatabase.GetAssetPath(sheet), Is.EqualTo(expected));
+        }
+        [Test] public void StagingNeverTouchesAFolderItDidNotCreate()
+        {
+            var folder = "Assets/FullStackDS.TestHostFolder-" + Guid.NewGuid().ToString("N");
+            AssetDatabase.CreateFolder("Assets", Path.GetFileName(folder));
+            var sentinel = folder + "/HostOwned.uss";
+            File.WriteAllText(sentinel, ".host-owned { color: red; }");
+            AssetDatabase.ImportAsset(sentinel, ImportAssetOptions.ForceSynchronousImport);
+            try {
+                TestAssets.Release(folder);
+                Assert.That(File.Exists(sentinel), Is.True, "cleanup leaves a folder it did not stage");
+                var refused = Assert.Throws<InvalidOperationException>(() => TestAssets.Claim(folder));
+                Assert.That(refused.Message, Does.Contain(folder));
+                Assert.That(File.ReadAllText(sentinel), Is.EqualTo(".host-owned { color: red; }"), "staging refuses rather than replaces");
+            } finally { AssetDatabase.DeleteAsset(folder); }
         }
 
         [UnityTest] public IEnumerator InputInvalidStatePaintsTheAuthoredBorderColor()
@@ -277,8 +300,7 @@ namespace FullStackDS.Tests
         {
             texture = new RenderTexture(width, height, 24); texture.Create();
             settings = ScriptableObject.CreateInstance<PanelSettings>();
-            settings.themeStyleSheet = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>("Assets/RuntimeTheme.tss");
-            Assert.That(settings.themeStyleSheet, Is.Not.Null);
+            settings.themeStyleSheet = TestAssets.RuntimeTheme();
             settings.scaleMode = PanelScaleMode.ConstantPixelSize;
             settings.targetTexture = texture;
             settings.clearColor = true;
@@ -286,18 +308,19 @@ namespace FullStackDS.Tests
             host = new GameObject("FSDS runtime style witness");
             var document = host.AddComponent<UIDocument>();
             document.panelSettings = settings;
-            document.visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/InteractiveControls/Controls.uxml");
-            Assert.That(document.visualTreeAsset, Is.Not.Null);
+            document.visualTreeAsset = TestAssets.SampleControls();
             return document;
         }
         private void Capture(string name)
         {
+            // Visual evidence for the lane that asks for it; a consumer's test run writes no images.
+            var dir = Environment.GetEnvironmentVariable("FSDS_UNITY_SCREENSHOTS");
+            if (string.IsNullOrEmpty(dir)) return;
             var previous = RenderTexture.active;
             var pixels = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
             try {
                 RenderTexture.active = texture;
                 pixels.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0); pixels.Apply();
-                var dir = Path.GetFullPath(Path.Combine(Application.dataPath, "../../screenshots"));
                 Directory.CreateDirectory(dir); File.WriteAllBytes(Path.Combine(dir, name + ".png"), pixels.EncodeToPNG());
             } finally { RenderTexture.active = previous; UnityEngine.Object.DestroyImmediate(pixels); }
         }
@@ -321,6 +344,7 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public IEnumerator SpinnerPaintsSourceBoundGeometryAndThemeColors()
         {
+            TestAssets.StageSample();
             yield return new EnterPlayMode();
             var document = Runtime(160, 160); yield return Settle();
             var root = document.rootVisualElement;
@@ -362,6 +386,7 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public IEnumerator PlayerThemeReachesControlsAndPortaledContent()
         {
+            TestAssets.StageSample();
             yield return new EnterPlayMode();
             var doc = Runtime(640, 800); yield return Settle();
             var root = doc.rootVisualElement;
@@ -408,6 +433,7 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public IEnumerator NarrowPlayerSurfaceWrapsAndScrollsWithoutEscapingViewport()
         {
+            TestAssets.StageSample();
             yield return new EnterPlayMode();
             var doc = Runtime(320, 600); yield return Frames();
             Capture("runtime-controls-320");

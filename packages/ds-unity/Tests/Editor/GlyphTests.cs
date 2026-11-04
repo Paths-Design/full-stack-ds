@@ -67,12 +67,11 @@ namespace FullStackDS.Tests
             Assert.That(icon.Q<GlyphElement>().HasGlyph, Is.True);
         }
 
-        [UnityTest] public IEnumerator UxmlIconAndRenamedReferenceSurviveReload()
+        [UnityTest] public IEnumerator UxmlIconAndComposedReferenceSurviveReload()
         {
             yield return new EnterPlayMode();
             var root = Runtime();
-            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/GlyphFixture.uxml");
-            Assert.That(asset, Is.Not.Null);
+            var asset = TestAssets.GlyphUxml();
             for (int reload = 0; reload < 2; reload++) {
                 root.Clear();
                 asset.CloneTree(root);
@@ -82,9 +81,9 @@ namespace FullStackDS.Tests
                 Assert.That(direct.Name, Is.EqualTo("check"));
                 Assert.That(direct.Size, Is.EqualTo("xl"));
                 Assert.That(direct.Q<GlyphElement>().HasGlyph, Is.True);
-                var synthetic = root.Q(className: "accordion");
-                Assert.That(synthetic, Is.Not.Null);
-                var nested = synthetic.Q<Icon>();
+                var accordion = root.Q<Accordion>();
+                Assert.That(accordion, Is.Not.Null);
+                var nested = accordion.Q<Icon>();
                 Assert.That(nested, Is.Not.Null);
                 Assert.That(nested.Name, Is.EqualTo("chevron-down"));
                 Assert.That(nested.Q<GlyphElement>().HasGlyph, Is.True);
@@ -99,9 +98,7 @@ namespace FullStackDS.Tests
             texture = new RenderTexture(64, 64, 24);
             texture.Create();
             settings = ScriptableObject.CreateInstance<PanelSettings>();
-            settings.themeStyleSheet =
-                AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>("Assets/RuntimeTheme.tss");
-            Assert.That(settings.themeStyleSheet, Is.Not.Null);
+            settings.themeStyleSheet = TestAssets.RuntimeTheme();
             settings.scaleMode = PanelScaleMode.ConstantPixelSize;
             settings.targetTexture = texture;
             settings.clearColor = true;

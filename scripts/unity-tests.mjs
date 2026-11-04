@@ -1,6 +1,12 @@
 /** Real Unity package-import + EditMode lane. No mock Unity assemblies.
  * UNITY_EDITOR selects the editor binary; generated project, logs and results
- * stay under the ignored scratch directory and are never package source. */
+ * stay under the ignored scratch directory and are never package source.
+ *
+ * Two passes share the scratch project. The consumer pass holds only the
+ * embedded package, so a shipped case that needs anything staged fails there,
+ * as it would in a consumer project. The harness pass adds what only this
+ * script can create (a contract host compiled under a new name, the sample
+ * imported with its script) and runs the shipped cases beside Tests/Harness~. */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -46,63 +52,87 @@ if (process.argv.includes('--compile-only')) {
   console.log('Runtime + Unity UXML source generation, Editor showcase and runtime sample compiled against real Unity assemblies. Editor execution NOT performed.');
   process.exit(0);
 }
-fs.mkdirSync(path.join(project, 'Assets'), { recursive: true });
-fs.writeFileSync(path.join(project, 'Assets/RuntimeTheme.tss'), '@import url("unity-theme://default");\n');
-fs.mkdirSync(path.join(project, 'ProjectSettings'), { recursive: true });
+const editorVersion = editor.match(/\/Editor\/([^/]+)\/Unity\.app\//)?.[1] ?? '6000.5.3f1';
+const assets = path.join(project, 'Assets');
+const packageSource = path.join(root, 'packages/ds-unity');
+const destination = path.join(project, 'Packages/com.fullstackds.ui');
+const versionFile = path.join(project, 'ProjectSettings/ProjectVersion.txt');
+fs.mkdirSync(path.dirname(versionFile), { recursive: true });
 fs.mkdirSync(path.join(project, 'Packages'), { recursive: true });
-fs.writeFileSync(path.join(project, 'ProjectSettings/ProjectVersion.txt'), 'm_EditorVersion: 6000.5.3f1\n');
+// One scratch project serves any installed Editor; a Library written by another version is not reusable.
+if (fs.existsSync(versionFile) && !fs.readFileSync(versionFile, 'utf8').includes(`m_EditorVersion: ${editorVersion}\n`)) {
+  fs.rmSync(path.join(project, 'Library'), { recursive: true, force: true });
+}
+fs.writeFileSync(versionFile, `m_EditorVersion: ${editorVersion}\n`);
 fs.writeFileSync(path.join(project, 'Packages/manifest.json'), JSON.stringify({
   dependencies: { 'com.unity.test-framework': '1.7.0', 'com.unity.modules.uielements': '1.0.0' },
-  testables: ['com.fullstackds.ui'],
 }, null, 2));
-const destination = path.join(project, 'Packages/com.fullstackds.ui');
-fs.rmSync(destination, { recursive: true, force: true });
-fs.cpSync(path.join(root, 'packages/ds-unity'), destination, { recursive: true });
-// Compile a renamed contract host into the imported package and mount it from
-// UXML. This is a consumer probe, not a committed generated target artifact.
-const { buildComponentIR } = await import('../packages/ds-codegen/dist/ir.js');
-const { createUnityEmitter } = await import('../packages/ds-codegen/dist/frameworks/unity/factory.js');
-const accordion = JSON.parse(fs.readFileSync(path.join(root, 'packages/ds-contracts/components/Accordion/Accordion.contract.json'), 'utf8'));
-const iconContract = JSON.parse(fs.readFileSync(path.join(root, 'packages/ds-contracts/components/Icon/Icon.contract.json'), 'utf8'));
-const synthetic = buildComponentIR(accordion, { allContracts: new Map([[accordion.name, accordion], [iconContract.name, iconContract]]) });
-synthetic.name = 'SyntheticGroup';
-for (const file of createUnityEmitter().emitComponent(synthetic, { componentsRoot: '', contractsRoot: path.join(root, 'packages/ds-contracts') })) {
-  const target = path.join(destination, 'Runtime/Components', file.relativePath);
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.writeFileSync(target, file.contents);
+
+// Assets is recreated for each pass, so a fixture left by an earlier pass or
+// run cannot satisfy a case in this one.
+function resetHost() {
+  fs.rmSync(assets, { recursive: true, force: true });
+  fs.mkdirSync(assets, { recursive: true });
+  fs.rmSync(destination, { recursive: true, force: true });
+  fs.cpSync(packageSource, destination, { recursive: true });
 }
-fs.writeFileSync(path.join(project, 'Assets/GlyphFixture.uxml'), `<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ds="FullStackDS">
-  <ui:VisualElement>
-    <ds:Icon name="check" size="xl" />
-    <ds:SyntheticGroup>
-      <ds:SyntheticGroupItem>
-        <ds:SyntheticGroupHeader><ds:SyntheticGroupTrigger value="item" text="Synthetic" /></ds:SyntheticGroupHeader>
-        <ds:SyntheticGroupContent value="item" />
-      </ds:SyntheticGroupItem>
-    </ds:SyntheticGroup>
-  </ui:VisualElement>
-</ui:UXML>\n`);
-// Import the sample as an actual consumer, not just ignored Samples~ bytes.
-fs.cpSync(path.join(root, 'packages/ds-unity/Samples~/InteractiveControls'), path.join(project, 'Assets/InteractiveControls'), { recursive: true });
-const results = path.join(evidence, 'results.xml');
-fs.rmSync(results, { force: true });
-const log = path.join(evidence, 'editor.log');
-console.log(`Unity package lane: ${editor}\nProject: ${project}\nLog: ${log}`);
-const run = spawnSync(editor, ['-batchmode', '-projectPath', project, '-runTests', '-testPlatform', 'EditMode', '-testResults', results, '-logFile', log], { stdio: 'inherit', timeout: 600_000 });
-if (run.error) throw run.error;
-if (!fs.existsSync(results)) {
-  const output = fs.existsSync(log) ? fs.readFileSync(log, 'utf8') : '';
-  const reason = /No valid Unity Editor license found/.test(output) ? 'Activate an Editor license in Unity Hub before running this lane.' : 'Unity exited before producing test results.';
-  throw new Error(`${reason} Exit ${run.status}; inspect ${log}`);
+const stagedAssets = () => fs.readdirSync(assets).filter(name => !name.endsWith('.meta')).sort();
+
+function runPass(pass, witnesses = []) {
+  const suffix = pass === 'consumer' ? '' : `-${pass}`;
+  const results = path.join(evidence, `results${suffix}.xml`);
+  const log = path.join(evidence, `editor${suffix}.log`);
+  fs.rmSync(results, { force: true });
+  const staged = stagedAssets();
+  console.log(`Unity ${pass} pass: ${editor}\nProject: ${project}\nStaged under Assets: ${JSON.stringify(staged)}\nLog: ${log}`);
+  const env = { ...process.env, FSDS_UNITY_SCREENSHOTS: path.join(evidence, 'screenshots') };
+  const run = spawnSync(editor, ['-batchmode', '-projectPath', project, '-runTests', '-testPlatform', 'EditMode', '-testResults', results, '-logFile', log], { stdio: 'inherit', timeout: 600_000, env });
+  if (run.error) throw run.error;
+  if (!fs.existsSync(results)) {
+    const output = fs.existsSync(log) ? fs.readFileSync(log, 'utf8') : '';
+    const reason = /No valid Unity Editor license found/.test(output) ? 'Activate an Editor license in Unity Hub before running this lane.' : 'Unity exited before producing test results.';
+    throw new Error(`${reason} Exit ${run.status}; inspect ${log}`);
+  }
+  const xml = fs.readFileSync(results, 'utf8');
+  const summary = xml.match(/<test-run\b[^>]*>/)?.[0];
+  console.log(summary);
+  const leaked = stagedAssets().filter(name => !staged.includes(name));
+  const missing = witnesses.filter(name => !new RegExp(`<test-case [^>]*fullname="[^"]*\\.${name}"[^>]*result="Passed"`).test(xml));
+  if (leaked.length > 0) console.error(`A case left assets behind in the host: ${leaked.join(', ')}`);
+  if (missing.length > 0) console.error(`Harness witnesses did not pass: ${missing.join(', ')}`);
+  // A skip would let a case pass here that does not hold in a consumer, so it fails the lane.
+  const passed = run.status === 0 && !!summary?.includes('result="Passed"') && /passed="[1-9]\d*"/.test(summary)
+    && /\bskipped="0"/.test(summary) && /\binconclusive="0"/.test(summary) && leaked.length === 0 && missing.length === 0;
+  return { staged, leaked, missing, resultsSha256: crypto.createHash('sha256').update(xml).digest('hex'), summary, passed };
 }
-const xml = fs.readFileSync(results, 'utf8');
-const summary = xml.match(/<test-run\b[^>]*>/)?.[0];
-console.log(summary);
+
+resetHost();
+const passes = { consumer: runPass('consumer') };
+if (passes.consumer.passed) {
+  resetHost();
+  // Compile a renamed contract host into the imported package and mount it from
+  // UXML. This is a consumer probe, not a committed generated target artifact.
+  const { buildComponentIR } = await import('../packages/ds-codegen/dist/ir.js');
+  const { createUnityEmitter } = await import('../packages/ds-codegen/dist/frameworks/unity/factory.js');
+  const accordion = JSON.parse(fs.readFileSync(path.join(root, 'packages/ds-contracts/components/Accordion/Accordion.contract.json'), 'utf8'));
+  const iconContract = JSON.parse(fs.readFileSync(path.join(root, 'packages/ds-contracts/components/Icon/Icon.contract.json'), 'utf8'));
+  const synthetic = buildComponentIR(accordion, { allContracts: new Map([[accordion.name, accordion], [iconContract.name, iconContract]]) });
+  synthetic.name = 'SyntheticGroup';
+  for (const file of createUnityEmitter().emitComponent(synthetic, { componentsRoot: '', contractsRoot: path.join(root, 'packages/ds-contracts') })) {
+    const target = path.join(destination, 'Runtime/Components', file.relativePath);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, file.contents);
+  }
+  // Import the sample as an actual consumer, committed metas and script included.
+  fs.cpSync(path.join(packageSource, 'Samples~/InteractiveControls'), path.join(assets, 'InteractiveControls'), { recursive: true });
+  fs.cpSync(path.join(packageSource, 'Tests/Harness~'), path.join(assets, 'Harness'), { recursive: true });
+  passes.harness = runPass('harness', ['RenamedContractHostComposesItsIconAcrossUxmlReload', 'ImportedSampleScriptCompilesInTheConsumerAssembly', 'ShowcaseFindsTheSampleSheetAtItsImportedPath']);
+}
 fs.writeFileSync(provenance, JSON.stringify({
   editor,
+  editorVersion,
   sourceRevision: revision.stdout.trim(),
   sourceDirty: dirt.stdout.trim().length > 0,
-  resultsSha256: crypto.createHash('sha256').update(xml).digest('hex'),
-  summary,
+  passes,
 }, null, 2));
-if (run.status !== 0 || !summary?.includes('result="Passed"') || !/passed="[1-9]\d*"/.test(summary)) process.exit(1);
+if (!passes.consumer.passed || !passes.harness?.passed) process.exit(1);

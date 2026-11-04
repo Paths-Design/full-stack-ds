@@ -17,7 +17,7 @@ namespace FullStackDS.Tests
             window = ScriptableObject.CreateInstance<EditorWindow>();
             window.position = new Rect(0, 0, 600, 600); window.Show();
         }
-        [TearDown] public void Teardown() => window.Close();
+        [TearDown] public void Teardown() { window.Close(); TestAssets.RemoveSample(); }
         private T Mount<T>(T element) where T : VisualElement { window.rootVisualElement.Add(element); return element; }
         private static void Submit(UnityEngine.UIElements.Button button)
         {
@@ -341,9 +341,8 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public IEnumerator UxmlImportsRealGeneratedControlsAndCompoundItems()
         {
-            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/InteractiveControls/Controls.uxml");
-            Assert.That(asset, Is.Not.Null);
-            asset.CloneTree(window.rootVisualElement);
+            TestAssets.StageSample();
+            TestAssets.SampleControls().CloneTree(window.rootVisualElement);
             yield return null; yield return null;
             var sound = window.rootVisualElement.Q<Switch>("sound");
             Assert.That(sound.Checked, Is.True); Assert.That(sound.contentContainer.Q<UnityEngine.UIElements.Label>().text, Is.EqualTo("Enable sound"));
@@ -1395,22 +1394,131 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Indicator", "Label", "AutoPlayLabel" })
                 Assert.That(typeof(FullStackDS.Carousel).GetProperty(prop), Is.Null, prop);
         }
-        [UnityTest] public System.Collections.IEnumerator CarouselAdvancesOnTheDeclaredDwell()
+        private FullStackDS.Carousel MountCarousel(int duration, bool autoPlay)
         {
             var carousel = Mount(new FullStackDS.Carousel());
             carousel.Slides = new[] { "One", "Two", "Three" };
             carousel.Add(new Label { text = "One" });
             carousel.Add(new Label { text = "Two" });
             carousel.Add(new Label { text = "Three" });
+            carousel.Duration = duration;
+            carousel.AutoPlay = autoPlay;
+            return carousel;
+        }
+        // The panel scheduler runs nowhere in a synchronous case, so these own the clock outright: the answer
+        // depends on the elapsed time supplied and never on how long a host's frames take.
+        [Test] public void CarouselDwellIsElapsedTimeRegardlessOfHowItIsDelivered()
+        {
+            var carousel = MountCarousel(1000, autoPlay: true);
+            var advances = 0;
+            carousel.OnIndexChange = _ => advances++;
+            carousel.Control.Tick(0);
+            carousel.Control.Tick(999);
+            Assert.That(carousel.Index, Is.EqualTo(0), "the slide holds until its whole dwell has elapsed");
+            carousel.Control.Tick(1);
+            Assert.That(carousel.Index, Is.EqualTo(1), "the slide advances exactly at the declared dwell");
+            for (var tick = 0; tick < 199; tick++) carousel.Control.Tick(5);
+            Assert.That(carousel.Index, Is.EqualTo(1), "many short ticks spend the same budget as one long one");
+            carousel.Control.Tick(5);
+            Assert.That(carousel.Index, Is.EqualTo(2));
+            Assert.That(advances, Is.EqualTo(2));
+            Assert.That(carousel.Viewport[2].style.display.value, Is.EqualTo(DisplayStyle.Flex));
+        }
+        [Test] public void CarouselStallAdvancesOnceAndKeepsTheIncomingSlidesBudget()
+        {
+            var carousel = MountCarousel(1000, autoPlay: true);
+            var advances = 0;
+            carousel.OnIndexChange = _ => advances++;
+            carousel.Control.Tick(0);
+            carousel.Control.Tick(5000);
+            Assert.That(carousel.Index, Is.EqualTo(1), "a stall worth five dwells must not skip slides");
+            Assert.That(advances, Is.EqualTo(1));
+            carousel.Control.Tick(999);
+            Assert.That(carousel.Index, Is.EqualTo(1), "the stall's excess is not charged to the incoming slide");
+            carousel.Control.Tick(1);
+            Assert.That(carousel.Index, Is.EqualTo(2));
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "the timed sequence wraps");
+        }
+        [Test] public void CarouselSpendsNoBudgetWhileRotationIsOff()
+        {
+            var carousel = MountCarousel(1000, autoPlay: false);
+            carousel.Control.Tick(0);
+            carousel.Control.Tick(5000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "autoplay is off");
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(0), "time with rotation off spends nothing");
+        }
+        [Test] public void CarouselChargesNoIntervalThatBeganBeforeItsBudget()
+        {
+            var carousel = MountCarousel(300, autoPlay: false);
+            carousel.Control.Tick(50);
             carousel.AutoPlay = true;
-            carousel.Duration = 50;
-            var deadline = UnityEngine.Time.realtimeSinceStartup + 3f;
-            while (UnityEngine.Time.realtimeSinceStartup < deadline && carousel.Index == 0)
-            {
-                yield return null;
-            }
-            Assert.That(carousel.Index, Is.EqualTo(1));
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning the start of rotation precedes reading time");
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(0));
+            carousel.Control.Tick(100);
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(100), "the next interval is reading time");
+            carousel.AutoPlay = true;
+            carousel.Control.Tick(50);
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(150), "reassigning the same state starts nothing");
+            carousel.Duration = 200;
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning a budget reset precedes the new budget");
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(0));
+            carousel.RotationStart = "Start";
+            carousel.RotationStop = "Stop";
+            var rotation = carousel.Query<UnityEngine.UIElements.Button>().ToList()[0];
+            Submit(rotation);
+            carousel.Control.Tick(50);
+            Submit(rotation);
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning a restart precedes reading time");
+            carousel.Control.Tick(200);
+            Assert.That(carousel.Index, Is.EqualTo(1), "the budget still runs out after the restart");
+        }
+        // Real-clock cases compare measured quantities, so a slow host only moves both sides. The index comes from
+        // the advance itself rather than a later poll.
+        private static System.Collections.IEnumerator WaitForAdvance(FullStackDS.Carousel carousel, System.Diagnostics.Stopwatch clock, System.Action<int, long> advanced)
+        {
+            var first = -1;
+            carousel.OnIndexChange = value => { if (first < 0) { first = value; advanced(value, clock.ElapsedMilliseconds); } };
+            var deadline = UnityEngine.Time.realtimeSinceStartup + 5f;
+            while (first < 0 && UnityEngine.Time.realtimeSinceStartup < deadline) yield return null;
+        }
+        [UnityTest] public System.Collections.IEnumerator CarouselAdvancesOnTheDeclaredDwell()
+        {
+            const int Dwell = 300;
+            var carousel = MountCarousel(Dwell, autoPlay: false);
+            var index = -1; var at = -1L;
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            carousel.AutoPlay = true;
+            yield return WaitForAdvance(carousel, clock, (value, elapsed) => { index = value; at = elapsed; });
+            Assert.That(index, Is.EqualTo(1), "the panel scheduler drives one advance to the next slide");
+            Assert.That(at, Is.GreaterThanOrEqualTo(Dwell - 60), "the first slide keeps its declared dwell");
             Assert.That(carousel.Viewport[1].style.display.value, Is.EqualTo(DisplayStyle.Flex));
+        }
+        [UnityTest] public System.Collections.IEnumerator CarouselSpendsNoBudgetWhileDetachedFromItsPanel()
+        {
+            const int Away = 400;
+            const int Tolerance = 60;
+            var carousel = MountCarousel(600_000, autoPlay: true);
+            // Ticks on the panel come first: the time away must follow one for a clock to charge it.
+            var deadline = UnityEngine.Time.realtimeSinceStartup + 5f;
+            while (carousel.Control.SpentMs == 0 && UnityEngine.Time.realtimeSinceStartup < deadline) yield return null;
+            var spent = carousel.Control.SpentMs;
+            Assert.That(spent, Is.GreaterThan(0), "the panel scheduler spends the budget");
+            var parent = carousel.parent;
+            carousel.RemoveFromHierarchy();
+            var away = System.Diagnostics.Stopwatch.StartNew();
+            while (away.ElapsedMilliseconds < Away) yield return null;
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(spent), "nothing ticks off the panel");
+            var back = System.Diagnostics.Stopwatch.StartNew();
+            parent.Add(carousel);
+            deadline = UnityEngine.Time.realtimeSinceStartup + 5f;
+            while (carousel.Control.SpentMs == spent && UnityEngine.Time.realtimeSinceStartup < deadline) yield return null;
+            var charged = carousel.Control.SpentMs - spent;
+            Assert.That(charged, Is.GreaterThan(0), "the budget resumes on the panel");
+            Assert.That(charged, Is.LessThanOrEqualTo(back.ElapsedMilliseconds + Tolerance), "time off the panel is not reading time");
         }
         [Test] public void CalendarRendersItsMonthAndCommitsSingleDates()
         {

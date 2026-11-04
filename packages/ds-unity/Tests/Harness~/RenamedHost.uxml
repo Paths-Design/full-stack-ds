@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ds="FullStackDS">
+  <ui:VisualElement>
+    <ds:SyntheticGroup>
+      <ds:SyntheticGroupItem>
+        <ds:SyntheticGroupHeader><ds:SyntheticGroupTrigger value="item" text="Synthetic" /></ds:SyntheticGroupHeader>
+        <ds:SyntheticGroupContent value="item" />
+      </ds:SyntheticGroupItem>
+    </ds:SyntheticGroup>
+  </ui:VisualElement>
+</ui:UXML>

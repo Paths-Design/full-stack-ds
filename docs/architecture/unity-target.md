@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
-updated: 2026-11-02
-verified_at_commit: 2e0a5e699f6153e3ba2b97eee12610267b101e2d
+updated: 2026-11-03
+verified_at_commit: 26d55295e09a9df9ebe9ab9296bfc8e39666e2f7
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -41,6 +41,8 @@ For a static `componentRef` to an admitted target, the walker constructs that ge
 Unity's [custom-control documentation](https://docs.unity3d.com/6000.0/Documentation/Manual/UIE-create-custom-controls.html) defines the partial-class / `UxmlElement` registration mechanism. Unity's [package layout documentation](https://docs.unity3d.com/6000.0/Documentation/Manual/cus-layout.html) defines Runtime, Editor, Tests and Samples packaging.
 
 ## Recorded pilot verification
+
+`node scripts/unity-tests.mjs` runs two passes in one scratch project, and `Assets` is recreated for each. The consumer pass holds only the embedded package, so a shipped case that needs staging fails there as it would in a consuming project. The harness pass adds what only the runner creates: `Tests/Harness~`, a contract host compiled under a new name, and the sample imported with its script. A skipped or inconclusive case, or an asset a case leaves behind, fails the lane. The passes prove the assembly in those two hosts. They do not prove it in every consuming project, whose settings and bootstraps can differ.
 
 At source commit `c3b29662`, Unity 6000.5.3f1 ran `node scripts/unity-tests.mjs` with graphics enabled: all 14 EditMode cases passed, with no skipped cases. The runner imported the package as an embedded UPM package and imported its UXML/runtime sample into a consuming project's Assets directory. The UXML witness constructs the generated controls, discovers compound items, activates a tab and opens the popover. Other cases exercise boolean state, controlled requests, accordion single/multiple selection, keyboard tab navigation, panel retention, anchored dismissal and geometry.
 
