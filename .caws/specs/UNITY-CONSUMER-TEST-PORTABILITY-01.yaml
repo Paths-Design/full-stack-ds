@@ -57,3 +57,11 @@ contracts:
     type: contract-test
   - name: 'carousel-sequence-dwell'
     type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "scripts/unity-tests.mjs consumer pass at clean e940a70c6 (sourceDirty false): 109/109 on 6000.5.3f1 and 109/109 on 6000.6.7f1, failed 0, skipped 0, inconclusive 0. The pass recreates Assets, records staged [] before the run and fails the lane on any asset left after it; leaked [] on both editors. Proves these two hosts only, not every consuming project."
+    recorded_at: "2026-11-04T02:06:35.432Z"
+    command: "pnpm run test:unity; UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.6.7f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: e940a70c6ccb3202dfdffd405642e9d9e9459eb3
