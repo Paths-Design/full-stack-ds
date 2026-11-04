@@ -25,6 +25,8 @@ namespace FullStackDS
         private bool focusStopped;
         private bool playing;
         private long elapsedMs;
+        private bool intervalPredatesBudget;
+        internal long SpentMs => elapsedMs;
         public bool Controlled { get; set; }
         public Action<int> IndexChanged;
         public Action<int> IndexRequested;
@@ -107,6 +109,7 @@ namespace FullStackDS
             {
                 autoPlay = value;
                 playing = autoPlay && !focusStopped;
+                intervalPredatesBudget = true;
                 Apply();
             }
         }
@@ -118,6 +121,7 @@ namespace FullStackDS
             {
                 duration = value;
                 elapsedMs = 0;
+                intervalPredatesBudget = true;
                 Apply();
             }
         }
@@ -137,15 +141,20 @@ namespace FullStackDS
         {
             focusStopped = false;
             playing = !playing;
+            intervalPredatesBudget = true;
             ApplyLabel();
         }
 
         /// <summary>Spends elapsed milliseconds from the slide's reading budget. Duration is time rather than a
         /// count of ticks, so a slow frame cannot stretch a dwell, and one exhausted budget advances one slide
-        /// however late it was noticed: the excess is not charged to the incoming slide.</summary>
+        /// however late it was noticed: the excess is not charged to the incoming slide. The interval in progress
+        /// when rotation starts or the budget resets began before that reading time, so it spends nothing; a dwell
+        /// can run up to one interval long but never short.</summary>
         internal void Tick(long elapsed)
         {
-            if (!playing || duration <= 0 || items.Length <= 1) return;
+            var predatesBudget = intervalPredatesBudget;
+            intervalPredatesBudget = false;
+            if (predatesBudget || !playing || duration <= 0 || items.Length <= 1) return;
             elapsedMs += elapsed;
             if (elapsedMs < duration) return;
             elapsedMs = 0;

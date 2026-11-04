@@ -1412,6 +1412,7 @@ namespace FullStackDS.Tests
             var carousel = MountCarousel(1000, autoPlay: true);
             var advances = 0;
             carousel.OnIndexChange = _ => advances++;
+            carousel.Control.Tick(0);
             carousel.Control.Tick(999);
             Assert.That(carousel.Index, Is.EqualTo(0), "the slide holds until its whole dwell has elapsed");
             carousel.Control.Tick(1);
@@ -1428,6 +1429,7 @@ namespace FullStackDS.Tests
             var carousel = MountCarousel(1000, autoPlay: true);
             var advances = 0;
             carousel.OnIndexChange = _ => advances++;
+            carousel.Control.Tick(0);
             carousel.Control.Tick(5000);
             Assert.That(carousel.Index, Is.EqualTo(1), "a stall worth five dwells must not skip slides");
             Assert.That(advances, Is.EqualTo(1));
@@ -1441,16 +1443,38 @@ namespace FullStackDS.Tests
         [Test] public void CarouselSpendsNoBudgetWhileRotationIsOff()
         {
             var carousel = MountCarousel(1000, autoPlay: false);
+            carousel.Control.Tick(0);
             carousel.Control.Tick(5000);
             Assert.That(carousel.Index, Is.EqualTo(0), "autoplay is off");
-            carousel.AutoPlay = true;
-            carousel.Control.Tick(999);
-            Assert.That(carousel.Index, Is.EqualTo(0), "time before rotation started is not reading time");
-            carousel.Control.Tick(1);
-            Assert.That(carousel.Index, Is.EqualTo(1));
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(0), "time with rotation off spends nothing");
         }
-        // Real-clock cases bound the dwell from below only. A slow host can only delay an observation, so neither
-        // can fail on frame pacing, and the index comes from the advance itself rather than a later poll.
+        [Test] public void CarouselChargesNoIntervalThatBeganBeforeItsBudget()
+        {
+            var carousel = MountCarousel(300, autoPlay: false);
+            carousel.Control.Tick(50);
+            carousel.AutoPlay = true;
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning the start of rotation precedes reading time");
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(0));
+            carousel.Control.Tick(100);
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(100), "the next interval is reading time");
+            carousel.Duration = 200;
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning a budget reset precedes the new budget");
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(0));
+            carousel.RotationStart = "Start";
+            carousel.RotationStop = "Stop";
+            var rotation = carousel.Query<UnityEngine.UIElements.Button>().ToList()[0];
+            Submit(rotation);
+            carousel.Control.Tick(50);
+            Submit(rotation);
+            carousel.Control.Tick(1000);
+            Assert.That(carousel.Index, Is.EqualTo(0), "a stall spanning a restart precedes reading time");
+            carousel.Control.Tick(200);
+            Assert.That(carousel.Index, Is.EqualTo(1), "the budget still runs out after the restart");
+        }
+        // Real-clock cases compare measured quantities, so a slow host only moves both sides. The index comes from
+        // the advance itself rather than a later poll.
         private static System.Collections.IEnumerator WaitForAdvance(FullStackDS.Carousel carousel, System.Diagnostics.Stopwatch clock, System.Action<int, long> advanced)
         {
             var first = -1;
@@ -1472,24 +1496,26 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public System.Collections.IEnumerator CarouselSpendsNoBudgetWhileDetachedFromItsPanel()
         {
-            const int Dwell = 800;
-            var carousel = MountCarousel(Dwell, autoPlay: false);
-            var onPanel = System.Diagnostics.Stopwatch.StartNew();
-            carousel.AutoPlay = true;
-            // The carousel ticks on its panel first: the time away must follow a tick for a clock to charge it.
-            while (onPanel.ElapsedMilliseconds < 120) yield return null;
-            var spent = onPanel.ElapsedMilliseconds;
+            const int Away = 400;
+            const int Tolerance = 60;
+            var carousel = MountCarousel(600_000, autoPlay: true);
+            // Ticks on the panel come first: the time away must follow one for a clock to charge it.
+            var deadline = UnityEngine.Time.realtimeSinceStartup + 5f;
+            while (carousel.Control.SpentMs == 0 && UnityEngine.Time.realtimeSinceStartup < deadline) yield return null;
+            var spent = carousel.Control.SpentMs;
+            Assert.That(spent, Is.GreaterThan(0), "the panel scheduler spends the budget");
             var parent = carousel.parent;
             carousel.RemoveFromHierarchy();
             var away = System.Diagnostics.Stopwatch.StartNew();
-            while (away.ElapsedMilliseconds < Dwell) yield return null;
-            Assert.That(carousel.Index, Is.EqualTo(0));
-            var index = -1; var at = -1L;
+            while (away.ElapsedMilliseconds < Away) yield return null;
+            Assert.That(carousel.Control.SpentMs, Is.EqualTo(spent), "nothing ticks off the panel");
             var back = System.Diagnostics.Stopwatch.StartNew();
             parent.Add(carousel);
-            yield return WaitForAdvance(carousel, back, (value, elapsed) => { index = value; at = elapsed; });
-            Assert.That(index, Is.EqualTo(1));
-            Assert.That(at, Is.GreaterThanOrEqualTo(Dwell - spent - 60), "time off the panel is not reading time");
+            deadline = UnityEngine.Time.realtimeSinceStartup + 5f;
+            while (carousel.Control.SpentMs == spent && UnityEngine.Time.realtimeSinceStartup < deadline) yield return null;
+            var charged = carousel.Control.SpentMs - spent;
+            Assert.That(charged, Is.GreaterThan(0), "the budget resumes on the panel");
+            Assert.That(charged, Is.LessThanOrEqualTo(back.ElapsedMilliseconds + Tolerance), "time off the panel is not reading time");
         }
         [Test] public void CalendarRendersItsMonthAndCommitsSingleDates()
         {

@@ -78,14 +78,33 @@ namespace FullStackDS.Tests
         }
         [Test] public void SampleStyleSheetImportsCleanlyAndIsFoundByItsGuid()
         {
+            // The shipped bytes import cleanly under fresh GUIDs, whatever a host has done to its own copy.
+            TestAssets.StageSample();
+            var shipped = AssetDatabase.LoadAssetAtPath<StyleSheet>(TestAssets.SampleFolder + "/Sample.uss");
+            Assert.That(shipped, Is.Not.Null);
+            Assert.That(shipped.importedWithErrors, Is.False);
+            Assert.That(shipped.importedWithWarnings, Is.False);
             // The showcase finds an imported sample wherever it was imported, by the GUID the sample's meta commits.
             Assert.That(File.ReadAllText(TestAssets.SampleSource("Sample.uss.meta")), Does.Contain("guid: " + FullStackDS.Editor.ControlsShowcase.SampleStyleSheetGuid));
             var expected = TestAssets.SampleSheetAtCommittedGuid();
             var sheet = FullStackDS.Editor.ControlsShowcase.SampleStyleSheet();
             Assert.That(sheet, Is.Not.Null);
             Assert.That(AssetDatabase.GetAssetPath(sheet), Is.EqualTo(expected));
-            Assert.That(sheet.importedWithErrors, Is.False);
-            Assert.That(sheet.importedWithWarnings, Is.False);
+        }
+        [Test] public void StagingNeverTouchesAFolderItDidNotCreate()
+        {
+            var folder = "Assets/FullStackDS.TestHostFolder-" + Guid.NewGuid().ToString("N");
+            AssetDatabase.CreateFolder("Assets", Path.GetFileName(folder));
+            var sentinel = folder + "/HostOwned.uss";
+            File.WriteAllText(sentinel, ".host-owned { color: red; }");
+            AssetDatabase.ImportAsset(sentinel, ImportAssetOptions.ForceSynchronousImport);
+            try {
+                TestAssets.Release(folder);
+                Assert.That(File.Exists(sentinel), Is.True, "cleanup leaves a folder it did not stage");
+                var refused = Assert.Throws<InvalidOperationException>(() => TestAssets.Claim(folder));
+                Assert.That(refused.Message, Does.Contain(folder));
+                Assert.That(File.ReadAllText(sentinel), Is.EqualTo(".host-owned { color: red; }"), "staging refuses rather than replaces");
+            } finally { AssetDatabase.DeleteAsset(folder); }
         }
 
         [UnityTest] public IEnumerator InputInvalidStatePaintsTheAuthoredBorderColor()

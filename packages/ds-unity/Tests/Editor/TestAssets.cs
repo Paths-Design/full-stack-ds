@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NUnit.Framework;
 using UnityEditor;
@@ -6,7 +7,7 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace FullStackDS.Tests
 {
-    /// <summary>Every asset a shipped case reads comes from this package, so a case holds in any host project
+    /// <summary>Every asset a shipped case judges comes from this package, so a case holds in any host project
     /// without staging. Test-only fixtures load by package path. The sample lives in Samples~, which Unity never
     /// imports, so a case that witnesses the shipped sample copies its bytes into a transient folder and the
     /// fixture's teardown removes it.</summary>
@@ -14,8 +15,11 @@ namespace FullStackDS.Tests
     {
         private const string Package = "Packages/com.fullstackds.ui";
         // A fixed path: Player-context cases stage before EnterPlayMode and read after its domain reload, which
-        // keeps no static state. Staging replaces whatever a crashed run left here.
+        // keeps no static state.
         public const string SampleFolder = "Assets/FullStackDS.TestSample";
+        // Survives a killed run, so its leftover can be replaced while a host folder of the same name is left
+        // alone. The leading dot keeps it out of the AssetDatabase.
+        private const string StageMarker = ".staged-by-fullstackds-tests";
 
         public static ThemeStyleSheet RuntimeTheme() => Fixture<ThemeStyleSheet>("RuntimeTheme.tss");
         public static VisualTreeAsset GlyphUxml() => Fixture<VisualTreeAsset>("GlyphFixture.uxml");
@@ -38,7 +42,7 @@ namespace FullStackDS.Tests
         /// under Assets would recompile the host's assemblies in the middle of a test.</summary>
         public static void StageSample()
         {
-            Reset();
+            Claim(SampleFolder);
             Import("Sample.uss", withMeta: false);
             Import("Controls.uxml", withMeta: false);
         }
@@ -49,7 +53,7 @@ namespace FullStackDS.Tests
         {
             var imported = AssetDatabase.GUIDToAssetPath(Editor.ControlsShowcase.SampleStyleSheetGuid);
             if (!string.IsNullOrEmpty(imported)) return imported;
-            Reset();
+            Claim(SampleFolder);
             return Import("Sample.uss", withMeta: true);
         }
 
@@ -61,15 +65,21 @@ namespace FullStackDS.Tests
             return asset;
         }
 
-        public static void RemoveSample()
+        public static void RemoveSample() => Release(SampleFolder);
+
+        /// <summary>Removes a folder only when it carries this assembly's marker.</summary>
+        public static void Release(string folder)
         {
-            if (AssetDatabase.IsValidFolder(SampleFolder)) AssetDatabase.DeleteAsset(SampleFolder);
+            if (File.Exists(Path.Combine(folder, StageMarker))) AssetDatabase.DeleteAsset(folder);
         }
 
-        private static void Reset()
+        /// <summary>Creates a marked folder, replacing an earlier stage and refusing a folder the host owns.</summary>
+        public static void Claim(string folder)
         {
-            RemoveSample();
-            AssetDatabase.CreateFolder(Path.GetDirectoryName(SampleFolder), Path.GetFileName(SampleFolder));
+            Release(folder);
+            if (Directory.Exists(folder)) throw new InvalidOperationException($"{folder} belongs to this project, so a test will not replace it.");
+            AssetDatabase.CreateFolder(Path.GetDirectoryName(folder), Path.GetFileName(folder));
+            File.WriteAllText(Path.Combine(folder, StageMarker), "");
         }
 
         private static string Import(string name, bool withMeta)
