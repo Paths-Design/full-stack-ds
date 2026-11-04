@@ -1472,19 +1472,24 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public System.Collections.IEnumerator CarouselSpendsNoBudgetWhileDetachedFromItsPanel()
         {
-            const int Dwell = 300;
-            var carousel = MountCarousel(Dwell, autoPlay: true);
+            const int Dwell = 800;
+            var carousel = MountCarousel(Dwell, autoPlay: false);
+            var onPanel = System.Diagnostics.Stopwatch.StartNew();
+            carousel.AutoPlay = true;
+            // The carousel ticks on its panel first: the time away must follow a tick for a clock to charge it.
+            while (onPanel.ElapsedMilliseconds < 120) yield return null;
+            var spent = onPanel.ElapsedMilliseconds;
             var parent = carousel.parent;
             carousel.RemoveFromHierarchy();
-            var until = UnityEngine.Time.realtimeSinceStartup + (Dwell * 2) / 1000f;
-            while (UnityEngine.Time.realtimeSinceStartup < until) yield return null;
+            var away = System.Diagnostics.Stopwatch.StartNew();
+            while (away.ElapsedMilliseconds < Dwell) yield return null;
             Assert.That(carousel.Index, Is.EqualTo(0));
             var index = -1; var at = -1L;
-            var clock = System.Diagnostics.Stopwatch.StartNew();
+            var back = System.Diagnostics.Stopwatch.StartNew();
             parent.Add(carousel);
-            yield return WaitForAdvance(carousel, clock, (value, elapsed) => { index = value; at = elapsed; });
+            yield return WaitForAdvance(carousel, back, (value, elapsed) => { index = value; at = elapsed; });
             Assert.That(index, Is.EqualTo(1));
-            Assert.That(at, Is.GreaterThanOrEqualTo(Dwell - 60), "time off the panel is not reading time");
+            Assert.That(at, Is.GreaterThanOrEqualTo(Dwell - spent - 60), "time off the panel is not reading time");
         }
         [Test] public void CalendarRendersItsMonthAndCommitsSingleDates()
         {
