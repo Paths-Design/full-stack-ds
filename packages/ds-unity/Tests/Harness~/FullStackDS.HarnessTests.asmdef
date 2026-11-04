@@ -1,0 +1,13 @@
+{
+  "name": "FullStackDS.HarnessTests",
+  "references": [
+    "FullStackDS.Runtime",
+    "FullStackDS.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

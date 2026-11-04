@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ds="FullStackDS">
+  <ui:VisualElement>
+    <ds:Icon name="check" size="xl" />
+    <ds:Accordion>
+      <ds:AccordionItem>
+        <ds:AccordionHeader><ds:AccordionTrigger value="item" text="Composed" /></ds:AccordionHeader>
+        <ds:AccordionContent value="item" />
+      </ds:AccordionItem>
+    </ds:Accordion>
+  </ui:VisualElement>
+</ui:UXML>

@@ -24,7 +24,7 @@ namespace FullStackDS
         private int duration;
         private bool focusStopped;
         private bool playing;
-        private float elapsedMs;
+        private long elapsedMs;
         public bool Controlled { get; set; }
         public Action<int> IndexChanged;
         public Action<int> IndexRequested;
@@ -58,7 +58,7 @@ namespace FullStackDS
             previousButton.clicked += () => Request(index - 1);
             nextButton.clicked += () => Request(index + 1);
             host.RegisterCallback<FocusInEvent>(_ => StopRotation());
-            host.schedule.Execute(Tick).Every(50);
+            host.schedule.Execute(state => Tick(state.deltaTime)).Every(50);
             Apply();
         }
 
@@ -140,10 +140,13 @@ namespace FullStackDS
             ApplyLabel();
         }
 
-        private void Tick()
+        /// <summary>Spends elapsed milliseconds from the slide's reading budget. Duration is time rather than a
+        /// count of ticks, so a slow frame cannot stretch a dwell, and one exhausted budget advances one slide
+        /// however late it was noticed: the excess is not charged to the incoming slide.</summary>
+        internal void Tick(long elapsed)
         {
             if (!playing || duration <= 0 || items.Length <= 1) return;
-            elapsedMs += 50f;
+            elapsedMs += elapsed;
             if (elapsedMs < duration) return;
             elapsedMs = 0;
             Request(index + 1);
