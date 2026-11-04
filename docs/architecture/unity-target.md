@@ -42,6 +42,8 @@ Unity's [custom-control documentation](https://docs.unity3d.com/6000.0/Documenta
 
 ## Recorded pilot verification
 
+`node scripts/unity-tests.mjs` runs two passes in one scratch project, and `Assets` is recreated for each. The consumer pass holds only the embedded package, so a shipped case that needs staging fails there as it would in a consuming project. The harness pass adds what only the runner creates: `Tests/Harness~`, a contract host compiled under a new name, and the sample imported with its script. A skipped or inconclusive case, or an asset a case leaves behind, fails the lane. The passes prove the assembly in those two hosts. They do not prove it in every consuming project, whose settings and bootstraps can differ.
+
 At source commit `c3b29662`, Unity 6000.5.3f1 ran `node scripts/unity-tests.mjs` with graphics enabled: all 14 EditMode cases passed, with no skipped cases. The runner imported the package as an embedded UPM package and imported its UXML/runtime sample into a consuming project's Assets directory. The UXML witness constructs the generated controls, discovers compound items, activates a tab and opens the popover. Other cases exercise boolean state, controlled requests, accordion single/multiple selection, keyboard tab navigation, panel retention, anchored dismissal and geometry.
 
 The initial graphics-disabled run failed during panel setup; it supplied no behavior evidence. The first graphics-enabled run exposed a test-policy overlap: outside pointer focus changes also trigger blur. The final pointer case disables blur to isolate the outside-pointer policy; a separate real-focus case verifies blur across the anchor/content boundary.
