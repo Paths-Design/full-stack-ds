@@ -65,3 +65,10 @@ evidence:
     command: "pnpm run test:unity; UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.6.7f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: e940a70c6ccb3202dfdffd405642e9d9e9459eb3
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Export of RC dafc8c9c with the package overlaid: 109/109 FullStackDS in four filtered runs at e940a70c6, one with 10 busy loops on 10 cores, and in the fast tier. Unmodified baseline on the same export: 94 passed, 9 failed. The eight unrenamed brief cases and UxmlIconAndComposedReferenceSurviveReload, which replaces UxmlIconAndRenamedReferenceSurviveReload, passed by name. Filtered runs left Assets and the export parent unchanged from the baseline, whose three added RC folders also appear with the unmodified package. Fast-tier non-FSDS outcomes are identical to baseline: 0 differ, including 10 RC failures present in both. Not run in the RC repository itself."
+    recorded_at: "2026-11-04T02:06:43.529Z"
+    command: "git -C RC archive dafc8c9c engine, clone RC engine/Library, rsync packages/ds-unity over Packages/com.fullstackds.ui keeping RC metas, then Unity 6000.6.7f1 -batchmode -runTests -testPlatform EditMode -testFilter ^FullStackDS\\."
+    exit_code: 0
+    commit_sha: e940a70c6ccb3202dfdffd405642e9d9e9459eb3
