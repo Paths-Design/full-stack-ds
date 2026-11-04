@@ -86,3 +86,10 @@ evidence:
     command: "Unity 6000.6.7f1 -batchmode -runTests -testPlatform EditMode -testFilter ^FullStackDS\\.Tests\\.InteractionTests\\.Carousel, once per mutation of a package copy"
     exit_code: 0
     commit_sha: e940a70c6ccb3202dfdffd405642e9d9e9459eb3
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "With that fixture physically present in the scratch project from the earlier harness pass, the consumer pass failed: 108 cases, 107 passed, 1 failed, lane exit 1, harness pass not run. Sibling probes also failed the lane: skip (skipped 1), inconclusive (NUnit result Passed, inconclusive 1) and a leaked asset (LeakedByProbe.uss). Run at 131ca6907; scripts/unity-tests.mjs is unchanged through e940a70c6 (empty diff). The exit code 1 is the required outcome of this falsifier."
+    recorded_at: "2026-11-04T02:07:08.254Z"
+    command: "plant a probe case reading Assets/InteractiveControls/Controls.uxml in packages/ds-unity/Tests/Editor, then pnpm run test:unity"
+    exit_code: 1
+    commit_sha: "131ca6907a91e4ce819315fbd63c2b238a089374"
