@@ -1,0 +1,47 @@
+id: FEAT-COMPOSE-OTP-ADMISSION-01
+title: 'Count-iterated field-group predicate to shared substrate; Compose OTP admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T03:47:29.690Z'
+updated_at: '2026-11-05T22:59:59.321Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the count-iterated field-group gate is target-neutral IR extraction; when it moves to the shared substrate and OTP is admitted on the compose count-field class with its string channel and length axis; then swift regeneration stays byte-identical, OTP compiles via gradle, compose grows 35 to 36, and parity/doc/rail gates stay green'
+non_functional: {}
+contracts:
+  - name: 'count-field-group'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isCountIteratedFieldGroup moved to native-emission-class.ts (pure IR extraction: div root, one string channel, count-iterated input) with byte-identical swift regeneration (52 groups, zero diff); compose 35-to-36: gradlew :library:compileKotlin BUILD SUCCESSFUL (OTP.kt: length-axis slot row over the string channel, per-slot BasicTextField with padEnd array write, otp chrome from scopes); compose-parity-diff 36/36 0 failures (countField path+role, self-test 8/8); generate:check 52/52; typecheck clean; docs:check-claims 74/74; emitter tests 35/35; prior-round baseline (rail PASS, 3889/3889 root tests, frameworks 87/87) stands on the same branch tip"
+    recorded_at: "2026-09-13T03:51:42.057Z"

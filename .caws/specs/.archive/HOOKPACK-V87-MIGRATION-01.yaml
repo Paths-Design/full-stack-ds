@@ -1,0 +1,53 @@
+id: HOOKPACK-V87-MIGRATION-01
+title: 'Migrate CAWS hook pack v47 to v87'
+risk_tier: 2
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Migrated claude-code to the machine hook runtime and brought the project pack to v87; 70 of 74 managed paths clean, 4 deliberately excluded.'
+created_at: '2026-09-19T05:18:57.618Z'
+updated_at: '2026-11-05T23:04:58.534Z'
+created_by_session: 'd1d85455-7273-417f-b3ab-18165f672d38'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.caws/hooks'
+    - CLAUDE.md
+    - .claude/settings.json
+    - .gitignore
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the installed pack reports drift against the shipped template set; when the migration lands the upstream pack; then every managed path reports no outstanding drift for the shared and claude-code surfaces'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given local guard growth exists that upstream does not carry; when the pack is upgraded; then that growth is either carried forward onto the new template or shown to be superseded by upstream, never silently dropped'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the hook pack ships its own test scripts; when the migration completes; then those scripts run and their outcomes are reported against the pre-migration baseline'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "bash .caws/hooks/tests/test_worktree_guard_cmdtext.sh -> PASS 19 cases (pre-migration baseline: 8 passed/11 failed, fixture-dependent); bash .caws/hooks/tests/test_reprieve_path_resolution.sh -> PASS 10 cases (unchanged from baseline)"
+    recorded_at: "2026-09-19T06:10:06.990Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Each of the 3 baseline-verified growth files was adjudicated, not dropped: worktree-guard.sh GUARD-CMDTEXT-BOUNDARY-01 superseded by v87 lexical extraction via caws_bash_command_lines (proven by test_worktree_guard_cmdtext.sh PASS 19/19 including all 4 BYPASS-BLOCK cases); post_tool_use.sh doc-frontmatter-check toggle re-expressed as hook-policy.json extension (caws hooks list shows it as repo-policy, sidecar probe shows it in the project-wired chain); lib/reprieve.sh growth retained untouched. lib/heredoc.sh pinned via policy library override because the v87 template drops the piped-sink disqualification."
+    recorded_at: "2026-09-19T06:10:25.460Z"
+  - criterion_id: A1
+    status: waived
+    evidence_ref: "70 of 74 managed paths are managed_clean at v87 and doctor no longer reports installed_pack_version_lag. Four paths are deliberately excluded: lib/heredoc.sh pinned by policy on purpose; lib/reprieve.sh parked because v87 drops CAWS_HOME_STATE_DIR so porting would break its test suite isolation; session-log.sh and session_log_renderer.py fenced off because peer session session-81b74ef5 landed e906d42c there during this slice."
+    waiver_reason: "70 of 74 managed paths are managed_clean at v87 and doctor no longer reports installed_pack_version_lag. Four paths are deliberately excluded: lib/heredoc.sh pinned by policy on purpose; lib/reprieve.sh parked because v87 drops CAWS_HOME_STATE_DIR so porting would break its test suite isolation; session-log.sh and session_log_renderer.py fenced off because peer session session-81b74ef5 landed e906d42c there during this slice."
+    recorded_at: "2026-09-19T06:10:26.256Z"

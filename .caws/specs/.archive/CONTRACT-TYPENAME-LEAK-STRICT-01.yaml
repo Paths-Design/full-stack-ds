@@ -1,0 +1,58 @@
+id: CONTRACT-TYPENAME-LEAK-STRICT-01
+title: 'Close the ReactNode contract type-name leak: structural node vocabulary + strict semantic check'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Contract authored surface carries no framework type names; semantic Rule 9 fails generate:check on any leak; 9 contracts migrated; all gates green'
+created_at: '2026-09-20T02:42:56.188Z'
+updated_at: '2026-11-05T22:57:44.231Z'
+created_by_session: 'session-09e1a35a-cdfa-4924-a17b-88aa8509f680'
+blast_radius:
+  modules:
+    - ds-contracts (schema + component corpus)
+    - ds-codegen (IR, CLI, semantic validation)
+    - generated framework/native package sources (regeneration output)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/contract.ts'
+    - 'packages/ds-codegen/src/cli.ts'
+    - 'packages/ds-codegen/src/validation'
+    - 'packages/ds-codegen/src/frameworks'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'docs'
+    - packages/ds-contracts/a2ui
+    - packages/ds-codegen/src/prop-surface-inventory.test.ts
+    - packages/ds-figma-plugin
+  out: []
+invariants:
+  - Authored contract surface (prop types, children.accepts, callback field maps) contains no React-admitted type name; ReactNode et al appear only as emitter-lowered images of structural IR nodes.
+  - generate:check fails (not warns) when an authored contract references a React-admitted type name, independent of which targets are active — no admission filtering in the semantic gate.
+  - Regenerated output across all targets is byte-stable except where the structural vocabulary deliberately changes it; governed:rail and the CI committed-byte drift diff stay green.
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given contracts use a framework-neutral structural node vocabulary and generate:check enforces a type-name-leak check; when a contract authors a React-admitted type name on its authored surface or the corpus is regenerated; then generate:check fails on any authored React type name, the 9 migrated contracts regenerate across all targets, and governed:rail passes'
+non_functional: {}
+contracts:
+  - name: 'component.contract.schema.json'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "On landed main (merge 4fa6070f): pnpm run generate:check exits 0 (52/52 contracts, zero React-admitted type names remain on authored surface — corpus grep for ReactNode under packages/ds-contracts/components returns nothing). Falsification: re-inserting \"ReactNode\" into Card.contract.json a2ui.children.accepts made generate:check exit 1 with DRIFT Card.contract.json + [/a2ui/children/accepts/0: FRAMEWORK_TYPE_NAME_LEAK ...]; reverted and gate re-green. Rule unit tests: vitest run src/validation/semantic.test.ts (63 tests incl. 5 Rule 9 cases: clean structural propType, legacy union leak, accepts leak, dataModel leak vs neutral node-ref, React.ReactNode/SyntheticEvent/HTMLButtonElement word-boundary) + src/prop-surface-inventory.test.ts (9, migration ratchet now includes Toast). Full gates in worktree pre-merge: governed:rail exit 0; pnpm test 4288/4288; test:frameworks 87 files/175 tests exit 0; lint + typecheck clean; caws gates run --spec OK. Intentional output deltas committed: RN Toast action unknown->ReactNode, figma Toast nodeKind null->node-ref; web-target output byte-identical. Not covered: types-alias bodies, channel/event signature strings, props.hook members are outside Rule 9's scanned surfaces; style-literal platforms annotation deliberately not treated as a leak (declared platform axis)."
+    recorded_at: "2026-09-20T03:14:56.011Z"

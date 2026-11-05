@@ -1,0 +1,138 @@
+id: FIX-A11Y-ORACLE-IDREF-01
+title: 'Make dialog IDREF realization and accessibility tests falsifiable'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Repaired per-instance IDREF ownership, restored unsuppressed accessibility oracles, added exact realization and curated contract-mutation measurement, and reconciled authorship-time HIL documentation.'
+created_at: '2026-09-04T18:30:42.582Z'
+updated_at: '2026-11-05T23:01:43.208Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'contract relationship lowering'
+    - 'web framework component emission'
+    - 'generated accessibility tests'
+    - 'derived accessibility audit'
+    - 'tracked web component trees'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Dialog/'
+    - 'packages/ds-contracts/components/Sheet/'
+    - 'packages/ds-contracts/components/Command/'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/id-relationships.ts'
+    - 'packages/ds-codegen/src/relationship-lowering.test.ts'
+    - 'packages/ds-codegen/src/test-plan.ts'
+    - 'packages/ds-codegen/src/test-plan.test.ts'
+    - 'packages/ds-codegen/src/frameworks/emitter-parity.test.ts'
+    - 'packages/ds-codegen/src/frameworks/idref-slot-gate.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/react/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/react/tests.test.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/tests.test.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/tests.test.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/tests.test.ts'
+    - 'packages/ds-react/src/components/'
+    - 'packages/ds-vue/src/components/'
+    - 'packages/ds-svelte/src/components/'
+    - 'packages/ds-angular/src/components/'
+    - 'packages/ds-lit/src/components/'
+    - 'scripts/a11y-realization-audit/'
+    - 'e2e/runtime-rail.spec.ts'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/validation/semantic.ts
+    - packages/ds-codegen/src/validation/semantic.test.ts
+    - packages/ds-codegen/src/frameworks/vue/component-source.ts
+    - packages/ds-codegen/src/frameworks/svelte/component-source.ts
+    - packages/ds-codegen/src/frameworks/lit/component-source.ts
+    - packages/ds-codegen/src/frameworks/angular/component-source.ts
+    - packages/ds-react-native/src/components/
+    - packages/ds-figma-plugin/src/generated/components/
+    - packages/ds-contracts/components/OTP/
+    - packages/ds-contracts/components/Select/
+    - packages/ds-contracts/components/Tooltip/
+    - packages/ds-contracts/components/Checkbox/
+    - packages/ds-contracts/components/Input/
+    - packages/ds-contracts/components/Field/
+    - packages/ds-contracts/components/Icon/
+    - packages/ds-contracts/components/Spinner/
+    - packages/ds-contracts/components/Walkthrough/
+    - package.json
+    - scripts/contract-oracle-mutation/
+    - scripts/custom-region-audit/
+    - packages/ds-contracts/component.contract.schema.json
+    - packages/ds-codegen/src/contract.ts
+    - packages/ds-codegen/src/carrier-reachability.test.ts
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Command/
+    - .github/workflows/ci.yml
+    - .github/workflows/contract-oracle-mutations.yml
+    - .githooks/pre-push
+    - scripts/prepush-scope.mjs
+    - scripts/prepush-scope.test.mjs
+    - packages/ds-codegen/src/registry.ts
+    - packages/ds-codegen/src/target-packs/config.ts
+    - src/runtime/FrameworkPreview.tsx
+  out: []
+  support:
+    - README.md
+invariants:
+  - 'No component-name branch may be added to a framework emitter; role and IDREF intent must normalize through contract and IR facts.'
+  - 'An accessibility test must prove that its scan root contains the rendered component before interpreting an axe result.'
+  - 'The authored anatomy DOM owns role placement, relationships own generated IDREF topology, and explicit consumer labeling retains documented precedence.'
+  - 'Generated source remains reproducible and hand-authored custom regions remain preserved.'
+acceptance:
+  - id: A1
+    given: 'Dialog, Sheet, and Command role-bearing DOM'
+    when: 'contracts are lowered and five web targets are generated'
+    then: 'each rendered instance has one intended dialog role and its emitted IDREFs resolve to live per-instance targets'
+  - id: A2
+    given: 'relationship-derived labels and explicit consumer accessibility props'
+    when: 'a dialog component renders'
+    then: 'accessible name and description ownership is deterministic and consumer override precedence remains supported'
+  - id: A3
+    given: 'portaled and inline components'
+    when: 'generated axe checks execute'
+    then: 'the scan contains the rendered component, cannot pass on an empty container, and dialog naming or structure violations are not globally discarded'
+  - id: A4
+    given: 'fixtures for an empty scan, dangling IDREF, and wrongly owned dialog relationship'
+    when: 'focused tests and the a11y realization audit run'
+    then: 'each defect is rejected by an independent assertion'
+  - id: A5
+    given: 'the repaired contracts and generator'
+    when: 'generation, admission, root tests, and framework suites run'
+    then: 'all tracked generated trees are current and every required gate passes'
+non_functional: {}
+contracts:
+  - name: 'dialog-idref-realization'
+    type: behavior
+    path: 'packages/ds-codegen/src/relationship-lowering.test.ts'
+  - name: 'accessibility-oracle'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/react/tests.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Integrated pnpm test: 254 files / 3363 tests pass, including relationship-lowering (16), idref-slot-gate (5), and generated Dialog/Sheet/Command tests; integrated pnpm run test:frameworks exits 0 across Vue, Lit, Svelte, Angular, and React Native."
+    recorded_at: "2026-09-04T21:46:30.638Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm test passes generated React Dialog (17), Sheet (13), and Command (12) suites; authored Dialog/Sheet custom-region assertions pin accessible-name/description targets and explicit aria-label/aria-describedby override precedence."
+    recorded_at: "2026-09-04T21:46:41.746Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Integrated pnpm test and pnpm run test:frameworks pass generated axe suites; emitter tests assert the scan root contains the rendered component, and React/Vue/Svelte/Lit generated axe configuration disables only the document-level region rule rather than naming/structure rules."
+    recorded_at: "2026-09-04T21:47:15.544Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "pnpm run audit:a11y-realization PASS: 105 obligations / 630 exact carrier-target-endpoint checks, all 161 unrealized findings ledgered; focused semantic/emitter tests reject decoration-owned labels, dangling IDREFs, and empty scan roots; full mutation run at 3022618b killed the initial 5/5 curated mutants, including Dialog name-to-body via authored assertion."
+    recorded_at: "2026-09-04T21:47:28.621Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Integrated pnpm run governed:rail PASS (51/51 contracts, 431 generated groups, six admitted targets pass); pnpm test PASS 254 files / 3363 tests; pnpm run test:frameworks PASS; docs:check-claims PASS 100 markers; docs:check-links PASS 66 links; mutation self-check PASS 5 one-leaf mutants."
+    recorded_at: "2026-09-04T21:47:37.928Z"

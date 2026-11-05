@@ -1,0 +1,36 @@
+id: REL-INCIDENCE-WITNESS-01
+title: 'File the first witness under the landed quotient: nest.levels#incidence over the round-25 pair'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: superseded
+closure_notes: 'Witness filing landed at 8bcc11fd; REL-PRIMITIVE-SUPPORT-01 subsequently corrected primitive standing at adb6525df, retained the witness, and re-adjudicated incidence unresolved because erasure also destroys sibling order. Original witnessed-verdict claim is superseded; no completion claim is made.'
+created_at: '2026-09-15T17:54:18.944Z'
+updated_at: '2026-11-05T23:06:40.501Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'witnesses.json + subtraction-stage2.json (one witness filed, one verdict moved) and the re-recorded freeze'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - "The witness is the round-25 pair already measured ADMITTED by checkWitness -- an OCCUPANT difference (country -> revenue), not an arrangement-only pair, so the attribution rule does not fire and the collision is about which declared names the slot binds."
+  - "Exactly one verdict moves: unresolved -> witnessed for nest.levels#incidence, with a recorded reason. No other verdict, no erasure fact, and no authority digest moves -- no production module changes."
+  - "The freeze accepts the verdict divergence through the per-key adjudicated map with an authored reason, not through a supersession: the erasure authority is unmoved and there is no new erasure behaviour to state."
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the bound-incidence quotient landed in rounds 31-37 and the round-25 authored pair (levels [country,state] admissible against [revenue,state] illegal under CASE_NESTED_SUBTOTALS_OFF_GRAIN) is measured ADMITTED by checkWitness for nest.levels#incidence while its verdict is still unresolved; when the witness is filed in witnesses.json and the verdict recorded witnessed with its reason; then checkWitness holds for the committed witness, the subtraction moves exactly one verdict (unresolved -> witnessed), no other verdict or erasure moves, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-admission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'

@@ -1,0 +1,42 @@
+id: REL-WITNESS-ATTRIBUTION-01
+title: 'Refuse a witness whose collision is over a sibling facet''s difference: the arrangement belongs to order, not incidence'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Admission-time attribution rule landed: an arrangement-only pair is refused for incidence (DIFFERENCE_MISATTRIBUTED), admitted for order and for the joint set; no committed witness refused, no verdict moved.'
+created_at: '2026-09-15T16:35:32.164Z'
+updated_at: '2026-11-05T23:07:21.732Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/necessity.ts (the admission rule; witness authority)'
+    - 'the re-recorded ledgers (a moved witness authority invalidates every witness and closure verdict by record)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-contracts/analytical-fixtures
+  out: []
+invariants:
+  - "The rule reads the DIFFERENCE the collision is over, not the operation: an arrangement-only pair (same occupant multiset at one list slot) is refused for incidence because the arrangement is order's degree of freedom -- and the same pair stays admissible for order alone and for {incidence, order} jointly, since the owner is then named."
+  - 'The rule is scoped to the measured instance (incidence claimed over an arrangement-only difference at a slot that carries an order facet); no unmeasured generality is built.'
+  - 'No committed witness may be refused by the rule -- the round-33 sweep measured zero genuine hazards over committed pairs -- and a moved witness authority re-records every ledger with pins corrected, not deleted.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a bound incidence erasure necessarily lands on one arrangement, so a pair differing only in arrangement (same occupant multiset at one list slot) is identified by erasing incidence while the difference is order''s degree of freedom; when checkWitness evaluates a witness naming incidence at such a slot over an arrangement-only pair; then the witness is refused with a named cause while the same pair is admitted for order and for the joint set {incidence, order} because the owner of the difference is then named, no committed witness is refused by the rule, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-admission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (19 files / 842 tests green) and all nine analytical gates green in worktree witness-attribution before merge 660e065b; full root suite 301 files / 4063 tests, typecheck, docs gates green. Measured outcome: DIFFERENCE_MISATTRIBUTED refuses the arrangement-only recast (nest.levels#incidence over the committed order witness's pair) with the named cause, the pair stays admissible for order alone and for the joint set {incidence, order} (owner named, NOT_MINIMAL apart), and the round-25 authored pair (an occupant difference) remains admitted. NO committed witness is refused -- C2's sweep of all committed witnesses is green, matching the round-33 measurement that the hazard was authored-only. NON-CLAIM: the freeze holds the same 160 erasures and 126 verdicts and the erasure authority is unmoved (the peers supersession statement is carried forward), so no verdict moved and nothing was filed; the rule is scoped to the measured instance (incidence over an arrangement-only difference at a slot carrying an order facet) -- arity is not at risk because the incidence erasure preserves it, and a set-valued list's arrangement already reads as SAME_OUTCOME."
+    recorded_at: "2026-09-15T16:44:20.333Z"

@@ -1,0 +1,51 @@
+id: CONTRACT-PROP-SURFACE-BATCH-B-01
+title: 'Prop-surface migration Batch B (feedback/status/material): styled→designed + structured propType'
+risk_tier: 3
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge prop-surface-batch-b at 6d9817cec5196eb1b212262024c7ffe2bed49f80'
+created_at: '2026-06-05T16:04:04.182Z'
+updated_at: '2026-11-05T22:57:39.204Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/components (Batch B: Alert, AlertNotice, Progress, Skeleton, Spinner, Stat, Status, Chip, Card)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Alert/**'
+    - 'packages/ds-contracts/components/AlertNotice/**'
+    - 'packages/ds-contracts/components/Progress/**'
+    - 'packages/ds-contracts/components/Skeleton/**'
+    - 'packages/ds-contracts/components/Spinner/**'
+    - 'packages/ds-contracts/components/Stat/**'
+    - 'packages/ds-contracts/components/Status/**'
+    - 'packages/ds-contracts/components/Chip/**'
+    - 'packages/ds-contracts/components/Card/**'
+  out: []
+invariants:
+  - 'Authority split preserved: contracts declare prop semantics, IR normalizes, emitters lower PropTypeIR, the rail validates. No component-name branches in emitters; no generated files hand-edited; batch is contract-only unless a real generic gap is promoted to a shared spec/fix.'
+  - 'Generated framework bytes (ds-react/vue/svelte/angular/lit src) are unchanged by all 9 migrations, proven by git diff --exit-code before and after the rail.'
+  - 'Named type aliases stay propType {kind:ref} (including object-ish aliases like SkeletonLines); callbacks author {kind:callback}; ReactNode icons author {kind:node, of:content} to preserve the A2UI node-ref projection; primitives use string/number/boolean.'
+  - 'Callback props (Alert/AlertNotice.onDismiss, Progress.formatValue) stay generated framework API but are omitted from the A2UI agent capability surface, and the Lit emitter reflects @property({attribute:false}) for them.'
+  - 'styled members never carry propType; designed members author exactly one of type | propType; no dual-authoring. All 9 report migrated with a2uiStructuredSource=true.'
+acceptance:
+  - id: A1
+    given: 'The 9 Batch B components migrated from props.styled to props.designed with structured propType (V1 refs/primitives, V2 callbacks, node icons)'
+    when: 'pnpm run generate -- --target=all <9 components> is run'
+    then: 'git diff --exit-code over the five generated src trees reports zero drift, and the inventory reports all 9 as migrated (scoreboard 13 -> 22).'
+  - id: A2
+    given: 'Progress.formatValue (first non-void callback return: (value, max) => string) and Alert/AlertNotice.onDismiss (() => void)'
+    when: 'governed:rail + PropTypeIR/A2UI focused tests run'
+    then: 'They pass, rail is overall:pass, and the Lit attribute:false fix is rail-verified on real callback-bearing components across all five frameworks.'
+  - id: A3
+    given: 'ReactNode icon props (Alert/AlertNotice/Chip) migrated to node{of:content}'
+    when: 'The figma descriptor regenerates'
+    then: 'The only non-five-tree change is the figma icon nodeKind null -> node-ref (the now-known structured fact, matching A2UI), recorded as justified intentional drift.'
+  - id: A4
+    given: 'The whole corpus after Batch B merges to main'
+    when: 'governed:rail runs on main followed by the generated-tree git diff'
+    then: 'The rail passes in required mode and the post-rail diff over all five generated src trees is clean.'
+non_functional: {}
+contracts: []

@@ -1,0 +1,110 @@
+id: EXAMPLES-CAT-ART-01
+title: 'Typing cat: lighting, materials, cat anatomy and geometry refinement'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Typing cat art pass: lighting, tuxedo cat with pole arms, reach box, key hold, mug bat; A1-A6 pass'
+created_at: '2026-09-23T04:08:35.966Z'
+updated_at: '2026-11-05T22:59:02.639Z'
+created_by_session: '15bd2efa-0b44-4a06-8e50-d925effe6a05'
+blast_radius:
+  modules:
+    - 'examples/spatial-console/web/src/cat'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/spatial-console/web/src/cat'
+    - 'examples/spatial-console/web/cat.html'
+  out: []
+invariants:
+  - 'Paw contact targets (keyToWorld, trackpadToWorld, screenWorld) and screen plane placement are unchanged, so input->pose mapping and hit-test projection keep their meaning'
+  - 'Device screen meshes stay unlit and excluded from tone mapping so DOM colours render exactly'
+acceptance:
+  - id: A1
+    given: 'the cat page in flagged Chrome'
+    when: 'it renders'
+    then: >-
+      the scene uses a PMREM environment map and tone mapping, device screens stay
+      colour-exact (toneMapped false), and shadows are soft with a shadow camera
+      framed to the visible desk
+  - id: A2
+    given: 'the cat'
+    when: 'idle, typing, on the trackpad, or reaching the tablet or phone'
+    then: >-
+      it sits upright, set back from the laptop so its head stays below the main
+      camera's line of sight to the trackpad, with shoulders at the front of the
+      chest below the chin; each arm is a pole pinned at the shoulder socket and the
+      wrist (socket and wrist gaps 0 in every pose) that stretches to wherever the
+      paw goes, with a white sock at the wrist end; paws never reach outside a
+      top-down box from the back row of keys to the back of the cat and out to the
+      outermost tablet and phone corners, even when a pointer is dragged off a
+      screen; while it leans to the tablet or phone the other paw rests at that
+      side's trackpad corner and stays there; keys going to one device hold its
+      attention for 800 ms against pointer moves over another device, and a held-off
+      move is replayed when the hold ends; ears are parented to the head; it has a
+      swaying tail and breathing
+  - id: A3
+    given: 'the laptop, tablet, phone and cup'
+    when: 'rendered'
+    then: >-
+      the bodies use rounded-box geometry, the laptop has a hinge barrel, and the
+      cup is a lathe with wall thickness and a handle
+  - id: A4
+    given: 'the desk texture'
+    when: 'the page loads twice'
+    then: >-
+      the wood is byte-identical because it uses a seeded RNG, and it has plank end
+      joints and per-plank variation
+  - id: A5
+    given: 'the changed scene'
+    when: 'verify:cat runs against a dev server'
+    then: 'every check passes'
+  - id: A6
+    given: 'the mug on its saucer, and a paw working the tablet or phone'
+    when: >-
+      a pointer is dragged from a handheld across the laptop, dragged into the mug,
+      or clicks the saucer or mug
+    then: >-
+      a handheld's paw never crosses the trackpad's nearest edge; only the left paw
+      reaches the mug, stopping at its near wall; a press leans it slightly and
+      spins it, a click rocks it on its base rim toward but never past 0.5 rad and
+      it settles upright, and the coffee sloshes
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "tmp/cat-review/proofs.mjs at 55d82d23: drawn laptop-screen pixel rgb(247,247,247) == DOM background rgb(247,247,247) (toneMapped:false screen material); desk.ts: PMREMGenerator+RoomEnvironment, AgXToneMapping, PCFShadowMap radius 4 with shadow camera +-6.5"
+    recorded_at: "2026-09-23T05:44:48.820Z"
+    commit_sha: "55d82d23"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "at 55d82d23: arms.mjs socketGap 0 / wristGap 0 in all 10 poses (length 1.63-3.69); rest.mjs idle paw at trackpad corner (0.000) and stays at 5s; hold.mjs attention stays on phone while typing with pointer over tablet, replayed move turns to tablet at +1.8s; drag.mjs 12 drags, worst overshoot 0.0000; renders tmp/cat-review/z29-*.png show trackpad unoccluded"
+    recorded_at: "2026-09-23T05:44:49.340Z"
+    commit_sha: "55d82d23"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "desk.ts at 55d82d23: flatSlab/slab ExtrudeGeometry bodies, RoundedBoxGeometry keys, hingeBarrel CylinderGeometry, mug LatheGeometry closed profile (wall+floor) with TorusGeometry handle; renders tmp/cat-review/z29-*.png"
+    recorded_at: "2026-09-23T05:44:49.855Z"
+    commit_sha: "55d82d23"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "wood canvas hash bca7e397d0277f62 identical across two loads, cda1b68e3d03ba34 for seed+1; art.test.ts woodPlan tests (determinism, contiguous boards with >=1 joint, tone variance) pass"
+    recorded_at: "2026-09-23T05:44:50.399Z"
+    command: node tmp/cat-review/proofs.mjs
+    commit_sha: "55d82d23"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "31/31 checks passed (path texElementImage2D+css-transform), artifacts test-results/typing-cat"
+    recorded_at: "2026-09-23T05:44:50.922Z"
+    command: "CAT_URL=http://localhost:5199/cat.html pnpm run verify:cat"
+    exit_code: 0
+    commit_sha: "55d82d23"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "mug.mjs: tablet drag across laptop left paw max x -0.575, phone drag right paw min x 0.575; saucer click peak tilt 0.34 (limit 0.5), 0.003 at 3.4s; tablet and desk drags onto mug paw-to-centre 0.46 == wall, tilt 0.15-0.18, slosh 0.138, spin 0.32; drag.mjs phone up drags stay x>=0.575; reach.test.ts 14 tests pass"
+    recorded_at: "2026-09-23T05:44:51.446Z"
+    command: node tmp/cat-review/mug.mjs; pnpm exec vitest run src/cat/reach.test.ts
+    commit_sha: "55d82d23"

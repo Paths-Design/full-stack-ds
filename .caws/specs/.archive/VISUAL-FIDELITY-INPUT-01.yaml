@@ -1,0 +1,46 @@
+id: VISUAL-FIDELITY-INPUT-01
+title: 'Input visual-fidelity tokenization and verification'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: superseded
+closure_notes: 'Outcome delivered by later visual sweeps (FEAT-VISUAL-SWEEP-01/FEAT-TOKEN-WIRING-01 lineage): Input.styles.json carries fully-slotted default/placeholder/hover/focus-visible/invalid/disabled treatment (resolvesTo slots only; structural keywords are the only literals) and generated Input.css realizes them as token vars. Verified on main @ fc8f2d68.'
+created_at: '2026-06-13T04:15:28.985Z'
+updated_at: '2026-11-05T23:10:00.122Z'
+blast_radius:
+  modules:
+    - 'Input contract visual sidecars and regenerated Input artifacts across admitted targets. No schema, IR, emitter, or unrelated component changes.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Input/'
+    - 'packages/ds-react/src/components/Input/'
+    - 'packages/ds-vue/src/components/Input/'
+    - 'packages/ds-svelte/src/components/Input/'
+    - 'packages/ds-angular/src/components/Input/'
+    - 'packages/ds-lit/src/components/Input/'
+    - 'packages/ds-react-native/src/components/Input/'
+    - 'packages/ds-figma-plugin/src/generated/components/Input/'
+    - 'packages/ds-codegen/.emission-manifest.json'
+    - 'tmp/'
+  out: []
+invariants:
+  - 'Input visual styling remains contract-governed: generated component CSS changes come only from Input.tokens.json / Input.styles.json and regeneration.'
+  - 'The slice uses existing global token graph paths and aligns primitive Input state treatment with the TextField field treatment.'
+  - 'No unrelated dirty generated output is overwritten.'
+acceptance:
+  - id: A1
+    given: 'the existing Input contract state declarations'
+    when: 'the visual sidecars are updated'
+    then: 'default, placeholder, hover, focus-visible, invalid, and disabled visual states resolve through component-local slots backed by existing semantic/core tokens'
+  - id: A2
+    given: 'the updated Input sidecars'
+    when: 'codegen runs for Input'
+    then: 'generated target artifacts reflect the richer visual contract without hand-edited generated CSS'
+  - id: A3
+    given: 'the updated corpus'
+    when: 'validation and focused Input tests run'
+    then: 'token/style references are valid and Input behavior tests stay green'
+non_functional: {}
+contracts: []

@@ -1,0 +1,42 @@
+id: TEST-COVERAGE-RAISE-SHOWCASE-02
+title: 'Certify showcase at the 80 target via all-tab doc-view suites'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Showcase line coverage 65.5 to 82.8 via all-tab doc-view suites; floor ratcheted to 80 — showcase certified above the target'
+created_at: '2026-09-01T02:50:12.577Z'
+updated_at: '2026-11-05T23:08:43.273Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the all-tab suites; when pnpm run test:coverage:showcase runs; then every showcase test passes and measured line coverage is at least 82 percent'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the showcase lines floor reaches 80 with at least 2 points of margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:showcase exit 0: 33/33 test files, measured 82.84% lines (from 65.49) / 72.85% branches / 64.22% functions — at least 82 percent per the criterion"
+    recorded_at: "2026-09-01T02:52:46.690Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json showcase ratchet 63/68/57/63 -> 80/70/62/80; measured 82.84 leaves 2.84 margin above the 80 floor which certifies the target; docs-claims-check 46/46 after the floor and vs-target marker updates (showcase now above)"
+    recorded_at: "2026-09-01T02:52:47.139Z"

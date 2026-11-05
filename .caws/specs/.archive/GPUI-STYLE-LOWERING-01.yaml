@@ -1,0 +1,73 @@
+id: GPUI-STYLE-LOWERING-01
+title: 'Normalize and lower contract style rules for GPUI components'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Normalized native style and control facts lower six GPUI components without identity dispatch; projection and source mutation assertions pass.'
+created_at: '2026-10-02T00:25:35.003Z'
+updated_at: '2026-11-05T23:04:52.471Z'
+created_by_session: '01a0f9d8-a8a2-7953-8341-c49d3974e2c9'
+blast_radius:
+  modules:
+    - 'Additive native style-rule IR projection'
+    - 'GPUI emitter and projection tests'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/native-style-rules.ts'
+    - 'packages/ds-codegen/src/native-style-rules.test.ts'
+    - 'packages/ds-codegen/src/frameworks/gpui'
+  out: []
+invariants:
+  - 'No component-name dispatch or raw contract/style parsing inside emitters'
+  - 'Unsupported selector/property/platform residue remains visible'
+acceptance:
+  - id: A1
+    given: 'authored anatomy and styles'
+    when: 'normalized native rules are built'
+    then: 'token, part, variant and state predicates preserve their source facts and unsupported rules carry diagnostics'
+  - id: A2
+    given: 'normalized Boolean and static components'
+    when: 'GPUI sources are emitted'
+    then: 'Switch, ToggleSwitch, Checkbox, Text, Badge and Divider expose part rendering, token rules and typed state or content APIs without identity special cases'
+  - id: A3
+    given: 'projection tests'
+    when: 'identities, tokens and predicate inputs change'
+    then: 'affected output changes and existing codegen typechecks pass'
+observability:
+  - 'Authored projection assertions and explicit style residue'
+rollback:
+  - 'Revert style lowering source commits'
+non_functional: {}
+contracts:
+  - name: 'gpui-style-rules'
+    type: behavior
+    path: 'packages/ds-codegen/src/native-style-rules.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected source-preservation assertions for anatomy part address, token references, variant/state predicates, merged authored rule sources and unsupported platform/selector diagnostics. Five native-style projection tests and 28 GPUI emitter tests executed, tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/logs/gpui-fidelity-final-projection.log; clean codegen source 9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f."
+    recorded_at: "2026-10-02T17:38:54.874Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/native-style-rules.test.ts packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/native-style-rules.test.ts
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: Generated six registered component sources expose normalized part/rule rendering and typed state/content APIs. Factory assertions change synthetic identity while preserving semantic projection and reject missing/unsupported normalized facts; emitter consumes normalized IR without component identity dispatch. Final generation/rail succeeded without tracked Rust drift; tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/logs/gpui-fidelity-final-rail.log and gpui-fidelity-final-projection.log.
+    recorded_at: "2026-10-02T17:39:07.373Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/native-style-rules.test.ts packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "33 executed projection tests include identity changes, token/style and state predicate mutations that alter output and generic transform rejection. Final pnpm run typecheck passed root and codegen; tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/logs/gpui-fidelity-final-projection.log and gpui-fidelity-final-typecheck.log."
+    recorded_at: "2026-10-02T17:39:22.660Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/native-style-rules.test.ts packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"

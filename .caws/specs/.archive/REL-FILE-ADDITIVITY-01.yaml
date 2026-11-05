@@ -1,0 +1,39 @@
+id: REL-FILE-ADDITIVITY-01
+title: 'File the additivity ratio-measure member-pair witness'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Filed field.additivity.kind:non-additive~ratio-measure (first member-pair witness): authored pair over FX_GDP_PER_CAPITA_ROLLUP_MEAN moving additivity.kind to non-additive, atomic class so it ratifies primitive standing; subtraction 65/118, freeze 19/71, ratified 61, legacy re-recorded.'
+created_at: '2026-09-15T23:46:20.725Z'
+updated_at: '2026-11-05T23:06:24.543Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given field.additivity.kind:non-additive~ratio-measure is unresolved and ratifiable with a single-path separating shape; when the authored stimulus is filed (FX_GDP_PER_CAPITA_ROLLUP_MEAN as committed, illegal REL_RATIO_MEASURE_AVERAGED, against the same fixture with the field additivity kind moved to non-additive, admissible) and checkWitness admits it; then the verdict moves unresolved to witnessed, the coordinate classes atomic so the witness ratifies primitive standing, the drift check stays green on all three bases, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-admission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (20 files / 868 tests, including the two generated per-witness cases C2 and C7 for the filed coordinate) and pnpm test (302 files / 4089 tests), re-run after the legacy re-record; pnpm run analytical:subtraction:gate prints 'drift ... OK' on all three bases with 65 of 118 candidates still unadjudicated; analytical:footprints:check (0 illegal quotient images over 212 specimens), analytical:freeze:check (19 witnessed / 71 unresolved of 126 verdicts), analytical:final-quotient (primitives: 61 single-coordinate witnesses), analytical:check-schemas, analytical:check-baseline, analytical:closures:check, analytical:stimuli, fixtures:check, legacy-comparison --check (34980 pairs over 212 specimens and 160 coordinates), docs:check-claims, docs:check-links, lint and typecheck all pass on merge b2bc3a7c. NON-CLAIM: the witness is AUTHORED because the corpus carries the ratio-measure case and its cause but no committed near-neighbour differing only in this member, so what is proven is that the member pair is PRIMITIVE relative to the already-existing cause REL_RATIO_MEASURE_AVERAGED, not that the corpus witnesses it; the subtraction gate stays red by design (65 unresolved), so this filing does not close REL-VIEW-ALGEBRA-01, and the three structurally-unwitnessable coordinates still have no terminal class."
+    recorded_at: "2026-09-16T00:00:06.448Z"

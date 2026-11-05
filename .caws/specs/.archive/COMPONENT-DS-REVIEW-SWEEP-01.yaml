@@ -1,0 +1,70 @@
+id: COMPONENT-DS-REVIEW-SWEEP-01
+title: 'DS-quality judgment review of the 37 unreviewed audit components'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge ds-review at 7d572d4bc7f0e5a2d250e2e2e5666cee557f9ab0'
+created_at: '2026-06-05T19:53:03.143Z'
+updated_at: '2026-11-05T22:57:28.450Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'TODO: list the file(s) or directories this spec authorizes.'
+    - docs/component-audit/
+    - packages/ds-contracts/components/Text/
+    - packages/ds-react/src/components/Text/
+    - packages/ds-vue/src/components/Text/
+    - packages/ds-svelte/src/components/Text/
+    - packages/ds-angular/src/components/Text/
+    - packages/ds-lit/src/components/Text/
+    - packages/ds-figma-plugin/src/generated/components/Text/
+    - packages/ds-contracts/components/Chip/
+    - packages/ds-react/src/components/Chip/
+    - packages/ds-vue/src/components/Chip/
+    - packages/ds-svelte/src/components/Chip/
+    - packages/ds-angular/src/components/Chip/
+    - packages/ds-lit/src/components/Chip/
+    - packages/ds-figma-plugin/src/generated/components/Chip/
+    - packages/ds-contracts/components/Tooltip/
+    - packages/ds-react/src/components/Tooltip/
+    - packages/ds-vue/src/components/Tooltip/
+    - packages/ds-svelte/src/components/Tooltip/
+    - packages/ds-angular/src/components/Tooltip/
+    - packages/ds-lit/src/components/Tooltip/
+    - packages/ds-figma-plugin/src/generated/components/Tooltip/
+    - packages/ds-contracts/components/Walkthrough/
+    - packages/ds-react/src/components/Walkthrough/
+    - packages/ds-vue/src/components/Walkthrough/
+    - packages/ds-svelte/src/components/Walkthrough/
+    - packages/ds-angular/src/components/Walkthrough/
+    - packages/ds-lit/src/components/Walkthrough/
+    - packages/ds-figma-plugin/src/generated/components/Walkthrough/
+    - packages/ds-contracts/components/Spinner/
+    - packages/ds-react/src/components/Spinner/
+    - packages/ds-vue/src/components/Spinner/
+    - packages/ds-svelte/src/components/Spinner/
+    - packages/ds-angular/src/components/Spinner/
+    - packages/ds-lit/src/components/Spinner/
+    - packages/ds-figma-plugin/src/generated/components/Spinner/
+    - packages/ds-contracts/components/ShowMore/
+    - packages/ds-react/src/components/ShowMore/
+    - packages/ds-vue/src/components/ShowMore/
+    - packages/ds-svelte/src/components/ShowMore/
+    - packages/ds-angular/src/components/ShowMore/
+    - packages/ds-lit/src/components/ShowMore/
+    - packages/ds-figma-plugin/src/generated/components/ShowMore/
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts: []

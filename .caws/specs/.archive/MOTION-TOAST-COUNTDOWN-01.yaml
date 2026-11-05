@@ -1,0 +1,79 @@
+id: MOTION-TOAST-COUNTDOWN-01
+title: 'Bind Toast countdown to its authoritative presence budget'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Toast bottom countdown shares the tested active-time presence budget across five web frameworks; native countdown execution remains unclaimed.'
+created_at: '2026-09-28T07:15:35.720Z'
+updated_at: '2026-11-05T23:05:15.432Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Motion IR, web presence primitives and Toast realization'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-contracts'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'docs'
+    - 'e2e'
+    - packages/ds-figma-plugin/src/generated/components/Toast
+  out: []
+invariants:
+  - 'The dismissal timer owns the time budget; visual progress never dismisses or starts another budget.'
+  - 'Pause reasons compose and reduced motion changes only presentation; native countdown execution remains unclaimed.'
+acceptance:
+  - id: A1
+    given: 'a contract with a countdown binding'
+    when: 'IR is built and web targets emitted'
+    then: 'the owned target binds to surface auto-dismiss and invalid or competing bindings are rejected without component-name branching'
+  - id: A2
+    given: 'a timed open surface'
+    when: 'hover and focus overlap, visibility changes, duration resets or the surface closes'
+    then: 'the one active-time budget preserves remaining time, dismisses once and disposes listeners and frames'
+  - id: A3
+    given: 'Toast in each web framework'
+    when: 'its budget runs, pauses, resumes or is disabled and reduced motion changes'
+    then: 'its bottom progress bar reflects that budget and disabled timers show no bar'
+rollback:
+  - 'Revert the slice commits and regenerate affected target output.'
+non_functional: {}
+contracts:
+  - name: 'countdown'
+    type: contract-test
+    path: 'packages/ds-codegen/src/motion-ir.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: IR validation and renamed-contract web emitter tests; tmp/motion-toast-countdown/toast-ir-final.log
+    recorded_at: "2026-09-28T08:43:15.903Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/motion-ir.test.ts packages/ds-codegen/src/prop-surface-inventory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/motion-ir.test.ts
+    commit_sha: "9c0398bc"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "All five mirrored budget engines: 60 passing cases; tmp/motion-toast-countdown/toast-budget-tests.log"
+    recorded_at: "2026-09-28T08:43:56.876Z"
+    command: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/presence-budget.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-react/src/primitives/hooks/__tests__/presence-budget.test.ts
+    commit_sha: "9c0398bc"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "10 browser cases across React Vue Svelte Angular Lit plus observed showcase bar; tmp/motion-toast-countdown/toast-browser-final.log"
+    recorded_at: "2026-09-28T08:43:57.891Z"
+    command: FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/motion-countdown.spec.ts --workers=2
+    exit_code: 0
+    artifact_path: e2e/motion-countdown.spec.ts
+    commit_sha: "9c0398bc"

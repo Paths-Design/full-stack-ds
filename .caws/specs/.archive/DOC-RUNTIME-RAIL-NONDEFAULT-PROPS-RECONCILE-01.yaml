@@ -1,0 +1,64 @@
+id: DOC-RUNTIME-RAIL-NONDEFAULT-PROPS-RECONCILE-01
+title: 'Reconcile snapshot CSS-var-bindings row with landed non-default prop routes'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-05T00:51:34.393Z'
+updated_at: '2026-11-05T22:58:22.153Z'
+blast_radius:
+  modules:
+    - docs (claim ledger)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - docs/current-implementation-snapshot.md
+  out:
+    - docs/successor-work.md
+    - packages/ds-codegen
+    - src/runtime
+    - e2e/runtime-rail.spec.ts
+    - .claude/hooks
+invariants:
+  - >-
+    Doc-only slice on a single row: no runtime, codegen, test, cache, Angular
+    compiler, or CAWS-managed hook file is modified. Only the
+    CSS-custom-property-bindings row of current-implementation-snapshot.md
+    changes.
+  - >-
+    The row's "next admissible move" must not imply parameterized non-default
+    runtime routes are wholly future work — those routes exist (query-param
+    overrideProps for R/V/S/L; fixed startup fixtures for Angular).
+  - >-
+    The honest non-default gap is preserved, not erased.
+acceptance:
+  - id: A1
+    given: the "CSS custom-property bindings" row of the claim ledger
+    when: a reader checks the next-admissible-move cell
+    then: >-
+      it no longer says "Add parameterized runtime routes that can mount
+      explicit non-default props" as if no such route exists (those routes have
+      landed); it points to genuinely remaining work instead.
+  - id: A2
+    given: the same row
+    when: a reader checks how non-default props are mounted
+    then: >-
+      it distinguishes the admitted reality — React/Vue/Svelte/Lit use a
+      request-carried query-param overrideProps seam; Angular has only fixed
+      pre-compiled startup fixtures.
+  - id: A3
+    given: the same row's non-claims cell
+    when: a reader checks what the rail still does not prove
+    then: >-
+      it preserves the remaining gap — the rail does not prove every non-default
+      computed visual geometry, every component/prop pair, every token cascade
+      branch, or arbitrary Angular prop-set compilation.
+  - id: A4
+    given: the doc change
+    when: git status is reviewed
+    then: >-
+      no runtime, test, cache, Angular-compiler, or hook file changed — only
+      docs/current-implementation-snapshot.md (plus this spec's own YAML).
+non_functional: {}
+contracts: []

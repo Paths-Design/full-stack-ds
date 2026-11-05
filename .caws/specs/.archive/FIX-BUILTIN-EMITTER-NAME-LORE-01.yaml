@@ -1,0 +1,59 @@
+id: FIX-BUILTIN-EMITTER-NAME-LORE-01
+title: 'Close builtin-emitter component-name-lore jurisdiction and remove Swift identity branches'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Builtin emitter jurisdiction now derives from the target registry and Swift component-reference paths dispatch structurally without Button or Image identity branches.'
+created_at: '2026-09-04T22:58:47.404Z'
+updated_at: '2026-11-05T23:01:58.523Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'builtin target emitter authority'
+    - 'SwiftUI component-reference lowering'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/no-component-name-lore.test.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Avatar/Avatar.swift'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Chip/Chip.swift'
+  out: []
+invariants:
+  - 'Emitter dispatch may inspect normalized structure and platform grammar but never branch on a host or referenced component identity.'
+  - 'SwiftUI by-reference composition emits the component type declared by the normalized componentRef fact; changing that fact changes the emitted type without emitter edits.'
+  - 'The guard derives its scan jurisdiction from the builtin target registry so newly registered builtin emitters cannot enter unscanned.'
+acceptance:
+  - id: A1
+    given: 'builtin targets registered in BUILTIN_TARGET_PACKS'
+    when: 'the no-component-name-lore test runs'
+    then: 'every builtin emitter directory is scanned and a componentRef/ref predicate against a PascalCase component literal fails'
+  - id: A2
+    given: 'structurally equivalent synthetic Chip-like and Avatar-like IR using alternate referenced component names'
+    when: 'SwiftUI source is emitted'
+    then: 'the structural path remains selected and the emitted referenced type follows the IR rather than Button or Image lore'
+  - id: A3
+    given: 'the corrected Swift emitter and generated Swift component sources'
+    when: 'focused codegen tests, generation checks, and Swift package tests run'
+    then: 'all pass with no component-name predicate in an emitter'
+non_functional: {}
+contracts:
+  - name: 'emitter-semantic-authority'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/no-component-name-lore.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: pnpm exec vitest run packages/ds-codegen/src/frameworks/no-component-name-lore.test.ts — 10/10 pass; live corpus names and all 9 BUILTIN_TARGET_PACKS emitter roots scanned; hostile detector fixtures cover host/ref and reversed predicates
+    recorded_at: "2026-09-04T23:16:48.932Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: pnpm exec vitest run packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts — 45/45 pass; alternate ActionControl/MediaAsset refs select the same structural classes and emit those types; wrong dismiss-event near miss is rejected
+    recorded_at: "2026-09-04T23:16:57.364Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run governed:rail exit 0; pnpm test 3370/3370; pnpm run test:frameworks exit 0 (final package 82 files/152 tests); swift test 40 executed, 4 explicit AX-host skips, 0 failures; all-target regeneration changed only scoped Avatar/Chip Swift sources"
+    recorded_at: "2026-09-04T23:17:09.002Z"

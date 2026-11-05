@@ -1,0 +1,34 @@
+id: DOC-BRAND-LAYER-RECONCILE-01
+title: 'Reconcile @layer components + resolved CSS-collision finding, brand roster in tokens docs'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge brand-layer-doc-reconcile at ffff0393ee8d607bb40165ce3927b6710a8b71b5'
+created_at: '2026-07-30T15:46:46.222Z'
+updated_at: '2026-11-05T22:57:57.143Z'
+blast_radius:
+  modules:
+    - 'docs/architecture/tokens-architecture.md (layer declaration, layer table, add-a-brand section)'
+    - 'docs/current-implementation-snapshot.md (deferred CSS-collision-isolation finding)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/tokens-architecture.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Docs describe only what is already implemented and committed (packages/ds-tokens/build/generators/global.ts, packages/ds-codegen/src/css.ts) — no aspirational or future-tense claims.'
+  - 'Non-claims carried forward, not dropped: the layer fix does not reach Lit shadow DOM, and selector-prefixing (the deferred finding''s option b) remains undone.'
+acceptance:
+  - id: A1
+    given: 'the current-implementation-snapshot.md deferred finding says component CSS is unlayered under a 5-layer declaration'
+    when: 'the doc is read after this change'
+    then: 'it states the 6-layer order (core, semantic, components, theme, brand, density) is implemented, cites the two specs that shipped it, and keeps the Lit shadow-DOM and no-selector-prefixing non-claims'
+  - id: A2
+    given: 'tokens-architecture.md declares a 5-layer order and has no mention of component-scoped brand overrides'
+    when: 'the doc is read after this change'
+    then: 'the layer declaration, Decision 3 prose, and layer table all show 6 layers including components, and the add-a-brand section documents the components.<Name>.<path> override shape'
+non_functional: {}
+contracts: []

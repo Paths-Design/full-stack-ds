@@ -1,0 +1,68 @@
+id: FIX-UNWIND-CONSUMPTION-GOLDEN-01
+title: 'Remove RAIL-TOKEN-CONSUMPTION-AUDIT-01 and RAIL-CODEBLOCK-TOKENIZER-GOLDEN-COVERAGE-01 surfaces entirely'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: superseded
+closure_notes: 'Mis-scoped: excluded the token-realization ratchet and ADR-0001, the surfaces that actually blocked peer agents; superseded by a spec covering both ratchets'
+created_at: '2026-08-18T03:54:12.516Z'
+updated_at: '2026-11-05T23:03:56.581Z'
+blast_radius:
+  modules:
+    - 'delete: scripts/token-consumption-audit/ (audit, selfcheck, seeded ledger), packages/ds-tokens/build/runners/usage-scan.ts, docs/token-consumption-audit/'
+    - 'revert wiring: root package.json script, ci.yml step, .githooks/pre-push block, prepush-scope.mjs family + flag + RUN_TOKEN_BUILD feed, scope tests'
+    - 'restore bytes: golden-fixtures.json + tokenize.test.ts CASES at 65bb36d2; snapshot rows/non-claims; AGENTS.md enumeration'
+    - 'explicitly untouched: docs/architecture/adr/ (ADR-0001), .caws lifecycle records, the token-realization scoreboard + NavTree admission entries'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/token-consumption-audit'
+    - 'scripts/prepush-scope.mjs'
+    - 'scripts/prepush-scope.test.mjs'
+    - '.githooks/pre-push'
+    - '.github/workflows/ci.yml'
+    - 'packages/ds-tokens/build/runners/usage-scan.ts'
+    - 'packages/ds-codegen/src/highlight/golden-fixtures.json'
+    - 'packages/ds-codegen/src/highlight/tokenize.test.ts'
+    - 'docs/token-consumption-audit'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'package.json'
+    - scripts/token-realization-audit
+    - docs/token-realization-audit
+    - docs/architecture/adr/0001-structural-freeze-doctrine.md
+    - scripts/mobile-parity-matrix.mjs
+  out: []
+invariants:
+  - 'Removal is complete: after the slice, the only references to either removed spec are ADR-0001 (owner-instructed to stand as history), .caws append-only lifecycle records, and the untracked successor ledger.'
+  - 'No generated component artifact changes: golden fixtures were test-only inputs; governed:rail must end with a clean tree.'
+  - 'No pre-existing gate is weakened or removed: resolvability, contrast, realization scoreboard, styling/behavior/a11y ledgers keep their exact inputs and verdicts.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given every component tripping a gate means the gate is noise (owner pushback); when the removal lands; then every surface from RAIL-TOKEN-CONSUMPTION-AUDIT-01 is gone — audit scripts, seeded ledger, usage-scan runner, root script, CI step, pre-push block, scope-classifier family + its tests, report dir, snapshot row, and the snapshot non-claim rewrites that slice made (governance + resolvability rows restored to their original text)'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the golden coverage slice froze streams for six languages beyond the original four; when the removal lands; then golden-fixtures.json and tokenize.test.ts CASES are byte-identical to their pre-slice state (git show restore at 65bb36d2) and the five web package highlight suites pass at their restored counts over the original four languages'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given ADR-0001 is explicitly excluded from removal; when the slice lands; then docs/architecture/adr/ shows zero diff — the doctrine stands as history and forward guidance even where its token-consumption precedent no longer names a live surface'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given correctness gates must stay armed; when gates run; then resolvability, contrast, the realization scoreboard (including the NavTree admission entries), styling/behavior/a11y ledgers are untouched, governed:rail passes with a clean tree, and docs:check-claims, docs:check-links, lint, scope tests, root and framework suites are green'
+observability:
+  - 'Post-removal repo-wide grep shows zero references to either slice outside ADR-0001 (deliberately untouched per owner), .caws append-only lifecycle records, and the untracked successor ledger; suite counts return to pre-slice values.'
+rollback:
+  - 'git revert the removal commits — both slices are fully described by their original specs and this spec.'
+non_functional:
+  security:
+    - 'Docs, scripts, and test-fixture removal only; no runtime or generated-package behavior change; no secrets.'
+contracts:
+  - name: 'CodeBlock'
+    type: behavior
+    path: 'packages/ds-contracts/components/CodeBlock/CodeBlock.contract.json'

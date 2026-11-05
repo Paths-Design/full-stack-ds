@@ -1,0 +1,81 @@
+id: SHOWCASE-MIXED-SYNTAX-HIGHLIGHT-01
+title: 'Highlight Svelte, Vue, and Lit embedded syntax'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Svelte, Vue, and Lit syntax highlighting verified on the Stack showcase and through the governed rail'
+created_at: '2026-09-24T21:04:17.717Z'
+updated_at: '2026-11-05T23:08:03.691Z'
+created_by_session: '01a0d419-00f5-7790-91f0-4c2a690e8a97'
+blast_radius:
+  modules:
+    - 'canonical CodeBlock tokenizer and generated language types'
+    - 'showcase source viewer'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/CodeBlock'
+    - 'packages/ds-codegen/src/highlight'
+    - 'packages/ds-react/src/primitives/highlight'
+    - 'packages/ds-vue/src/primitives/highlight'
+    - 'packages/ds-svelte/src/primitives/highlight'
+    - 'packages/ds-angular/src/primitives/highlight'
+    - 'packages/ds-lit/src/primitives/highlight'
+    - 'packages/ds-react/src/components/CodeBlock'
+    - 'packages/ds-vue/src/components/CodeBlock'
+    - 'packages/ds-svelte/src/components/CodeBlock'
+    - 'packages/ds-angular/src/components/CodeBlock'
+    - 'packages/ds-lit/src/components/CodeBlock'
+    - 'packages/ds-react-native/src/components/CodeBlock'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/CodeBlock'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/CodeBlock'
+    - 'packages/ds-figma-plugin/src/generated/components/CodeBlock'
+    - 'src/components/CodeViewer.tsx'
+    - 'src/components/shared-controls.test.tsx'
+  out: []
+invariants:
+  - 'Concatenated token text equals exact source, including multiline content and interpolations'
+  - 'Token kinds come from the closed CodeBlock vocabulary and copied source remains unchanged'
+  - 'All five web targets emit identical tokenizer bytes from the canonical source'
+acceptance:
+  - id: A1
+    given: 'a Vue or Svelte single-file component with TypeScript script, markup, and CSS style'
+    when: 'highlighted as that language'
+    then: 'interface properties, quoted strings, markup, and CSS declarations receive their syntax kinds while text round-trips'
+  - id: A2
+    given: 'Lit TypeScript with css and html tagged templates and an ordinary template string'
+    when: 'highlighted'
+    then: 'embedded CSS and HTML plus interpolated expressions receive their syntax kinds and the ordinary string remains a string'
+  - id: A3
+    given: 'generated CodeBlock implementations and the Stack showcase'
+    when: 'the rail and runtime checks execute'
+    then: 'web tokenizers match the canonical source and visible Svelte Vue and Lit samples show the new coloring without changing copy or trace behavior'
+non_functional: {}
+contracts:
+  - name: 'codeblock-highlight'
+    type: behavior
+    path: 'packages/ds-contracts/components/CodeBlock/CodeBlock.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged Stack browser: Stack.svelte and Stack.vue now show layout as property orange, quoted union values as string coral, and embedded style color as CSS property; full source text remains line-aligned. Canonical and showcase focused tests passed 61/61 on main; tmp/mixed-syntax-focused-main.log."
+    recorded_at: "2026-09-24T21:26:39.220Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/highlight/tokenize.test.ts packages/ds-react/src/primitives/highlight/__tests__/codeblock-highlight.test.tsx src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Merged Stack browser: Lit Stack.ts css tagged body shows box-sizing as CSS property and html tagged body shows slot as HTML tag. Canonical test checks css/html interpolations, ordinary template string, and byte-for-byte round-trip; focused main run 61/61 passed in tmp/mixed-syntax-focused-main.log."
+    recorded_at: "2026-09-24T21:26:48.151Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/highlight/tokenize.test.ts packages/ds-react/src/primitives/highlight/__tests__/codeblock-highlight.test.tsx src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Bound worktree: governed:rail PASS, root pnpm test 305 files/4383 tests PASS, test:frameworks PASS (Vue/Lit/Svelte/Angular/RN); browser Stack visuals checked; copy and trace regression tests passed. Main SHA-256 file tmp/mixed-syntax-tokenizer-sha256.log shows canonical tokenizer equals all five web copies; focused main tests 61/61 PASS. CAWS checks commit reachability; Vitest command outcomes were directly observed, not re-executed by CAWS."
+    recorded_at: "2026-09-24T21:26:56.929Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"

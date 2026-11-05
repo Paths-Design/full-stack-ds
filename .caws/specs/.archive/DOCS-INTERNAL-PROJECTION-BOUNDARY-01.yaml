@@ -1,0 +1,52 @@
+id: DOCS-INTERNAL-PROJECTION-BOUNDARY-01
+title: 'Exclude internal documents from showcase projection even when tracked'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Public docs exclude internal tracked and injected sources, verified by inspected source and executed regression corpus root framework and rail receipts; generated receipts remain ignored.'
+created_at: '2026-10-01T03:26:35.488Z'
+updated_at: '2026-11-05T22:58:45.098Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Showcase documentation corpus projection'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/docs/projection.ts'
+    - 'src/docs/projection.test.ts'
+  out: []
+invariants:
+  - 'Internal documents never enter public index page or graph payloads'
+  - 'Public tracked markdown remains projected with stable routes'
+acceptance:
+  - id: A1
+    given: 'an injected source containing internal and public markdown'
+    when: 'documentation is projected'
+    then: 'internal bodies identities and edges are absent while public pages remain'
+  - id: A2
+    given: 'the real tracked corpus with authored internal audit notes'
+    when: 'projection tests and repository gates execute'
+    then: 'the internal exclusion and public corpus consistency checks pass'
+non_functional: {}
+contracts:
+  - name: 'docs-corpus-boundary'
+    type: contract-test
+    path: 'src/docs/projection.corpus.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected src/docs/projection.test.ts at 6a6a3ee7f: injected internal file is never read and public index pages and graph unchanged. Executed receipt tmp/verification/docs-internal-projection/after.log has 16 passing scoped tests; predecessor receipt /private/tmp/fsds-docs-internal-before.log has three failures. Runtime receipts are ignored and are not claimed as tracked artifacts."
+    recorded_at: "2026-10-01T03:41:47.638Z"
+    command: pnpm exec vitest run src/docs/projection.test.ts src/docs/projection.corpus.test.ts
+    exit_code: 0
+    commit_sha: "6a6a3ee7f8174f88d49d51fab6c2631995345830"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected existing real-corpus assertions and exclusion implementation at 6a6a3ee7f. Executed ignored receipts tmp/verification/docs-internal-projection/{root,frameworks,rail}.log: 318 root files 4642 tests pass, six-target rail pass, all frameworks pass. Tests independently executed by session; CLI verifies source commit reachability, not recorded command execution."
+    recorded_at: "2026-10-01T03:41:49.050Z"
+    command: pnpm test -- --maxWorkers=2
+    exit_code: 0
+    commit_sha: "6a6a3ee7f8174f88d49d51fab6c2631995345830"

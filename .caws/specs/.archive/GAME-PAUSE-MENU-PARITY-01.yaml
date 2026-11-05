@@ -1,0 +1,72 @@
+id: GAME-PAUSE-MENU-PARITY-01
+title: 'Orion pause menu parity pass across GPUI, Unity and Godot'
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Orion pause menu parity pass: one absolute interface across GPUI/Unity/Godot with 195-probe/12-RMSE checker green, switch pill fixes incl Unity USS radius clamp, portable icon code tiles, docs updated'
+created_at: '2026-10-31T19:16:40.858Z'
+updated_at: '2026-11-05T23:04:08.186Z'
+created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
+blast_radius:
+  modules:
+    - 'pause-menu parity design authority and three engine lane realizations'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/game-pause-menu'
+    - 'examples/README.md'
+    - packages/ds-codegen/src/frameworks/unity/uss.ts
+    - packages/ds-codegen/src/frameworks/unity/uss.test.ts
+    - packages/ds-unity/Runtime/Resources/FullStackDS
+  out: []
+invariants:
+  - 'The landed orion brand, lane interaction semantics and tests remain intact'
+  - 'All three lanes implement one shared geometry spec rather than lane-specific designs'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given parity.md as the single design authority; when it is read; then it pins the 1280x800 grid, component geometry, switch pill geometry and every tab state identically for all engines'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the three lanes; when they render the four tabs; then header, tab bar, panels, lists, cards, switches, sliders and controls occupy the same positions and use the same colours, with only font rasterization differing'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the switch component on each engine; when rendered checked and unchecked; then it is a 64x32 pill with a 24px circular thumb, signal-orange checked track and graphite unchecked track, with no oval or rounded-square thumb'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the parity rework; when lane tests and four-tab captures run; then interactions still pass, captures are regenerated and the lane READMEs carry the parity section and switch root-cause note'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the merged parity pass; when the comparison document is read; then it states the parity design authority, the switch root causes and the remaining font-rasterization non-claims'
+non_functional: {}
+contracts:
+  - name: 'pause-menu-parity-spec'
+    type: behavior
+    path: 'examples/game-pause-menu/parity.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "examples/game-pause-menu/parity.md + examples/game-pause-menu/fixtures/parity-layout.json (design authority: 1280x800 grid, per-tab rects, switch geometry, icon art); landed in 511aac39b"
+    recorded_at: "2026-10-31T21:20:25.161Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node examples/game-pause-menu/parity-check.mjs --root tmp/parity-evidence: 195 fixed-pixel probes, 12 pairwise RMSE checks, 0 failures across map/progress/abilities/settings on merged-branch captures (unity/godot recaptured from 211aac+ tree; gpui lane captures from addb617)"
+    recorded_at: "2026-10-31T21:20:27.389Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity/uss.test.ts: 42/42 pass incl committed Switch rect/lg md sm radii; packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss .switch--lg .switch__track border-radius 16px; gpui/unity/godot lane READMEs carry switch root causes and 64x32/24px geometry"
+    recorded_at: "2026-10-31T21:20:42.217Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/game-pause-menu/unity/README.md (36/36 EditMode in merged worktree, 8 captures), examples/game-pause-menu/godot/README.md (201/201 headless in merged worktree, 8 captures), examples/game-pause-menu/gpui/README.md (67 pass / 70 with capture, 8 captures)"
+    recorded_at: "2026-10-31T21:20:44.108Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "examples/game-pause-menu/README.md parity-pass section (authority, switch root causes, icon art, permitted differences, non-claims) + examples/README.md portfolio row; non-claims limited to font rasterisation/AA/letter-spacing"
+    recorded_at: "2026-10-31T21:20:45.920Z"

@@ -1,0 +1,51 @@
+id: TEST-COVERAGE-RAISE-VUE-01
+title: 'Raise vue package line coverage to an 80-certifying floor via @custom tests blocks'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Vue line coverage 71.3 to 89.1 via tokenizer language-breadth, hook proofs, and compound sub-part suites; floor ratcheted to 87, certifying the 80 target'
+created_at: '2026-09-01T00:37:57.654Z'
+updated_at: '2026-11-05T23:08:59.158Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-vue/src'
+    - 'packages/ds-vue/vitest.config.ts'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the added assertion suites; when pnpm run test:coverage:vue runs; then every vue test passes and measured line coverage is at least 82 percent'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the vue lines floor reaches 80 with at least 2 points of margin and docs:check-claims derives the markers without drift'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given hand-written assertions inside @custom tests blocks; when governed:rail regenerates all targets; then the custom blocks survive byte-for-byte and the generated trees show no drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:vue exit 0: 62/62 test files, 698/698 tests, measured 89.13% lines (from 71.31) / 78.79% branches / 82.5% functions"
+    recorded_at: "2026-09-01T01:05:48.625Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json vue ratchet 69/73/80/69 -> 87/76/80/87; measured 89.13 leaves 2.13 margin above the 87 floor which certifies the 80 target; node scripts/docs-claims-check.mjs -> 46/46 markers match (vue floor marker 87, vs-target above)"
+    recorded_at: "2026-09-01T01:05:49.066Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run governed:rail exit 0 overall pass after the @custom blocks were populated: regeneration preserved all hand-written imports/tests byte-for-byte, git status clean (zero generated drift), and the four new hand-written hook/compose test files survived the rail"
+    recorded_at: "2026-09-01T01:05:49.517Z"

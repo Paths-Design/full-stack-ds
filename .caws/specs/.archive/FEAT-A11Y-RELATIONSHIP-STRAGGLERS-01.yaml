@@ -1,0 +1,60 @@
+id: FEAT-A11Y-RELATIONSHIP-STRAGGLERS-01
+title: 'A11y relationship stragglers: Details aria-controls lowering, Popover RN aria-expanded, audit cross-primitive scan, Checkbox/NavList overclaim removal (Table parked separately)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge straggler-relationships at 3f888b553c64af4372b0248b3fe4cef13916d6f2'
+created_at: '2026-07-23T05:21:46.379Z'
+updated_at: '2026-11-05T22:59:24.650Z'
+blast_radius:
+  modules:
+    - 'id-relationships.ts lowering (add aria-controls) + Details regen across 5 web families'
+    - 'react-native Popover accessibilityState (aria-expanded)'
+    - 'a11y-realization audit source-scan (follow same-package primitive imports)'
+    - 'Checkbox + NavList contracts (overclaim removal) + ledger burn'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'scripts/a11y-realization-audit'
+  out: []
+invariants:
+  - 'aria-controls joins the lowered relationship attribute set and lowers via the SAME owned-pair path (id on target, idref on source) as aria-labelledby/aria-describedby — no new emitter special-casing.'
+  - 'A relationship is only realized in generated output, or removed from the contract as an overclaim when its target part never renders / the behavior is native to a consumer element — never left declared-but-dead.'
+  - 'The a11y-realization audit sees a relationship attribute realized in a same-package primitive the component imports, not only literals inlined in the per-component source; the fix preserves falsification (deleting the wiring still reads unrealized).'
+  - 'The ledger only shrinks: every burned entry is proven realized (rail green) or proven an overclaim (contract no longer declares it); no stale entries, no unledgered gaps.'
+acceptance:
+  - id: A1
+    given: 'the Details contract summary->content aria-controls relationship'
+    when: 'Details is generated across the five web families'
+    then: 'the content element carries a generated id and the summary carries aria-controls to it (owned-pair lowering); the 5 Details ledger entries burn; relationship-lowering.test.ts pins aria-controls'
+  - id: A2
+    given: 'the Popover aria-expanded relationship in react-native'
+    when: 'the RN Popover is generated'
+    then: 'the trigger carries accessibilityState expanded state; the RN aria-expanded ledger entry burns'
+  - id: A3
+    given: 'Svelte Popover/Tooltip whose aria-controls/aria-expanded/aria-describedby are wired in the imported createAnchoredSurface primitive'
+    when: 'the a11y-realization audit scans them'
+    then: 'the three svelte-only entries read realized (cross-primitive scan) and burn; a self-check proves the scan still fails if the primitive wiring is removed'
+  - id: A4
+    given: 'the Checkbox input->indicator aria-hidden relationship (indicator never renders) and NavList Tab/Enter keyboard keys (native anchor behavior)'
+    when: 'the contracts are adjudicated'
+    then: 'the overclaimed declarations are removed from the contracts and their ledger entries burn; generate:check + governed:rail stay green'
+  - id: A5
+    given: 'the full gate battery on the branch'
+    when: 'run before merge'
+    then: 'root + five framework suites, typecheck:all, governed:rail, audit:a11y-realization, audit:behavior-realization all pass; a11y ledger shrinks by the burned entries with no stale/unledgered'
+non_functional: {}
+contracts:
+  - name: 'relationship-lowering'
+    type: behavior
+    path: 'packages/ds-codegen/src/relationship-lowering.test.ts'

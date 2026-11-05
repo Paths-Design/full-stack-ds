@@ -1,0 +1,146 @@
+id: UNITY-STYLING-PROJECTION-01
+title: 'Unity styling projection: generate Controls.uss from the token graph and IR style facts; retire the hand-authored palette'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Unity styling projection landed with bounded Editor, Player, and cross-engine evidence; remaining variant gaps stay ledgered'
+created_at: '2026-10-19T08:10:00.925Z'
+updated_at: '2026-11-05T23:09:48.805Z'
+created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
+blast_radius:
+  modules:
+    - 'Unity USS emitter (token projection + per-component style rules), codegen target-asset seam, Unity runtime theme loading, styling audits extended to the unity target, Unity styling witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/emitter.ts'
+    - 'packages/ds-codegen/src/cli.ts'
+    - 'packages/ds-codegen/src/cli.test.ts'
+    - 'packages/ds-codegen/src/target-packs'
+    - 'packages/ds-unity'
+    - 'scripts/token-resolvability-audit'
+    - 'scripts/variant-style-audit'
+    - 'scripts/unity-tests.mjs'
+    - 'docs/internal/token-resolvability-audit'
+    - 'docs/internal/variant-style-audit'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'package.json'
+    - packages/ds-codegen/src/native-style-rules.ts
+    - packages/ds-codegen/src/native-style-rules.test.ts
+    - packages/ds-codegen/src/frameworks/gpui
+    - scripts/engine-comparison.mjs
+    - scripts/unity-player.mjs
+    - scripts/engine-comparison-rows.mjs
+    - scripts/engine-comparison-rows.test.mjs
+    - docs/specifications/governed-ci.md
+  out: []
+  support:
+    - docs/architecture/design/box-model-primitive.md
+    - README.md
+    - tmp/engine-comparison
+    - tmp/godot-pilot
+    - tmp/unity-player
+invariants:
+  - 'Every USS rule is derived from IR facts (ir.nativeStyleRules, ir.tokenScopes, ir.tokenFacts, ir.classRecipe, ir.states, the selected behavior''s state-class placement) and the token graph; no selector, property or value is authored per component, and no emitter branch names a component, part, channel or class literal beyond the HTML/CSS/USS platform vocabulary'
+  - 'A CSS fact USS cannot realise is recorded in a machine-readable unsupported ledger emitted beside the stylesheet and classified refused or pending in the support boundary; it is never silently dropped and never approximated by hand-authored USS'
+  - 'packages/ds-unity ships no hand-authored theme palette after this slice: Runtime/Resources/FullStackDS/Controls.uss is generated, sample-only styling lives under Samples~ and is not package theme authority'
+  - 'Token names in USS follow the web token build''s kebab-case --fsds-* naming so the same resolvability question is asked of both surfaces'
+  - 'Styling preserves Switch, Accordion, Popover and Tabs behavior: the 26 EditMode interaction cases and frozen engine traces pass. Text and Divider were admitted in the separate passive-family slice, outside this styling acceptance.'
+acceptance:
+  - id: A1
+    given: 'the four allowlisted contracts, their sidecars and the built token graph'
+    when: 'pnpm run generate:unity runs'
+    then: 'Runtime/Resources/FullStackDS/Controls.uss is generated with a token section (light, dark and each brand as class scopes) covering the closure of tokens the admitted components reference, and a per-component section whose selectors and declarations are lowered from ir.nativeStyleRules and the behavior state-class placement, with an unsupported ledger listing every declaration USS cannot realise and its reason'
+  - id: A2
+    given: 'the generated Controls.uss'
+    when: 'pnpm run audit:token-resolvability and pnpm run audit:variant-realization run'
+    then: 'both audits scan the unity target (USS var references resolve within the generated token section; every non-default variant value of an allowlisted component has a USS carrier or a ledgered gap) and pass with their ledgers reporting zero unledgered and zero stale findings'
+  - id: A3
+    given: 'the regenerated package under Unity 6000.5.3f1'
+    when: 'pnpm run test:unity runs'
+    then: 'all EditMode tests pass; the generated stylesheet imports with importedWithErrors and importedWithWarnings both false; StylingTests pin colours, typography, spacing and focus to token-graph values (light and dark), re-record the Player screenshots and the 26 interaction cases plus the frozen engine traces still pass'
+  - id: A4
+    given: 'the support boundary'
+    when: 'pnpm run audit:unity-boundary runs'
+    then: >-
+      the tokens, styles, variants, states, rtl and morphology families are lowered
+      with via naming the USS projection, refused with a reason, or pending a later
+      named phase with a reason (never P3); every Controls.unsupported.json entry
+      backed by a sidecar leaf is classified refused or pending; zero leaves remain
+      pending P3, and the audit reports zero violations
+  - id: A5
+    given: 'the regenerated package'
+    when: 'generate:unity runs a second time and the unity emitter and CLI suites run'
+    then: >-
+      the packages/ds-unity working tree is clean after the second regeneration,
+      governed:rail still passes (the emission manifest records target assets for
+      rail targets; unity is outside the rail until P5, so its drift proof is
+      regeneration plus a clean tree), and the emitter suite pins the USS lowering
+      against a synthetic contract outside the corpus
+  - id: A6
+    given: 'docs/architecture/unity-target.md, packages/ds-unity/README.md and the implementation snapshot'
+    when: 'docs:check-claims and docs:check-links run'
+    then: 'the projection rules (token scopes, selector lowering, state-class placement, property mapping, unsupported ledger, theme/brand switching API) and the recorded EditMode run with Unity version are documented and both gates pass'
+observability:
+  - 'audit:unity-boundary per-phase pending counts (P3 must read 0 after the slice)'
+  - 'the generated unsupported ledger beside Controls.uss (count and reasons) and the two styling audits'' unity rows'
+rollback:
+  - 'revert the slice commits and regenerate: the hand-authored Controls.uss returns with the three-file sample; no persisted state'
+non_functional: {}
+contracts:
+  - name: 'unity-uss-tests'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/unity/uss.test.ts'
+  - name: 'unity-styling-witness'
+    type: behavior
+    path: 'packages/ds-unity/Tests/Editor/StylingTests.cs'
+  - name: 'unity-support-boundary'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run generate:unity emitted 4/4 allowlisted C# components, generated Controls.uss and Controls.unsupported.json; uss.test.ts synthetic projection cases passed"
+    recorded_at: "2026-10-30T05:46:30.181Z"
+    command: "pnpm run generate:unity"
+    exit_code: 0
+    artifact_path: packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "On merged source d40e7527b, token-resolvability and variant-realization audits passed; Unity six-component surface has 16 unrealized non-default values, all ledgered, with zero unledgered or stale findings. The ledgered gaps are explicit, not parity claims."
+    recorded_at: "2026-10-30T16:31:07.361Z"
+    command: "pnpm run audit:token-resolvability && pnpm run audit:variant-realization"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At clean source 63fee12cf, Unity 6000.5.3f1 EditMode XML tmp/unity-pilot/results.xml passed 43/43, including USS import warnings/errors checks, token-backed styling and 26 interaction cases; six Editor Play-context PNGs recorded. Frozen five-row Unity Editor versus Godot runtime/export comparison passed at tmp/engine-comparison/ae1a20cf-d123-4db8-966c-bfe561adff5a/comparison.json. Fresh OSXPlayer run tmp/unity-player/52337abb-74a0-44df-9b09-7bbdbd9f868d/result.json passed 12/12, with inspected screenshot and opaque sample/Switch style checks. These ignored local receipts were inspected directly; commit verification checks reachability only."
+    recorded_at: "2026-10-30T16:30:02.772Z"
+    command: "pnpm run test:unity && pnpm run test:engine-comparison && pnpm run test:unity-player"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At merged source d40e7527b, audit:unity-boundary reports 12343 lowered, 2581 pending all P4, 2572 refused, zero unclassified, no dead rules, no allowlisted catch-all reliance, and no ledgered declaration classified lowered across the six-component allowlist."
+    recorded_at: "2026-10-30T16:31:23.234Z"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "On clean candidate 84b7fbb04 merged at d40e7527b, governed:rail regenerated 330 groups/1618 files and six rail-admitted targets passed; committed-tree-check generated found packages matching HEAD. Host-access root test passed 363 files/5321 tests and framework suites passed Vue 853, Lit 618 with two skips, Svelte 753, Angular 639, RN 260. The rail binds bytes and sources, not full Unity visual fidelity."
+    recorded_at: "2026-10-30T16:32:41.356Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "At source 63fee12cf and merged d40e7527b, docs/architecture/unity-target.md records Unity 6000.5.3f1 EditMode 43/43, six Editor Play-context frames, standalone OSXPlayer run 52337abb with 12/12 and explicit proof limits. docs:check-claims and docs:check-links passed on the committed document at 84b7fbb04."
+    recorded_at: "2026-10-30T16:30:46.408Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe

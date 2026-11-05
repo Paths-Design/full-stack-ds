@@ -1,0 +1,40 @@
+id: FEAT-COMPOSE-STATUS-ICON-REALIZATION-01
+title: 'Realize Status''s valueMap-driven icon through the reference mechanism'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Status''s valueMap-named icon is composed through the reference vocabulary (C8 ledger 4 to 3), which exposed and fixed the valueMap axis-enum naming defect, and path classification now requires more than one composed control'
+created_at: '2026-09-13T06:08:38.191Z'
+updated_at: '2026-11-05T23:00:13.627Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (decoration reference in the static-content class)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'The icon name comes from the axis valueMap, exhaustively, with no icon name literal in the emitter.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Status declares an Icon reference whose name binding is a valueMap over its status axis; when the static-content class lowers it through the reference vocabulary; then the generated Status compiles with an exhaustive when, the C8 ledger loses that entry while the three remaining stay enforced, and SwiftUI regeneration is unchanged'
+non_functional: {}
+contracts:
+  - name: 'reference-realization'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge 7dfeed4c: the generated Status contains 'Icon(size = IconSize.Sm, name = when (status) { StatusStatus.Info -> \"info\" ... StatusStatus.Error -> \"triangle-alert\" })' with the emitter's own axis enum name; gradlew :library:compileKotlin -> BUILD SUCCESSFUL; node scripts/compose-parity-diff.mjs -> 47 allowlisted, 0 failures with the Status:icon ledger entry removed and the three remaining enforced, and Status keeps its static-content role; pnpm exec vitest run component-source.test.ts -> 55/55; node --test scripts/compose-parity-diff.test.mjs -> 20/20; pnpm run generate:check -> 52/52; swiftui regeneration byte-identical; pnpm test -> 3909/3910 with only the known intermittent 5s analytical sweep failing under load (55/55 in isolation); pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree"
+    recorded_at: "2026-09-13T06:17:10.530Z"

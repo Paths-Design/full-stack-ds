@@ -1,0 +1,64 @@
+id: REL-PROJECTION-COMBINATORS-01
+title: 'Projection combinators type from their parts: layer, facet and embed derive obligations from operands and the combinator rule'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: superseded
+closure_notes: 'Parked unmerged at tag parked/m3-projection-combinators (a6b52195): the owner re-sequenced so the atomic disposition contract is repaired before composition, which otherwise inherits the conflated unsupported/refused outcome.'
+created_at: '2026-09-18T18:33:05.223Z'
+updated_at: '2026-11-05T23:07:03.577Z'
+created_by_session: 'session-69475cd2-20cf-4633-9893-09967382f4d8'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (the L4 combinator typing rules and the composite judgment)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (the combinator controls)'
+    - 'packages/ds-contracts/analytical-fixtures/composition-precommit.json (the pre-registered expectations)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+  out: []
+invariants:
+  - 'Admissibility is compositional: a composite''s verdict is a function of its parts'' verdicts and the rule written for its combinator. A composite never carries a special case, and a refused composite never invents a cause of its own when a part already named one.'
+  - 'The declaration is the authority for every scale fact. Which channels the parts use is read off the parts; whether a shared channel is commensurable is read off the declared units; a fact the declaration does not carry leaves the judgment unproven rather than refused. The walk never guesses.'
+  - 'Within-panel sharing and across-panel policy are different scopes and are not flattened into one profile. A layer''s shared coordinate space and a facet''s scale policy constrain different pairs of projections, so a free facet policy does not contradict a shared layer scale.'
+  - 'The pre-committed expectations are frozen before the implementation exists. A disagreement is resolved by reporting the previous representation''s failure with a separating case, never by editing the pre-commit to match the code.'
+acceptance:
+  - id: A1
+    given: 'An admitted operation over a declared structure and a target inventory that hosts its channels, and a layer, facet or embed built from retained programs.'
+    when: 'The composite is judged.'
+    then: 'given an admitted layer, facet or embed whose every part is retained and whose combinator rule is satisfied; when the composite is judged; then it is retained and its exposed scale profile is derived from the parts and the declarations'
+  - id: A2
+    given: 'A retained composite and a materially identical one whose single differing part is refused by the operation admission rules.'
+    when: 'Both are judged.'
+    then: 'given a composite with exactly one part replaced by an otherwise identical refused part; when it is judged; then the composite is refused carrying that part''s own cause verbatim and no composite-specific cause is introduced'
+  - id: A3
+    given: 'A layer over two retained programs that both assign the same channel, with the sharing declaration varied across absent, shared and unshared, and the declared units varied across commensurable, incommensurable and absent.'
+    when: 'Each layer is judged.'
+    then: 'given a layer whose parts share a channel with no sharing declaration; when it is judged; then it is refused REL_LAYER_SCALE_UNSHARED; and declaring shared over incommensurable declared units refuses REL_UNIT_INCOMMENSURABLE_SHARED_SCALE; and a missing unit is carried unproven rather than refused'
+  - id: A4
+    given: 'A facet over retained programs with the per-channel scale policy varied across absent, shared and free.'
+    when: 'Each facet is judged.'
+    then: 'given a facet whose scale policy is undeclared for a channel its parts use; when it is judged; then it is refused REL_FACET_SCALE_POLICY_UNDECLARED; and a retained facet''s induced claims follow the declared policy, shared inducing cross-panel comparability and free not'
+  - id: A5
+    given: 'An embed whose host is a tabular projection and whose part declares a task, with the cell channel budget varied across sufficient and insufficient.'
+    when: 'Each embed is judged.'
+    then: 'given an embed whose part''s task invariant is unsatisfiable within the declared cell channel budget; when it is judged; then it is refused REL_EMBED_TASK_EXCEEDS_CHANNEL_BUDGET; and the same part under a sufficient budget is retained'
+  - id: A6
+    given: 'The recombination pre-registered in composition-precommit.json before the combinator rules existed.'
+    when: 'It is judged and compared against the frozen expectation.'
+    then: 'given the pre-registered unfamiliar recombination; when it is judged; then the outcome matches the expectation authored before the implementation existed, and the materially different policy variant differs only by the claim the policy names'
+  - id: A7
+    given: 'A retained composite and a perturbation to a declaration none of its parts read.'
+    when: 'Both are judged.'
+    then: 'given an invariant-preserving perturbation to a declaration no part reads; when the composite is judged; then the verdict and the induced claims are unchanged'
+non_functional: {}
+contracts:
+  - name: 'projection-combinator-typing'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'composition-precommit'
+    type: schema
+    path: 'packages/ds-contracts/analytical-fixtures/composition-precommit.json'

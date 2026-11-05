@@ -1,0 +1,70 @@
+id: REL-CORPUS-CONTRACT-REPAIR-01
+title: 'Stage 0.5: repair the corpus contract so it cannot bias the stage-1 engine'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Stage 0.5 landed: case identity split from diagnostic identity (59 cases, 47 diagnostics, 7 shared), per-case stage and evidence class, unproven verdict with obligation, vocabulary pinned to the doctrine appendix by exact equality, doctrine reconciled (relational structure, three-valued judgment, task cannot disavow encoding claims, necessity witnesses, completeness bars); known defect recorded: REL-ILLEGAL-CORPUS-01 A1 names the wrong vitest path and is frozen.'
+created_at: '2026-09-02T19:33:23.821Z'
+updated_at: '2026-11-05T23:06:14.225Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-pack (schema v2: case/diagnostic split, verdict, stage, evidence; corpus rename; vocabulary)'
+    - 'packages/ds-codegen/src/analytical (corpus-integrity: bijection, stage selector, obligation, doctrine-mention edge)'
+    - 'docs/architecture/analytical-relation-doctrine.md (lifecycle reconciliation, relational structure, three-valued judgment, necessity witnesses, task/encoding intersection, diagnostic catalogue)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-pack'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture'
+  out: []
+invariants:
+  - 'Case identity and diagnostic identity are separate fields, and at least one diagnostic has more than one case, so the distinct-diagnostic metric is a property of the engine''s causal partitioning and not of how many rows were authored.'
+  - 'Every case declares the earliest stage at which it is adjudicable and the evidence class it needs (schema or instance); a stage-N engine is judged only on cases with stage at most N, and later cases are not-yet-adjudicable rather than pass or fail.'
+  - 'Judgments are three-valued: an unproven case carries its missing premise as a vocabulary term, so the admissible set narrows on missing evidence instead of blocking or silently passing.'
+  - 'The stage-0 vocabulary claim is stated as ''declared references resolve'' and every vocabulary term is mentioned by the doctrine; semantic completeness of prose is not claimed.'
+acceptance:
+  - id: A1
+    given: 'corpus-case.schema.json and corpus.jsonl replacing the illegal-form pair'
+    when: 'pnpm exec vitest run packages/ds-codegen/src/analytical'
+    then: 'every case validates, case ids are unique, the set of illegal diagnostics equals the doctrine''s diagnostic catalogue in both directions, and a corpus in which every diagnostic has exactly one case is a finding'
+  - id: A2
+    given: 'each case''s stage and evidence fields'
+    when: 'casesAdjudicableAt(1) is taken'
+    then: 'it returns only stage-1 cases, the set is non-empty, and it includes at least one unproven case whose obligation resolves in vocabulary.json'
+  - id: A3
+    given: 'vocabulary.json and the doctrine'
+    when: 'the doctrine-mention check runs'
+    then: 'every vocabulary term name is mentioned in the doctrine (hyphen/space and plural tolerant), and a term added without a doctrine mention is a finding the test reaches'
+  - id: A4
+    given: 'the doctrine after this slice'
+    when: 'read against the review'
+    then: 'its status paragraph names what exists after stage 0 and a concrete ratification condition, L1 states the relational-structure position, L3.5 states that encoding-induced claims cannot be disavowed by a declared task, the stage-1 row scopes adjudication to stage-1 cases with three-valued judgment and axis-necessity witnesses, and the non-claims include analytical meaning versus denotation'
+non_functional: {}
+contracts:
+  - name: 'corpus-case-schema'
+    type: schema
+    path: 'packages/ds-contracts/analytical-pack/corpus-case.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "corpus-case.schema.json and corpus.jsonl replace the illegal-form pair (git rm). 29/29 tests; typecheck (root+codegen) and eslint clean; docs:check-claims OK. Probe verbatim: 'cases: 59  illegal: 54  unproven: 5  diagnostics (corpus): 47  diagnostics (doctrine): 47  findings: 0'. Seven diagnostics are shared by independent cases (ORDINAL_MEAN, SUM_SEMIADDITIVE, NORMALIZE_NONADDITIVE, GRAIN_FANOUT, UNIT_INCOMMENSURABLE_SHARED_SCALE, LOG_SCALE_ZERO_CLAIM, PROVENANCE_LAYOUT_GEOMETRY_CLAIM). Bijection falsifier reached for real: deduplicating the live corpus to one case per diagnostic yields CORPUS_CASE_DIAGNOSTIC_BIJECTION with detail 'exactly one case', and the live corpus does not. Case-id pattern, verdict/diagnostic/obligation if-then rules, stage bounds 1..6, and additionalProperties are each pinned by a mutation that yields CORPUS_SCHEMA_INVALID. Full root suite in the worktree: 13 failures in ds-figma-plugin FigmaPluginApp.test.ts (7), ds-tokens runner-mains.test.ts (5) and cli-spawn.test.ts (1); all three files pass 17/17 on unmodified canonical main and none is in the slice diff; classified as the worktree symlinked-node_modules environment (third occurrence this lane; CI on the previous push was green)."
+    recorded_at: "2026-09-02T19:47:48.368Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/analytical && pnpm exec tsx tmp/corpus-probe.ts"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "casesAdjudicableAt(cases, 1) returns 19 cases, every one with stage 1, over 15 distinct diagnostics, including 3 unproven cases whose obligations resolve in vocabulary.json: CASE_ROLLUP_WITH_UNKNOWN_GRAIN->grain:declared, CASE_CURRENCY_SUM_MIX_UNKNOWN->unit:commensurable, CASE_SUPPRESSION_PRESENCE_UNKNOWN->null:missing-mechanism. Probe per stage: <=1 19/15/3, <=2 28/22/4, <=3 58/46/5, <=5 59/47/5 (cases/diagnostics/unproven). Pinned: no stage-1 case references a combinator term; the selector is cumulative (stage 3 strictly larger than stage 2; stage 6 equals the whole corpus); an obligation outside the vocabulary yields CORPUS_TERM_UNKNOWN naming the obligation ('obligation \"grain:vibes\"'). Evidence classes: 8 instance-evidence cases exist for both verdicts (4 illegal, 4 unproven)."
+    recorded_at: "2026-09-02T19:47:49.064Z"
+    command: pnpm exec tsx tmp/corpus-probe.ts
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Satisfied by a STRICTER mechanism than the criterion's 'mentioned, hyphen/space tolerant' wording: the doctrine now carries a machine-readable 'Vocabulary appendix' table (one row per namespace plus an engines row) which corpus-integrity parses, and vocabulary.json must EQUAL it in both directions. Live: 0 CORPUS_VOCABULARY_DOC_DRIFT over 145 terms in 21 namespaces plus 8 engines. Falsifier reached for real: adding scale:vibes-added-without-doctrine to vocabulary.json printed {code:CORPUS_VOCABULARY_DOC_DRIFT, detail:'term \"scale:vibes-added-without-doctrine\" is in vocabulary.json but not in the doctrine appendix'}; removing scale:cyclic from vocabulary.json yields the reverse-direction finding; an added namespace yields the finding; the parser is pinned to stop at the next heading and to treat the engines row as the engine list. The fuzzy prose-mention edge was rejected because mention is not definition; the exact edge is what the review asked for ('one surface derived or a real equality edge')."
+    recorded_at: "2026-09-02T19:47:49.529Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/analytical -t 'doctrine-appendix'"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Reading-based criterion, verified by reading plus the doc gates (docs:check-claims OK; frontmatter hook silent on Write). Status paragraph names what exists (analytical-pack/**, analytical/**, the parsed catalogue and appendix) and the ratification condition (status flips to active when stage 1 adjudicates every stage-1 case three-valued with necessity witnesses); governs: splits existing from proposed paths. L1 'Relational structure and grain' states the position with the isolated-node argument. L3.5 adds 'A declared task cannot disavow what the encoding asserts' and REL_TASK_UNDERSTATED_ENCODING_CLAIM (case CASE_TRUNCATED_LENGTH_DECLARED_AS_LOOKUP). Stage-1 row scopes adjudication to stage-1 cases, three-valued with evidence classes, heterogeneous fixture, necessity witness per axis, pre-schema recon over four probes plus a graph with an isolated node, and a stop condition on undercount/overcount. Invariants 14-16, falsification conditions 9-10, D2 demoted to a probe, three completeness bars, and the non-claims now include analytical meaning versus denotation and the narrowed vocabulary claim. Known bookkeeping defect recorded, not cleaned: the closed spec REL-ILLEGAL-CORPUS-01 A1 text names packages/ds-contracts/analytical-pack as the vitest path while the tests live under packages/ds-codegen/src/analytical; its evidence is frozen and lifecycle YAML is hand-edit-forbidden."
+    recorded_at: "2026-09-02T19:47:49.970Z"
+    command: "grep -n 'relational structure\\|cannot disavow\\|three-valued\\|necessity witness\\|denotation\\|ratified only in part' docs/architecture/analytical-relation-doctrine.md"

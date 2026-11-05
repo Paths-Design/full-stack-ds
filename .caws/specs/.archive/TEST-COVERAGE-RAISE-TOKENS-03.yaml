@@ -1,0 +1,42 @@
+id: TEST-COVERAGE-RAISE-TOKENS-03
+title: 'Unit tests for tokens utils: tokenValidator and generator'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'WCAG validator suites took tokens from 21.05 to 27.45 lines; floor ratchets to 25.'
+created_at: '2026-09-01T03:53:23.397Z'
+updated_at: '2026-11-05T23:08:48.334Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given unit tests for tokenValidator and generator; when pnpm run test:coverage:tokens runs; then every tokens test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the tokens floor ratchets to measured minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:tokens (worktree): 11/11 files, 170/170 tests pass, All files 27.45 lines / 77.31 branches / 78.22 functions — above the previous 21.05/75.07/76.32 and above the ratcheted floors 25/75/76/25"
+    recorded_at: "2026-09-01T04:00:13.216Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json tokens ratcheted 19->25 statements, 73->75 branches, 74->76 functions, 19->25 lines (measured minus 2-point margin, all margins >= 2.22); pnpm run docs:check-claims: 46 marked claims OK with tokens at 25"
+    recorded_at: "2026-09-01T04:00:13.700Z"

@@ -1,0 +1,84 @@
+id: SHOWCASE-COMPONENT-USABILITY-01
+title: 'Repair showcase sizing, card semantics, panel controls and overlay examples'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Resolved six browser findings through contract-owned sizing and Card cleanup, usable showcase controls and overlay examples; all acceptance criteria, 14 Chromium checks, framework suites and forced full pre-push passed.'
+created_at: '2026-09-10T21:52:20.182Z'
+updated_at: '2026-11-05T23:07:54.609Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Card and Dialog contracts and generated targets'
+    - 'Showcase navigation, tokens and usage previews'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+    - 'packages/ds-contracts/components/Card/'
+    - 'packages/ds-contracts/components/Dialog/'
+    - 'packages/ds-contracts/components/Walkthrough/'
+    - 'packages/ds-react/'
+    - 'packages/ds-vue/'
+    - 'packages/ds-svelte/'
+    - 'packages/ds-angular/'
+    - 'packages/ds-lit/'
+    - 'packages/ds-react-native/'
+    - 'packages/ds-jetpack-compose/'
+    - 'e2e/'
+    - 'docs/'
+    - packages/ds-codegen/
+    - packages/ds-swiftui/
+    - packages/ds-figma-plugin/src/generated/
+  out: []
+invariants:
+  - 'Component semantics remain contract-owned; no legacy Card status aliases remain.'
+  - 'Overlay examples remain dismissible and repeatable; consumer content stays inside available bounds.'
+acceptance:
+  - id: A1
+    given: 'a constrained viewport'
+    when: 'the command palette opens'
+    then: 'contents fit and results scroll without clipping labels or controls'
+  - id: A2
+    given: 'a generated Card'
+    when: 'rendered with composed metadata'
+    then: 'status variants and accent borders are absent and the badge wrapper adds no duplicate painted surface'
+  - id: A3
+    given: 'the showcase panels'
+    when: 'icon controls, palette commands or Command-Backslash are used'
+    then: 'panels collapse and restore with accessible controls'
+  - id: A4
+    given: 'the token explorer'
+    when: 'following references'
+    then: 'brand precedes semantic and core and reference links navigate to valid visible target rows'
+  - id: A5
+    given: 'an overlay example'
+    when: 'launched and dismissed'
+    then: 'it is visible, interactive and can be reopened, including Walkthrough progression'
+non_functional: {}
+contracts:
+  - name: 'showcase-usability'
+    type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "e2e/showcase-usability.spec.ts: palette fits 1153/390/320px, action spacing and scoped Dialog sizing; 14-test Chromium run PASS. Evidence: tmp/showcase-usability/e2e-final.log and palette-actions-320.png."
+    recorded_at: "2026-09-10T23:15:59.713Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "e2e/showcase-usability.spec.ts: Card neutral borders and single painted badge surface PASS; audit:dead-slots and governed:rail PASS. Evidence: tmp/showcase-usability/card.png and prepush-complete.log."
+    recorded_at: "2026-09-10T23:16:00.750Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "e2e/showcase-usability.spec.ts: panel buttons, palette actions and Command-Backslash collapse/restore with focus recovery PASS. Evidence: tmp/showcase-usability/e2e-final.log."
+    recorded_at: "2026-09-10T23:16:01.749Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "e2e/showcase-usability.spec.ts: brand-first layer order, references reveal hidden destinations, token URL reload and selected-brand permalink PASS. Evidence: tmp/showcase-usability/e2e-final.log."
+    recorded_at: "2026-09-10T23:16:02.767Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "e2e/showcase-portal-containment.spec.ts plus showcase-usability.spec.ts: launcher/dismiss/reopen, scoped portal and complete Walkthrough progression PASS. Evidence: tmp/showcase-usability/e2e-final.log, walkthrough-mobile.png; full pre-push PASS at 7de26338."
+    recorded_at: "2026-09-10T23:16:03.819Z"

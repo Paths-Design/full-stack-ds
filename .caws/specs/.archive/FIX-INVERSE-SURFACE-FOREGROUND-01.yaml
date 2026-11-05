@@ -1,0 +1,79 @@
+id: FIX-INVERSE-SURFACE-FOREGROUND-01
+title: 'Add foreground.onInverse and pair it with background.inverse surfaces'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge inverse-fg at c5605ef66f1694a63642379bad8b532107e43017'
+created_at: '2026-07-30T00:47:30.704Z'
+updated_at: '2026-11-05T23:03:01.737Z'
+blast_radius:
+  modules:
+    - 'packages/ds-tokens/src/color/semantic/foreground.tokens.json'
+    - 'packages/ds-contracts/components/Tooltip/Tooltip.tokens.json'
+    - 'Generated Tooltip across all six targets + regenerated tokens.css'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/src/color/semantic/foreground.tokens.json'
+    - 'packages/ds-tokens/generated'
+    - 'packages/ds-tokens/build'
+    - 'packages/ds-contracts/components/Tooltip'
+    - 'packages/ds-react/src/components/Tooltip'
+    - 'packages/ds-vue/src/components/Tooltip'
+    - 'packages/ds-svelte/src/components/Tooltip'
+    - 'packages/ds-angular/src/components/Tooltip'
+    - 'packages/ds-lit/src/components/Tooltip'
+    - 'packages/ds-react-native/src/components/Tooltip'
+    - 'packages/ds-figma-plugin/src/generated/components/Tooltip'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - >-
+    background.inverse flips per theme (mode.dark in light, mode.light in dark),
+    so its paired label must flip the OPPOSITE way. foreground.inverse is
+    deliberately light in BOTH modes — its own $description says it is for the
+    label inside colored action surfaces and is NOT the inverse of
+    foreground.primary. Pairing it with background.inverse yields light-on-light
+    in dark mode.
+  - >-
+    The fix adds the missing token rather than redefining foreground.inverse.
+    Action surfaces (primary/danger buttons) keep their hue across themes and
+    genuinely need a label that stays light; changing that token would break them
+    to fix the tooltip.
+  - >-
+    This defect was UNOBSERVABLE before FIX-SURFACE-PART-CLASS-01: the tooltip's
+    colours were authored against a selector that matched nothing, so the wrong
+    pairing rendered as no pairing. Making styles apply is what surfaced it.
+acceptance:
+  - id: A1
+    given: 'An open Tooltip in the dark-mode showcase'
+    when: 'its content element is measured in Chromium'
+    then: >-
+      computed color and background-color differ and meet WCAG AA for body text;
+      measured contrast ratio reported, not asserted by eye.
+  - id: A2
+    given: 'foreground.onInverse'
+    when: 'the token graph is built'
+    then: >-
+      it resolves to mode.light in the light theme and mode.dark in the dark
+      theme — the mirror of background.inverse — and carries a $description
+      stating the pairing so the next author does not repeat the mistake.
+  - id: A3
+    given: 'foreground.inverse and every existing consumer of it'
+    when: 'this slice lands'
+    then: >-
+      foreground.inverse is UNCHANGED and its action-surface consumers
+      (primary/danger Button labels) render identically; enumerated, not assumed.
+  - id: A4
+    given: 'The contrast gate'
+    when: 'tokens:check-contrast runs'
+    then: >-
+      the new pairing is added to the curated pairs so a future re-point of
+      either side fails the gate rather than silently going invisible again.
+non_functional: {}
+contracts:
+  - name: 'foreground-tokens'
+    type: schema
+    path: 'packages/ds-tokens/src/color/semantic/foreground.tokens.json'

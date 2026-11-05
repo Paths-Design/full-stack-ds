@@ -1,0 +1,50 @@
+id: TEST-COVERAGE-RAISE-CODEGEN-01
+title: 'Raise codegen coverage via in-process CLI main-path suites (guards, validate, dry-run)'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Codegen line coverage 58.4 to 61.7 via in-process CLI main-path suites; floor ratcheted to 59 (still below the 80 target, next slices continue)'
+created_at: '2026-09-01T01:40:25.629Z'
+updated_at: '2026-11-05T23:08:28.509Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the in-process CLI suites; when pnpm run test:coverage:codegen runs; then every codegen test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the codegen floor ratchets to the measured value minus the standard margin and docs:check-claims derives the markers without drift'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the new tests; when governed:rail regenerates all targets; then the generated trees show no drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:codegen exit 0: 76/76 test files, measured 61.65% lines (from 58.35) / 73.4% branches / 77.94% functions"
+    recorded_at: "2026-09-01T01:51:00.749Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json codegen ratchet 56/70/75/56 -> 59/71/75/59; measured 61.65 leaves 2.65 margin; docs-claims-check 46/46 after the floor marker update"
+    recorded_at: "2026-09-01T01:51:01.136Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run governed:rail exit 0 overall pass after the cli.test.ts addition: zero generated drift (git status clean)"
+    recorded_at: "2026-09-01T01:51:01.519Z"

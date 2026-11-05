@@ -1,0 +1,77 @@
+id: REL-A11Y-CORPUS-EXTEND-01
+title: 'Extend the analytical oracle with accessibility conservation obligations, licensed by external standards'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Oracle extended with 11 peer-projection conservation cases across five families, licensed by WCAG/ARIA (normative) and APG (guidance) citations in a new source field; corpus 59->70 cases, catalogue 47->57 causes; stage<=1 unchanged at 19/15/3 and checkFixtureLedger(stage=1) empty, stage<=2 28/22/4 -> 30/24/4 with two new LEDGER_CASE_UNBOUND obligations for REL-VIEW-ALGEBRA-01. New custody baseline: corpus 86f2b03a9fe7affe, case schema e961af232d3ede45, vocabulary 5bd9dfddab19dc33, denylist 0564902cf8d7d4ff unchanged, doctrine catalogue+appendix 123e73dfc61ab2ab. NON-CLAIMS: no engine implements any of these obligations, so nothing here is proven checkable - only authored and licensed; the citations are my readings of the standards, unreviewed by an accessibility specialist; case-to-stage placement is a judgment about where each defect originates and stage 2/3 may relocate one; the two stage-2 cases have no fixtures yet, which is the intended obligation rather than a discharged criterion; no fixture, engine rule, mutation score or runtime a11y check exists for the family; engine attribution reuses the existing eight and may be re-partitioned at stage 5.'
+created_at: '2026-09-03T00:25:27.769Z'
+updated_at: '2026-11-05T23:05:55.968Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-pack (corpus cases, case schema gains a source citation, vocabulary gains a projection namespace and conservation invariants)'
+    - 'packages/ds-codegen/src/analytical/corpus-integrity.ts (source-citation check; stage-scoped ledger obligation surfaced at stage 2)'
+    - 'docs/architecture/analytical-relation-doctrine.md (diagnostic catalogue rows, vocabulary appendix, stage-5 prose; new custody baseline)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-pack/corpus.jsonl'
+    - 'packages/ds-contracts/analytical-pack/corpus-case.schema.json'
+    - 'packages/ds-contracts/analytical-pack/vocabulary.json'
+    - 'packages/ds-codegen/src/analytical/corpus-integrity.ts'
+    - 'packages/ds-codegen/src/analytical/corpus-integrity.test.ts'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+  out: []
+invariants:
+  - 'Accessibility cases describe semantic obligations a lawful projection must preserve. ARIA, HTML and APG details are EVIDENCE for those obligations, cited per case, never vocabulary admitted into the analytical relation: no aria/role/html namespace may enter vocabulary.json.'
+  - 'No stage-1 behaviour change. engines.ts, relation-model.ts, judgment.ts, structure.ts, the fixtures, witnesses.json and removals.json are scope.out; the stage-1 adjudicable set stays 19 cases over 15 diagnostics, the holdout ruleDigest stays 6b7b2135, and stage1.test.ts plus necessity.test.ts pass unmodified.'
+  - 'Oracle extension only: this slice implements no engine rule for the new obligations. A new case confers an obligation on a later stage, never a passing behaviour now.'
+  - 'Every case that declares a projection-conservation term must cite at least one external source with its normative-vs-guidance status; corpus-integrity refuses an uncited one.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus carries one accessibility case at stage 5; when cases are added across information, order, structure, interaction and representation-independence conservation; then each names the standard that licenses it and its stage is the earliest stage whose facts decide it'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given ARIA and APG are external evidence; when the new cases are written; then no aria/role/html term enters vocabulary.json and the form-name denylist still reports no leak'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given corpus-integrity requires catalogue-case bijection; when new diagnostics are added; then the doctrine catalogue and the illegal-case diagnostic set are equal in both directions and every engine stays exercised'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a stage-2 case must be adjudicable at stage 2; when checkLedger runs at stage 2; then each new stage-2 case reports LEDGER_CASE_UNBOUND as an obligation for REL-VIEW-ALGEBRA-01 rather than passing silently'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the oracle changes; when the slice closes; then a new custody baseline is recorded for corpus.jsonl, corpus-case.schema.json, vocabulary.json, form-names.json and the doctrine catalogue plus appendix'
+non_functional: {}
+contracts:
+  - name: 'corpus-case'
+    type: schema
+    path: 'packages/ds-contracts/analytical-pack/corpus-case.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Eleven cases added across the five conservation families, each stage-classified by where the defect originates: information (CASE_PEER_TEXT_NAMES_THE_FORM, CASE_PEER_SUMMARY_ASSERTS_UNTESTED_TREND), order (CASE_SORTED_PROJECTION_SORT_STATE_UNDECLARED, CASE_CATEGORICAL_REORDER_NOT_SHARED), structure (CASE_NESTED_GROUPS_FLAT_IN_PEER, CASE_TABULAR_CELL_LOSES_ITS_KEYS, CASE_SUBSET_WITHOUT_DECLARED_POPULATION), representation-independence (CASE_PEER_TOTALS_AT_A_DIFFERENT_GRAIN, CASE_FLATTENING_DISCARDS_NEST_MEMBERSHIP), interaction (CASE_FILTER_STATE_POINTER_ONLY, CASE_SELECTION_NARROWS_EXTENT_SILENTLY). Runtime evidence from tmp/probe-a11y.mts on main: corpus 59->70 cases, catalogue 47->57 rows, stage<=1 19 cases/15 diagnostics/3 obligations UNCHANGED, stage<=2 28/22/4 -> 30/24/4, stage<=3 67/55/5, stage<=5 70/57/5. corpus-integrity.test.ts 'the five conservation invariants are each carried by a case' pins that the family did not collapse (>=10 distinct diagnostics, all six invariants present)."
+    recorded_at: "2026-09-03T00:42:10.079Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "No accessibility technology entered the analytical relation. vocabulary.json gains only semantic terms: namespace projection [peer visual textual structural navigational interactive] and five conservation invariants. corpus-integrity.test.ts 'no accessibility technology enters the vocabulary' asserts namespaces excludes aria/role/html/wcag/apg and that every term a projection case declares resolves in a semantic namespace. Form-name denylist unchanged (form-names.json digest 0564902cf8d7d4ff identical) and checkCorpus on the live pack returns [] so CORPUS_FORM_NAME_LEAK did not fire on any new asserted/cause text."
+    recorded_at: "2026-09-03T00:42:10.511Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Catalogue-case bijection holds both directions with 10 new diagnostics: 'pnpm exec tsx tmp/probe-a11y.mts' prints 'checkCorpus findings: []' with 70 cases against 57 catalogue rows, and checkCorpus enforces CORPUS_DOC_DRIFT in both directions plus CORPUS_ENGINE_UNEXERCISED. New diagnostics reuse existing engines only (task-invariant, declaration-missing, derivation-typing) - no engine was added, so the engine enum, vocabulary.engines and CORPUS_SCHEMA_ENGINE_DRIFT are untouched. REL_ORDER_TRAVERSAL_MISMATCH is now shared by two independent cases, strengthening CORPUS_CASE_DIAGNOSTIC_BIJECTION rather than weakening it."
+    recorded_at: "2026-09-03T00:42:10.981Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "checkFixtureLedger(stage=2) on main reports LEDGER_CASE_UNBOUND for CASE_PEER_TOTALS_AT_A_DIFFERENT_GRAIN and CASE_FLATTENING_DISCARDS_NEST_MEMBERSHIP (beside the 9 pre-existing stage-2 cases) and LEDGER_NEIGHBOUR_MISSING for REL_PEER_GRAIN_DIVERGENCE and REL_DERIVATION_DISCARDS_MEMBERSHIP; checkFixtureLedger(stage=1) returns [] - the stage-1 ledger is provably undisturbed. Pinned by corpus-integrity.test.ts 'the two derivation-origin cases arrive at stage 2 as unbound obligations, not as prose', which also asserts both are engine derivation-typing, i.e. decided by the derivation before any projection is chosen."
+    recorded_at: "2026-09-03T00:42:11.439Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "New custody baseline for REL-VIEW-ALGEBRA-01, recomputed on main after merge 3163d8ec: corpus.jsonl 86f2b03a9fe7affe (was 6f8edea4f5aabef4), corpus-case.schema.json e961af232d3ede45 (was 0b02d6eedcc3cfd4), vocabulary.json 5bd9dfddab19dc33 (was ba144b63b34c2371), form-names.json 0564902cf8d7d4ff (UNCHANGED), doctrine catalogue+appendix 123e73dfc61ab2ab (was 8622d010f131c94f). Gates on main: root suite 244 files / 2973 tests pass; analytical suite 231 pass (corpus-integrity 29->35); pnpm run typecheck clean (root + codegen); lint 0 errors, 24 pre-existing warnings none in touched files; docs:check-claims OK 54 claims; docs:check-links OK 66 links."
+    recorded_at: "2026-09-03T00:42:11.890Z"

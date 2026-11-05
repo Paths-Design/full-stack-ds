@@ -1,0 +1,47 @@
+id: REL-ORDER-FACET-SEMANTICS-01
+title: 'Settle the order facet: witness the aggregate target-grain order, and measure which name-list orders the authority actually reads'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Witnessed the aggregate target-grain order with an authored pair (both sides, shared shape, differing only at toGrain), taking the subtraction to 77 of 118, and measured the order facet per name list: project.keep and structure.peers[] order is inert while nest.levels and toGrain are semantic -- the distinction the emitted schema cannot state.'
+created_at: '2026-09-15T06:55:45.580Z'
+updated_at: '2026-11-05T23:06:54.115Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-fixtures/witnesses.json (the toGrain order witness) and subtraction-stage2.json (its witnessed verdict)'
+    - 'packages/ds-codegen/src/analytical/necessity.test.ts (the per-list order-semantics measurement)'
+    - 'docs/architecture/analytical-relation-doctrine.md + docs/current-implementation-snapshot.md (the declaration-level substrate requirement)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A witness whose sides both have to be authored is admitted only where the pair DIFFERS at exactly the coordinate under test and where each side is separately justified from the frozen corpus and doctrine; a shared adjustment applied identically to both sides is fixture shape, not a second coordinate, and it is recorded as a non-claim rather than hidden.'
+  - 'The necessity census may only claim a degree of freedom the declaration can express. An order facet emitted for a list whose order no authority reads measures the encoding (a JSON array standing in for a set); where the emitted schema cannot say whether a sequence is semantic, the census cannot distinguish the two and the requirement on the declaration is recorded rather than assumed.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given relation.derivedBy.aggregate-to-grain.toGrain#order is unresolved and no committed fixture carries a two-element target grain; when a {base, patch} stimulus pair differing at exactly that coordinate is authored so its judgment follows from CASE_NESTED_SUBTOTALS_OFF_GRAIN; then checkWitness accepts a single-coordinate witness, the verdict is recorded witnessed, and the order facet is measured per name list so which orders the authority reads is stated rather than assumed'
+non_functional: {}
+contracts:
+  - name: 'order-facet-semantics'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Witnessed relation.derivedBy.aggregate-to-grain.toGrain#order and measured the order facet per name list. THE WITNESS: no committed fixture carries a two-element toGrain (every corpus toGrain names one column), so both sides are authored over FX_N_NESTED_SUBTOTAL_AT_PREFIX: they share the surrounding shape (the result relation's declared grain and fields) IDENTICALLY and differ at exactly [.structure.relations.subtotals.derivedBy.toGrain[0], ...[1]] -- [country, state] admissible against [state, country] illegal with REL_GRAIN_SUBTOTAL_MISMATCH, the already-existing cause CASE_NESTED_SUBTOTALS_OFF_GRAIN. checkWitness ACCEPTS the single-coordinate witness; checkIsolation discharges on BOTH sides (the a-side is unchanged by sorting, the b-side sorts into the admissible shape with no introduced boundary finding); the subtraction verdict is witnessed and the gate falls from 78 to 77 of 118. THE MEASUREMENT: permuting each name list at its own slot separates three cases the erasure-based partition cannot. project.keep and structure.peers[] order is INERT over every committed instance long enough to permute (4 each), so those #order facets measure the ENCODING; nest.levels order moves the judgment (2 of 5) and is already primitive; along, nonAdditiveAlong and grainWitness have no instance long enough to permute, so the corpus cannot decide them. The reason is on the DECLARATION: the five plain name-list declarations in the emitted fixture schema (keep, along, nonAdditiveAlong, levels, toGrain) are shape-identical but for minItems, while the authority lives in the laws (sameSet for keep, positional isDeclaredNestGrain for levels and toGrain), so nothing the census reads can distinguish a set from a sequence. A further asymmetry runs the same way: relation.grain is a name list declared as a union, so the walk emits the leaf and none of the three facets, and its order is inert over its 32 multi-element instances. Gate reach: witnessing toGrain#order puts it in all six aggregate-to-grain~X footprints, so 13 carriers now carry obligation 8's composite diagnosis rather than 8; the closure gate still reports 22 provisional and 23 unsettled dependencies, because obligation 8 admits no primitive. NON-CLAIMS: the witness needs the result relation's grain and fields written identically on BOTH sides -- a shared shape adjustment, not a second coordinate -- and a pair requiring DIFFERENT adjustments would be evidence about two constructors, not about this coordinate; the verdict establishes that the target grain's declared SEQUENCE is necessary, not that the field is a primitive analytical axis; toGrain#arity is NOT independently erasable (the law forces the declared result grain to equal the target grain as a set, so truncating toGrain alone leaves the image unable to type its own result); the inert class is not adjudicated -- its two coordinates stay unresolved because representation-artifact requires the census to stop emitting them, which requires the declaration-level fact that does not yet exist; and the corpus-bounded partition is stated as UNTESTED, not inert, for the four lists it cannot permute, which is exactly why toGrain#order is settled by an authored stimulus instead. C1g pins the partition, the shape-identity, the grain asymmetry and the authored pair; verified by the full root suite (301 files, 4045 tests), the analytical suite (19 files, 824 tests), all analytical gates, docs:check-claims and docs:check-links."
+    recorded_at: "2026-09-15T07:11:26.005Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/necessity.test.ts > C1g — the ORDER facet is a degree of freedom only where an authority reads the sequence"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: packages/ds-contracts/analytical-fixtures/witnesses.json
+    commit_sha: f7a5f5d4

@@ -1,0 +1,129 @@
+id: DIALOG-DISMISSAL-RELEASE-01
+title: 'Realize Dialog dismissal policy and visible close glyph'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Realized localized Dialog close chrome, independent reactive dismissal policy, controlled-owner refusal, and typed Lit reference props with browser, framework, native compilation and source-provenance evidence.'
+created_at: '2026-10-30T03:24:58.110Z'
+updated_at: '2026-11-05T22:57:49.604Z'
+created_by_session: '01a18ad4-df4e-7622-8458-a0bc41c3f87d'
+blast_radius:
+  modules:
+    - 'Dialog contract and generated target components'
+    - 'Typed component-instance literal props and dismissal guards'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Dialog/'
+    - 'packages/ds-react/src/components/Dialog/'
+    - 'packages/ds-vue/src/components/Dialog/'
+    - 'packages/ds-svelte/src/components/Dialog/'
+    - 'packages/ds-angular/src/components/Dialog/'
+    - 'packages/ds-lit/src/components/Dialog/'
+    - 'packages/ds-react-native/src/components/Dialog/'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Dialog/'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Dialog/'
+    - 'packages/ds-figma-plugin/src/generated/components/Dialog/'
+    - 'e2e/dialog-dismissal.spec.ts'
+    - e2e/fixtures/dialog-dismissal
+    - packages/ds-codegen/src/frameworks/lit/component-source.ts
+    - packages/ds-codegen/src/frameworks/lit/static-component-props.test.ts
+    - packages/ds-lit/src/components
+    - docs/codegen-authority.md
+    - packages/ds-contracts/component.contract.schema.json
+    - packages/ds-codegen/src/contract.ts
+    - packages/ds-codegen/src/ir.ts
+    - packages/ds-codegen/src/dismissal-gates.ts
+    - packages/ds-codegen/src/dismissal-gates.test.ts
+    - packages/ds-codegen/src/frameworks/react/component-source.ts
+    - packages/ds-codegen/src/frameworks/react/hook-source.ts
+    - packages/ds-codegen/src/frameworks/vue/component-source.ts
+    - packages/ds-codegen/src/frameworks/vue/hook-source.ts
+    - packages/ds-codegen/src/frameworks/svelte/component-source.ts
+    - packages/ds-codegen/src/frameworks/svelte/hook-source.ts
+    - packages/ds-codegen/src/frameworks/angular/component-source.ts
+    - packages/ds-codegen/src/frameworks/angular/hook-source.ts
+    - packages/ds-codegen/src/frameworks/lit/hook-source.ts
+    - packages/ds-codegen/src/frameworks/react-native/component-source.ts
+    - docs/architecture/design/box-model-primitive.md
+    - packages/ds-codegen/src/frameworks/native-surface-actions.ts
+    - packages/ds-codegen/src/frameworks/native-surface-actions.test.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/emitters/surfaces.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts
+    - packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.ts
+    - packages/ds-codegen/src/frameworks/swift/swiftui/reference-call.ts
+    - packages/ds-codegen/src/frameworks/swift/component-source.test.ts
+    - docs/architecture/native-target-admission.md
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Command/
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Sheet/
+    - e2e/lit-instance-props.spec.ts
+    - packages/ds-vue/src/components
+    - packages/ds-angular/src/components
+    - packages/ds-codegen/src/frameworks/native-message-reach.test.ts
+    - packages/ds-codegen/src/cli.ts
+    - packages/ds-codegen/src/cli.test.ts
+    - packages/ds-codegen/src/frameworks/value-map-binding.test.ts
+    - docs/architecture/localization.md
+  out: []
+invariants:
+  - 'Semantics are declared through generic contract facts without component-name emitter special cases'
+  - 'Authored dismissal labels remain localized and controlled owners may refuse close requests'
+  - 'Literal component props use normalized target-property classification and host attributes retain their attribute semantics'
+acceptance:
+  - id: A1
+    given: 'an open dismissible Dialog in each web framework'
+    when: 'its close control is rendered and activated by pointer or keyboard'
+    then: 'a visible nonempty glyph and localized accessible name accompany a close request'
+  - id: A2
+    given: 'an open Dialog with dismissible false'
+    when: 'close affordances and backdrop are inspected and activated'
+    then: 'the close button is absent and backdrop activation emits no dismissal request while Escape follows its declared policy'
+  - id: A3
+    given: 'controlled Dialog open remains true'
+    when: 'a dismissal request occurs'
+    then: 'the callback is emitted and the dialog remains open'
+  - id: A4
+    given: 'renamed referenced components with static props and host attributes'
+    when: 'Lit lowers the normalized instance and the Dialog close glyph renders'
+    then: >-
+      declared props reach component properties including non-reflecting variants
+      and host attributes remain attributes without component-name special cases
+observability:
+  - 'Retain focused tests and real browser logs and screenshots under ignored canonical release evidence'
+rollback:
+  - 'Revert the owned Dialog contract and generated outputs together'
+non_functional: {}
+contracts:
+  - name: 'dialog-dismissal'
+    type: behavior
+    path: 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Browser candidate7b540ac8e has identical six-library bytes at merge342455ef84ba3bc9ad468e8110340edbd8ad2054. Playwright e2e/dialog-dismissal.spec.ts plus lit-instance-props.spec.ts: 55 passed; all web Dialogs show a nonempty16px close glyph with French catalog name and exactly one pointer/Enter/Space request. Raw .caws/state/dialog-final-browser.log and screenshots under .caws/state/dialog-final-browser; React Native localized host/action cases8 passed in .caws/state/dialog-rn-dismissal.log."
+    recorded_at: "2026-10-30T17:03:57.313Z"
+    command: "FSDS_E2E_PORT=5201 node node_modules/@playwright/test/cli.js test e2e/dialog-dismissal.spec.ts e2e/lit-instance-props.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Direct browser55-pass log .caws/state/dialog-final-browser.log covers all four backdrop flag combinations, close-button absence when dismissible=false, independent Escape true/false and same-mounted-parent policy updates in both directions across every web framework. Before-repair .caws/state/dialog-policy-before.log reproduces stale Escape in Vue/Angular/Lit; after .caws/state/dialog-policy-after.log12pass. Native host policy matrix in .caws/state/dialog-rn-dismissal.log8pass. Verified library-byte identity from7b540ac8e to merged342455ef8."
+    recorded_at: "2026-10-30T17:03:58.022Z"
+    command: "Playwright Dialog dismissal matrix and pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Dialog/__tests__/Dialog.dismissal.test.tsx"
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Actual framework parent fixtures keep open=true while pointer/keyboard/backdrop/Escape requests emit false; accepted close hides the Dialog and returns caller focus. All web cases in .caws/state/dialog-final-browser.log55pass; RN controlled refusal and uncontrolled close in .caws/state/dialog-rn-dismissal.log8pass. Same published-library source bytes at tested7b540ac8e and merge342455ef8; no device or assistive-technology parity claim."
+    recorded_at: "2026-10-30T17:03:58.771Z"
+    command: Playwright Dialog controlled-parent scenarios and React Native Dialog.dismissal.test.tsx
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Renamed Lit referenced-prop fixture preserves enum/string property identity and host attributes, parses escaped quotes/backticks/interpolation text, and IR rejects Boolean/number string attrs. Producer test checks actual helper SHA in every admitted source set; required-mode drift tests and mapped-icon fixture .caws/state/dialog-provenance-focused.log107pass. Browser10affectedLitconsumers plus Dialog45cases .caws/state/dialog-final-browser.log55pass. Final .caws/state/dialog-release-rail.log pass330groups/150sources, root5337/366 and all framework suites pass, lint/docs/generated-byte checks clean. Native reference/token parity52pass, Kotlin compile and Swift85tests6skipped; no native platform-dismissal parity claim."
+    recorded_at: "2026-10-30T17:03:59.533Z"
+    command: "Focused source-provenance and typed-reference tests; governed:rail; full root/framework suites; browser consumer matrix; native compilation/parity"
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"

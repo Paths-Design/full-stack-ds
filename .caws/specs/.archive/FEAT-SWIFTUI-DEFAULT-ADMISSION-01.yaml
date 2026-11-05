@@ -1,0 +1,77 @@
+id: FEAT-SWIFTUI-DEFAULT-ADMISSION-01
+title: 'Register swiftui in fsds.targets.json with a per-target component allowlist'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'swiftui registered in fsds.targets.json via the components-allowlist mechanism; fail-loud bypass preserved; rail boundary unchanged'
+created_at: '2026-08-15T03:10:57.341Z'
+updated_at: '2026-11-05T23:00:46.029Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/target-packs/config.ts (components field + validation)'
+    - 'packages/ds-codegen/src/registry.ts (admittedComponents on bindings)'
+    - 'packages/ds-codegen/src/cli.ts (full-corpus filtering + ADMITTED log)'
+    - 'fsds.targets.json (swiftui entry with the eight admitted components)'
+    - 'docs/current-implementation-snapshot.md + packages/ds-swiftui/README.md (claims)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'fsds.targets.json'
+    - 'packages/ds-swiftui/README.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-swiftui
+  out: []
+invariants:
+  - 'The allowlist is DECLARED ADMISSION, not silent skipping: full-corpus runs log the admitted set per target; explicit component requests bypass it and hit the real emitter errors.'
+  - 'swiftui stays outside the admission rail (no railFrameworkId, not in CI drift diff, no FrameworkId widening) — registration governs generation scope only; that boundary stays ledgered.'
+  - 'Existing targets without a components field behave exactly as before (full corpus).'
+acceptance:
+  - id: A1
+    given: 'fsds.targets.json declaring swiftui with a components allowlist of the eight realized components'
+    when: 'pnpm run generate -- --target=all runs'
+    then: 'swiftui emits exactly the allowlisted components (skip-by-declared-admission, logged) and the regenerated tree is byte-stable with the committed one'
+  - id: A2
+    given: 'an explicit single-component request outside the allowlist (e.g. --target=swiftui Tabs)'
+    when: 'generation runs'
+    then: 'the allowlist does NOT intervene — the emitter''s own fail-loud no-emission-class error surfaces'
+  - id: A3
+    given: 'the target-registry config schema'
+    when: 'a target entry carries components'
+    then: 'entries are unique non-empty strings, validated on load; absent components means full corpus (all existing targets unchanged)'
+  - id: A4
+    given: 'pnpm run governed:rail'
+    when: 'it regenerates all'
+    then: 'swiftui regenerates its allowlisted set byte-stably, contributes no rail groups (no railFrameworkId), and the rail verifies exit 0'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'pnpm test and test:frameworks run'
+    then: 'all pass; config validation tests cover the new field'
+non_functional: {}
+contracts:
+  - name: 'swiftui-allowlist-admission'
+    type: schema
+    path: 'fsds.targets.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "generate -- --target=all logs 'ADMITTED 8/8' for swiftui; regenerated tree byte-stable (git clean after run; Dialog.swift types-section catch committed)"
+    recorded_at: "2026-08-15T03:15:56.967Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "generate -- --target=swiftui Tabs bypasses the allowlist and throws generateSwiftUIComponentSource: no emission class matches component Tabs"
+    recorded_at: "2026-08-15T03:15:57.833Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "config.test.ts: unique non-empty components accepted; duplicate (Duplicate component) and empty (non-empty string) rejected"
+    recorded_at: "2026-08-15T03:15:58.764Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "governed:rail exit 0 with swiftui in the default set; no rail groups contributed (no railFrameworkId); rail verification green"
+    recorded_at: "2026-08-15T03:15:59.627Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; governed:rail 0; pnpm test 2051/2051 (164 files); test:frameworks 573+492+532+70"
+    recorded_at: "2026-08-15T03:16:00.467Z"

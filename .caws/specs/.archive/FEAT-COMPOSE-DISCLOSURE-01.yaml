@@ -1,0 +1,54 @@
+id: FEAT-COMPOSE-DISCLOSURE-01
+title: 'Compose native-disclosure class: Details admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T01:53:57.570Z'
+updated_at: '2026-11-05T22:59:50.437Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+    - doc-freshness-baseline.json
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Details declares the native-disclosure collapse intent with a boolean open channel and one content compound part; when the compose emitter gains the disclosure class on the collapse intent with a foundation-only toggleable header plus animated content region; then Details.kt compiles via gradle with the controlled-open channel hoisting and zero component-name checks'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Details joins the jetpack-compose allowlist 30 to 31; when gates run; then parity passes with the disclosure path chrome roles claimed, doc markers update, and swift regeneration stays byte-identical'
+non_functional: {}
+contracts:
+  - name: 'disclosure-lowering'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "gradlew :library:compileKotlin BUILD SUCCESSFUL (31 groups incl. Details.kt); controlled-open hoisting (open/defaultOpen/onOpenChange) on a foundation toggleable header with Role.Button + stateDescription, painted rotating chevron, AnimatedVisibility content; dispatch on collapseIntents native-disclosure — zero component-name checks; Accordion correctly still throws (no intent, string|string[] channel)"
+    recorded_at: "2026-09-13T02:13:04.270Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "compose-parity-diff.mjs 31/31 0 failures (disclosure path+role; LocalFsdsContentColor provided for consumer content); docs:check-claims 74/74 after 30-to-31 markers; swiftui regeneration byte-identical; governed:rail PASS; pnpm test 291/291 files 3884/3884; frameworks 87/87; settings example exit 0"
+    recorded_at: "2026-09-13T02:13:04.739Z"

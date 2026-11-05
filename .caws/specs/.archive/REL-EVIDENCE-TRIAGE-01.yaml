@@ -1,0 +1,38 @@
+id: REL-EVIDENCE-TRIAGE-01
+title: 'Pin the constructibility triage: which candidates have a separating shape and which wait on evidence'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Constructibility pinned: 1 committed-pair candidate (about content, unfilable), 21 with a specimen shape (authoring backlog), 44 with none; the bottleneck is evidence, not the instrument.'
+created_at: '2026-09-15T22:45:40.594Z'
+updated_at: '2026-11-05T23:06:21.425Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/support.test.ts (the pinned constructibility triage)'
+    - 'docs (the correction: the bottleneck is evidence, not the instrument)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - "Outcomes are judged from CONTENT, never resolved by id: the specimen population deliberately repeats ids, so an id-resolving sweep would report pairs that are not about their content."
+  - "The specimen route is stated as a SHAPE and not as citable stimuli: a synthesized pair is a search device, and a witness still has to cite a committed fixture or an authored patch whose judgment follows from an already-existing cause."
+  - "The pin separates three populations, and a change in any of them fails rather than being absorbed: one committed-pair candidate (which the footprint audit refuses as evidence for its coordinate), the measured specimen-separable backlog, and the candidates with no separating shape at all."
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the instrument can now produce legal images for every candidate, standing is coherent, and the candidates are classed, the remaining question is EVIDENCE: which candidates have a separating pair at all; when each ratifiable unresolved candidate is measured against committed fixture pairs and against the synthesized specimen shapes, with outcomes judged from content and never resolved by id; then the triage is pinned three ways -- the one committed-pair candidate is the one the footprint audit refuses as evidence, exactly 24 are separable by a synthesized shape and are the authoring backlog, and the rest have no separating shape -- so filing is planned against measured evidence rather than hope, and the analytical suite and gates agree'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (19 files / 862 tests green) and the ledger gates green (closures:check, footprints:check, freeze:check, final-quotient) in worktree evidence-triage before merge f76830b9; full root suite 302 files / 4083 tests, typecheck and docs gates green. Measured outcome, and it corrects the trajectory: of the 65 ratifiable-unresolved candidates, exactly ONE is separable by a pair of COMMITTED fixtures -- evidence.rows.*#present -- and that pair is about the rows CONTENT rather than the coordinate (both sides carry rows), which is why it has never been filable as a presence witness. 21 candidates have a separating SHAPE among the synthesized specimen population, which is the authoring backlog and NOT citable stimuli (a specimen repeats ids by construction); the remaining 44 have no separating shape at all. Outcomes are judged from content and never resolved by id, and specimens whose judgment throws are excluded from the pool -- a looser probe reported 24 by counting a throw as a differing outcome, and the pinned number is the honest 21. NON-CLAIM: this round moved no verdict and wrote no ledger artifact; it is a measurement plus a two-way pin. The corrected reading: round 39 established that 51 candidates have a NON-IDENTITY erasure, which is not the same as having evidence -- a witness needs two stimuli the oracle separates that the erasure identifies. The bottleneck is therefore EVIDENCE rather than the instrument: every candidate can be imaged (round 37), every class is known (round 39), standing is coherent (round 38), and what is missing is a discriminating corpus case for the 44 or an authored stimulus following an existing cause for the 21. Filing (successor step 2) is blocked on that evidence and is planned against this measured list rather than attempted hopefully."
+    recorded_at: "2026-09-15T22:51:04.267Z"

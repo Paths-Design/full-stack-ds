@@ -1,0 +1,112 @@
+id: SHOWCASE-VISUAL-COHESION-01
+title: 'Align showcase controls, chrome, and themed evidence tables'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Aligned reusable control geometry and showcase evidence surfaces with semantic visual tokens.'
+created_at: '2026-09-06T04:07:33.499Z'
+updated_at: '2026-11-05T23:08:11.747Z'
+created_by_session: '01a06ed3-9fec-7332-b38d-37990ff8be07'
+blast_radius:
+  modules:
+    - 'showcase-chrome'
+    - 'component-contracts'
+    - 'generated-web-components'
+    - 'browser-regression'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/styles'
+    - 'src/layout'
+    - 'src/components/properties-panel'
+    - 'e2e'
+    - 'packages/ds-contracts/components/Button'
+    - 'packages/ds-contracts/components/Switch'
+    - 'packages/ds-react/src/components'
+    - 'packages/ds-vue/src/components'
+    - 'packages/ds-svelte/src/components'
+    - 'packages/ds-angular/src/components'
+    - 'packages/ds-lit/src/components'
+    - 'packages/ds-react-native/src/components'
+    - packages/ds-figma-plugin/src/generated/components
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components
+  out: []
+invariants:
+  - 'Component semantics and reusable visual behavior remain contract-authored; showcase CSS only composes or themes those components.'
+  - 'Dark and light surfaces consume semantic tokens rather than fixed light-theme color literals.'
+  - 'Geometry regressions are pinned by rendered browser measurements, not selector-presence assertions.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given icon-only Button children; when rendered in header actions; then each glyph is geometrically centered in its control'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given compact properties controls; when boolean and select controls render; then they share the small control scale and vertical alignment'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given evidence nutrition tables in either theme; when rendered in their column; then they fill the available width and consume semantic theme colors'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the scrollable sidebar navigation; when rendered at desktop width; then its content has a consistent inline inset from the panel edge'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given changed contracts and showcase chrome; when generated and tested; then focused unit, browser, generation, and governed gates pass'
+non_functional: {}
+contracts:
+  - name: 'visual-cohesion'
+    type: behavior
+    path: 'e2e/showcase-visual-cohesion.spec.ts'
+  - name: 'component-style-realization'
+    type: contract-test
+    path: 'packages/ds-contracts/components/Button/Button.styles.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: Playwright measured every header icon center at a 0px x/y offset from its control center.
+    recorded_at: "2026-09-06T04:24:05.215Z"
+    test_nodeid: "Showcase visual cohesion > icon-only Button content is centered on the same axis as a bare icon link"
+    command: FSDS_E2E_PORT=5181 pnpm exec playwright test e2e/showcase-visual-cohesion.spec.ts --project=chromium
+    exit_code: 0
+    artifact_path: e2e/showcase-visual-cohesion.spec.ts
+    commit_sha: "79d65055"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: Playwright measured the properties Switch and adjacent select at the same 24px compact height.
+    recorded_at: "2026-09-06T04:24:07.027Z"
+    test_nodeid: "Showcase visual cohesion > properties-panel boolean and select controls use the same compact height"
+    command: FSDS_E2E_PORT=5181 pnpm exec playwright test e2e/showcase-visual-cohesion.spec.ts --project=chromium
+    exit_code: 0
+    artifact_path: e2e/showcase-visual-cohesion.spec.ts
+    commit_sha: "79d65055"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: Playwright measured the nutrition table at full parent width and verified semantic dark-theme colors.
+    recorded_at: "2026-09-06T04:24:08.970Z"
+    test_nodeid: "Showcase visual cohesion > nutrition tables fill their evidence column and resolve dark-theme semantic colors"
+    command: FSDS_E2E_PORT=5181 pnpm exec playwright test e2e/showcase-visual-cohesion.spec.ts --project=chromium
+    exit_code: 0
+    artifact_path: e2e/showcase-visual-cohesion.spec.ts
+    commit_sha: "79d65055"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: Playwright measured a 16px effective inline inset from the sidebar navigation panel edge.
+    recorded_at: "2026-09-06T04:24:10.866Z"
+    test_nodeid: "Showcase visual cohesion > sidebar navigation content is inset from the panel edge"
+    command: FSDS_E2E_PORT=5181 pnpm exec playwright test e2e/showcase-visual-cohesion.spec.ts --project=chromium
+    exit_code: 0
+    artifact_path: e2e/showcase-visual-cohesion.spec.ts
+    commit_sha: "79d65055"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "PREPUSH_FULL=1 .githooks/pre-push completed all selected checks in 242s; governed rail, root 3687 tests, framework suites, and 4 Playwright geometry tests also passed."
+    recorded_at: "2026-09-06T04:24:12.643Z"
+    command: PREPUSH_FULL=1 .githooks/pre-push
+    exit_code: 0
+    commit_sha: "79d65055"

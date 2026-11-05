@@ -1,0 +1,42 @@
+id: TEST-COVERAGE-RAISE-CODEGEN-06
+title: 'Dedicated hook-source and factory emitter tests for vue/svelte/angular/lit'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Corpus-wide hook-source and factory suites certified codegen at an enforced 82-line floor, above the 80% target.'
+created_at: '2026-09-01T03:32:02.768Z'
+updated_at: '2026-11-05T23:08:35.021Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given dedicated hook-source and factory test suites; when pnpm run test:coverage:codegen runs; then every codegen test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the codegen floor ratchets to measured minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:codegen (worktree): 100/100 files, 1337/1337 tests pass, All files 84.84 lines / 78.18 branches / 91.29 functions — above the previous 73.73/72.88/85.71 and above the ratcheted floors 82/76/89/82"
+    recorded_at: "2026-09-01T03:39:21.868Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json codegen ratcheted 71->82 statements, 70->76 branches, 83->89 functions, 71->82 lines (measured minus 2-point margin, all margins >= 2.18); pnpm run docs:check-claims: 46 marked claims OK with codegen at 82 and vs-target above"
+    recorded_at: "2026-09-01T03:39:22.353Z"

@@ -1,0 +1,68 @@
+id: FIX-HOOK-PACK-DEDUPE-01
+title: 'Remove the superseded .claude hook duplicates and restore claim-oracle yaml resolution'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Removed the superseded .claude hook duplicates, restored claim-oracle yaml resolution, and repaired protected-paths coverage and exit code'
+created_at: '2026-08-18T16:13:05.341Z'
+updated_at: '2026-11-05T23:02:52.906Z'
+blast_radius:
+  modules:
+    - 'remove: .claude/hooks 34 *.sh + classify_command.py + session_log_renderer.py + caws_dispatch/ + lib/ + package.json + node_modules (all superseded by .caws/hooks v39)'
+    - 'keep: .claude/hooks/state (v39 caws_canonical_state_dir target), CLAUDE.md and README.md (vendor pack docs, caws-managed)'
+    - 'add: js-yaml root devDependency so worktree-claim-oracle.cjs resolves it from .caws/hooks/lib upward'
+    - 'docs: CLAUDE.md hooks section repointed from .claude/hooks to .caws/hooks'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.claude/hooks'
+    - '.caws/hooks'
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'CLAUDE.md'
+  out: []
+invariants:
+  - 'Guard capability may only increase. The canonical scope.in claim check is currently degraded (js-yaml unresolvable); it is restored BEFORE any script is deleted, never after.'
+  - 'Deletion order is load-bearing: js-yaml is provisioned first, then the duplicates go. Removing .claude/hooks/node_modules while the oracle still depends on it would deepen the degradation instead of fixing it.'
+  - 'Only unsourced duplicates are removed. .claude/hooks/state is live runtime state that v39 still writes to, and the two vendor markdown files are caws-managed — neither is a duplicate.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the claim oracle moved to .caws/hooks/lib where js-yaml is unresolvable so the canonical scope.in claim check silently degrades; when js-yaml is declared at the repo root; then require(''js-yaml'') resolves from .caws/hooks/lib upward and the oracle performs the canonical claim check rather than skipping it'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given .claude/hooks holds 34 shell scripts, 2 python files, caws_dispatch and lib that settings.json no longer sources; when the duplicates are removed; then .claude/hooks retains exactly state, CLAUDE.md, README.md and the js-yaml provisioning is gone, and no removed path is referenced by .caws/hooks or settings.json'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given CLAUDE.md documents the hook surface at the old path; when the docs are corrected; then the hooks section names .caws/hooks, the settings wiring, and the state directory accurately, and every path it cites exists'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given removing guard scripts must not disarm the guards; when the removal lands; then the PreToolUse chain still blocks a known-refused command and caws doctor reports no new findings'
+non_functional: {}
+contracts:
+  - name: 'caws-hook-dispatch'
+    type: behavior
+    path: '.caws/hooks/dispatch/pre_tool_use.sh'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "js-yaml declared as a root devDependency (package.json + pnpm-lock); pnpm install reports '+ js-yaml 4.1.1'; node -e require.resolve('js-yaml',{paths:['.caws/hooks/lib']}) resolves to node_modules/.pnpm/js-yaml@4.1.1/node_modules/js-yaml/index.js, so the oracle's lazy require now succeeds and the canonical scope.in claim check runs instead of silently degrading"
+    recorded_at: "2026-08-18T16:28:41.299Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "The two trees' script sets were byte-for-byte identical name sets (32 .sh/.py each) before removal, so every deleted file had a v39 counterpart. Removed 46 tracked paths plus untracked node_modules/__pycache__/package-lock.json; .claude/hooks now contains exactly CLAUDE.md, README.md, state. grep for .claude/hooks script references across .caws/hooks, settings.json, ci.yml, .githooks, scripts and package.json returns only a prose comment in scripts/docs-link-check.mjs naming .claude/hooks/CLAUDE.md, which still exists"
+    recorded_at: "2026-08-18T16:28:43.657Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "CLAUDE.md hooks section rewritten: heading and body now name .caws/hooks with the dispatch/ + lib/ layout and the CAWS_AGENT_SURFACE-prefixed settings wiring; protected-paths bullet corrected to .caws/hooks with the *.md admission and the caws reprieve escape hatch; the reference paragraph now records that vendor docs and the runtime state/ dir stay under .claude/hooks. All five cited paths verified to exist on disk. NOTE: CLAUDE.md is gitignored (.gitignore:69), so this edit is machine-local and rides no commit"
+    recorded_at: "2026-08-18T16:29:06.027Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Post-removal the PreToolUse chain still refuses an interpolated inline python3 -c with the opaque-execution message and explicitly does NOT arm the latch. caws doctor unchanged at 2E/6W (both ERRORs are pre-existing wedged sessions pointing at the June examples-app-shapes worktree). Verification also EXPOSED two protected-paths defects, fixed in f3d17f2b: the matcher only covered the vendor dir so it had become a no-op after the relocation, and its guard-artifact branch returned exit 1 which Claude Code treats as non-blocking despite printing BLOCKED. Proof: a Write to .caws/hooks/.protected-probe succeeded twice before the fix and is refused by the harness after it; dispatcher exit is now 2"
+    recorded_at: "2026-08-18T16:29:07.348Z"

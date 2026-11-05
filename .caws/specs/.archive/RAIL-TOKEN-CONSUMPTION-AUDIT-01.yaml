@@ -1,0 +1,80 @@
+id: RAIL-TOKEN-CONSUMPTION-AUDIT-01
+title: 'Dead semantic token namespace audit — the consumption-direction ratchet'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Seventh derived-obligation audit: dead semantic namespaces under a shrink-only ledger, consumption from the shared usage authority, wired CI+pre-push lockstep'
+created_at: '2026-08-18T02:08:20.620Z'
+updated_at: '2026-11-05T23:05:53.389Z'
+blast_radius:
+  modules:
+    - 'scripts/token-consumption-audit: audit.mjs + selfcheck.mjs + seeded known-dead-namespaces.json ledger'
+    - 'packages/ds-tokens/build/runners: usage-scan.ts pure-JSON mode over analyzeTokenUsage (the single consumption authority)'
+    - 'wiring: root package.json script, .github/workflows/ci.yml step, scripts/prepush-scope.mjs family + .githooks/pre-push (PREPUSH-LOCKSTEP-01)'
+    - 'docs: consumption-matrix report dir, snapshot row, AGENTS.md audit-family enumeration'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/token-consumption-audit'
+    - 'scripts/prepush-scope.mjs'
+    - 'scripts/prepush-scope.test.mjs'
+    - '.githooks/pre-push'
+    - '.github/workflows/ci.yml'
+    - 'packages/ds-tokens/build/runners'
+    - 'docs/token-consumption-audit'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'package.json'
+  out: []
+invariants:
+  - 'Consumption authority is singular: the audit spawns the tokens package analyzeTokenUsage (via usage-scan.ts), never re-implements scanning — two divergent copies of a consumption definition is how a gate stops meaning the same thing as the baseline.'
+  - 'Core-layer tokens never report (base scope is vocabulary-by-doctrine per tokens-architecture); single-leaf semantic drift stays the usage count-floor ratchet jurisdiction — this rail owns namespace-level death only (>=2 tokens).'
+  - 'The ledger only shrinks truthfully (shared ledger-ratchet semantics); no machine re-seed command ships — post-introduction entries are hand-authored with owning spec + note.'
+  - 'Read-only over the graph: changes no token, contract, or generated artifact; writes only its own report directory and ledger.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the usage baseline ratchet tolerates churn (a count floor cannot say WHICH item regressed, and one sanctioned re-baseline absorbs all drift — exactly how the stale color.syntax namespace survived); when the consumption audit runs; then it reports maximal fully-dead SEMANTIC subtrees with at least 2 tokens as named findings, derives consumption by spawning the same analyzeTokenUsage authority the baseline uses, and never reports core-layer tokens (vocabulary-by-doctrine)'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the shared two-directional ledger ratchet; when the audit is introduced; then every current finding is ledgered with owning spec and note (machine-seeded, hand-reviewed), zero stale entries, and selfcheck fixtures prove the bite: an unledgered dead namespace fails, a stale ledger entry fails, and the historical color.syntax split-brain shape (consumer re-pointed, namespace fully orphaned) reports as unledgered'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the audit family wiring contract; when the slice lands; then pnpm run audit:token-consumption runs from root, ci.yml runs it as its own step, and the pre-push scope script selects it on its exact input set (ds-tokens, ds-contracts, ds-react generated CSS, the audit scripts) — lockstep with ci.yml per PREPUSH-LOCKSTEP-01'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the full gate suite; when it runs in the worktree; then generate:check, governed:rail, root tests, and test:frameworks stay green and the audit itself passes with the seeded ledger'
+observability:
+  - 'The audit prints findings/ledgered/unledgered/stale counts and writes docs/token-consumption-audit/consumption-matrix.{json,md}; CI and pre-push surface the same verdict.'
+rollback:
+  - 'git revert the slice commits — the audit is read-only over the graph; no token, contract, or generated artifact changes to unwind.'
+non_functional:
+  security:
+    - 'Read-only scanning of repo files; the subprocess spawns only the workspace tsx runner; no network, no secrets.'
+contracts:
+  - name: 'token-consumption-scanner'
+    type: behavior
+    path: 'packages/ds-tokens/build/analytics/usageTracker.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "audit.mjs spawns analyzeTokenUsage via usage-scan.ts (sole consumption authority); deadSubtrees reports maximal fully-dead semantic subtrees >=2 tokens; selfcheck 8/8 (partial-consumption splitting, maximal nesting collapse, singleton exclusion, core exclusion, dead-layer root)"
+    recorded_at: "2026-08-18T02:29:53.416Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run audit:token-consumption: findings=29 (ledgered=29) unledgered=0 stale=0 PASS; seeded ledger covers 113 dead tokens, every entry spec'd+noted; selfcheck pins the ratchet bite both directions AND the historical color.syntax split-brain shape as unledgered"
+    recorded_at: "2026-08-18T02:29:54.353Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "root package.json audit:token-consumption; ci.yml Token-consumption ledger step after token-resolvability; prepush-scope.mjs RUN_TOKEN_CONSUMPTION (also feeds RUN_TOKEN_BUILD) with contract tests 36/36 including ledger-edit fires / docs does not; .githooks/pre-push block mirrors resolvability"
+    recorded_at: "2026-08-18T02:29:55.310Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "worktree gates: tokens:build:check pass, generate:check 50/50, docs:check-claims 12/12, governed:rail Overall PASS clean tree, eslint clean on changed files, typecheck clean, pnpm test 2163/2163, test:frameworks all green"
+    recorded_at: "2026-08-18T02:29:56.234Z"

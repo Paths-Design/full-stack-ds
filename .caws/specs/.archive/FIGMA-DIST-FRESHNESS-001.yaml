@@ -1,0 +1,38 @@
+id: FIGMA-DIST-FRESHNESS-001
+title: 'Figma plugin stale-dist guard: dev watch + build:check freshness check + load-time warning'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-05T18:51:43.178Z'
+updated_at: '2026-11-05T23:01:29.701Z'
+blast_radius:
+  modules:
+    - '@full-stack-ds/figma-plugin'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-figma-plugin/package.json
+    - packages/ds-figma-plugin/README.md
+    - packages/ds-figma-plugin/scripts/**
+  out: []
+invariants:
+  - The build:check script fails (non-zero exit) whenever dist/plugin.js is
+    absent or older than any build-input file under src/, and only passes when
+    the bundle is at least as new as every input.
+acceptance:
+  - id: A1
+    given: a freshly built dist/plugin.js newer than all src/ inputs
+    when: build:check runs
+    then: it exits 0 and reports the bundle is fresh
+  - id: A2
+    given: a src/ build-input file modified after the last build
+    when: build:check runs
+    then: it exits non-zero and names the offending source file
+  - id: A3
+    given: dist/plugin.js does not exist
+    when: build:check runs
+    then: it exits non-zero with a "does not exist — run build" remediation
+non_functional: {}
+contracts: []

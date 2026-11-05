@@ -1,0 +1,47 @@
+id: FIX-PORTAL-CONSUMPTION-01
+title: 'Consume renderInPortal in component emission for the 7 dead-portal components'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge portal-consumption at 6051c40a70e623c83919a1e96c40d9de07bc343f'
+created_at: '2026-07-22T06:49:42.783Z'
+updated_at: '2026-11-05T23:03:21.021Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/'
+    - 'packages/ds-react/src/components/'
+    - 'packages/ds-vue/src/components/'
+    - 'packages/ds-svelte/src/components/'
+    - 'packages/ds-angular/src/components/'
+    - 'packages/ds-lit/src/components/'
+    - packages/ds-codegen/src/semantics.ts
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'the 7 portal.enabled components (Dialog, Sheet, Toast, Calendar, Command, Select, Walkthrough) whose hooks return renderInPortal that component-source never consumes'
+    when: 'each regenerates'
+    then: 'the portal-designated subtree actually renders through the portal mechanism per framework, proven by a test asserting the portaled nodes DOM parent is the portal container rather than the inline position.'
+  - id: A2
+    given: 'Popover and Tooltip already portal correctly via the anchored-surface path'
+    when: 'the corpus regenerates'
+    then: 'their output is byte-identical and the fix adds no duplicate portal wrapping.'
+  - id: A3
+    given: 'contract-vs-emitter review per component before wiring'
+    when: 'a component computes renderInPortal but portaling it would be wrong (stacking-context or a11y reasons)'
+    then: 'the resolution is recorded per component (wire it or remove the dead computation) — no component keeps an orphaned renderInPortal after this spec.'
+  - id: A4
+    given: 'the full corpus regeneration and test suites'
+    when: 'run after the change'
+    then: 'only the affected components change, and generate checks, all package suites, root tests, and the governed rail pass.'
+non_functional: {}
+contracts:
+  - name: 'portal-consumption-parity'
+    type: behavior

@@ -1,0 +1,57 @@
+id: RAIL-AUTHORITY-CHECK-WIRING-01
+title: 'Run native token and rail-coupling authority checks where their inputs move'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Wired SwiftUI semantic-default and rail-toolchain coupling checks into change-scoped pre-push and authoritative CI automation with self-contract tests.'
+created_at: '2026-09-04T23:36:31.508Z'
+updated_at: '2026-11-05T23:05:35.641Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'pre-push path classifier and hook execution'
+    - 'CI rail authority checks'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/prepush-scope.mjs'
+    - 'scripts/prepush-scope.test.mjs'
+    - '.githooks/pre-push'
+    - '.github/workflows/ci.yml'
+  out: []
+invariants:
+  - 'CI remains authoritative; pre-push may scope by changed inputs but must never omit either check when an input to its verdict changes.'
+  - 'The coupling audit remains an architecture self-consistency check, not evidence that native component behavior or semantic correctness is proven.'
+acceptance:
+  - id: A1
+    given: 'a contract, codegen, token graph, SwiftUI component/runtime, or semantic-default generator input changes'
+    when: 'prepush-scope classifies the push'
+    then: 'the hook runs swiftui:semantic-defaults:check, while unrelated docs-only changes do not'
+  - id: A2
+    given: 'an admission descriptor, native compile-lane descriptor/runner, CI workflow, pre-push hook, package aggregate, or coupling-audit source changes'
+    when: 'prepush-scope classifies the push'
+    then: 'the hook runs rail-toolchain-coupling-audit.mjs --check'
+  - id: A3
+    given: 'the two authority checks are part of the declared automation surfaces'
+    when: 'CI and pre-push contract tests inspect their commands and both checks execute on the live tree'
+    then: 'neither check is merely a dormant script'
+non_functional: {}
+contracts:
+  - name: 'authority-check-wiring'
+    type: contract-test
+    path: 'scripts/prepush-scope.test.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "node --test scripts/prepush-scope.test.mjs (SwiftUI input and docs-only exclusion cases); pnpm run swiftui:semantic-defaults:check"
+    recorded_at: "2026-09-04T23:50:34.347Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: node --test scripts/prepush-scope.test.mjs (coupling input and docs-only exclusion cases); node scripts/rail-toolchain-coupling-audit.mjs --check
+    recorded_at: "2026-09-04T23:50:47.022Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node --test scripts/prepush-scope.test.mjs (55/55; command-removal mutation fails); bash -n .githooks/pre-push; CI YAML parse; pnpm run governed:rail; pnpm test (3370/3370); pnpm run test:frameworks"
+    recorded_at: "2026-09-04T23:50:59.588Z"

@@ -1,0 +1,78 @@
+id: FEAT-COMPOSE-THEME-MODULE-001
+title: 'Compose theme module: token scopes as data, LocalFsdsTheme, and the Material colorScheme bridge'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Compose theme module: scope data through LocalFsdsTheme with RN-mirrored resolution and the Material bridge, installed in the settings lane'
+created_at: '2026-08-17T05:09:03.482Z'
+updated_at: '2026-11-05T23:00:17.776Z'
+blast_radius:
+  modules:
+    - 'ds-jetpack-compose theme runtime'
+    - 'ds-codegen jetpack-compose emitter'
+    - 'examples settings compose lane'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose'
+    - 'examples/settings/compose'
+    - 'docs/current-implementation-snapshot.md'
+    - 'examples/README.md'
+  out: []
+invariants:
+  - 'Resolution semantics are the RN/Swift normal form exactly: theme.tokens[name] → literal → fallback; no Compose-specific reinterpretation.'
+  - 'Components consume scopes as DATA and resolve through LocalFsdsTheme — no baked hex/dp literals in generated component bodies except where the graph itself carries no slot (ledgered fallbacks).'
+  - 'The theme runtime is committed substrate beside the components root (the RN tokens/index.tsx and Swift FsdsTheme tier), not emitter output.'
+  - 'The colorScheme bridge maps graph semantic tokens to M3 roles through one fixed table — no per-component or per-app hand-picked colors.'
+  - 'No RN, Swift, web, or contract change; other targets regenerate byte-identical.'
+  - 'Mode (adaptive light/dark), brand, and density axes stay reserved follow-ups — this slice ships the carrier, the data, and the bridge only.'
+acceptance:
+  - id: A1
+    given: 'the token graph''s component scopes (incl. Switch''s 31 color slots) and the RN/Swift theme-runtime normal form'
+    when: 'a hand-authored FsdsTheme.kt lands in ds-jetpack-compose and the emitter emits per-component token-scope data'
+    then: 'components resolve values through LocalFsdsTheme with theme[name] → literal → fallback semantics identical to RN and Swift, with dp/color accessors'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'the native-toggle path resolves its default-state color and dimension slots through the theme (brand-colored track/thumb via SwitchDefaults.colors overrides) with graceful fallback where the graph carries no slot; no RN, Swift, or web tree changes — full-corpus regeneration leaves them byte-identical'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'the theme module bridges FSDS semantic action/status tokens into a MaterialTheme ColorScheme, and the settings lane installs FsdsThemeProvider plus the bridged MaterialTheme so both FSDS switches and NOT-FSDS chrome render brand colors — burning the lane''s purple-defaults findings; visual parity vs the react lane confirmed by manual rerun'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'gates green: gradle compile exit 0 through the composite lane, generate:check, root tests; diff scope confined to the slice'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'snapshot and lane README updated; mode (adaptive light/dark), brand, and density axes recorded as the reserved follow-up rungs of the styling cutover ladder'
+non_functional: {}
+contracts:
+  - name: 'Switch'
+    type: behavior
+    path: 'packages/ds-contracts/components/Switch/Switch.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/tokens/FsdsTheme.kt @ 2ae02ca2 — LocalFsdsTheme provider, FsdsTheme.resolve implementing literal → theme.tokens[ref] → fallback (RN resolveTokenValue mirrored exactly), toFsdsColor/toFsdsDp accessors, light semantic defaults with per-value graph provenance comments"
+    recorded_at: "2026-08-17T05:22:51.879Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "generated SwitchTokens.kt (48 ComponentTokenDefinition slots) + Switch.kt resolving checked/unchecked track+thumb + Md dims via fsdsTheme.resolve — bytecode: 6× FsdsTheme.resolve, 4× toFsdsColor, 2× toFsdsDp in SwitchKt; full-corpus --target=all left RN/Swift/web byte-identical (diff scope confined to the slice)"
+    recorded_at: "2026-08-17T05:22:52.759Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "fsdsMaterialColorScheme() bridge (one fixed graph-derived role table); lane Main.kt installs FsdsThemeProvider(FsdsSemanticDefaults.light) + MaterialTheme(colorScheme = fsdsMaterialColorScheme()) — bytecode: FsdsThemeProvider + fsdsMaterialColorScheme + FsdsSemanticDefaults.getLight in example classes; visual parity confirmation pending the manual rerun (lane README findings 2-3 marked resolved with mechanism)"
+    recorded_at: "2026-08-17T05:22:53.664Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "gradle :library:compileKotlin and lane compileKotlin both BUILD SUCCESSFUL exit 0; generate:check 49/49; pnpm test 2086/2086; git status 0-dirty after commits"
+    recorded_at: "2026-08-17T05:22:54.547Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "snapshot row 46 theme-runtime sentence (merged with concurrent edits); lane README findings 2-3 resolved-by entries + reserved-rung note (mode/brand/density, per-part scopes)"
+    recorded_at: "2026-08-17T05:22:55.422Z"

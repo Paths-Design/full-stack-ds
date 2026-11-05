@@ -1,0 +1,70 @@
+id: RAIL-CONTRACT-INFLUENCE-PROVENANCE-01
+title: 'Measure contract vocabulary influence and detector provenance'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Expanded contract influence coverage and made detector attribution fail closed on unreviewed reds.'
+created_at: '2026-09-05T02:14:10.044Z'
+updated_at: '2026-11-05T23:05:39.084Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'Contract oracle mutation catalog and result adjudication'
+    - 'Current implementation claim ledger'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/contract-oracle-mutation/catalog.mjs'
+    - 'scripts/contract-oracle-mutation/selfcheck.mjs'
+    - 'scripts/contract-oracle-mutation/run.mjs'
+    - 'scripts/contract-oracle-mutation/README.md'
+    - 'docs/current-implementation-snapshot.md'
+    - scripts/custom-region-audit/known-authored-regions.json
+    - docs/normal-form.md
+    - README.md
+  out: []
+invariants:
+  - 'Generated-tree identity checks remain excluded because they would trivially reject intentional contract mutations'
+  - 'Detection provenance is evidence metadata, not a claim that the original contract fact is correct'
+  - 'Mutation experiments never alter the bound developer worktree'
+acceptance:
+  - id: A1
+    given: 'contract fields alleged to be dead or merely self-checked'
+    when: 'semantically coherent one-leaf mutants exercise state-machine, slot-requiredness, text-overflow, and motion facts'
+    then: 'the full profile records a reviewed detected-or-survived disposition for each field class'
+  - id: A2
+    given: 'a catalog mutant expected to be detected'
+    when: 'its first detector moves between structural, contract-derived, mixed-test, or hand-authored-runtime evidence'
+    then: 'disposition verification fails until that provenance change is reviewed'
+  - id: A3
+    given: 'the mutation runner operates on a clean source commit'
+    when: 'baseline and mutants execute'
+    then: 'the developer worktree remains untouched and generated output is restored byte-clean between mutants'
+  - id: A4
+    given: 'the expanded catalog and provenance rules'
+    when: 'self-checks and the isolated full profile run'
+    then: 'all reviewed dispositions match and documentation states the proof ceiling without treating a derived kill as correctness'
+non_functional: {}
+contracts:
+  - name: 'contract-influence'
+    type: contract-test
+    path: 'scripts/contract-oracle-mutation/catalog.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "full profile at 71dbe276: 11 one-leaf mutants, 7 detected/4 survived; state-machine and slot-requiredness survived, text-overflow hit its authored marker, motion hit its ledger marker"
+    recorded_at: "2026-09-05T03:48:11.089Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node scripts/contract-oracle-mutation/selfcheck.mjs at 74512dac: PASS, 11 mutants; exact stage/class/marker earns detection while survivor-red, wrong-stage, and missing-marker cases are inconclusive"
+    recorded_at: "2026-09-05T03:48:23.403Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "targeted full SSR profile at 74512dac: baseline passed, mutation survived 18 stages, restore-generation passed, inconclusive=0, disposition/provenance/marker mismatches=0; source worktree stayed clean"
+    recorded_at: "2026-09-05T03:48:33.166Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "full 11-mutant measurement at 71dbe276 plus post-hardening selfcheck and targeted full SSR verification at 74512dac; pnpm run lint, docs:check-claims, docs:check-links, and worktree:check all exit 0"
+    recorded_at: "2026-09-05T03:48:41.888Z"

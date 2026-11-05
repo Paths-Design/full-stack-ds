@@ -1,0 +1,57 @@
+id: TEST-SWIFTUI-RUNTIME-BREADTH-01
+title: 'Extend SwiftUI runtime proof across the interactive corpus and token painting'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Press-proof breadth proven (Switch/Select/Calendar/Dialog-at-mount), token painting pixel-proven vs resolved graph, EmptyView().sheet anchor defect found+fixed, structural trio census + host limitations ledgered'
+created_at: '2026-08-17T16:41:12.801Z'
+updated_at: '2026-11-05T23:09:00.488Z'
+blast_radius:
+  modules:
+    - 'packages/ds-swiftui/Tests/PressProofHarness/main.swift (new interaction phases)'
+    - 'packages/ds-swiftui/Tests/DsSwiftUITests (new token-paint test file)'
+    - 'docs/current-implementation-snapshot.md'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-swiftui'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen
+  out: []
+invariants:
+  - 'The harness composes only public component inits and asserts only observable channels/counters; it never invokes callbacks directly, never mutates view internals, and actuates solely through OS-mediated paths (AXPress; AXValue/keyboard for text entry where a press cannot type)'
+  - 'Token-paint expectations are read from the committed resolved token graph (resolved.tokens.json), never hand-copied literals; the assertion chain is component token-scope binding to resolved value to sampled pixel'
+  - 'No phase may silently skip: a surface unreachable via AX on this host must print a LIMITATION artifact and is excluded from exit-code aggregation only with that evidence in the phase output; a phase producing no artifact at all fails the run'
+acceptance:
+  - id: A1
+    given: 'the press-proof harness extended with phases composing Dialog, Select, Tabs, Accordion, Shuttle, Calendar, Switch, and OTP via their public inits in a real App window'
+    when: 'the harness runs and actuates each surface through the OS accessibility path (AXPress, AXValue for OTP entry) and the runloop settles'
+    then: 'every phase prints its counter/channel artifact matching contract expectations and the harness exits 0, or exits nonzero naming the failing phase and counter'
+  - id: A2
+    given: 'offscreen NSHostingView captures of token-scoped components in light and dark system appearances'
+    when: 'rendered pixels are sampled and compared against expected values read from the committed resolved token graph'
+    then: 'sampled colors match resolved token values including the adaptive dark flip, or the test fails naming component, token, expected, and actual'
+  - id: A3
+    given: 'the full worktree gate suite'
+    when: 'all gates run inside the bound worktree'
+    then: 'green (rail, root+framework tests, swift build/test, parity fixture) and the harness remains a test-only executable outside the component allowlist'
+non_functional: {}
+contracts:
+  - name: 'swiftui-runtime-proof-breadth'
+    type: behavior
+    path: 'packages/ds-swiftui/Tests/PressProofHarness/main.swift'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "swift run --package-path packages/ds-swiftui PressProofHarness → exit 0, 'PRESS-PROOF: all counters match expectations'; artifacts: switch.onChange [true, false] + bindingFinal false; select.onSelectionChange [\"b\"] + bindingFinal \"b\" (AXMenuButton trigger, proximity-filtered option press); calendar.onChange exactly 1 via AXIncrementor; dialog.uncontrolled visible at mount true; dialog.plainProbe presented false (environmental, probe-evidenced); structural census [AXGroup:1, AXStaticText:5] zero pressables; 4 LIMITATION lines printed (otp AXValue, keyboard, after-mount sheet flips, structural trio)"
+    recorded_at: "2026-08-17T17:10:47.903Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "swift test --package-path packages/ds-swiftui --filter TokenPaintTests → Executed 4 tests, 0 failures: Card background pixel == resolved.tokens.json semantic.color.background.primary light (#ffffff) under aqua AND dark (#000000) under darkAqua (adaptive flip; modes-differ guard included), FsdsButton == semantic.color.action.background.primary.default (#0566fe); expectations parsed from the committed graph file, never hand-copied"
+    recorded_at: "2026-08-17T17:10:49.179Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "worktree gates all exit 0: pnpm run governed:rail; node scripts/swift-parity-diff.mjs (react 49 / swift 49 / divergent 0); pnpm test 2124/2124; pnpm run test:frameworks vue 581 + lit 502 (2 skipped) + svelte 540 + angular 72; swift test 33 tests 0 failures (4 pre-existing headless skips); harness is a test-only executable target outside the component allowlist; emitter fix included (EmptyView().sheet → Color.clear anchor, uncontrolled probe flipped false→true across the fix)"
+    recorded_at: "2026-08-17T17:10:50.358Z"

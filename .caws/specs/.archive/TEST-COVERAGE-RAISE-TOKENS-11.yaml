@@ -1,0 +1,50 @@
+id: TEST-COVERAGE-RAISE-TOKENS-11
+title: 'Burn unreferenced legacy token mjs wrappers after reachability probe'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Reachability-probed burn of three dead legacy wrappers took tokens from 58.39 to 67.54 lines; floor ratchets to 65.'
+created_at: '2026-09-01T04:40:00.840Z'
+updated_at: '2026-11-05T23:08:55.811Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the three legacy wrappers removed in the worktree; when typecheck lint tokens-build and the full governed rail run; then no check names any dependent and every gate stays green'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the removal; when pnpm run test:coverage:tokens runs; then every tokens test passes and measured line coverage rises above the current floor'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the tokens floor ratchets to measured minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "POLO probe in worktree tokens-burn after severance: static grep 0 importers for all three files; pnpm run lint 0 errors; pnpm run typecheck exit 0; pnpm run tokens:build green; pnpm run test:coverage:tokens 291/291 pass; pnpm run governed:rail exit 0 — no check named any dependent"
+    recorded_at: "2026-09-01T04:42:26.556Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:coverage:tokens (worktree tokens-burn, post-burn): 291/291 tests pass, All files 67.54 lines / 81.46 branches / 94.77 functions — above the previous 58.39/81.30/93.79 and above the ratcheted floors 65/79/92/65"
+    recorded_at: "2026-09-01T04:42:27.043Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "coverage-floors.json tokens ratcheted 56->65 statements, 79->79 branches, 91->92 functions, 56->65 lines (measured minus 2-point margin, all margins >= 2.33); pnpm run docs:check-claims: 46 marked claims OK with tokens at 65"
+    recorded_at: "2026-09-01T04:42:27.508Z"

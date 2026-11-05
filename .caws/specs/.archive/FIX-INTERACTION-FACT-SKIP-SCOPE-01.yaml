@@ -1,0 +1,27 @@
+id: FIX-INTERACTION-FACT-SKIP-SCOPE-01
+title: 'Describe-level test.skip silently skipped all four Select interaction facts'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge fix-skip-scope at 7de140f8cf301b9daf4ec7c4875822942fc02ddf'
+created_at: '2026-07-22T20:19:27.226Z'
+updated_at: '2026-11-05T23:03:00.227Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/runtime-rail.spec.ts'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'test.skip(true, reason) at describe scope skips every test in the describe'
+    when: 'the angular skip moves into its own named test'
+    then: 'the four react/vue/svelte/lit interaction facts RUN and pass against a live server, with angular reported as one named skip.'
+non_functional: {}
+contracts: []

@@ -1,0 +1,60 @@
+id: COMPONENT-EVIDENCE-RESIDUALS-01
+title: 'Component Evidence/Residuals + A2UI descriptor sections (bundle-derivable only)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge evidence-residuals at ade5860f467440203b0adc65fabe66e1f45c2742'
+created_at: '2026-06-02T09:44:28.780Z'
+updated_at: '2026-11-05T22:57:30.859Z'
+blast_radius:
+  modules:
+    - src (showcase Design view — evidence/residuals + A2UI descriptor sections)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - src/views/DesignView.tsx
+    - src/views/DeveloperView.tsx
+    - src/views/sections/A2UIDescriptorPanel.tsx
+    - src/views/sections/EvidencePanel.tsx
+    - src/types/data.ts
+    - src/views/sections/evidence-sections.test.tsx
+  out:
+    - packages
+    - vite-plugin-fsds-data.ts
+    - src/router.tsx
+invariants:
+  - 'This slice establishes the evidence/residuals UI CONTRACT; it does NOT complete live rail/runtime/token binding. The Evidence section binds only durable, bundle-derivable facts and explicitly shows CI-side rail/runtime/token status as "not bound in-app" — it must not fabricate or imply admission/runtime/token results the bundle does not carry.'
+  - 'Bundle-derivable facts only: contractPath (ComponentBundle.contractPath), the bundle generatedAt timestamp, the A2UI descriptor derived at render time via deriveA2UIDescriptor from packages/ds-contracts/a2ui, per-framework generated-source presence (Object.keys(component.sources)), and the explicit non-claims/residuals. No new data plumbing.'
+  - 'Does NOT bake any of: packages/ds-codegen/.emission-manifest.json, docs/internal/preview-sweep-results-v4.json, tmp/generated-admission-report.md. The vite plugin (vite-plugin-fsds-data.ts) is NOT modified — these artifacts are gitignored runtime state or point-in-time snapshots without a declared freshness model; binding them is the explicit follow-up COMPONENT-EVIDENCE-CI-STATUS-BINDING-01.'
+  - 'Placement: A2UI Descriptor and Evidence/Residuals render as new bottom sections of DesignView. No third route/tab is added (src/router.tsx stays fenced out). DeveloperView may add a per-framework source-presence row only if it derives from component.sources and needs no preview-status plumbing.'
+  - 'The non-claims surfaced on the page mirror the governing doc (docs/component-evidence-pages.md, ARCH-COMPONENT-EVIDENCE-PAGES-001): the page proves the system can project one contract into human/framework/agent surfaces — it does NOT prove visual quality, accessibility adequacy, or product suitability. The Evidence section states this in-product.'
+  - 'deriveA2UIDescriptor is consumed, not reimplemented: the A2UI panel calls the existing packages/ds-contracts/a2ui export. If a contract lacks an a2ui.category the deriver throws; the panel degrades to an explicit "no A2UI descriptor authored" state rather than crashing the page.'
+  - 'TypeScript-safe access: src/types/data.ts ComponentContract is extended with the optional fields the sections read (a2ui, and any of category/channels/events/form actually consumed), so the UI does not reach these via untyped casts. No runtime data shape changes — these fields already survive in the bundle as JS properties.'
+acceptance:
+  - id: A1
+    given: 'a component whose contract carries an a2ui block (all 47 do)'
+    when: 'its Design view renders'
+    then: 'an A2UI Descriptor section shows the deriveA2UIDescriptor projection (agent-facing category, usage hints, accepted prop value kinds / enum domains, required props, events/channels, form participation, children policy) — derived at render time from packages/ds-contracts/a2ui, not from a baked artifact'
+  - id: A2
+    given: 'any component'
+    when: 'its Design view renders'
+    then: 'an Evidence/Residuals section shows the durable bundle-derivable facts (contractPath, generatedAt, per-framework generated-source presence) AND an explicit residuals/non-claims block stating that rail/runtime/token status is CI-side and NOT bound in-app in this slice, and that the page does not prove visual quality, a11y adequacy, or product suitability'
+  - id: A3
+    given: 'a contract that does not author an a2ui.category (constructed in test)'
+    when: 'the A2UI panel attempts derivation'
+    then: 'the panel renders an explicit "no A2UI descriptor authored" empty state and does not throw — the surrounding page still renders'
+  - id: A4
+    given: 'the DeveloperView per-framework row (if added)'
+    when: 'it renders'
+    then: 'the source-presence/readiness it shows is derived solely from component.sources (which frameworks have generated source) — it introduces no FrameworkPreview live-status plumbing and binds no rail/runtime artifact'
+  - id: A5
+    given: 'the slice as committed'
+    when: 'git diff is taken over the change set and the app type-checks/tests run'
+    then: 'only the in-scope files changed (DesignView, DeveloperView, the two new section components, src/types/data.ts, the new test); no vite plugin, router, package, or baked-artifact file appears in the diff; typecheck passes and the new section tests pass'
+non_functional: {}
+contracts:
+  - name: 'evidence-sections'
+    type: behavior
+    path: 'src/views/DesignView.tsx'

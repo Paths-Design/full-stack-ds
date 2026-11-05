@@ -1,0 +1,44 @@
+id: REL-PRESENCE-PAIR-SWEEP-01
+title: 'Sweep the unresolved candidates for clean presence pairs and name the clause that refuses the only one'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Swept the 83 unresolved candidates for clean presence pairs, found only the two bin.closure spellings whose ideal pair the isolation clause refuses, and corrected evidence.rows.*#present to a missing fixture shape; both halves pinned.'
+created_at: '2026-09-15T05:35:47.959Z'
+updated_at: '2026-11-05T23:06:59.029Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/necessity.test.ts (pin the sweep and the refusal)'
+    - 'docs/architecture/analytical-relation-doctrine.md (the isolation clause''s limit)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A witness for a presence coordinate needs a pair on which the erasure is a no-op on one side, because collision then means that side IS the other minus the holder; a pair that does not have that shape is not evidence for the presence distinction however well it collides.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the 83 unresolved stage-2 candidates; when each is swept for a pair where the erasure is a no-op on one side; then exactly two have one and both are relation.derivedBy.bin.closure spellings whose outcomes differ, the sweep is pinned as a test, the isolation clause is named in the doctrine as the instrument that refuses that pair, and evidence.rows.*#present is recorded as having no such pair rather than a wrongly chosen one'
+non_functional: {}
+contracts:
+  - name: 'presence-pair'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Swept all 83 unresolved stage-2 candidates for a pair on which the erasure is a no-op on one side -- collision then means that side IS the other minus the holder, the shape that makes a collision evidence about presence. Exactly two have one, both bindings of relation.derivedBy.bin.closure, and their pair is ideal: FX_READINGS_BINNED_NO_CLOSURE (no declaration, illegal, REL_BIN_CLOSURE_UNDECLARED) against FX_N_READINGS_BINNED_LEFT_CLOSED (declared, admissible). checkWitness refuses both on ERASURE_NOT_ISOLATED, so the refusal is the isolation clause declining a pair whose only effect is to produce the configuration the corpus diagnoses, not an absence of evidence. evidence.rows.*#present has NO such pair: 161 of the 210 specimens carry no evidence.rows and 138 of those are oracle-bound, so presence is varied widely, but no fixture IS another fixture plus rows, which is what collision requires once the erasure leaves a row-less fixture untouched -- its refusal is a missing fixture shape. Both halves are pinned in subtraction.test.ts (the sweep's exact result, and the row-less / oracle-bound counts). Non-claim: nothing is adjudicated or moved, the isolation clause is NOT changed, and no verdict was added to the vocabulary; the two bin.closure coordinates and evidence.rows.*#present remain unresolved."
+    recorded_at: "2026-09-15T05:38:47.871Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/subtraction.test.ts > a PRESENCE witness needs a pair the erasure is a no-op on one side of > finds exactly two, both bin.closure spellings — and the pair is IDEAL, which is the point"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/analytical/subtraction.test.ts
+    commit_sha: "6b53b8a9"

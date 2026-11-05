@@ -1,0 +1,76 @@
+id: FEAT-SWIFTUI-FIELD-SLOTS-01
+title: 'SwiftUI named-slot composer emission class; Field first'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Field lands through the named-slot composer class; TextField/Dialog/Input are the pinned fail-loud boundaries'
+created_at: '2026-08-15T02:39:21.241Z'
+updated_at: '2026-11-05T23:00:51.039Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (named-slot class, slot extraction, composer region parameterization, vocabulary extension)'
+    - 'packages/ds-swiftui (generated Field + barrel)'
+    - 'examples/settings/swift (Field rows in Profile)'
+    - 'docs/current-implementation-snapshot.md + examples/README.md (claims)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'examples/settings/swift'
+    - 'examples/README.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The named-slot class admits only: dom-bearing passive container root, no surface, no collapse intent, and EVERY dom leaf is a named slot — semantic wrappers (label/help elements) are allowed above slots, component-instance leaves (TextField''s Input) are not.'
+  - 'Channel/association props the web composer owns (value/defaultValue/onChange/validate/required/disabled/readOnly/name/id/validating) are OMITTED from the Swift API and documented — never accepted-and-ignored; the consumer''s control owns state on this target.'
+  - 'All styling derives from ir.tokenScopes through FsdsTheme via the shared suffix vocabulary; Button/Card emitted bytes unchanged by the vocabulary extension.'
+acceptance:
+  - id: A1
+    given: 'Field (div root, dom tree whose leaves are all named slots: label/control/help/error/validatingIndicator, no surface)'
+    when: 'generate -- --target=swiftui Field runs'
+    then: 'the named-slot class emits a compiling Field with one ViewBuilder region per slot and swift build exits 0 with prior outputs byte-stable'
+  - id: A2
+    given: 'the all-leaves-are-slots gate'
+    when: 'TextField (Input instance leaf), Dialog (surface block), and Input (no slots, input-shaped control) are generated'
+    then: 'all three still throw the explicit no-emission-class error (gate proven narrow)'
+  - id: A3
+    given: 'ir.tokenScopes for Field'
+    when: 'rendered'
+    then: 'chrome is presence-driven through FsdsTheme with the vocabulary extended for Field''s short slot forms (color.bg/color.fg/color.border/bare radius) and the status axis layers variant scopes (invalid re-points the border)'
+  - id: A4
+    given: 'the settings swift lane Profile section'
+    when: 'rebuilt'
+    then: 'the two form rows compose Field label/control regions around SwiftUI TextField and the lane compiles; the value-channel/control-association omission is documented as a non-claim (control owns state on this target)'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'governed:rail, pnpm test, test:frameworks run'
+    then: 'all pass with drift confined to packages/ds-swiftui and the swiftui emitter'
+non_functional: {}
+contracts:
+  - name: 'swiftui-field-slots'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: generate -- --target=swiftui Switch ToggleSwitch Button Card Field emits 5; swift build exit 0; Switch golden + Button/Card structural tests byte-stable (20/20 swift tests)
+    recorded_at: "2026-08-15T02:45:02.007Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "it.each([TextField, Dialog, Input]) negative controls all throw /no emission class matches/ — gate proven narrow (component-instance leaf, surface block, control root each excluded)"
+    recorded_at: "2026-08-15T02:45:02.906Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Field.swift: FieldTokens.scopes; colorSlot(color.bg)/colorSlot(color.fg)/colorSlot(color.border)/pxSlot(radius) accessors; status optional + compactMap layering; vocabulary extension left Button/Card bytes unchanged"
+    recorded_at: "2026-08-15T02:45:03.809Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "SettingsExampleApp Profile rows compose FsdsField { label } control: { TextField }; example swift build exit 0; value-channel omission documented in lane + package READMEs"
+    recorded_at: "2026-08-15T02:45:04.716Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0 errors; governed:rail exit 0; pnpm test 2054/2054; test:frameworks 573+492+532+70"
+    recorded_at: "2026-08-15T02:45:05.900Z"

@@ -1,0 +1,73 @@
+id: GPUI-ACTION-CONTROL-01
+title: 'GPUI action control: callback props and root click/keyboard activation'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'GPUI realizes action controls: stored callbacks invoked from pointer and keyboard activation, with a mounted witness; props 226->249 and behavior 3->5.'
+created_at: '2026-11-01T10:57:46.802Z'
+updated_at: '2026-11-05T23:04:33.896Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI action control: callback storage, root activation, mounted witness, rebaseline'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+    - scripts/gpui-web-consistency-audit.mjs
+  out: []
+invariants:
+  - 'Components without callback props or pointer events regenerate byte-identically apart from the shared crate module declaration'
+  - 'The generated callback is stored and invoked only by wired events; unwired handler props are named in the receipt'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a component whose root anatomy declares a click event bound to a callback prop; when generate --target=gpui runs; then the component stores the callback and emits a ChangeRequest-free action on pointer click and keyboard activation'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when the Button witness clicks and presses Enter/Space; then the registered callback fires once per activation and disabled nothing else regresses'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-action-control'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "generated components store every callback-typed prop as crate::callback::ActionHandler; a part whose click event binds one invokes it on activation. Button's root adds a focus handle, tab stop and Space/Enter activation (generated source shows on_click with crate::callback::invoke plus track_focus/on_key_down); part actions (AlertNotice.dismiss, Walkthrough skip/prev/next) get an id-scoped stateful element with pointer activation. Receipts list callbacks and activations"
+    recorded_at: "2026-11-01T11:09:24.802Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Button/Button.rs
+    commit_sha: "3d7206129"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_button_action_callback_pointer_and_keyboard passes: a pointer click invokes the registered handler exactly once and focuses the root, Space and Enter each invoke it once (3 total, no double fire); the pilot requires the witness by name and reports GPUI_NATIVE_PASS with all required witnesses present"
+    recorded_at: "2026-11-01T11:09:25.609Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: "3d7206129"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "ratchet rebaselined: GPUI props 226/379 -> 249/379 and behavior 3/30 -> 5/30 (Button and AlertNotice now realize their declared event wire); parts 180/214, a11y 0/44 and refs 18/20 unchanged, and --check reports no regression"
+    recorded_at: "2026-11-01T11:09:26.681Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: ef44b4a75

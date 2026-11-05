@@ -1,0 +1,76 @@
+id: DOC-README-ORACLE-NATIVE-RECONCILE-01
+title: 'Reconcile README and normal-form claims with measured oracle and native evidence'
+risk_tier: 2
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Reconciled README, document-governance, normal-form, snapshot, and SwiftUI claims against live mutation, CI, parity, test, and host-runtime evidence.'
+created_at: '2026-09-05T01:40:34.900Z'
+updated_at: '2026-11-05T22:58:17.137Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'reader-facing claim boundaries for authorship, contract oracles, and SwiftUI evidence'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'README.md'
+    - 'docs/README.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/normal-form.md'
+    - 'packages/ds-swiftui/README.md'
+    - docs/document_governance.md
+  out: []
+invariants:
+  - 'Authorship-time HIL remains described as a real review practice and live showcase capability, never upgraded into a persisted sign-off claim.'
+  - 'Generation, byte drift, admission-rail membership, compile tests, host runtime facts, and visual parity remain separate claims.'
+  - 'Normal-form falsification outcomes do not define success by restating any of the seven properties whose necessity is under test.'
+  - 'Every amended current-state claim names a live source or reproducible command and preserves its proof ceiling.'
+acceptance:
+  - id: A1
+    given: 'the seven-mutant contract-oracle catalog'
+    when: 'readers inspect the root README and snapshot'
+    then: 'both report five protected detections and two reviewed Badge survivors without implying a general mutation score'
+  - id: A2
+    given: 'the current SwiftUI package, tests, parity fixture, CI lane, and press-proof harness'
+    when: 'readers inspect its README and the normal-form doctrine'
+    then: 'the documents agree on 51-of-51 emission, native drift gating, Swift test evidence, bounded host-runtime facts, admission exclusion, and live limitations'
+  - id: A3
+    given: 'the seven-property thesis'
+    when: 'its falsification conditions are applied to properties 5 and 7'
+    then: 'a competing system can falsify their necessity through independently measurable outcomes rather than being excluded by definition'
+  - id: A4
+    given: 'the active documentation hook pack and tracked audit directories'
+    when: 'readers inspect docs/README.md'
+    then: 'it points at the active CAWS hook path and names the live audit directory set without a stale hand-count'
+  - id: A5
+    given: 'the documentation-only change'
+    when: 'documentation gates run'
+    then: 'claims, links, freshness, and source-tree cleanliness pass'
+non_functional: {}
+contracts:
+  - name: 'documentation-claim-boundary'
+    type: behavior
+    path: 'docs/normal-form.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "README.md and docs/current-implementation-snapshot.md mutation row at merge ad279dc8, corroborated by pnpm run audit:contract-oracle-mutations -- --profile=full --verify-dispositions at 8bb6e521: 5/7 detected, 2/7 reviewed Badge survivors, 0 disposition mismatches; both docs state the non-general-score ceiling"
+    recorded_at: "2026-09-05T01:53:04.889Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node scripts/swift-parity-diff.mjs: corpus 51, react-emitting 51, swift-emitting 51, divergent 0; swift test --package-path packages/ds-swiftui: 41 tests, 4 visible AX-host skips, 0 failures; PressProofHarness: all counters match, with OTP text-entry and modal-dismissal limitations printed"
+    recorded_at: "2026-09-05T01:53:37.993Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "docs/normal-form.md Falsification condition 1 now defines fixed-workload outcomes (seeded semantic-defect escape, regeneration divergence, next-target engineering cost, consumer breakage) and explicitly permits systems lacking properties 2, 5, or 7 to falsify their necessity"
+    recorded_at: "2026-09-05T01:53:44.786Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/README.md and docs/document_governance.md at ad279dc8 point to .caws/hooks/doc-frontmatter-check.sh, separate advisory edit-time warnings from docs:check-claims, and list tracked docs/*-audit records without a hand-authored count"
+    recorded_at: "2026-09-05T01:53:51.705Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run docs:check-claims (60 markers; freshness selftest 9/9), pnpm run docs:check-links (66 links), pnpm run lint (0 warnings), pnpm run governed:rail, pnpm test (258 files/3397 tests), pnpm run test:frameworks, pnpm run worktree:check, and git diff --exit-code all passed"
+    recorded_at: "2026-09-05T01:53:56.999Z"

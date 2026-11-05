@@ -1,0 +1,66 @@
+id: REL-SERIES-IDENTITY-01
+title: 'Series identity survives the projection consumer: two symbols stay distinguishable and the close-swap pair separates'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Series identity survives the projection consumer; the close-swap separating pair is executed and the bounds violation is left without standing.'
+created_at: '2026-09-21T01:06:26.216Z'
+updated_at: '2026-11-05T23:07:13.704Z'
+created_by_session: 'session-d9bf6cd4-ea13-4823-8ad3-db20bfcc705f'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-fixtures/fixtures.jsonl (FX_P_OHLC_PAIR, the two-symbol separating pair)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (the identity consumer controls)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - src/data/analytical-fixtures
+  out: []
+invariants:
+  - 'IDENTITY IS OBSERVED THROUGH THE CONSUMER, not through the declaration: the output carries one row per symbol with that symbol own values.'
+  - 'The separating pair is the SWAP, executed: per-period sums over symbol are bit-identical while each symbol own row moves. The aggregate-path blindness to the swap is RECORDED AS A LOSS, never repaired by adding a bounds check here.'
+  - 'The bounds violation cannot obtain standing in this slice because no machine-readable bounds binding exists. Building one is piece 3 and requires a generic declared-expression mechanism, never an OHLC-named branch.'
+  - 'The single-result-grain constraint is met by summing over period (resultGrain [symbol]), which is what keeps identity; summing over symbol is the control, not the construction.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a fixture with two symbols over the same periods; when the identity binding sums over period leaving symbol as the result grain; then the consumer output carries one row per symbol with that symbol''s values'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the close-swapped fixture; when the identity consumer runs; then each symbol''s row differs while every per-period sum over symbol is bit-identical'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given both fixtures under the aggregate binding that sums over symbol; when enumerations are compared; then the retained sets are identical, recorded as the loss rather than repaired'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the swapped fixture''s bounds violation; when standing is sought; then it cannot obtain standing because no machine-readable bounds binding exists, and none is added here'
+non_functional: {}
+contracts:
+  - name: 'series-identity'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 2: the identity binding keeps SYMBOL as the result grain (one row per symbol) (vitest analytical 1041/1041, rail+root+frameworks green)"
+    recorded_at: "2026-09-21T01:53:09.035Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 2: the SWAP moves each symbol row while per-period sums over symbol are bit-identical (vitest analytical 1041/1041, rail+root+frameworks green)"
+    recorded_at: "2026-09-21T01:53:09.468Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 2: the aggregate path blindness is RECORDED AS A LOSS (vitest analytical 1041/1041, rail+root+frameworks green)"
+    recorded_at: "2026-09-21T01:53:09.894Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 2: the bounds violation cannot obtain standing and no bounds check is added (vitest analytical 1041/1041, rail+root+frameworks green)"
+    recorded_at: "2026-09-21T01:53:10.331Z"

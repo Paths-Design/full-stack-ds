@@ -1,0 +1,66 @@
+id: EXAMPLES-FUNCTIONAL-API-FIXTURE-SCAFFOLD-02
+title: 'Materialize storefront-checkout fixture -> adapter -> promise-returning functional API seam (totals/promo/shipping/tax/payment behind lane-local API; app-layer data scaffold, no framework app code)'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge checkout-api at 9b790ce73ed429a107fec8aaf978bfcae8504246'
+created_at: '2026-06-27T00:31:07.659Z'
+updated_at: '2026-11-05T22:59:05.489Z'
+blast_radius:
+  modules:
+    - examples/storefront-checkout/fixtures
+    - examples/storefront-checkout/src/types
+    - examples/storefront-checkout/src/data
+    - examples/storefront-checkout/src/api
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - examples/storefront-checkout/fixtures/**
+    - examples/storefront-checkout/src/types/**
+    - examples/storefront-checkout/src/data/**
+    - examples/storefront-checkout/src/api/**
+    - examples/storefront-checkout/README.md
+    - examples/storefront-checkout/spec.md
+  out: []
+invariants:
+  # --- Shared golden data/API template (examples/README.md "Golden data/API template") ---
+  - The seam follows the golden template verbatim except for domain and the app-specific decision below; copy invariants 1-9 from examples/README.md.
+  - Fixtures are static JSON/JSONL files under examples/storefront-checkout/fixtures, hand-authored, never imported from a package.
+  - The adapter (src/data) is the sole layer that touches raw fixture shape; it may load fixtures once into memory and memoize the parsed snapshot; a malformed fixture throws at load time, not as a domain failure.
+  - Domain types live in src/types as lane-local app-layer types, not package exports or FSDS contract types.
+  - The API (src/api) is promise-returning and resolves a typed ApiResult<T> discriminated union for domain failures; it never throws or rejects for domain failures.
+  - Latency and failure are injectable and deterministic (fixed latencyMs default 0; explicit failure flag/option); no wall-clock randomness and no Math.random.
+  - src/api/index.ts is the barrel and the sole future-UI consumption boundary; future framework UI imports the barrel only, never src/data or fixtures.
+  - Tests under src/**/*.test.ts cover parse, query/read, mutation, typed failure, and at least one falsifiability probe; they run under plain Vitest (node) with latencyMs 0.
+  # --- App-specific decision: checkout money policy lives behind the lane-local API ---
+  - Totals, promo validation, the shipping/tax quote, payment simulation, and order placement live behind the lane-local functional API; quoteCart returns the full derived breakdown (subtotal -> discount -> shipping -> tax -> total) as already-computed numbers.
+  - The future UI owns cart/form/step state only and calls the API for every derived money value; future framework lanes must not independently recompute totals (display formatting of API-returned values only).
+  - This does not move product policy into FSDS packages; the API is lane-local app code (the boundary protected is FSDS-package vs app, not UI vs data layer).
+  - Expected API surfaces include listProducts, quoteCart, validatePromo, submitPayment, placeOrder.
+  # --- Slice boundary ---
+  - This slice materializes only the storefront-checkout data/API seam; it adds no framework app code (App.tsx/main.tsx/package.json/Vite config), no framework lane folder (react/vue/svelte/angular/lit) content, and no root config/CI changes.
+acceptance:
+  - id: A1
+    given: the storefront-checkout static JSON/JSONL fixtures
+    when: the adapter loads and parses them
+    then: every fixture row parses into typed records and joins (e.g. products, promo codes, shipping methods) succeed; a malformed fixture throws at load time.
+  - id: A2
+    given: a constructed checkout API over the fixtures
+    when: listProducts and quoteCart are called
+    then: listProducts resolves ok with the catalog and quoteCart resolves ok with a derived breakdown (subtotal, discount, shipping, tax, total) computed once behind the API.
+  - id: A3
+    given: a cart and a promo code
+    when: validatePromo is called with a valid then an invalid code
+    then: a valid code resolves ok with the discount applied to the quote; an invalid code resolves a typed ApiError (not a thrown/rejected promise) leaving totals unchanged.
+  - id: A4
+    given: a payment payload and an order
+    when: submitPayment and placeOrder are called, including under the injectable failure flag
+    then: success paths resolve ok (placeOrder yields an order id); the failure flag yields a typed ApiError; behavior is deterministic with no wall-clock randomness.
+  - id: A5
+    given: the data/API test suite
+    when: a fixture or expectation is deliberately corrupted (falsifiability probe)
+    then: the relevant test fails for the right reason, and restoring it returns the suite to green; tests import the API barrel only, never src/data or fixtures.
+non_functional: {}
+contracts: []

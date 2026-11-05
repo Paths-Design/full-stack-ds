@@ -1,0 +1,31 @@
+id: SHOWCASE-PP-OVERRIDES-01
+title: 'Properties panel override completion: reset panel, developer-tab wiring, usage token re-skin, box-model constraint captions, Button icon example'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-09T20:21:55.629Z'
+updated_at: '2026-11-05T23:08:04.556Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'TODO: list the file(s) or directories this spec authorizes.'
+    - src/components/properties-panel/**
+    - src/views/**
+    - src/app.tsx
+    - src/layout/TracePanel.tsx
+    - packages/ds-contracts/components/Button/Button.usage.jsonl
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts: []

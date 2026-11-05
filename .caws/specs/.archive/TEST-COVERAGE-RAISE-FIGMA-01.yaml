@@ -1,0 +1,53 @@
+id: TEST-COVERAGE-RAISE-FIGMA-01
+title: 'Raise figma-plugin line coverage to an 80-certifying floor via plugin UI and preview tests'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Figma-plugin line coverage 70.7 to 95.1 via UI render, preview, and live-audit suites; floor ratcheted to 93, certifying the 80 target'
+created_at: '2026-09-01T01:26:23.467Z'
+updated_at: '2026-11-05T23:08:36.180Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-figma-plugin/src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-figma-plugin/vitest.config.ts
+    - packages/ds-figma-plugin/package.json
+    - pnpm-lock.yaml
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the added assertion suites; when pnpm run test:coverage:figma-plugin runs; then every figma-plugin test passes and measured line coverage is at least 82 percent'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the figma-plugin lines floor reaches 80 with at least 2 points of margin and docs:check-claims derives the markers without drift'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the added tests; when governed:rail regenerates all targets; then the generated trees show no drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:figma-plugin exit 0: 9/9 test files, measured 95.1% lines (from 70.68) / 82.91% branches / 95.32% functions"
+    recorded_at: "2026-09-01T01:37:53.281Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json figma-plugin ratchet 68/79/87/68 -> 93/80/93/93; measured 95.1 leaves 2.1 margin above the 93 floor which certifies the 80 target; docs-claims-check 46/46 after marker updates"
+    recorded_at: "2026-09-01T01:37:53.715Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run governed:rail exit 0 overall pass after the test additions: zero generated drift (git status clean)"
+    recorded_at: "2026-09-01T01:37:54.149Z"

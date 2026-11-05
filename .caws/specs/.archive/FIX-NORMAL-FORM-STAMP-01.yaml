@@ -1,0 +1,36 @@
+id: FIX-NORMAL-FORM-STAMP-01
+title: 'Re-verify and restamp normal-form doc after RN emitter realization slice'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'normal-form.md re-verified against post-RN-realization tree and restamped to 9219682d; freshness gate fresh'
+created_at: '2026-09-04T23:22:36.420Z'
+updated_at: '2026-11-05T23:03:13.306Z'
+created_by_session: 'sess_b5ccec4e-abee-4004-b791-90b54bfe3547'
+blast_radius:
+  modules:
+    - 'architecture doc normal-form'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs/normal-form.md re-verified against current HEAD (claims checked: no per-component emitter lore, IR facts only, marked counts derived, suites green); when node scripts/docs-claims-check.mjs runs; then it exits 0 with the stamp fresh'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "node scripts/docs-claims-check.mjs exits 0 — 60 marked claims match, 9 stamps fresh or ledgered; claims re-verified against 9219682d before restamping"
+    recorded_at: "2026-09-04T23:24:09.401Z"
+    command: node scripts/docs-claims-check.mjs
+    exit_code: 0
+    commit_sha: "7df9ef5"

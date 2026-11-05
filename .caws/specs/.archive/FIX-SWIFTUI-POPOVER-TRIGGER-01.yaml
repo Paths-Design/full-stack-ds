@@ -1,0 +1,68 @@
+id: FIX-SWIFTUI-POPOVER-TRIGGER-01
+title: 'Wire SwiftUI Popover trigger from surface openTriggers'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'SwiftUI Popover now lowers contract-authored click triggers to a native pressable path, with emitter tests and an OS accessibility interaction witness.'
+created_at: '2026-09-05T01:56:39.697Z'
+updated_at: '2026-11-05T23:03:42.665Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'SwiftUI surface lowering and generated Popover'
+    - 'SwiftUI native interaction proof'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.test.ts'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Popover/Popover.swift'
+    - 'packages/ds-swiftui/Tests/PressProofHarness/main.swift'
+    - 'packages/ds-swiftui/README.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Tooltip/Tooltip.swift
+  out: []
+invariants:
+  - 'SwiftUI trigger behavior is derived from SurfaceIR.openTriggers, never a component-name branch'
+  - 'The disabled prop suppresses Popover opening and controlled/uncontrolled writes continue through ControllableValue'
+acceptance:
+  - id: A1
+    given: 'a SwiftUI anchored surface whose SurfaceIR declares click in openTriggers'
+    when: 'the surface emitter lowers its trigger'
+    then: 'the emitted trigger is a native pressable that toggles the boolean disclosure channel unless disabled'
+  - id: A2
+    given: 'the Tooltip surface declares hover and focus but not click'
+    when: 'SwiftUI source is emitted'
+    then: 'hover-driven behavior remains and no click-trigger wrapper is introduced'
+  - id: A3
+    given: 'the generated Popover is mounted in the PressProof harness'
+    when: 'its trigger is actuated through the OS accessibility press path'
+    then: 'onOpenChange receives true and the popover content becomes observable'
+  - id: A4
+    given: 'the fix is regenerated and verified'
+    when: 'repository and Swift gates run'
+    then: 'the governed rail, root tests, framework tests, Swift tests, lint, and drift checks pass'
+non_functional: {}
+contracts:
+  - name: 'swiftui-popover-trigger'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "surface-emit.test.ts red before implementation on missing SwiftUI.Button; pnpm exec vitest run packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.test.ts then passed 9/9 and asserts click openTriggers emit Button(action: open.toggle), plain style, disabled propagation, and no onHover"
+    recorded_at: "2026-09-05T02:11:44.799Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.test.ts passed 9/9; test asserts Tooltip IR openTriggers are hover+focus, generated source retains onHover, and no SwiftUI.Button click wrapper is emitted"
+    recorded_at: "2026-09-05T02:11:51.246Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "swift run --package-path packages/ds-swiftui PressProofHarness exited 0 through the OS accessibility path: popover.onOpenChange began [true] (native phase teardown later appended false), popover.content after press was true, and PRESS-PROOF reported all counters match expectations"
+    recorded_at: "2026-09-05T02:11:56.531Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Final bound-worktree gates all exited 0: pnpm run governed:rail (51 contracts, 9 targets generated, 6 admitted targets verified); pnpm test (258 files, 3398 tests); pnpm run test:frameworks (all five packages); swift test --package-path packages/ds-swiftui (41 tests, 4 visible AX-host skips, 0 failures); pnpm run lint; docs claim/link checks; git diff --check; worktree:check"
+    recorded_at: "2026-09-05T02:12:01.276Z"

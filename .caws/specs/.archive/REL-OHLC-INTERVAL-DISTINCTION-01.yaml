@@ -1,0 +1,63 @@
+id: REL-OHLC-INTERVAL-DISTINCTION-01
+title: 'The OHLC relation is exercised through the projection layer without widening the evaluator, and its interval temporal axis is not reduced to a convenient scalar'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The OHLC relation is exercised through the projection layer without widening the evaluator; its interval axis keeps its scale and refuses the cyclic-only channel, and a cyclic control shows the channel is otherwise usable.'
+created_at: '2026-09-19T09:30:09.918Z'
+updated_at: '2026-11-05T23:06:49.088Z'
+created_by_session: 'session-81b74ef5-48d2-46ae-a53d-880593255530'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (the OHLC interval-distinction controls)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+  out: []
+invariants:
+  - 'THE EVALUATOR IS NOT WIDENED. The probe is exercised by binding an operation this evaluator CAN perform over one of the relation''s own co-registered ratio measures. Changing what the bounded experiment executes would be a scope change.'
+  - 'THE TEMPORAL AXIS KEEPS ITS SCALE. A period declared as an interval is not an instant and not a cyclic quantity, so the cyclic-only channel must stay refused for it. Reducing the axis to something the channel table happens to accept is the convenient-scalar failure the doctrine names.'
+  - 'CO-REGISTRATION IS A DEGREE OF FREEDOM. Each of the ratio measures is bound in turn and each is lawful, so the shape is not collapsed to one representative measure.'
+  - 'A CONTROL DISTINGUISHES INTERVAL-NESS FROM UNUSABILITY. The cyclic channel must become available when the temporal column IS cyclic, or the refusal would be evidence about the channel rather than about the scale.'
+acceptance:
+  - id: A1
+    given: 'The FX_P_OHLC relation and an operation over one of its ratio measures.'
+    when: 'Admission and enumeration are run.'
+    then: 'given the FX_P_OHLC relation and an operation this evaluator CAN perform over one of its co-registered ratio measures, when the result is enumerated, then the projection layer reaches it and its disposition is recorded'
+  - id: A2
+    given: 'The admitted result''s facts.'
+    when: 'The dimension''s transformation and the channel dispositions are read.'
+    then: 'given that result, when its facts are read, then the temporal column is carried as an interval and the cyclic-only channel is refused for it rather than permitted'
+  - id: A3
+    given: 'Each of the four co-registered ratio measures bound in turn.'
+    when: 'Each is enumerated.'
+    then: 'given the four co-registered ratio measures, when each is bound in turn, then each is a lawful measure, so the shape is not reduced to a single convenient scalar'
+  - id: A4
+    given: 'A control whose temporal column is cyclic.'
+    when: 'The same operation is enumerated over it.'
+    then: 'given a control where the temporal column IS cyclic, when the same operation is enumerated, then the cyclic channel becomes available, so the refusal is about interval-ness and not about the channel being unusable'
+non_functional: {}
+contracts:
+  - name: 'ohlc-interval-distinction'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "OHLC: the relation IS reached without widening the evaluator - an operation over its own ratio measures admits and enumerates (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1035 tests green))"
+    recorded_at: "2026-09-19T09:34:56.738Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "OHLC: the temporal axis is carried as interval and the cyclic-only channel is refused for it (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1035 tests green))"
+    recorded_at: "2026-09-19T09:34:57.275Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "OHLC: all four co-registered ratio measures plus volume are independently lawful, so the shape is not collapsed to one representative (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1035 tests green))"
+    recorded_at: "2026-09-19T09:34:57.782Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "OHLC: with a cyclic temporal column the channel becomes available and lawful, so the refusal is about interval-ness not unusability (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1035 tests green))"
+    recorded_at: "2026-09-19T09:34:58.294Z"

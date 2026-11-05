@@ -1,0 +1,39 @@
+id: REL-FILE-GRAINWITNESS-01
+title: 'File the grain-witness incidence witness: the corpus fan-out cause decides it'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'First witness under the repaired standing landed: evidence.grainWitness#incidence unresolved -> witnessed on an authored existing-cause stimulus, atomic so it ratifies (59 primitives), drift green on all three bases.'
+created_at: '2026-09-15T23:08:43.221Z'
+updated_at: '2026-11-05T23:06:25.726Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given evidence.grainWitness#incidence is ratifiable and its separating shape is a single-path patch measured against the corpus fan-out cause; when the authored stimulus is filed (orders[0] order_id -> orders on FX_T_GRAIN_WITNESS_UNIQUE_ROWS) and checkWitness admits it; then the verdict moves unresolved -> witnessed, the freeze split moves to 17 witnessed / 73 unresolved, the drift check stays green, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-admission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "THE FIRST WITNESS FILED UNDER THE REPAIRED STANDING IS LANDED AND VALID. pnpm exec vitest run packages/ds-codegen/src/analytical: 19 files / 864 tests green; full root suite 302 files / 4085 tests; typecheck clean; every analytical gate green (check-schemas, check-baseline, closures:check, footprints:check, freeze:check, final-quotient, stimuli, fixtures:check); docs gates green -- all in worktree file-grainwitness before merge cf4e6111. WHAT MOVED: evidence.grainWitness#incidence, unresolved -> witnessed, on an AUTHORED single-path stimulus whose judgment follows from an already-existing cause -- on FX_T_GRAIN_WITNESS_UNIQUE_ROWS the declared witness column is changed from [\"order_id\"] to [\"orders\"], a column that repeats across rows, and the corpus fan-out cause REL_GRAIN_FANOUT is raised with INSTANCE evidence (engines.ts hasDuplicates(rows, witness)), so an admissible judgment becomes illegal. THE POINT OF THE ROUNDS BEFORE IT: the footprint classifier classes this coordinate ATOMIC, so the witness RATIFIES PRIMITIVE standing rather than a coarser claim -- final-quotient reports 59 primitives, up from 58 -- and the drift check wired into analytical:subtraction:gate is OK on all three bases, which is precisely the check that would have caught the round-38 overclaim. This is the first verdict movement filed AGAINST the candidate triage instead of discovered to be one, and the first filing whose standing was decided by evidence rather than by syntactic cardinality. NON-CLAIMS: the stimulus is AUTHORED (the corpus carries the near-neighbour shape, not the pair), so the witness is admitted under the existing-cause policy rather than being corpus-licensed; the freeze split moving to 17 witnessed / 73 unresolved is a population count, not a claim about necessity; and the closure gate remains red by design (67 unresolved candidates against the previously measured 68), because obligation 8 admits only non-primitive, non-interaction, adjudicated dependencies and a PRIMITIVE dependency still blocks its carrier. Every count pin that moved with the population is updated and committed, and the footprints, freeze and legacy ledgers are re-recorded under the new population."
+    recorded_at: "2026-09-15T23:19:53.434Z"

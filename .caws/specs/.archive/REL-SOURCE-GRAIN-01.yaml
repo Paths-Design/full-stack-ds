@@ -1,0 +1,97 @@
+id: REL-SOURCE-GRAIN-01
+title: 'A qualified source-grain relational observation survives judgment, selection, lowering and output-only recovery'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The qualified source-grain relation result carries structured joint observations, the declared bounds relationships and their population-scoped REL_FIELD_BOUNDS_VIOLATED judgment through the projection orchestration.'
+created_at: '2026-09-22T00:17:51.672Z'
+updated_at: '2026-11-05T23:07:14.587Z'
+created_by_session: 'session-d9bf6cd4-ea13-4823-8ad3-db20bfcc705f'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (the qualified relation result, its judgment and its projection)'
+    - 'packages/ds-codegen/src/analytical/codes.ts (REL_FIELD_BOUNDS_VIOLATED)'
+    - 'docs/architecture/analytical-relation-doctrine.md (the diagnostic table row)'
+    - 'packages/ds-contracts/analytical-fixtures/fixtures.jsonl (the margin-preserving perturbation row)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'src/data/analytical-fixtures'
+  out: []
+invariants:
+  - 'JOINT IDENTITY: the qualified result carries structured (field, value) grain bindings, not concatenated keys and not marginal totals. Four observations with their own values are recovered from the produced artifact.'
+  - 'THE DIAGNOSTIC IS SCOPED: REL_FIELD_BOUNDS_VIOLATED fires only for a readable observation that falsifies an APPLICABLE declared bounds relationship. A malformed reference is a declaration refusal; an unreadable value is missing evidence; no rows is no instance finding; one observation violation does not invalidate other observations, other fields or every task.'
+  - 'THE PATH IS ONE: admission, selection, lowering and the produced artifact consume the SAME qualified result and the SAME population. No independently admitted object, no produce shortcut, no re-evaluation of rows to manufacture the output.'
+  - 'TEMPORAL TRANSPORT NOT INTERPRETATION: a declared kind is carried; an undeclared field carries none; no extent or duration is invented.'
+  - 'NO FORM LORE: nothing in the qualified path names OHLC, a candle or any form. The field names in the declaration are the only spelling the code sees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pair fixture population; when the relation is qualified at its declared grain; then four distinct structured observations are recovered with their associated values'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a readable observation that falsifies a declared bounds relationship; when the qualified judgment runs; then REL_FIELD_BOUNDS_VIOLATED is carried for that observation and field, with no diagnostic for satisfying or unreadable observations'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the baseline, the cross-symbol swap and the margin-preserving perturbation; when each is produced through admission, selection and lowering; then the judgments distinguish all three from the evidence the path actually consumes'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the produced readback; when it is decoded; then the required tuples and associations are recovered without rows or evaluator access, and mutating an association in the artifact is detected'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a relation whose grain or bounds declaration is malformed; when the orchestration runs; then no artifact is produced'
+  - id: A6
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a consistent rename of the relation, grain fields, participating fields, bounds references and rows, plus a row reorder; when the normalized result is compared; then it is equivalent modulo that rename and reorder'
+  - id: A7
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a field declaring temporality; when the qualified result is built; then the declared kind is carried and an undeclared field carries none, with no duration or extent invented'
+non_functional: {}
+contracts:
+  - name: 'qualified-relation'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'bounds-diagnostic'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/engines.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 5 A1: four distinct structured observations with their own values (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:15.407Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 5 A2: the baseline is admissible, BOTH hostile populations produce REL_FIELD_BOUNDS_VIOLATED through the same qualification (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:15.917Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 5 A3: the produced artifact carries observations and judgment, a value-to-key association mutation is detected (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:16.438Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 5 A4: a qualified result with NO observations produces no artifact (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:16.967Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 5 A5: the declared temporal kind is carried and an undeclared field carries none (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:17.556Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection.test.ts applicability: a malformed bounds reference is refused at qualification (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:18.074Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "projection.test.ts applicability: an unreadable participating value produces no bounds violation and A7: a consistent rename preserves the qualified result (vitest analytical 1065/1065; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-22T00:51:18.617Z"

@@ -1,0 +1,80 @@
+id: REL-PROJECTION-ADMISSION-01
+title: 'Connect an admitted analytical operation to a selected projection program and its produced representation'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Judged the operation by the existing analytical authority so a forbidden analysis is refused rather than preserved, refused composition partitions that are not result columns, and made a retained program determine the produced representation so an empty inventory yields no output.'
+created_at: '2026-09-18T03:32:05.886Z'
+updated_at: '2026-11-05T23:07:01.580Z'
+created_by_session: 'session-69475cd2-20cf-4633-9893-09967382f4d8'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (semantic admission through judge, partition membership, lower, lowerAndRecover, preservationReport)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'SEMANTIC ADMISSION USES THE EXISTING ANALYTICAL AUTHORITY, never a second implementation of the laws. The operation is judged by the same engine that judges the corpus, and its structural resolution is not allowed to substitute for that judgment. A structural check that passes while the analytical rules refuse the operation is exactly the defect this closes.'
+  - 'A preservation result is not an admission result. A round trip can hold perfectly for an operation that should never have been admitted, so the two are tested separately and neither stands in for the other.'
+  - 'Program choice must DETERMINE the produced representation. The lowering entry point consumes a retained program; with no candidate there is no output, and removing the capability a representation needs prevents that representation from being produced.'
+  - 'A declared composition partition must be a column of the RESULT. A partition naming a source column the operation summed away, or a name that exists nowhere, is an invalid binding and is refused at the same boundary as the operation, not treated as an unknown partition and not given an unrelated analytical diagnostic.'
+  - 'Out of scope and not to be widened into: OHLC and graph recombination, the eight unimplemented tasks, general combinators, rendering, cross-target behaviour, stage-2 accounting, and residue enumeration. Only the existing readback and one explicit metric assignment are lowered; the remaining programs stay enumerated and unrealized, and that limit is stated.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given an analytical operation is supplied with the structure it names; when its semantic standing is established before its result is treated as admitted; then the operation is judged by the existing analytical authority, an operation the declared facts forbid is REFUSED even though the arithmetic evaluator can compute it, a premise that is merely missing is carried, and structural resolution never substitutes for the judgment'
+  - id: A2
+    given: 'An operation has been admitted and a candidate retained.'
+    when: 'The admitted result is lowered through a specific retained program.'
+    then: >-
+      The program's measure channel DETERMINES the representation produced: a
+      readback program yields readback entries, a metric program yields extents
+      under a declared scale, an empty inventory yields no candidate and therefore
+      no output, and clearing the baseline a metric program needs makes lowering
+      unrealized.
+  - id: A3
+    given: 'A composition declares the dimension it partitions over.'
+    when: >-
+      That dimension is not a column of the result the operation produced, or is a
+      name that exists nowhere.
+    then: >-
+      The declaration is refused at the same boundary as the operation, and the
+      rejection is EXECUTED by a test rather than asserted from a stored flag.
+  - id: A4
+    given: 'The preservation report and the record claim a single evaluation and decoder independence.'
+    when: 'The implemented calls and the decoder signatures are read.'
+    then: >-
+      The report evaluates the admitted operation once and lowers that result, and
+      the arity assertion is stated as a signature fact rather than a proof of the
+      information boundary, with the isolated execution as the support for decoder
+      independence.
+non_functional: {}
+contracts:
+  - name: 'admission-lowering'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/projection.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "REPRODUCED BEFORE REPAIR: `sum(stock.on_hand) over [date] -> grain [product]` was admitted by the structural checks, enumerated 42 candidates, and preserved perfectly - the direction the declaration forbids via nonAdditiveAlong [date]. admitOperation now judges the exact assertion with the SAME engine that judges the corpus: that operation is REFUSED naming REL_ADDITIVITY_SUM_SEMIADDITIVE, while the fixture own across-product sum remains admitted (canonical judgment admissible, 0 diagnostics, 0 obligations) and still reaches both representations. A merely missing premise stays carried: grain unknown returns kind unproven with obligation grain:declared before any candidate exists. Structural resolution never substitutes for the judgment - the structural checks run first and the judgment decides. TWO OF THE SLICE OWN PERTURBATIONS ARE NOW REFUSED AT ADMISSION, which is the stronger result rather than a loss: perturbing the measure to ordinal makes the sum itself illegal (REL_MEANINGFULNESS_INTERVAL_SUM), so the precommit ratio->ordinal control is SUPERSEDED by admission rather than weakened, and a ratio-measure composition probe is refused under REL_RATIO_MEASURE_AVERAGED before any composition exists; both are recorded as controls with requirementMet and their correction text rather than crashing. Verification: pnpm exec vitest run packages/ds-codegen/src/analytical (21 files / 924 tests), pnpm test (303 files / 4145 tests), typecheck, lint, docs:check-claims, governed:rail and test:frameworks green on merge 4872e6c7. NON-CLAIM: the enumerator still has no second, independently established operation identity to compare a caller-supplied operation against; semantic admission answers whether the declared facts forbid an analysis, not whether that analysis is the one that was selected."
+    recorded_at: "2026-09-18T03:42:02.333Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "THE CONNECTION THAT WAS MISSING. produce can build both representations from any result, so on its own it demonstrated an encoding helper: with an EMPTY channel inventory enumeration retained 0 candidates and the standalone report still produced both outputs, which is how local success could leave the motivating outcome unmet. lower now consumes an actual RETAINED PROGRAM and its measure channel decides: the readback program cartesian|position|text yields representation readback with recovered day1=30 and day2=105, and the metric program cartesian|position|area yields representation metric with extents 60 and 210 decoding to 30 and 105 under the declared scale of two units per value. The two programs differ and yield different representations, so program choice controls the encoding. THE DECISIVE CONTROLS, both measured into the ledger: loweringControls.emptyInventoryRetained is 0 (no candidate, therefore no output), and clearing the baseline a metric program needs makes lowering unrealized with the reason that a metric representation needs a declared zero baseline. Mutation controls still run on the PRODUCED output: the readback program key-binding mutation is detected while the total stays 135, and the metric program extent mutation is detected. NON-CLAIM: only the readback family and one explicit metric assignment are lowered; the remaining retained programs stay enumerated and unrealized, and no claim is made that they are realizable."
+    recorded_at: "2026-09-18T03:42:12.427Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "The composition branch checked absence and additivity but never membership in the result grain, so partitionDimension=product (a source column the operation SUMS OVER and therefore not a column of the result) retained 14 candidates, and partitionDimension=does_not_exist retained 14 as well. Both are now refused at the SAME boundary as the operation, with the result columns named in the message, and the test EXECUTES the rejection for both names rather than asserting a stored lawfulCompletion flag that merely said it would. The earlier probe hardcoded lawfulCompletion.exists=false as prose; that field is gone and the executed rejection replaces it. The omitted-partition case is unchanged (0 retained, carried under invariant:exhaustive) and the declared `date` partition is unchanged (0 retained under REL_ADDITIVITY_SUM_SEMIADDITIVE), so the two repairs from the previous slice are preserved intact."
+    recorded_at: "2026-09-18T03:42:13.069Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "SINGLE EVALUATION REPAIRED: preservationReport called evaluateOperation twice - once for result and once to feed produce - contradicting the claim. It now evaluates once and lowers that result; the two-call form is gone. ARITY CLAIM NARROWED: the test that asserted Function.length === 1 for each decoder now states in its own name and comment that arity is a signature fact and NOT a mechanical guarantee of the information boundary, since a one-argument function can still read a captured variable or call a module-level evaluator; no such behaviour was found in the decoder bodies and the support for decoder independence is the isolated execution in a context holding the representation but neither the evaluator nor the rows. The record carries both boundaries in correctedAccount.singleEvaluation and .arityClaim, and the queue of prior corrections (representationRecovery, aggregateDispatch, metricChannelLabel, operationIdentity) is preserved."
+    recorded_at: "2026-09-18T03:42:13.682Z"

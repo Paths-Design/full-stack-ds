@@ -1,0 +1,54 @@
+id: FEAT-VISUAL-TOKENS-01
+title: 'Core token foundation enrichment: layered elevation, state-layer opacities, tuned neutrals, bare-component size envelopes'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge visual-tokens at 03def5d5a2ef2aaebfd204b607e5f9cc18d3d56c'
+created_at: '2026-06-13T07:52:11.875Z'
+updated_at: '2026-11-05T23:01:22.051Z'
+blast_radius:
+  modules:
+    - 'packages/ds-tokens/src (DTCG token source: elevation, interaction state-layer, color neutrals/intent-subtle, component-class size envelopes)'
+    - 'packages/ds-tokens/generated (composed/resolved/tokens.css regenerated output)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-tokens/src/
+    - packages/ds-tokens/generated/
+    - packages/ds-codegen/.emission-manifest.json
+    - tmp/
+    - packages/ds-contracts/components/Badge/
+    - packages/ds-contracts/components/Card/
+    - packages/ds-contracts/components/Calendar/
+    - packages/ds-contracts/components/Status/
+    - packages/ds-react/src/components/
+    - packages/ds-vue/src/components/
+    - packages/ds-svelte/src/components/
+    - packages/ds-angular/src/components/
+    - packages/ds-lit/src/components/
+    - packages/ds-react-native/src/components/
+    - packages/ds-figma-plugin/src/generated/components/
+  out: []
+invariants:
+  - 'Token enrichment is additive: every token path that resolved before this change still resolves to the same literal afterward unless that path is the explicit target of a tuning change. No existing component contract loses a token it depends on.'
+  - 'The token build (compose -> resolve -> tokens.css), DTCG validation, brand-ref resolution, and the WCAG-AA contrast gate on curated pairs all pass after the change.'
+  - 'New layered elevation and state-layer tokens emit under the correct CSS @layer (core/semantic) in generated/tokens.css and are reachable by component slot resolvesTo paths.'
+acceptance:
+  - id: A1
+    given: 'the enriched token source'
+    when: 'pnpm -F @full-stack-ds/tokens build && pnpm run tokens:validate && pnpm run tokens:check-contrast && pnpm run tokens:check-brand-refs are run'
+    then: 'all four exit 0; generated/tokens.css contains the new elevation.surface.* and interaction.stateLayer.* custom properties under their @layer blocks'
+  - id: A2
+    given: 'a component slot that resolvesTo a new semantic surface (e.g. popover.elevation.default -> semantic.elevation.surface.popover)'
+    when: 'the token graph is resolved'
+    then: 'the slot resolves to the layered shadow literal rather than reporting an unresolved reference'
+non_functional: {}
+contracts:
+  - name: 'token-build-additive'
+    type: behavior
+    path: 'packages/ds-tokens/src'
+  - name: 'contrast-gate'
+    type: contract-test
+    path: 'packages/ds-tokens'

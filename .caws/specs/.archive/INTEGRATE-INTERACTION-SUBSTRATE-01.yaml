@@ -1,0 +1,71 @@
+id: INTEGRATE-INTERACTION-SUBSTRATE-01
+title: 'Integrate shared interaction substrate with current design bindings'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Integrated interaction and design bindings from source authority; admission, full suites and browser checks pass; original audit reports preserved.'
+created_at: '2026-09-06T05:33:38.825Z'
+updated_at: '2026-11-05T23:05:06.247Z'
+created_by_session: '01a074e4-7308-7fc1-afa3-495ead6426ec'
+blast_radius:
+  modules:
+    - 'contract IR, framework emitters, generated components, interaction runtime'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-*/src/**'
+    - 'docs/architecture/interaction-substrate.md'
+    - 'docs/normal-form.md'
+    - 'e2e/details-disclosure.spec.ts'
+    - 'e2e/interaction-substrate.spec.ts'
+    - 'e2e/fixtures/interaction-substrate.tsx'
+  out: []
+  support:
+    - docs/architecture/design/box-model-primitive.md
+invariants:
+  - 'Preserve both source histories and regenerate component conflicts from resolved emitters.'
+  - 'Do not discard or alter the original worktree audit reports.'
+acceptance:
+  - id: A1
+    given: 'the committed interaction work and current main design bindings'
+    when: 'their emitter and IR changes are integrated'
+    then: 'both capabilities remain realized without component-name branches'
+  - id: A2
+    given: 'the integrated generated packages'
+    when: 'admission, framework and browser checks run'
+    then: 'the matrix, controlled channels, hidden panels and adopted host composition pass'
+  - id: A3
+    given: 'the original worktree audit reports'
+    when: 'integration lands'
+    then: 'their bytes remain preserved and the original implementation commits are ancestors of main'
+non_functional: {}
+contracts:
+  - name: 'interaction-composition'
+    type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: interaction.test.ts renamed-contract and invalid-binding checks; e2e/design-bindings.spec.ts plus e2e/interaction-substrate.spec.ts preserve both capabilities; full root 273 files / 3746 tests pass
+    recorded_at: "2026-09-06T05:49:10.838Z"
+    command: pnpm exec vitest run --maxWorkers=2
+    exit_code: 0
+    commit_sha: d9134efc
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "governed:rail overall pass; all five non-root framework suites pass; integrated Playwright Details, interaction and design-bindings suite 32 passed; fixture repeat 2 passed; lint/typecheck/docs pass"
+    recorded_at: "2026-09-06T05:49:20.481Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5187 FSDS_E2E_PORT=5187 pnpm exec playwright test e2e/details-disclosure.spec.ts e2e/interaction-substrate.spec.ts e2e/design-bindings.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: d9134efc
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "After merge d9134efc, c840754c/f0e85046/b5b6fc6f are ancestors of main; original dead-slot-matrix.json SHA256 9099aab8620e0f933b8d5a58154ff382d0c46ce858f228eff3f2813bda3a4690 and .md a905bbba6853a76d70938b1f25c90c7b12ec91fdaab1ad83b33790401ed342d8 match pre-integration bytes"
+    recorded_at: "2026-09-06T05:49:31.013Z"
+    command: "git merge-base --is-ancestor f0e85046 main && git merge-base --is-ancestor b5b6fc6f main && git merge-base --is-ancestor c840754c main && shasum -a 256 .caws/worktrees/details-activation/docs/dead-slot-audit/dead-slot-matrix.json .caws/worktrees/details-activation/docs/dead-slot-audit/dead-slot-matrix.md"
+    exit_code: 0
+    commit_sha: d9134efc

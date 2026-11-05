@@ -1,0 +1,71 @@
+id: DOC-ANALYTICAL-STATUS-RECONCILE-01
+title: 'Reconcile the canonical snapshot''s analytical row with the four landed M3 composition capabilities'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The canonical snapshot''s analytical row now names the four landed M3 composition capabilities with their non-claims, describes M3 as partial with embed atomic-only, keeps the stage-2 condition open, cites the deriving command instead of a stale count, and names the embed slice next.'
+created_at: '2026-09-22T17:14:28.119Z'
+updated_at: '2026-11-05T22:57:52.765Z'
+created_by_session: 'session-bd42da68-ec3b-4aed-b4b4-701f8fc1b865'
+blast_radius:
+  modules:
+    - 'docs/current-implementation-snapshot.md (the analytical relation kernel row: capabilities, status, evidence surface, non-claims, next action)'
+    - 'README.md (the governed snapshot-updated marker, derived from the snapshot frontmatter)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+  support:
+    - README.md
+invariants:
+  - 'NO NEW CAPABILITY CLAIMS: the row names only capabilities landed and closed with evidence; nothing is promoted beyond what its spec''s evidence records.'
+  - 'M3 IS DESCRIBED AS PARTIAL: layer and facet compose qualified source-grain operands; embed remains atomic-only; stage-2 ratification stays open and separate.'
+  - 'NO VOLATILE COUNTS: derived numbers are cited by the command or evidence surface that derives them, not restated as prose.'
+  - 'docs/internal STAYS WORKING MATERIAL: the successor ledger is updated as a local ledger but is not promoted into current-state authority.'
+acceptance:
+  - id: A1
+    given: 'the canonical snapshot''s analytical row'
+    when: 'read after the edit'
+    then: 'it names the source-grain judgment-and-realization conservation, layer co-registration by structured identity, bounded-range derivation from existing bounds authority, and facet partition binding from carried identity, each with its non-claims'
+  - id: A2
+    given: 'the same row'
+    when: 'its status is read'
+    then: 'M3 is described as partial with embed atomic-only (citing where that boundary lives), and stage-2 ratification is retained as open and separate from composition success'
+  - id: A3
+    given: 'the row''s evidence column'
+    when: 'counts appear'
+    then: 'the stale hard-coded suite count is replaced by the deriving command, and the four new spec IDs join the spec list'
+  - id: A4
+    given: 'the edit'
+    when: 'pnpm run docs:check-claims runs'
+    then: 'the governed snapshot-updated marker matches the snapshot frontmatter and the claim check passes'
+  - id: A5
+    given: 'the edit'
+    when: 'pnpm run docs:check-links runs'
+    then: 'every relative link in the touched docs resolves'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs/current-implementation-snapshot.md analytical row (landed main@b05d933e): grep -c finds REL-SOURCE-GRAIN-02, REL-COMPOSITION-COREGISTRATION-01, REL-BOUNDED-RANGE-COMPOSITION-01, REL-FACET-PARTITION-BINDING-01 each once, each with its own NON-CLAIM sentence (qualified-family vocabulary not ratifying stage-2; co-registration is reference not further property; range says lower/upper/members only; aggregate-family facets keep partition unadjudicated and per-panel standing is not built)."
+    recorded_at: "2026-09-22T17:17:48.407Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Same row: status cell now reads 'implemented / oracle-gated, ratification bounded to L0-L2; M3 composition is PARTIAL — layer and facet compose qualified source-grain operands (each with lawful/unlawful neighbours and a nested path), while embed still returns unproven for a sub-composite part'; the boundary is cited where it lives (projection.ts judgeEmbed), and the open stage-2 subtraction is retained with the statement that composition success does not discharge it. Verified by grep: 'M3 composition is PARTIAL' appears once."
+    recorded_at: "2026-09-22T17:17:48.871Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Same row: the stale '(22 test files, 1037 tests, re-derived 2026-09-17)' is replaced by the deriving command 'pnpm exec vitest run packages/ds-codegen/src/analytical/'; grep -c for the old string returns 0. The spec list gains the four closed slice IDs, and REL-EMBED-COMPOSITE-BUDGET-01 is named as the next action."
+    recorded_at: "2026-09-22T17:17:49.325Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "pnpm run docs:check-claims on landed main@b05d933e: 'OK — 84 marked claim(s) match derived values; 11 verified stamp(s) fresh or ledgered (5 ledgered stale)'; the frontmatter updated date (2026-09-22) and README's governed snapshot-updated marker agree, the marker rewritten by the sanctioned fixer (node scripts/docs-claims-check.mjs --fix) before commit."
+    recorded_at: "2026-09-22T17:17:49.774Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run docs:check-links on landed main@b05d933e: 'OK — 120 relative .md link(s) resolve across tracked markdown files (4 skipped: target is machine-local/gitignored)'."
+    recorded_at: "2026-09-22T17:17:50.218Z"

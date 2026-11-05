@@ -1,0 +1,40 @@
+id: REL-RETAIN-INCIDENCE-01
+title: 'Retain nest.levels#incidence: an irreducible distinction whose encoding coordinate is reducible'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: abandoned
+closure_notes: 'Retention refused by final-quotient''s derivability clause; the AC was waived with the refusal recorded, the policy text now states both clauses, and the three structurally-unwitnessable coordinates are documented as having no terminal class.'
+created_at: '2026-09-15T22:55:46.306Z'
+updated_at: '2026-11-05T23:07:10.040Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given nest.levels#incidence holds a filed witness but cannot ratify primitive standing because its erasure takes the sibling #order facet, so it sat unresolved and blocked every closure that depends on it; when the retention rule is applied to it -- an independently grounded cause (CASE_NESTED_SUBTOTALS_OFF_GRAIN, a committed corpus case) requires a distinction that becomes unexpressible when exactly that coordinate is erased (the round-25 pair, measured) -- then the verdict is required-derived-vocabulary, the coordinate is retained with no primitive claim, obligation 8 discharges on it as the non-primitive adjudicated verdict the close condition admits, the closure gate''s unsettled dependency count falls, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-standing'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/closure.test.ts'
+evidence:
+  - criterion_id: A1
+    status: waived
+    evidence_ref: "THE ACCEPTANCE CRITERION WAS NOT MET, DELIBERATELY, AND THE REFUSAL IS THE RESULT. The spec was written to adjudicate relation.derivedBy.nest.levels#incidence as required-derived-vocabulary under the retention policy text. Applying it exposed that the policy text stated only ONE of retention's two clauses: candidacy (an independently grounded cause requires a distinction that becomes unexpressible when exactly that coordinate is erased -- which this coordinate satisfies: CASE_NESTED_SUBTOTALS_OFF_GRAIN is a committed corpus case and round 25's pair is the measured separation) vs admission (what final-quotient's close condition 4 actually enforces: the retained verdict must name, in derivableFrom, at least one LIVE RETAINED coordinate carrying the same content -- invariant 17's factoring, which is why relation.derivedBy.kind is retained from its 21 member pairs and relation.derivedBy.join.cardinality from its 6). nest.levels#incidence satisfies candidacy and fails admission: nothing the kernel retains carries its content, so the applied verdict was refused by the close condition by name and REVERTED -- the coordinate stays unresolved, the suite is green at 862, and no measured value moved. What DID land is the defect repair and the consequence: the policy text now states both clauses and their relation, and both docs record that the three structurally-unwitnessable coordinates (nest.levels#incidence, toGrain#incidence, peers[]#present) have NO terminal class -- witnessed is measured impossible (round 38/39), representation-artifact is false (the distinction is real and oracle-separated), not-yet-admitted would remove a real distinction from the kernel, and retention refuses them -- while obligation 8 admits only non-primitive, non-interaction, adjudicated dependencies. That is a vocabulary decision (remove, re-earn at a later stage, or name a sixth accounting mode) and it is now the last structural blocker on closing the subtraction, stated with its evidence rather than worked around by stretching a disposition. Merge a0a69506; no ledger artifact was written by this spec."
+    waiver_reason: "THE ACCEPTANCE CRITERION WAS NOT MET, DELIBERATELY, AND THE REFUSAL IS THE RESULT. The spec was written to adjudicate relation.derivedBy.nest.levels#incidence as required-derived-vocabulary under the retention policy text. Applying it exposed that the policy text stated only ONE of retention's two clauses: candidacy (an independently grounded cause requires a distinction that becomes unexpressible when exactly that coordinate is erased -- which this coordinate satisfies: CASE_NESTED_SUBTOTALS_OFF_GRAIN is a committed corpus case and round 25's pair is the measured separation) vs admission (what final-quotient's close condition 4 actually enforces: the retained verdict must name, in derivableFrom, at least one LIVE RETAINED coordinate carrying the same content -- invariant 17's factoring, which is why relation.derivedBy.kind is retained from its 21 member pairs and relation.derivedBy.join.cardinality from its 6). nest.levels#incidence satisfies candidacy and fails admission: nothing the kernel retains carries its content, so the applied verdict was refused by the close condition by name and REVERTED -- the coordinate stays unresolved, the suite is green at 862, and no measured value moved. What DID land is the defect repair and the consequence: the policy text now states both clauses and their relation, and both docs record that the three structurally-unwitnessable coordinates (nest.levels#incidence, toGrain#incidence, peers[]#present) have NO terminal class -- witnessed is measured impossible (round 38/39), representation-artifact is false (the distinction is real and oracle-separated), not-yet-admitted would remove a real distinction from the kernel, and retention refuses them -- while obligation 8 admits only non-primitive, non-interaction, adjudicated dependencies. That is a vocabulary decision (remove, re-earn at a later stage, or name a sixth accounting mode) and it is now the last structural blocker on closing the subtraction, stated with its evidence rather than worked around by stretching a disposition. Merge a0a69506; no ledger artifact was written by this spec."
+    recorded_at: "2026-09-15T23:03:05.379Z"

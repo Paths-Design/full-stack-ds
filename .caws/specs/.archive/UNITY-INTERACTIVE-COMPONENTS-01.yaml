@@ -1,0 +1,68 @@
+id: UNITY-INTERACTIVE-COMPONENTS-01
+title: 'Unity UI Toolkit interactive component pilot'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Merged the bounded Unity UI Toolkit package with four generated interactive controls, compound items and samples; real Unity import and all 14 EditMode cases pass, with explicit parity limits.'
+created_at: '2026-09-06T06:57:53.545Z'
+updated_at: '2026-11-05T23:09:29.646Z'
+created_by_session: '01a07581-2e8c-7851-abc0-0126a0e13465'
+blast_radius:
+  modules:
+    - 'Unity UI Toolkit package and codegen target registration'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-unity'
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/emitter.ts'
+    - 'packages/ds-codegen/src/registry.ts'
+    - 'packages/ds-codegen/src/target-packs'
+    - 'fsds.targets.json'
+    - 'scripts/unity-tests.mjs'
+    - 'pnpm-workspace.yaml'
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'docs/architecture/unity-target.md'
+    - 'AGENTS.md'
+    - 'README.md'
+  out: []
+  support:
+    - docs/normal-form.md
+    - CLAUDE.md
+invariants:
+  - 'Component semantics derive from normalized contract IR; no component-identity dispatch in the Unity emitter.'
+  - 'Unity stays outside the TypeScript admission rail; real Unity compilation and interaction tests are a separate evidence lane.'
+acceptance:
+  - id: A1
+    given: 'the four pilot contracts'
+    when: 'Unity generation runs'
+    then: 'the registered allowlisted target emits importable UI Toolkit controls and required supporting anatomy without identity dispatch'
+  - id: A2
+    given: 'the imported package in Unity'
+    when: 'interaction tests run'
+    then: 'switch changes, accordion selection, tabs selection and navigation, and anchored popover dismissal obey their supported contract facts'
+  - id: A3
+    given: 'a consuming Unity project'
+    when: 'the package and sample are imported'
+    then: 'UXML controls and an Editor showcase compile using real Unity APIs and documented regeneration commands reproduce output'
+non_functional: {}
+contracts:
+  - name: 'unity-controls'
+    type: behavior
+    path: 'packages/ds-unity/Tests/Editor/InteractionTests.cs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "main@7e590872: pnpm run generate:unity emits the four allowlisted controls; git diff --exit-code -- packages/ds-unity/Runtime/Components passes. packages/ds-codegen/src/frameworks/unity/factory.test.ts passes all 10 routing and influence tests, including renamed controls and unsupported-shape rejection."
+    recorded_at: "2026-09-06T07:24:42.921Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "main@7e590872: node scripts/unity-tests.mjs; Unity 6000.5.3f1 EditMode: 14 passed, 0 failed, 0 skipped. tmp/unity-pilot/results.xml and editor.log record real panel state, controlled requests, accordion modes, tabs navigation and popover dismissal; oracle source packages/ds-unity/Tests/Editor/InteractionTests.cs."
+    recorded_at: "2026-09-06T07:24:43.430Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "main@7e590872: real Unity embedded-UPM import compiles Runtime and Editor assemblies plus imported runtime sample; UxmlImportsRealGeneratedControlsAndCompoundItems passes. Regeneration leaves emitted C# unchanged. Documentation verification and limitations recorded in docs/architecture/unity-target.md."
+    recorded_at: "2026-09-06T07:24:43.902Z"

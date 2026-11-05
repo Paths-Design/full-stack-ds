@@ -1,0 +1,46 @@
+id: FEAT-COMPOSE-EDGE-SURFACES-01
+title: 'Viewport-edge surface class: Compose Sheet and Toast admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Sheet and Toast admitted on the viewport-edge surface class with placement enum and real auto-dismiss; parity marker-order weakness fixed; compose 39-to-41'
+created_at: '2026-09-13T04:17:25.809Z'
+updated_at: '2026-11-05T22:59:52.156Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the surface IR exposes viewport-edge positioning with an optional placement prop and an optional timing.autoDismissProp; when the viewport-edge predicate lands in the shared substrate and Sheet (side placement) and Toast (duration auto-dismiss) are admitted on the foundation Dialog host with edge alignment; then both compile via gradle, compose grows 39 to 41, parity/doc gates stay green, and anchored surfaces remain routed to their scaffold'
+non_functional: {}
+contracts:
+  - name: 'viewport-edge-surface'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isViewportEdgeSurface added to native-emission-class.ts (positioning.strategy === viewport-edge; anchored surfaces still route to the scaffold); compose 39-to-41: gradlew :library:compileKotlin BUILD SUCCESSFUL (Sheet.kt: side enum to edge alignment inside the foundation Dialog host with usePlatformDefaultWidth=false; Toast.kt: LaunchedEffect + kotlinx.coroutines.delay auto-dismiss driven by the duration prop; part-scoped chrome slots sheet.color.border / sheet.border.radius / sheet.border.width / toast.surface.radius now read); compose-parity-diff 41/41 0 failures AFTER fixing a real gate weakness this round exposed (the edge marker sat after the centered marker, so both edge surfaces were mis-classified as centered and the role check was bypassed — reordered, and the role then correctly required and found the part-scoped reads); generate:check 52/52; typecheck clean; docs:check-claims 74/74; emitter tests 40/40"
+    recorded_at: "2026-09-13T04:21:41.395Z"

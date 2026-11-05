@@ -1,0 +1,58 @@
+id: FIX-ICONOGRAPHY-COMMITTED-EXPORT-DRIFT-01
+title: 'Gate committed icon exports alongside the emission ledger'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'CI and pre-push now byte-check committed icon exports before separately attesting the regenerated emission ledger.'
+created_at: '2026-09-04T22:49:12.498Z'
+updated_at: '2026-11-05T23:02:58.111Z'
+created_by_session: '01a06d90-6485-7c73-b6c8-0b0ec424c0f8'
+blast_radius:
+  modules:
+    - 'iconography'
+    - 'ci'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.github/workflows/ci.yml'
+    - '.githooks/pre-push'
+    - 'scripts/prepush-scope.test.mjs'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The committed index.mjs and index.d.ts are checked independently of emission-ledger agreement'
+  - 'CI and pre-push apply the same iconography drift pair'
+  - 'The icon corpus, builder, and ledger formats remain unchanged'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given committed icon exports differ from icon contracts or the builder; when CI runs its iconography block; then iconography:build:check fails before ledger attestation'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a push changes packages/ds-iconography; when pre-push scope classification and the hook run; then both committed-export drift and ledger drift checks execute'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the canonical icon outputs and ledger; when both iconography checks and the wiring tests run; then they pass without tracked drift'
+non_functional: {}
+contracts:
+  - name: 'iconography-drift-wiring'
+    type: contract-test
+    path: 'scripts/prepush-scope.test.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-iconography/package.json build:check rebuilds then git diff --exit-code index.mjs index.d.ts; scripts/prepush-scope.test.mjs pins CI ordering before ledger"
+    recorded_at: "2026-09-04T22:55:31.430Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node --test scripts/prepush-scope.test.mjs (52/52): iconography changes set RUN_ICONOGRAPHY and CI/pre-push contain both ordered checks"
+    recorded_at: "2026-09-04T22:55:31.880Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run iconography:build:check; pnpm run iconography:ledger:check (266/266 edges); governed:rail; root + framework suites"
+    recorded_at: "2026-09-04T22:55:32.395Z"

@@ -1,0 +1,53 @@
+id: SHOWCASE-CSS-REDUCTION-01
+title: 'Cut dead showcase CSS and pin a no-dead-selectors guard'
+risk_tier: 2
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: '12 audit-proven dead rules cut from app.css; no-dead-selectors guard pinned with named DS-internals allowlist'
+created_at: '2026-08-18T04:20:44.075Z'
+updated_at: '2026-11-05T23:07:57.605Z'
+blast_radius:
+  modules:
+    - 'src/styles/app.css: dead rules removed (~60 lines)'
+    - 'src/consumption/css-hygiene.test.ts: dead-selector + hex-accounting guard'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+  out: []
+invariants:
+  - 'Deletions are usage-derived, never aesthetic judgment calls: a rule dies only when the audit proves zero references'
+  - 'DS-component-internal selectors styled by the app are kept via an explicit allowlist naming the component they serve - not silently deleted'
+acceptance:
+  - id: A1
+    given: 'src/styles/app.css after the Stack/chrome phases'
+    when: 'audited'
+    then: 'every selector with zero usage in src/ that is not an explicitly-allowlisted DS-component internal is deleted (section-prose, fw-tab--active, lang-react-native/uikit/kotlin/jetpack, component-token-facts__masthead family, home-stat-value, the .spinner block replaced by DS Spinner)'
+  - id: A2
+    given: 'the dead-selector guard test'
+    when: 'it runs'
+    then: 'it derives app.css classes, checks each against src usage plus a DS-internals allowlist (dialog/walkthrough/switch/shuttle/nav-list/nav-tree/select internals and dynamic template families), and fails listing any new dead selector - the audit can never silently rot again'
+  - id: A3
+    given: 'the remaining hardcoded hex'
+    when: 'reviewed'
+    then: 'only irreducible literals remain (framework brand colors, print-sheet black) - documented in the guard, with properties-panel.css reduction deferred to its owning spec'
+non_functional: {}
+contracts:
+  - name: 'no-dead-selectors'
+    type: behavior
+    path: 'src/consumption/css-hygiene.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "commit on showcase-css-cut: 12 dead rules removed (app.css 1930 -> 1866 lines); audit-derived list only; pnpm test 2187 green"
+    recorded_at: "2026-08-18T04:23:00.803Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm exec vitest run src/consumption/css-hygiene.test.ts (4 green): dead-selector derivation + named DS-internals allowlist (caught table__* sticky chrome on first run, allowlisted with Table named) + phantom-allowlist check + negative control"
+    recorded_at: "2026-08-18T04:23:01.691Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "hex accounting gate: palette capped at 12 distinct values (brand lang-dot colors + print-sheet black/white documented in the guard header); properties-panel.css deferred to FIX-EDITOR-CONTROL-BINDING-PROOF-01, still active"
+    recorded_at: "2026-08-18T04:23:02.791Z"

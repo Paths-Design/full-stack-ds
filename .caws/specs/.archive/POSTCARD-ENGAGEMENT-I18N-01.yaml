@@ -1,0 +1,125 @@
+id: POSTCARD-ENGAGEMENT-I18N-01
+title: 'Render and localize all advertised Postcard engagement statistics'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Landed localized engagement and public stat types with five installed web witnesses, native host and SDK checks, collision refusal, and Unity percentage proof; remaining Postcard surfaces and parent release blockers remain open.'
+created_at: '2026-11-01T19:07:23.492Z'
+updated_at: '2026-11-05T23:05:28.650Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Postcard engagement contract and six npm runtime consumers plus packed browser/type witnesses'
+    - 'Bounded SwiftUI and Compose metadata/catalog projection and Unity percentage constraints required by the existing release checks'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Postcard'
+    - 'packages/ds-react/src/components/Postcard'
+    - 'packages/ds-vue/src/components/Postcard'
+    - 'packages/ds-svelte/src/components/Postcard'
+    - 'packages/ds-angular/src/components/Postcard'
+    - 'packages/ds-lit/src/components/Postcard'
+    - 'packages/ds-react-native/src/components/Postcard'
+    - 'scripts/release-package-check'
+    - 'scripts/public-types-consumer/fixtures.mjs'
+    - 'docs/codegen-authority.md'
+    - 'packages/ds-codegen/src/postcard-engagement.test.ts'
+    - packages/ds-figma-plugin/src/generated/components/Postcard
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Postcard
+    - packages/ds-swiftui/Localization/FsdsComponents.xcstrings
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Postcard
+    - packages/ds-unity/Runtime/Components/Postcard
+    - packages/ds-unity/Runtime/Resources/FullStackDS/Controls.unsupported.json
+    - packages/ds-godot/addons/full_stack_ds/components/Postcard
+    - packages/ds-godot/verification/capability-inventory.json
+    - packages/ds-gpui/src/components/Postcard
+    - packages/ds-codegen/src/frameworks/unity/walker.ts
+    - packages/ds-codegen/src/frameworks/unity/walker.test.ts
+    - packages/ds-codegen/src/frameworks/unity/factory.test.ts
+    - packages/ds-unity/Tests/Editor/InteractionTests.cs
+    - docs/architecture/unity-target.md
+    - docs/architecture/design/component-design-bindings.md
+    - packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
+    - packages/ds-codegen/src/native-metadata-text.ts
+    - packages/ds-codegen/src/native-metadata-text.test.ts
+    - packages/ds-codegen/src/native-messages.ts
+    - packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts
+    - packages/ds-codegen/src/frameworks/swift/swiftui/messages.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/emitters/content.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/messages.ts
+    - packages/ds-codegen/src/frameworks/native-message-reach.test.ts
+    - packages/ds-codegen/src/frameworks/unity/uss.ts
+    - packages/ds-codegen/src/frameworks/unity/uss.test.ts
+    - packages/ds-codegen/src/frameworks/unity/support-boundary.json
+    - packages/ds-codegen/src/frameworks/unity/boundary.ts
+    - packages/ds-unity/Tests/Editor/PercentageSizingTests.cs
+    - packages/ds-codegen/src/frameworks/native-messages.ts
+    - docs/architecture/localization.md
+  out: []
+invariants:
+  - 'Keep required author and stats inputs and existing public media/avatar props; this slice does not close omitted media/avatar or preview-fixture obligations'
+  - 'No component-name emitter branches, no publication, no weakened gates or new allowances'
+acceptance:
+  - id: A1
+    given: 'a valid Postcard with three engagement values including zero'
+    when: 'default and translated catalogs render and values update'
+    then: 'likes replies and reposts each render with their own visible contextual labels and no stale values'
+  - id: A2
+    given: 'numeric or consumer-localized engagement text and mixed-script RTL content'
+    when: 'installed consumers render in all five web frameworks'
+    then: 'labels and number text preserve the intended catalog and consumer values and real article content remains available without clipping at representative narrow widths'
+  - id: A3
+    given: 'all six public package props and React Native host output'
+    when: 'positive negative type cases and real generated host tests run'
+    then: 'public stat value types are discoverable malformed values are rejected and native labels and updates match the contract with OS proof limits stated'
+  - id: A4
+    given: 'the bounded engagement candidate'
+    when: 'full relevant checks independent review and governed landing finish'
+    then: 'generated artifacts match and acceptance is recorded while remaining Postcard and parent release blockers stay explicit'
+  - id: A5
+    given: 'projected native metadata and percentage dimension declarations'
+    when: >-
+      source-identity tests real SwiftUI and Compose compilation and the Unity
+      Editor percentage witness execute
+    then: >-
+      actual scalar inputs feed metadata catalog sites around the consumer body
+      generic collisions and conditional inputs are refused and all four percentage
+      constraints respond to parent resizing without allowance growth or native OS
+      accessibility claims
+observability:
+  - 'Retain raw five-framework installed browser text geometry accessibility type and native host observations under canonical ignored release evidence'
+rollback:
+  - 'Revert this isolated engagement contract and generated consumer changes then regenerate'
+non_functional: {}
+contracts:
+  - name: 'postcard-engagement'
+    type: behavior
+    path: 'packages/ds-contracts/components/Postcard/Postcard.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Primary inspected ignored evidence: .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01/packed-full-timestamp.log and runs/fsds-release-packages-iM9TgC/browser-postcard-*.json. All five installed web frameworks: three labeled counts incl zero; updates; partial catalog fallback; translated word order. Seven stages each. Native host assertions in final frameworks.log. Candidate 6299e9876 consumer diff empty from retained witness. CLI verify checks commit reachability only, not execution or ignored log contents. No automatic number/date/plural formatting claim."
+    recorded_at: "2026-11-01T21:06:31.346Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01/runs/fsds-release-packages-iM9TgC/browser-postcard-{react,vue,svelte,angular,lit}-{stage}.json and matching AX/PNG. Seven stages each include Arabic formatted counts, Japanese/Arabic author/body, ancestor RTL, long German labels and full microsecond ISO timestamp at 240px/320px. Assertions require exact values and article AX content, positive text ranges, no own/ancestor clipping or viewport overflow. Consumer sources unchanged at 6299e9876. This does not qualify avatar/media, arbitrary layouts or OS screen readers. Evidence under .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01; primary evidence inspected manually. CLI verify establishes commit reachability, not test execution."
+    recorded_at: "2026-11-01T21:07:07.545Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected packed-full-timestamp.log and installed run fsds-release-packages-iM9TgC: discoverable PostcardStatValue and Stats exports across all six packages; required author/stats and malformed boolean/object stats rejected in public Bundler/NodeNext cases. Final checks/6299e9876-qkK9SM/frameworks.log executes three generated RN host tests: zero/context labels, same-host updates with fallback, formatted numerals/name; body preserved. Root and all package typechecks pass. Host renderer and Metro ios/android bundles do not establish device layout, native AT or minimum supported peer versions. Evidence under .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01; primary evidence inspected manually. CLI verify establishes commit reachability, not test execution."
+    recorded_at: "2026-11-01T21:07:15.695Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Candidate 6299e9876572b7ccb2770fc9b09459f880946d0a landed via CAWS merge 17c99d038d580be1105422cc34f827e020068776. Inspected checks/6299e9876-qkK9SM/receipt.json and raw logs: rail, root5692, frameworks, all types, lint, token/doc/icon gates, all other realization audits, Godot, GPUI, Compose parity and generated-tree checks pass. Independent read-only completion feedback addressed at actual source coordinates with seven before failures and regression repair. Variant audit remains identical 53 Unity rows; no waiver or global release-readiness claim. Postcard media/avatar/postId/type/compound and preview inputs, remaining component/browser/native qualification and npm auth remain root-owned parent obligations. No push/publication. Evidence under .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01; primary evidence inspected manually. CLI verify establishes commit reachability, not test execution."
+    recorded_at: "2026-11-01T21:07:23.916Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Inspected native-peer-collisions-valid-before.log: seven new collision cases fail on old planner; native-peer-collisions-after.log: 34 pass, real renamed contract derives region label, planner/both emitters refuse overlap and conditional shell names. Root suite includes31 metadata tests, USS53 and unchanged native-message reach ledger. swiftui-real-build.log and compose-real-build.log establish real SDK compilation. unity-editor-percentage/provenance.json and results.xml: clean source23e91f23b, Editor6000.5.3f1,101 pass; inspected percentage test asserts imported min/max width/height at two parent sizes. RetainedConsumerDiff empty at6299 establishes unchanged Swift/Compose/Unity generated sources. Actual catalog argument sites use exact scalar path inputs around content. No new allowance, native OS rendering or AT claim. Evidence under .caws/state/release-evidence/POSTCARD-ENGAGEMENT-I18N-01; primary evidence inspected manually. CLI verify establishes commit reachability, not test execution."
+    recorded_at: "2026-11-01T21:07:32.205Z"
+    commit_sha: "6299e9876572b7ccb2770fc9b09459f880946d0a"

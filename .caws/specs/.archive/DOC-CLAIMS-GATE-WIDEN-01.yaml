@@ -1,0 +1,57 @@
+id: DOC-CLAIMS-GATE-WIDEN-01
+title: 'Widen the docs-claims gate: scan all tracked docs, derive target counts'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Claims gate now scans all tracked docs and derives rail-admitted, registered-target and icon counts; 6 to 11 governed claims'
+created_at: '2026-08-17T17:14:24.308Z'
+updated_at: '2026-11-05T22:57:58.593Z'
+blast_radius:
+  modules:
+    - 'docs claim gate'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/docs-claims-check.mjs'
+    - 'docs'
+    - 'AGENTS.md'
+  out: []
+invariants:
+  - 'A claim marker in ANY tracked markdown file is gated, with no list to maintain'
+  - 'Every deriver reads a live authority (loader, registry, config), never a constant'
+acceptance:
+  - id: A1
+    given: 'a marked claim in a tracked doc outside the old one-file list'
+    when: 'the gate runs'
+    then: 'that claim is checked'
+  - id: A2
+    given: 'a marked count is edited to a wrong value'
+    when: 'the gate runs'
+    then: 'it exits nonzero and names the file and both values'
+  - id: A3
+    given: 'the rail-admitted and registered target counts'
+    when: 'the gate derives them'
+    then: 'they come from the descriptor modules and fsds.targets.json respectively'
+non_functional: {}
+contracts:
+  - name: 'docs-claims-derivation'
+    type: behavior
+    path: 'scripts/docs-claims-check.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "GOVERNED_DOCS replaced by git ls-files '*.md'; markers now live in AGENTS.md, docs/specifications/admission-rail.md and docs/current-implementation-snapshot.md, none of which were in the old one-file list. Governed claims 6 -> 11 across 4 files"
+    recorded_at: "2026-08-17T17:19:35.434Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Falsification probe: marked values set to 42/77/99 produced exit 1 naming each file, claim, stated and derived value; --fix restored all three and re-run exited 0 with git diff showing no residue"
+    recorded_at: "2026-08-17T17:19:43.801Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "deriveRailAdmittedTargetCount reads modules under validation/frameworks/ matching 'export const *AdmissionDescriptor' (6, figma correctly excluded since it declares none); deriveRegisteredTargetCount reads fsds.targets.json .targets.length (9). Neither is a constant"
+    recorded_at: "2026-08-17T17:19:58.371Z"
+    artifact_path: scripts/docs-claims-check.mjs

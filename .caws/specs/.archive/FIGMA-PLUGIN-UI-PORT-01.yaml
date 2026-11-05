@@ -1,0 +1,65 @@
+id: FIGMA-PLUGIN-UI-PORT-01
+title: 'Port Svelte plugin UI + Dev Mode codegen from archive/codex-cfda-figma-ui onto the plan-driven plugin core'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge figma-ui-port at 1477d84a8b8871caff269588051add10da026c07'
+created_at: '2026-07-21T23:19:09.223Z'
+updated_at: '2026-11-05T23:01:34.947Z'
+blast_radius:
+  modules:
+    - ds-figma-plugin
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-figma-plugin/src/FigmaPluginApp.svelte'
+    - 'packages/ds-figma-plugin/src/ui-model.ts'
+    - 'packages/ds-figma-plugin/src/ui.css'
+    - 'packages/ds-figma-plugin/src/ui.html'
+    - 'packages/ds-figma-plugin/src/ui.ts'
+    - 'packages/ds-figma-plugin/src/eligibility.ts'
+    - 'packages/ds-figma-plugin/src/codegen-preview.ts'
+    - 'packages/ds-figma-plugin/src/plugin.ts'
+    - 'packages/ds-figma-plugin/src/plugin.test.ts'
+    - 'packages/ds-figma-plugin/src/figma.d.ts'
+    - 'packages/ds-figma-plugin/manifest.json'
+    - 'packages/ds-figma-plugin/vite.config.ts'
+    - 'packages/ds-figma-plugin/package.json'
+    - 'packages/ds-figma-plugin/README.md'
+    - 'packages/ds-figma-plugin/TODO.md'
+    - 'pnpm-lock.yaml'
+    - docs/current-implementation-snapshot.md
+  out: []
+invariants:
+  - 'This is a PORT, not a merge: the source snapshot (archive/codex-cfda-figma-ui, commit 3d3f6d30) predates main''s plan-driven rewrite (planner.ts / materialize-state.ts / live-*.ts). Its plugin.ts (879-line pre-rewrite version with its own materializer) must NOT replace or regress main''s plugin.ts — main''s materialization path stays authoritative; only the UI wiring (showUI, ui.onmessage/postMessage loop, run-until-closed lifecycle) and the Dev Mode codegen handler (figma.codegen.on) are brought over and re-bound to main''s current functions.'
+  - 'Single eligibility authority: main''s plugin.ts and the archive''s ui-model.ts each carry an identical copy of classifyDescriptorForMaterialization + COMPONENT_SET_ALLOWLIST. The port extracts ONE shared module (eligibility.ts) consumed by both plugin.ts and ui-model.ts — two drifting copies of the classifier is the defect class this port must not introduce. State semantics remain exclusively the planner''s (planFigmaStateSurface); neither the UI model nor the eligibility module re-classifies state dimensions.'
+  - 'The UI is display-and-command only: it renders the descriptor registry model and posts typed UiToPluginMessage commands; it never mutates Figma documents directly and never becomes a second source of materialization decisions. All materialization runs plugin-side through main''s existing materializeComponentSet / materializeLeafComponent / materializeComponentStateSurface path.'
+  - 'The plugin lifecycle change (closePlugin-on-completion → stay-open-with-UI) must preserve a headless run path so existing tests and any scripted invocation still complete without a UI round-trip.'
+  - 'Blast radius is the figma-plugin package only: no changes to ds-codegen emitters, contracts, generated framework packages, or the admission rail. The generated descriptor tree under src/generated/ is not touched by hand.'
+acceptance:
+  - id: A1
+    given: 'the ported plugin built via vite'
+    when: 'the plugin entry runs in UI mode'
+    then: 'it shows the Svelte UI (dist/ui.html with inlined assets), posts fsds:init with a FigmaUiModel built from the descriptor registry, and handles fsds:materialize (allowlist/selected), fsds:resize, and fsds:close messages — verified by unit tests over the message loop with a mocked figma global.'
+  - id: A2
+    given: 'the extracted eligibility.ts'
+    when: 'plugin.ts and ui-model.ts are inspected'
+    then: 'both import classifyDescriptorForMaterialization / COMPONENT_SET_ALLOWLIST / the eligibility-reason type from eligibility.ts and neither retains a local copy; a grep for a second definition of the classifier returns exactly one.'
+  - id: A3
+    given: 'a Figma node carrying fsds.component plugin data'
+    when: 'the Dev Mode codegen handler fires (figma.codegen.on generate)'
+    then: 'it resolves the descriptor from the registry, honors the stored fsds.variantRow variant values (falling back to defaults), and returns code previews for the selected language — verified by unit test; unknown selections return the no-metadata plaintext result.'
+  - id: A4
+    given: 'the full package'
+    when: 'pnpm --filter @full-stack-ds/figma-plugin run build && pnpm --filter @full-stack-ds/figma-plugin run test run'
+    then: 'the build emits dist/plugin.js and dist/ui.html (assets inlined, no external asset files), and the package test suite passes including the pre-existing plugin.test.ts cases (no regression to the plan-driven materialization tests).'
+  - id: A5
+    given: 'the ported UI removed from the build (falsification)'
+    when: 'the UI-mode entry runs without dist/ui.html present'
+    then: 'the plugin fails soft with the documented fallback markup rather than crashing, and the headless run path still completes — proving the lifecycle invariant is pinned by test, not assumption.'
+non_functional: {}
+contracts:
+  - name: 'figma-plugin-ui-port'
+    type: behavior

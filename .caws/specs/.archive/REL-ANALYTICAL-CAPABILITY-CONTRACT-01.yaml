@@ -1,0 +1,101 @@
+id: REL-ANALYTICAL-CAPABILITY-CONTRACT-01
+title: 'Separate durable analytical acceptance from status and historical research'
+risk_tier: 2
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Durable capability acceptance and status routing reconciled; six named acceptance tests executed by CAWS on merged f08571d27. Historical planning remains ignored, Stage-2 dependency is claim-specific, and bounded text-peer probe is precommitted. Original source a2925fe77 passed rail, 4752 root tests and framework suites; generated receipts remain ignored.'
+created_at: '2026-10-01T17:14:47.280Z'
+updated_at: '2026-11-05T23:05:59.160Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Analytical contract, status routing and read-only CAWS outcome audit'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/analytical-capability-contract.md'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/README.md'
+    - 'scripts/analytical-capability-audit/'
+  out: []
+invariants:
+  - 'Historical roadmaps and working notes stay machine-local; the tracked contract defines acceptance without tracking current completion.'
+  - 'Milestones are acceptance bars, not waterfall gates. Stage-2 subtraction remains a frozen experiment closure obligation and gates only dependent claims.'
+  - 'The closed browser repair and its implementation remain unchanged; generated audit and research receipts remain ignored.'
+acceptance:
+  - id: A1
+    given: 'the recovered charter and doctrine'
+    when: 'durable acceptance is extracted'
+    then: 'tracked documentation has one normative M1-M6 definition, explicit non-waterfall semantics and no historical progress narrative'
+  - id: A2
+    given: 'current analytical code and scoped evidence'
+    when: 'the snapshot is reconciled'
+    then: 'only the analytical row changes and routes bounded claims to evidence without the nested-embed contradiction or whole-M4 promotion'
+  - id: A3
+    given: 'completed, abandoned-waived, superseded and active CAWS outcomes plus missing or failed evidence'
+    when: 'the audit runs'
+    then: 'it reports lifecycle, resolution, acceptance dispositions and successor provenance without equating closure or recorded pass with independently verified capability'
+  - id: A4
+    given: 'the frozen Stage-2 experiment and plausible next consumer claims'
+    when: 'dependencies are inspected and existing basis tests run'
+    then: 'concrete required facts are mapped to unresolved coordinates and later-stage growth remains outside ordinary subtraction admission'
+  - id: A5
+    given: 'the closed browser boundary'
+    when: 'current workflow and implementation identity are checked'
+    then: 'successful remote proof and deliberate controls remain attributable within their bounded claims and no browser source is changed'
+  - id: A6
+    given: 'the dependency findings'
+    when: 'the next bounded investigation is selected'
+    then: 'its CAWS acceptance precommits a claim, nearest counterexample, status-changing versus informative outcomes and explicit nonclaims'
+non_functional: {}
+contracts:
+  - name: 'analytical-capability'
+    type: behavior
+    path: 'docs/architecture/analytical-capability-contract.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Unique tracked ## M1 through ## M6 headings in analytical-capability-contract.md; roadmap and charter remain ignored and unchanged. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract."
+    recorded_at: "2026-10-01T17:55:52.622Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A1 durable definitions have one tracked authority without promoting working history"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: e56d608c31156c78fa34da5d45fe304321d0be4c
+  - criterion_id: A2
+    status: pass
+    evidence_ref: git diff against lane base changes only analytical snapshot row; current implementation citations inspected. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract.
+    recorded_at: "2026-10-01T17:55:54.213Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A2 reconciliation changed only the analytical snapshot row and names bounded evidence"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: "3c084908d8640e4a6b0aa40f16dd9bbc55cba728"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "audit-test.log contains real record fixtures and hostile missing, failed, unchecked, waived, duplicate and unknown criterion controls. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract."
+    recorded_at: "2026-10-01T17:55:56.091Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A3 outcome audit rejects closure-only and inadequate-evidence inferences"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: cbd75dd41cf535a14287937aff96eafb66ae469b
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "dependency-and-proof.json plus frozen-basis.log: 8 executed checks pass; preservation consumes declared bounds without claiming primitive necessity. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract."
+    recorded_at: "2026-10-01T17:56:01.091Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A4 conditional preservation is independent of frozen-basis completion"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: "62ac805d9700f9b23a56d75b682e005bc318c37c"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: remote run 36895859647 and artifact 11179293251 successful; unchanged proof source requires rebuilt renderer and import control rejection. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract.
+    recorded_at: "2026-10-01T17:56:07.031Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A5 unchanged browser proof has a successful remote run and retained artifact"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: "87e8b91fde8dedeaff64714638e78346b3f246ed"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: REL-PEER-TEXT-RESIDUE-PROBE-01 created and validated before consumer implementation; independent conditional preservation probe. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract.
+    recorded_at: "2026-10-01T17:56:13.673Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A6 next probe precommits discriminating outcomes without milestone promotion"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: "3ecba4dd5d2ea884b188417b5e81338cd63bc613"

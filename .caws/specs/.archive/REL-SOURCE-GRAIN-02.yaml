@@ -1,0 +1,104 @@
+id: REL-SOURCE-GRAIN-02
+title: 'Judgment-and-realization conservation: three-valued qualified standing, real selection, and selected lowering for the source-grain result family'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Judgment-and-realization conservation landed: three-valued qualified standing with scoped evidence gaps, selection from the declared lowering set, lowering of the selected program only, substantive output-only recovery, and grain/bounds reference integrity at the request boundary; boundary-owned diagnostic authority stated in codes.ts and the doctrine.'
+created_at: '2026-09-22T02:34:53.439Z'
+updated_at: '2026-11-05T23:07:15.352Z'
+created_by_session: 'session-bd42da68-ec3b-4aed-b4b4-701f8fc1b865'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (qualified relation result: three-valued standing, selection, lowering, output-only decode)'
+    - 'packages/ds-codegen/src/analytical/codes.ts (qualified-path diagnostic vocabulary scoping and authority statement)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (adversarial controls and acceptance evidence)'
+    - 'docs/architecture/analytical-relation-doctrine.md (explicit statement of the boundary-owned diagnostic authority)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+  out: []
+invariants:
+  - 'STANDING CONSERVATION: unreadable participating evidence leaves the qualification unproven with a named evidence gap and is never observationally equivalent to a verified population; changing evidence availability alone moves only the standing and evidence facts.'
+  - 'DIAGNOSTIC SCOPE: a bounds violation names the bounded relationship and its own observation''s structured grain key; no observation''s fact implicates another observation, another field, or the task.'
+  - 'ONE OBJECT: selection consumes the qualified result and lowering consumes the selection; the path never re-reads source rows or re-runs qualification; no artifact exists off the selected path.'
+  - 'SUPPORT IS A DECLARED-LOWERING FACT: selection distinguishes lawful-but-unsupported, selected, and nothing-to-realize from the declared lowering set and the request, never from observation count.'
+  - 'AUTHORITY LOCATION: the qualified path''s diagnostic is governed by codes.ts and the qualified-result contract, not the corpus doctrine catalogue, and that location is stated where the vocabulary is declared.'
+acceptance:
+  - id: A1
+    given: 'the baseline, cross-symbol-swap, margin-preserving-perturbation and unreadable-participant populations'
+    when: 'each population is qualified at the declared grain'
+    then: 'standings are qualified, contradicted, contradicted and unproven respectively, with the unreadable participant carried as a named evidence gap and no bounds violation'
+  - id: A2
+    given: 'a population where one observation falsifies a declared bounds relationship and other observations satisfy it'
+    when: 'the judgment is formed and the artifact decoded'
+    then: 'each violation names the bounded relationship and its structured observation key, and no unrelated observation decodes as contradicted'
+  - id: A3
+    given: 'a qualified result with observations and a request for an intent no declared lowering serves, and a zero-observation result with the declared intent'
+    when: 'program selection runs'
+    then: 'the first is lawful-but-unsupported, the second is nothing-to-realize, neither produces an artifact, and no selection outcome is derived from observation count alone'
+  - id: A4
+    given: 'the qualified-result orchestration'
+    when: 'a readback artifact is produced'
+    then: 'it is produced only by lowering a selected program, and no lower entry point accepts an unselected request'
+  - id: A5
+    given: 'a qualified result whose source population rows are mutated after qualification'
+    when: 'the orchestration lowers it'
+    then: 'the artifact is identical to the pre-mutation lowering, because the selected program consumed the qualified result and never re-read or re-judged the rows'
+  - id: A6
+    given: 'the produced readback artifact alone'
+    when: 'the output-only decoder runs'
+    then: 'it recovers the structured grain bindings, admitted values, declared bounds facts and scoped standing, equal to the qualified result''s content, and mutating an association or the standing in the artifact alters what is recovered'
+  - id: A7
+    given: 'a relation whose bounds reference or grain member names no field the relation declares'
+    when: 'qualification runs'
+    then: 'it refuses before any qualified result exists, and the refusal names the undeclared reference'
+  - id: A8
+    given: 'a consistent rename of the relation, grain fields, participating fields, bounds references and rows, plus a row reorder'
+    when: 'the qualified results are compared'
+    then: 'they are equivalent modulo that rename and reorder'
+non_functional: {}
+contracts:
+  - name: 'qualified-relation'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'qualified-vocabulary'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/codes.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 5 'A1: the four populations stand qualified, contradicted, contradicted and unproven' — baseline=qualified, swap=contradicted, margin-perturbation=contradicted, unreadable-participant=unproven with named evidence gaps; making only the unreadable value readable moves solely standing/evidence facts (grain bindings, fieldFacts, relation identical; value delta confined to close on observation 0). Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:23:32.737Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts 'A2: a violation is scoped to its own observation' — one-row violator yields exactly one REL_FIELD_BOUNDS_VIOLATED naming subject candles.close, observation 0 and its structured key; decoded contradicted=[0], unproven=[], other three rows carry their own values untouched. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:23:33.204Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts 'A3: selection is a declared-lowering fact' — undeclared intent {kind:'aggregate'} over a populated result = unsupported; declared readback intent over zero observations = nothing-to-realize; neither produces an artifact; baseline/swap/perturbation/unreadable are ALL selected under the same request, so selection moves with the request and instance-existence, never with evidence availability or observation count. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:23:47.554Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts 'A4: the artifact is produced only by lowering a selected program' — program.result is the qualified result by identity (not a copy), lowerSelectedProgram's parameter type makes an unselected request unrepresentable, and through the orchestration unsupported/empty requests return selection kinds, never a readback artifact. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:23:48.025Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection.test.ts 'A5: one object flows end to end' — mutating the source population AFTER qualification (close := 99999) leaves the artifact identical to the pre-mutation lowering: the selected program consumed the qualified result and cannot re-read rows. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:23:48.494Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection.test.ts 'A6: output-only recovery is substantive' — decodeQualifiedReadback recovers relation, grain bindings, admitted values, declared bounds facts, temporalities, standing and per-observation contradicted/unproven scopes, equal to the qualified result's content; targeted mutations of a key/value association, an admitted value, and the standing each alter the recovery; hostile population's contradicted facts arrive with their observation keys. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:24:03.770Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "projection.test.ts 'A7: a malformed bounds reference is refused at qualification' AND 'A7: a malformed grain member is refused at the same boundary' — grain ['symbol','does_not_exist'] refuses /does not declare/ before any qualified result exists, closing the row[g] ?? \"\" key-manufacturing gap; malformed bounds reference unchanged. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:24:04.224Z"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "projection.test.ts 'A8: a consistent rename of relation, grain, fields, bounds references and rows preserves the qualified result' — rename + row reorder yields equal standing, equal violations/gaps, and observation sets equal modulo rename/reorder. Run on landed main@5967ed73: vitest analytical 1068/1068."
+    recorded_at: "2026-09-22T03:24:04.679Z"

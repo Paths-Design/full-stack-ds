@@ -1,0 +1,69 @@
+id: FIGMA-STATE-EFFECT-CORPUS-COMPLETION-01
+title: 'Corpus effect-authority completion: author effect/valueEffects on all corpus state dimensions; zero effect-missing residuals; byte-equivalent'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge effect-corpus at 570a53d455a5eff67fa47fbefd4140890afeaaaf'
+created_at: '2026-06-06T00:36:10.196Z'
+updated_at: '2026-11-05T23:01:36.542Z'
+blast_radius:
+  modules:
+    - '@full-stack-ds/ds-contracts (effect facts across the corpus)'
+    - '@full-stack-ds/figma-plugin (registry residual-scan test only)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-contracts/components/**
+    - packages/ds-figma-plugin/src/planner.test.ts
+    - packages/ds-figma-plugin/src/generated/**
+  out:
+    - packages/ds-figma-plugin/src/planner.ts
+    - packages/ds-figma-plugin/src/materialize-state.ts
+    - packages/ds-codegen/
+    - packages/ds-tokens/
+invariants:
+  - "Every non-interaction, non-fully-channel states.dimension across all 47 contracts carries effect or enough valueEffects to classify all active values — so the planner never reaches the category-heuristic fallback for the generated corpus."
+  - "This is a contract-AUTHORITY completion: only contract effect facts, regenerated descriptors, and a registry residual-scan test change. The planner and materializer are unchanged (no new name/value branching)."
+  - "No framework output drift and no live Figma / token-style work: governed:rail passes, the five framework trees stay byte-equivalent, figma descriptors carry the completed facts."
+acceptance:
+  - id: A1
+    given: "all 47 component contracts"
+    when: "inspected"
+    then: "every states.dimensions.* has effect or enough valueEffects to classify all active values"
+  - id: A2
+    given: "planFigmaStateSurface run across the generated descriptor registry"
+    when: "residuals are collected"
+    then: "zero effect-missing residuals remain"
+  - id: A3
+    given: "the residuals that do remain"
+    when: "categorized"
+    then: "they are genuinely structural (e.g. mixed-value-effects, no-active-values) — never missing-authority (effect-missing)"
+  - id: A4
+    given: "the corpus residual scan"
+    when: "run before and after"
+    then: "a before/after table is produced (totals grouped by code + component), headline effect-missing: N -> 0"
+  - id: A5
+    given: "the five framework trees"
+    when: "regenerated and diffed"
+    then: "byte-equivalent; governed:rail passes"
+  - id: A6
+    given: "descriptor generation"
+    when: "run"
+    then: "figma descriptors regenerate to carry the completed effect facts"
+  - id: A7
+    given: "the planner and materializer"
+    when: "reviewed"
+    then: "they are unchanged — no branching on component names or state-value names was added"
+  - id: A8
+    given: "this slice's diff"
+    when: "reviewed"
+    then: "no live Figma / MCP / canvas work, no token-style resolution"
+non_functional: {}
+contracts:
+  - name: 'corpus-effect-facts'
+    type: schema
+    path: 'packages/ds-contracts/components'
+  - name: 'zero-effect-missing-residuals'
+    type: contract-test

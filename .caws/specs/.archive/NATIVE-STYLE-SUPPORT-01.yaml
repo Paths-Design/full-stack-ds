@@ -1,0 +1,79 @@
+id: NATIVE-STYLE-SUPPORT-01
+title: 'Realize native root clipping and reject unsupported SwiftUI composer radii'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Merged bounded native root clipping and explicit SwiftUI composer radius rejection, verified generated Card and Field paint, killed the silent-fallback mutant, and passed scoped and repository gates without changing the Web binding schema.'
+created_at: '2026-09-06T07:13:40.613Z'
+updated_at: '2026-11-05T23:05:19.752Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Native root style projection and SwiftUI composer token consumers'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/frameworks/native-style-support.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-react-native/src/components'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift'
+    - 'packages/ds-swiftui/Tests/DsSwiftUITests/FsdsThemeTests.swift'
+    - 'scripts/design-contract-recon.mjs'
+    - 'docs/architecture/design/design-contract-recon.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts
+  out: []
+  support:
+    - docs/architecture/design/box-model-primitive.md
+    - docs/normal-form.md
+invariants:
+  - 'Web design metadata remains Web scoped and native realization uses normalized contract facts without component identity dispatch.'
+  - 'Absent radius overrides preserve authored defaults; unsupported SwiftUI composer radius values must be rejected explicitly instead of coerced to zero.'
+acceptance:
+  - id: A1
+    given: 'root overflow visible and hidden with native platform applicability'
+    when: 'React Native and SwiftUI region composers emit'
+    then: 'clipping remains distinct and unsupported root overflow requests are diagnosed within these supported paths'
+  - id: A2
+    given: 'SwiftUI region composer radius overrides'
+    when: 'valid absolute values and unsupported percentage units reach the runtime'
+    then: 'absolute values including zero resolve and unsupported values fail explicitly at the generated consumer'
+  - id: A3
+    given: 'the updated native realization'
+    when: 'regression tests, native execution probes, metadata erasure, and repository gates run'
+    then: 'evidence records the fixed witnesses and accurately bounds unsupported native styling'
+non_functional: {}
+contracts:
+  - name: 'native-style-support'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-style-support.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: Native root clipping tests plus generated RN style construction and macOS Card visible/hidden pixel witnesses
+    recorded_at: "2026-09-06T07:35:05.265Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/native-style-support.test.ts; node scripts/design-contract-recon.mjs
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/.codex/visualizations/2026/09/06/01a074e8-6c81-7f93-8d64-5c64eca9cfa6/native-style-support/report.json
+    commit_sha: "87cbef8eb83c760736eb524c0937e293fee1fca0"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: ComposerRadiusTests execute the generated Card consumer; silent-fallback mutant fails the expected assertion; Card and Field paint absolute radii and explicitly reject percentages
+    recorded_at: "2026-09-06T07:35:07.270Z"
+    command: swift test --package-path packages/ds-swiftui
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/.codex/visualizations/2026/09/06/01a074e8-6c81-7f93-8d64-5c64eca9cfa6/native-style-support/swift.json
+    commit_sha: "87cbef8eb83c760736eb524c0937e293fee1fca0"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Governed rail, 3788 root tests, 2527 framework tests, 24 browser checks, Swift tests, metadata erasure, documentation and CAWS gates pass; post-merge source hashes match recorded inputs"
+    recorded_at: "2026-09-06T07:35:09.209Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/.codex/visualizations/2026/09/06/01a074e8-6c81-7f93-8d64-5c64eca9cfa6/native-style-support/validation-summary.json
+    commit_sha: "87cbef8eb83c760736eb524c0937e293fee1fca0"

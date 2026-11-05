@@ -1,0 +1,93 @@
+id: FIX-CONTRACT-SURFACE-QUALITY-02
+title: 'Repair contract-level surface defects: Card status rail, Popover border/surface, Divider UA leak, Table selected contrast'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Card status rail moved to its six status variants; Popover re-bound to a neutral border over an elevated surface; Divider neutralizes the hr UA edges and no longer collapses; Table selected row re-pointed to accentSubtle, default-brand contrast 3.83 to 12.02.'
+created_at: '2026-09-02T23:17:48.963Z'
+updated_at: '2026-11-05T23:02:14.454Z'
+blast_radius:
+  modules:
+    - 'ds-contracts'
+    - 'ds-react'
+    - 'ds-vue'
+    - 'ds-svelte'
+    - 'ds-angular'
+    - 'ds-lit'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Card'
+    - 'packages/ds-contracts/components/Popover'
+    - 'packages/ds-contracts/components/Divider'
+    - 'packages/ds-contracts/components/Table'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - packages/ds-figma-plugin/src/generated
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components
+  out: []
+invariants:
+  - 'A variant-only decoration (status rail, accent stripe) is never declared in a base/root style block; it lives only in the variant selector that motivates it'
+  - 'Two edges of one visual outline never resolve through different semantic token families'
+  - 'A contract whose host element carries UA border defaults (hr, button, input) explicitly neutralizes every edge it does not itself style'
+  - 'Any style block that sets a background from an accent/intent token also sets its paired foreground, so text contrast is not left to inheritance'
+  - 'Generated artifacts are regenerated and committed in the same commit as the contract change that produced them'
+acceptance:
+  - id: A1
+    given: 'a Card with no status prop'
+    when: 'rendered in any of the 10 brands x 2 themes'
+    then: 'all four borders are 1px and resolve through a single token family, with no 2px leading rail'
+  - id: A2
+    given: 'a Card with a status prop set'
+    when: 'rendered'
+    then: 'a 2px leading rail appears in that status colour, proving the rail moved to the variant rather than being deleted'
+  - id: A3
+    given: 'a horizontal or vertical Divider'
+    when: 'rendered as its hr host'
+    then: 'only the single intended edge paints, with no UA inset border on the remaining sides, and the vertical rule has non-degenerate height'
+  - id: A4
+    given: 'an open Popover'
+    when: 'rendered'
+    then: 'its content surface uses a neutral border token and an elevated (non-mid-grey) background'
+  - id: A5
+    given: 'a selected Table row'
+    when: 'rendered at the default brand in light theme'
+    then: 'its text meets WCAG AA 4.5:1 against the selected row background'
+non_functional: {}
+contracts:
+  - name: 'component-styles'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Live DOM sweep over 58 component routes at localhost:5174: 171 statusless .card elements, 0 with non-uniform border width or colour (was 171/171 mismatching at 1px|1px|1px|2px with #d0d0d0 left vs #95dafb others). Identical population count across both runs. Emitted CSS: packages/ds-react/src/components/Card/Card.css .card carries border-color + border-width 1px and zero border-inline-start-* declarations."
+    recorded_at: "2026-09-02T23:33:29.919Z"
+    commit_sha: "597c6680"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Same 58-route sweep: .card--in-progress computes left 2px rgb(5,102,254) against top 1px rgb(71,70,71); .card--completed left 2px rgb(73,127,33). Proves the rail moved to the variant rather than being deleted. Card.css lines 51-59 emit border-inline-start-{width,color} only under .card--completed / .card--in-progress and the four other status selectors."
+    recorded_at: "2026-09-02T23:33:36.841Z"
+    commit_sha: "597c6680"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "getComputedStyle + getBoundingClientRect on /component/Divider/design: horizontal = 886x1 px with top 'solid 1px' and right/bottom/left all 'none 0px' (was 886x2 with 'inset 1px rgb(128,128,128)' on three sides); vertical = 1x14 px with left 'solid 1px' and others 'none 0px' (was a degenerate 2x1 px). The UA-leak probe across all 58 routes no longer lists either HR."
+    recorded_at: "2026-09-02T23:33:43.938Z"
+    commit_sha: "597c6680"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Opened popover measured live: border 'solid 1px rgb(71,70,71)' uniform on all four sides (was 'solid 1px rgb(229,91,90)' salmon from semantic.color.border.accent), background resolves through semantic.color.background.elevated (#ffffff light / #141414 dark) instead of background.secondary #d0d0d0. Token renamed border.accent to border.default so the label no longer lies; Popover.css line 32 emits var(--fsds-popover-color-border-default, #d0d0d0)."
+    recorded_at: "2026-09-02T23:33:51.859Z"
+    commit_sha: "597c6680"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "WCAG ratio recomputed in-browser from resolved custom properties (sRGB relative luminance): default brand light theme foreground.primary on the selected-row background goes 3.83:1 (FAIL) to 12.02:1 (PASS) after re-pointing table.color.background.selected from semantic.color.background.accent to background.accentSubtle. Across all 20 brand x theme combinations, failures drop from 10 to 1. The single residual, light/forest = 1.09, is a PRE-EXISTING brand-authoring defect outside this AC: forest.tokens.json hardcodes background.accentSubtle to #00230a in BOTH themes while every sibling brand flips light/dark, and it already broke accentSubtle's documented consumer (NavList current item) before this change. Logged for the token-graph slice."
+    recorded_at: "2026-09-02T23:34:00.676Z"
+    commit_sha: "597c6680"

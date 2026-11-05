@@ -1,0 +1,74 @@
+id: FEAT-EXAMPLES-SWIFT-SETTINGS-01
+title: 'Swift settings example lane: macOS consumer app over the ds-swiftui package'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'swift settings consumer lane over ds-swiftui: local-path package dep, compile in macOS CI, partial-realization non-claims ledgered'
+created_at: '2026-08-15T01:43:27.487Z'
+updated_at: '2026-11-05T23:00:24.558Z'
+blast_radius:
+  modules:
+    - 'examples/settings/swift (new SwiftPM lane: Package.swift with local path dep on packages/ds-swiftui, executable SettingsExample, lane README with claim/falsifier/non-claim)'
+    - 'examples/README.md (settings row + current-status table gain the swift lane)'
+    - '.github/workflows/ci.yml (native-compile-rail-swift job gains the example compile step)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/settings/swift'
+    - 'examples/README.md'
+    - '.github/workflows/ci.yml'
+  out: []
+invariants:
+  - 'The lane consumes the DsSwiftUI package only through its public product (import DsSwiftUI) via a local package path — no source-tree reaches into packages/ds-swiftui/Sources, no re-declaration of generated symbols, no private-path imports. A boundary leak is the falsification signal this lane exists to catch.'
+  - 'Regions of the framework-neutral settings spec that swiftui does not realize yet (Card, Field, Input, Button, Dialog, Tooltip, Stack primitive) are composed from plain SwiftUI primitives and are DOCUMENTED as non-claims in the lane README — the lane is honest partial realization, never a silent stand-in claiming parity with the react/vue lanes.'
+  - 'The lane is consumer-only: no changes to contracts, IR, emitters, or generated output. governed:rail and the committed trees are byte-identical before and after the slice.'
+  - 'The CI compile step reuses the existing macOS swift job; it must not weaken, skip, or reorder the smoke-lane positive/negative passes.'
+acceptance:
+  - id: A1
+    given: 'the committed generated ds-swiftui package and the new examples/settings/swift SwiftPM lane'
+    when: 'swift build runs with package path examples/settings/swift'
+    then: 'the consumer executable compiles against the DsSwiftUI product via local package path and exits 0'
+  - id: A2
+    given: 'the swift lane''s SettingsView'
+    when: 'its source is inspected'
+    then: 'it composes only public DsSwiftUI exports (Switch/ToggleSwitch today) plus SwiftUI primitives for unrealized regions, with the unrealized subset documented as non-claims in the lane README'
+  - id: A3
+    given: 'the native-compile-rail-swift CI job on a macOS runner'
+    when: 'the workflow runs'
+    then: 'it compiles the example lane in addition to the smoke fixtures and fails the job on compile error'
+  - id: A4
+    given: 'the examples README portfolio table'
+    when: 'the lane lands'
+    then: 'the settings row and status table name the swift lane with its claim, falsifier, and non-claims'
+  - id: A5
+    given: 'the full local gate inside the worktree'
+    when: 'pnpm run governed:rail and pnpm test run'
+    then: 'both pass unchanged (the lane is consumer-only; no codegen output changes)'
+non_functional: {}
+contracts:
+  - name: 'swift-settings-consumer'
+    type: behavior
+    path: 'examples/settings/swift/README.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "swift build --package-path examples/settings/swift (exit 0, links SettingsExample against DsSwiftUI via ../../../packages/ds-swiftui)"
+    recorded_at: "2026-08-15T01:49:29.197Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "examples/settings/swift/Sources/SettingsExample/SettingsExampleApp.swift: import DsSwiftUI only; NOT FSDS markers on unrealized regions; non-claims ledgered in examples/settings/swift/README.md"
+    recorded_at: "2026-08-15T01:49:30.140Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: ".github/workflows/ci.yml native-compile-rail-swift job: new 'Settings example compile' step after the unchanged smoke positive/negative passes"
+    recorded_at: "2026-08-15T01:49:31.126Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/README.md: settings row + status table + parity non-claim + run commands all name the swift lane with claim/falsifier/non-claims"
+    recorded_at: "2026-08-15T01:49:32.633Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: governed:rail exit 0 (no committed-tree drift); pnpm test 2038/2038; test:frameworks 573+492+532+70 all passing"
+    recorded_at: "2026-08-15T01:49:34.203Z"

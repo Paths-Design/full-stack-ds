@@ -1,0 +1,48 @@
+id: FEAT-SWIFTUI-OTP-ARRAY-01
+title: 'OTP: array-channel text group riding the controllable substrate (24→25)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'OTP lands via the count-iterated field-group class on the controllable substrate; 25 of 49 admitted'
+created_at: '2026-08-17T04:16:13.075Z'
+updated_at: '2026-11-05T23:00:58.797Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (array-channel text group)'
+    - 'packages/ds-swiftui + fsds.targets.json (OTP admitted)'
+    - 'docs/current-implementation-snapshot.md'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The class keys on IR facts (iterate over input + a single string channel + length prop); mode/readOnly/label omitted-and-documented.'
+acceptance:
+  - id: A1
+    given: 'OTP (div root, value string channel, iterate fact over input fields, length prop)'
+    when: 'generated'
+    then: 'an array-channel text group emits — the value channel rides ControllableValue<String> with per-field TextFields distributing characters (setCharAt semantics) and onComplete fired at length; compiles'
+  - id: A2
+    given: 'the full worktree gate'
+    when: 'gates run'
+    then: 'all pass; admitted 24→25; remaining corpus fails loudly'
+non_functional: {}
+contracts:
+  - name: 'swiftui-otp'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "OTP.swift: ControllableValue<String> substrate, ForEach(0..<length) TextFields, setCharacter with payload[payload.count-1] (setCharAt semantics), onComplete?(next) at length; swift build exit 0"
+    recorded_at: "2026-08-17T04:21:30.902Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; governed:rail exit 0; pnpm test 2086/2086; test:frameworks 72; swift test 22/22; swift build + example build exit 0; ADMITTED 25/25 byte-stable; mode/readOnly absent (test-pinned)"
+    recorded_at: "2026-08-17T04:21:31.886Z"

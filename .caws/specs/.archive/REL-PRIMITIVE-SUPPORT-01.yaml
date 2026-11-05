@@ -1,0 +1,45 @@
+id: REL-PRIMITIVE-SUPPORT-01
+title: 'One footprint-aware support classifier: a sibling facet destroyed in place is not primitive standing'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'One footprint-aware support classifier landed and wired into every consumer plus the gate; nest.levels#incidence re-adjudicated unresolved, no published verdict demoted, 58 of 60 ratify.'
+created_at: '2026-09-15T22:10:20.454Z'
+updated_at: '2026-11-05T23:07:00.584Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/support.ts (new: the one classifier)'
+    - 'packages/ds-codegen/src/analytical/necessity.ts + erasure-audit.ts (both consume it; the audit stops computing standing separately)'
+    - 'packages/ds-codegen/src/analytical/subtraction.ts (the drift check enters the gate)'
+    - 'the re-adjudicated verdicts and every re-recorded ledger'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - "Standing has ONE definition, consumed by the standing function and the audit: neither infers it independently, and a witness whose erasure destroys a sibling facet is classified by the same code that refuses to ratify it."
+  - "The distinction is the CARRIER, not the leaf: collateral inside what the erasure removes (a member refinement of the declared leaf, or a declaration under a deleted holder) is a sub-distinction, so subsumption stays correct; a reference-topology facet at the SAME locator is destroyed in place while its carrier survives, so it is independent and does not ratify."
+  - "The drift check becomes inadmissible at the gate: a recorded `witnessed` verdict that the live classifier does not ratify fails `analytical:subtraction:gate`, not only a test."
+  - "Re-adjudication follows the classifier mechanically; verdicts it demotes move to `unresolved` with the reason naming the sibling facet, and no verdict is hand-favored."
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given primitive standing is conferred by coordinates.length === 1 while the audit classifies the same witness as subsumes-refinements and the ledger prose for along#present already denies primitive-axis standing; when one support classifier reads the footprint and separates collateral INSIDE the erased proposition (member refinements, carrier deletions -- subsumption correct) from a sibling reference-topology facet destroyed in place (nest.levels#incidence -> #order, along#present -> along#arity); then the sibling-facet class does not ratify, the refinement class still does, both the standing function and the audit consume the one classifier, the drift check is wired into the gate so the disagreement is inadmissible, a regression on the real case fails when the rule reverts to length === 1, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-standing'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/erasure-audit.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (19 files / 857 tests green) and every analytical gate green (check-schemas, check-baseline, closures:check, footprints:check, freeze:check, final-quotient, stimuli, fixtures:check) in worktree primitive-support before merge 4e9f666b; full root suite 302 files / 4078 tests, typecheck, docs gates green. What landed: ONE footprint-aware support classifier (support.ts) consumed by primitiveRatified, the witness audit (which no longer computes standing separately), the closure ledger and final-quotient (which carried a third copy of the syntactic rule); the drift check is now part of analytical:subtraction:gate, which reports the disagreement by name. The discriminating test is the CARRIER, not the leaf: collateral inside what the erasure removes is a sub-distinction and keeps primitive standing (58 of 60 holding single-coordinate witnesses ratify), while a reference-topology facet at the SAME locator whose carrier survives is an independent degree of freedom destroyed in place and does not. The real case is pinned end to end: relation.derivedBy.nest.levels#incidence HOLDS and stays filed, but its erasure takes nest.levels#order with it, so the verdict was RE-ADJUDICATED from witnessed back to unresolved with the reason naming the sibling facet -- the first verdict movement of the arc was an overclaim, and the freeze split returns to 16 witnessed / 74 unresolved. NON-CLAIM and drift control: no published verdict needed retroactive demotion -- assertion.aggregate.along#present, already witnessed under the syntactic rule, keeps primitive standing under the carrier test because its collateral (the list's own arity/incidence) is conditional on the presence it denies; its own adjudication prose had always denied a broader 'primitive analytical axis' claim, and nothing was hand-favoured. The round-38 filing commits are still in history, unpushed and now superseded by this re-adjudication; origin receives both together. The subtraction gate remains red by design (68 of 118 unadjudicated) -- the drift lines it now prints are green. Suite green: 857 analytical, 4078 root."
+    recorded_at: "2026-09-15T22:29:24.827Z"

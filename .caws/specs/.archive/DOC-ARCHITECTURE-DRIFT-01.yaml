@@ -1,0 +1,52 @@
+id: DOC-ARCHITECTURE-DRIFT-01
+title: 'Reconcile architecture docs that under-claim shipped work'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Architecture docs reconciled: SurfaceIR and morphology recorded as shipped, nonexistent contract names removed, counts gated or derived, figma-plugin scoped historical'
+created_at: '2026-08-17T18:52:31.787Z'
+updated_at: '2026-11-05T22:57:54.579Z'
+blast_radius:
+  modules:
+    - 'architecture docs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture'
+    - 'packages/ds-tokens/build/core/index.ts'
+  out: []
+invariants:
+  - 'No architecture doc labels an implemented surface as paper, sketch, or future work'
+  - 'No architecture doc cites a contract file that does not exist in the corpus'
+acceptance:
+  - id: A1
+    given: 'a reader looks up SurfaceIR or the morphology axis'
+    when: 'they read the architecture doc'
+    then: 'it says implemented and matches the real shape in code'
+  - id: A2
+    given: 'a reader follows a contract filename cited in presence-surfaces.md'
+    when: 'they look for it in the corpus'
+    then: 'every cited filename exists or is marked illustrative'
+  - id: A3
+    given: 'a reader reads a count in an architecture doc'
+    when: 'they compare it to the live source'
+    then: 'it matches or is replaced by a gated marker'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "presence-surfaces.md retitled SurfaceIR (implemented) citing ir.ts:1328 and adding selectorAnchor + openTriggers; contract-group-axes.md replaces the may-later-split speculation with the live two-axis table (schema field at component.contract.schema.json:48, 7 of 49 contracts declare it)"
+    recorded_at: "2026-08-17T19:00:31.880Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Modal/Menu/Dropdown contract filenames reworded as explicitly illustrative (none have ever existed in the corpus); Classification table now separates realized kinds from reserved vocabulary. Verified coachmark IS realized by Walkthrough, contradicting the audit report"
+    recorded_at: "2026-08-17T19:00:35.063Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "box-model 47 -> gated component-count marker (docs-claims-check now 12 claims OK); tokens-architecture 156-shard count replaced with the derivation and the stale source comment at build/core/index.ts:69 fixed; palette hue list 9 -> all 14. tokens:validate 161/161 confirms the docs other shard number was correct"
+    recorded_at: "2026-08-17T19:00:47.056Z"
+    command: node scripts/docs-claims-check.mjs
+    exit_code: 0

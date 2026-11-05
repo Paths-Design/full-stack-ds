@@ -1,0 +1,99 @@
+id: FIX-OVERLAY-CLICK-DISMISSAL-BINDING-01
+title: 'Bind overlayClick dismissal on the declared targetPart element, not the root'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'overlayClick dismissal now binds on the contract-declared targetPart element (schema field, IR fact, react/svelte/vue emitters, Angular lore replaced byte-identically, tests dispatch on the overlay itself)'
+created_at: '2026-09-05T00:01:39.169Z'
+updated_at: '2026-11-05T23:03:18.382Z'
+created_by_session: 'sess_841020c6-ac0e-4334-9975-5dc480cda4b5'
+blast_radius:
+  modules:
+    - 'ds-contracts'
+    - 'ds-codegen'
+    - 'generated web packages (ds-react, ds-vue, ds-svelte, ds-angular, ds-lit)'
+    - 'ds-figma-plugin'
+    - 'ds-swiftui'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
+    - 'packages/ds-contracts/components/Sheet/Sheet.contract.json'
+    - 'packages/ds-contracts/components/Command/Command.contract.json'
+    - 'packages/ds-codegen/src/contract.ts'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/frameworks/react'
+    - 'packages/ds-codegen/src/frameworks/svelte'
+    - 'packages/ds-codegen/src/frameworks/vue'
+    - 'packages/ds-codegen/src/frameworks/angular'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'packages/ds-swiftui/Sources'
+    - docs/normal-form.md
+  out: []
+invariants:
+  - 'The overlayClick handler binds on the dismissal trigger''s declared targetPart element — the root can never be the click target because it is pointer-events:none under a full-cover pointer-events:auto overlay (Command.css:23,30-35).'
+  - 'Angular emitted bytes are unchanged: the IR targetPart fact replaces the node.part === ''overlay'' || ''backdrop'' lore that already produced the correct binding.'
+  - 'Lit''s host-listener + panel-stopPropagation realization already works and is out of scope.'
+  - 'escape dismissal realization is a non-goal of this slice (separately unrealized across targets).'
+acceptance:
+  - id: A1
+    given: 'Dialog/Sheet/Command declare overlayClick with targetPart'
+    when: 'react/svelte/vue outputs are generated'
+    then: 'the dismissal handler (with its enabledBy guard) is emitted on the targetPart element and the root carries no dead self-target handler'
+  - id: A2
+    given: 'regenerated per-framework tests'
+    when: 'the five web suites run'
+    then: 'the closes-on-overlay-click test dispatches the click on the overlay element itself and passes'
+  - id: A3
+    given: 'the Angular emitter switched from part-name lore to the IR fact'
+    when: 'Dialog/Sheet/Command regenerate for angular'
+    then: 'emitted bytes are identical to pre-slice'
+  - id: A4
+    given: 'an overlayClick trigger lacking targetPart or naming a part absent from the anatomy'
+    when: 'generate:check runs'
+    then: 'it fails loud naming the contract and the missing field'
+non_functional: {}
+contracts:
+  - name: 'overlayclick-target-part'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
+  - name: 'overlay-click-part-binding'
+    type: behavior
+    path: 'packages/ds-react/src/components/Command/Command.tsx'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "generated Dialog/Sheet/Command for react/svelte/vue: dismissal handler on targetPart element (e.g. ds-react Command.tsx command__overlay onClick), root carries no handler; enabledBy guard preserved on Dialog backdrop"
+    recorded_at: "2026-09-05T00:36:12.049Z"
+    command: git show 125bd6f0 -- packages/ds-react/src/components/Command/Command.tsx
+    exit_code: 0
+    commit_sha: "125bd6f0"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: regenerated closes-on-overlay-click tests query the targetPart element and dispatch there; all five web suites pass (698+514+654+163 tests across vue/lit/svelte/angular-rn)
+    recorded_at: "2026-09-05T00:36:12.824Z"
+    command: "pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "125bd6f0"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: git diff of packages/ds-angular/src after regenerating Dialog/Sheet/Command is empty — the IR targetPart fact reproduces the part-name lore byte-for-byte
+    recorded_at: "2026-09-05T00:36:13.394Z"
+    command: git show 125bd6f0 --stat -- packages/ds-angular/src
+    exit_code: 0
+    commit_sha: "125bd6f0"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "validateDismissalTargetParts throws on missing targetPart or unknown part; verified by generate:check 51/51 over the migrated corpus (all three contracts declare targetPart)"
+    recorded_at: "2026-09-05T00:36:14.005Z"
+    command: "pnpm run generate:check"
+    exit_code: 0
+    commit_sha: "125bd6f0"

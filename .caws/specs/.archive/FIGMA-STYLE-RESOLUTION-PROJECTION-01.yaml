@@ -1,0 +1,75 @@
+id: FIGMA-STYLE-RESOLUTION-PROJECTION-01
+title: 'Figma style resolution + variable projection (bounded to 6 fixtures): token graph -> FSDS variable collection (light/dark), per-state binding; additive, idempotent; state digest unchanged'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-06T03:46:34.941Z'
+updated_at: '2026-11-05T23:01:40.067Z'
+blast_radius:
+  modules:
+    - '@full-stack-ds/figma-plugin (token-chain resolver, Figma variable projection, style audit)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-figma-plugin/src/live-token-resolve.ts
+    - packages/ds-figma-plugin/src/live-style.ts
+    - packages/ds-figma-plugin/src/live-style.test.ts
+    - packages/ds-figma-plugin/src/live-token-resolve.test.ts
+    - packages/ds-figma-plugin/src/live-audit.ts
+    - packages/ds-figma-plugin/src/live-run.ts
+    - packages/ds-figma-plugin/scripts/**
+  out:
+    - packages/ds-figma-plugin/src/planner.ts
+    - packages/ds-figma-plugin/src/materialize-state.ts
+    - packages/ds-figma-plugin/src/live-materialize.ts
+    - packages/ds-codegen/
+    - packages/ds-contracts/
+invariants:
+  - "Style resolution reads the token graph (composed alias topology + resolved Light/Dark values), never the css var() fallback. Unresolvable refs and `transparent` are residualized, never scraped."
+  - "Style projection is ADDITIVE: the state-surface audit digest stays byte-identical to FIGMA-LIVE-MATERIALIZATION-IDEMPOTENCY-01; a separate `style` audit section is added. Planner, state materializer, schema, and contracts are untouched."
+  - "Materialized fills/strokes (and radius/text where supported) BIND to FSDS variables, not baked RGBA. Re-running yields the same style digest with no duplicate collections, modes, or variables."
+acceptance:
+  - id: A1
+    given: "the pure token-chain resolver"
+    when: "it resolves Button secondary background"
+    then: "it resolves THROUGH the token graph to semantic.color.action.background.secondary.default (Light #fafafa), not the var() fallback #d9292b"
+  - id: A2
+    given: "the live projection"
+    when: "it builds the variable surface"
+    then: "an FSDS collection exists with Light and Dark modes; semantic variables alias core variables per mode"
+  - id: A3
+    given: "the materialized nodes"
+    when: "styled"
+    then: "fills/strokes BIND to semantic variables, not baked RGBA values"
+  - id: A4
+    given: "per-state variants"
+    when: "styled"
+    then: "each binds through its state selector/property chain (e.g. State/availability=disabled binds the disabled token)"
+  - id: A5
+    given: "two audits"
+    when: "compared"
+    then: "the `state` audit digest is byte-identical to the previous live slice; the `style` audit is additive"
+  - id: A6
+    given: "two live runs"
+    when: "digested"
+    then: "run-1 and run-2 style digests are identical; no duplicate collections, modes, or variables"
+  - id: A7
+    given: "radius and text"
+    when: "projected"
+    then: "they bind where the Figma API supports it; unsupported properties residualize explicitly"
+  - id: A8
+    given: "this slice"
+    when: "reviewed"
+    then: "planner.ts, materialize-state.ts, live-materialize.ts (state logic), schema, and contracts remain untouched"
+non_functional: {}
+contracts:
+  - name: 'token-chain-resolver'
+    type: behavior
+    path: 'packages/ds-figma-plugin/src/live-token-resolve.ts'
+  - name: 'live-style-projection'
+    type: behavior
+    path: 'packages/ds-figma-plugin/src/live-style.ts'
+  - name: 'style-audit-additive'
+    type: contract-test

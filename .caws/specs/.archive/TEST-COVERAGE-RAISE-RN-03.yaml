@@ -1,0 +1,50 @@
+id: TEST-COVERAGE-RAISE-RN-03
+title: 'Certify react-native at the 80 target via the third companion batch (passive components)'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'RN line coverage 63.2 to 85.7 via the third companion batch; floor ratcheted to 83 — react-native certified above the 80 target'
+created_at: '2026-09-01T02:32:04.646Z'
+updated_at: '2026-11-05T23:08:40.739Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-react-native/src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the third companion batch; when pnpm run test:coverage:react-native runs; then every RN test passes and measured line coverage is at least 82 percent'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the RN lines floor reaches 80 with at least 2 points of margin and docs:check-claims derives the markers without drift'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the companion additions; when governed:rail regenerates all targets; then the companions survive and the generated trees show no drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:react-native exit 0: 82/82 test files, 150/150 tests, measured 85.69% lines (from 63.16) / 78.24% branches / 91.95% functions — at least 82 percent per the criterion"
+    recorded_at: "2026-09-01T02:40:24.707Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json react-native ratchet 61/77/91/61 -> 83/76/89/83; measured 85.69 leaves 2.69 margin above the 83 floor which certifies the 80 target; docs-claims-check 46/46 after the floor and vs-target marker updates (react-native now above)"
+    recorded_at: "2026-09-01T02:40:25.146Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run governed:rail exit 0 overall pass with fourteen more companion files in the drift-gated RN tree: zero generated drift (git status clean)"
+    recorded_at: "2026-09-01T02:40:25.578Z"

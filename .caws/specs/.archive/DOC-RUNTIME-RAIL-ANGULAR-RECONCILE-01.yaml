@@ -1,0 +1,73 @@
+id: DOC-RUNTIME-RAIL-ANGULAR-RECONCILE-01
+title: 'Reconcile snapshot + successor-work docs with landed Angular runtime preview/rail'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-04T23:55:37.968Z'
+updated_at: '2026-11-05T22:58:21.371Z'
+blast_radius:
+  modules:
+    - docs (claim ledger + successor-work ledger)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - docs/current-implementation-snapshot.md
+    - docs/successor-work.md
+  out:
+    - packages/ds-angular
+    - src/runtime/angular-compiler
+    - e2e/runtime-rail.spec.ts
+    - .claude/hooks
+invariants:
+  - >-
+    Doc-only slice: no runtime, fixture-registry, preview-middleware,
+    generated-cache, rail-test, or CAWS-managed hook file is modified. Only the
+    two in-scope docs change.
+  - >-
+    Doc claims match landed reality at the cited commit — Angular preview is
+    executable in both surfaces (showcase FrameworkPreview + Playwright runtime
+    fact rail), not "skipped" or "undecided".
+  - >-
+    The honest remaining gap is preserved, not erased: arbitrary
+    request-carried Angular non-default prop-sets are NOT admitted; only the
+    three fixed startup fixtures plus default-prop facts are.
+acceptance:
+  - id: A1
+    given: the claim ledger docs/current-implementation-snapshot.md
+    when: a reader checks the Angular runtime-preview posture
+    then: >-
+      it no longer states Angular runtime preview is skipped or undecided;
+      it records that Angular is executable in the showcase preview AND the
+      Playwright runtime fact rail.
+  - id: A2
+    given: the claim ledger and successor ledger
+    when: a reader checks which Angular runtime facts are admitted
+    then: >-
+      both record default-prop facts plus the three fixed non-default startup
+      fixtures (ShowMore maxLines=7, Progress value=50, Truncate lines=5).
+  - id: A3
+    given: docs/successor-work.md
+    when: a reader scans open work
+    then: >-
+      "decide whether Angular preview should become executable" is no longer
+      listed as open; it is recorded as resolved/landed.
+  - id: A4
+    given: docs/successor-work.md
+    when: a reader checks the remaining Angular gap
+    then: >-
+      it still records the honest gap — arbitrary request-carried Angular
+      non-default prop-set compilation is intentionally NOT admitted; only the
+      fixed fixtures and default-prop facts are.
+  - id: A5
+    given: the doc changes
+    when: closure evidence is reviewed
+    then: >-
+      notes cite the runtime evidence (`pnpm exec playwright test
+      e2e/runtime-rail.spec.ts -g "angular"` -> 12 passed) and the three
+      compiled fixture hosts (ProgressValue50, ShowMoreMaxLines7,
+      TruncateLines5) in node_modules/.fsds-angular-cache; `git status` shows
+      only the two in-scope docs changed.
+non_functional: {}
+contracts: []

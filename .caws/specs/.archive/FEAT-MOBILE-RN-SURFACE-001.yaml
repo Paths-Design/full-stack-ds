@@ -1,0 +1,114 @@
+id: FEAT-MOBILE-RN-SURFACE-001
+title: 'Presence-surface taxonomy migration (Dialog/Sheet/Toast) + RN native Modal substrate'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge rn-surface at 3fd83a27d67041185b63b202aaaea3dfb529fe25'
+created_at: '2026-06-10T16:00:29.750Z'
+updated_at: '2026-11-05T23:00:30.366Z'
+blast_radius:
+  modules:
+    - Dialog/Sheet/Toast contracts (surface taxonomy blocks)
+    - contract schema + IR surface validation
+    - react/vue surface gates (kind-aware alignment)
+    - ds-codegen react-native surface substrate + generated package
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-contracts/components/Dialog/**
+    - packages/ds-contracts/components/Sheet/**
+    - packages/ds-contracts/components/Toast/**
+    - packages/ds-contracts/component.contract.schema.json
+    - packages/ds-codegen/src/contract.ts
+    - packages/ds-codegen/src/ir.ts
+    - packages/ds-codegen/src/semantics.ts
+    - packages/ds-codegen/src/frameworks/react/surface-emit.ts
+    - packages/ds-codegen/src/frameworks/vue/surface-emit.ts
+    - packages/ds-codegen/src/frameworks/react-native/**
+    - packages/ds-codegen/src/validation/frameworks/react-native.ts
+    - packages/ds-react-native/**
+    - docs/presence-surfaces.md
+    - docs/current-implementation-snapshot.md
+    - packages/ds-codegen/src/frameworks/react/tests.ts
+    - packages/ds-codegen/src/frameworks/react/hook-source.ts
+  out: []
+invariants:
+  - >-
+    Web byte-invariance: after Dialog/Sheet/Toast gain surface blocks, all five
+    web framework trees regenerate byte-identical (react/vue surface gates
+    become kind-aware like svelte/angular/lit already are; non-anchored kinds
+    keep the existing generic/hook emission path on web).
+  - >-
+    Surface facts agree across blocks: a contract's surface block must not
+    contradict its portal/dismissal/focus blocks (e.g. blocking modality
+    requires the existing focus trap + backdrop; ephemeral presence with
+    timeout dismissal requires a timing/autoDismiss source).
+  - >-
+    No per-component lore in the RN substrate: lowering derives from SurfaceIR
+    facts (kind, presence, modality, positioning, dismissal, timing) — never
+    from component-name conditionals.
+  - >-
+    No over-claim: anchored kinds (tooltip, popover, coachmark) remain
+    unadmitted on RN in this slice and stay documented as knownGaps; the
+    fullscreen positioning strategy is vocabulary only until a contract uses
+    it.
+acceptance:
+  - id: A1
+    given: the Dialog, Sheet, and Toast contracts
+    when: surface taxonomy blocks are added
+    then: >-
+      Dialog declares kind dialog / persistent / blocking / centered with
+      escape + outside-click + close-button dismissal; Sheet declares kind
+      sheet / persistent / blocking / viewport-edge with escape +
+      outside-click + close-button dismissal; Toast declares kind toast /
+      ephemeral / non-blocking / viewport-edge with escape + close-button
+      dismissal and NO timing block — the web Toast implements no auto-dismiss
+      timer today, so declaring timeout/autoDismissProp would fabricate a
+      fact; ephemeral records the design class with consumer-managed timing.
+      generate:check passes and buildSurfaceIR accepts all three.
+  - id: A2
+    given: the surface blocks from A1
+    when: pnpm run governed:rail regenerates all targets
+    then: >-
+      the five web framework src trees are byte-identical to their pre-change
+      state (git diff --exit-code), proving the taxonomy migration is
+      fact-tracking, not a web behavior change.
+  - id: A3
+    given: a persistent+blocking surface contract (Dialog, Sheet)
+    when: the RN emitter lowers it
+    then: >-
+      the generated component renders RN Modal with visible bound to the open
+      channel, onRequestClose wired to dismissal (Android back ≈ escape),
+      backdrop press dismissing iff outside-click/overlayClick dismissal is
+      declared, and generated react-test-renderer tests prove visible
+      toggling, onRequestClose firing the change callback, and backdrop-press
+      dismissal.
+  - id: A4
+    given: an ephemeral+non-blocking surface contract (Toast)
+    when: the RN emitter lowers it
+    then: >-
+      the generated component renders a non-blocking host (no Modal) with
+      accessibilityLiveRegion derived from the politeness prop, visibility
+      bound to the open channel, and a generated test proves the host is not
+      modal and toggles with the channel. Auto-dismiss timing (a duration
+      prop + timer on web AND RN together) is a named follow-up, not claimed
+      here.
+  - id: A5
+    given: the full slice
+    when: gates and rails run
+    then: >-
+      governed:rail passes in required mode for all seven targets, RN package
+      typecheck/tests pass, the RN validation-plan knownGaps and
+      docs/presence-surfaces.md + the snapshot ledger reflect what is now
+      admitted (non-anchored RN surfaces) and what is not (anchored kinds,
+      simulator/device execution).
+non_functional: {}
+contracts:
+  - name: 'surface-taxonomy-migration'
+    type: schema
+    path: 'packages/ds-contracts/components'
+  - name: 'rn-modal-substrate'
+    type: behavior
+    path: 'packages/ds-react-native/src/components'

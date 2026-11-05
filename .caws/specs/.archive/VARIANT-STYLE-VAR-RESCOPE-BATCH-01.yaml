@@ -1,0 +1,50 @@
+id: VARIANT-STYLE-VAR-RESCOPE-BATCH-01
+title: 'Realize Spinner.thickness/Stat.trend/Select.size via var-rescope selectors (existing tokens)'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge var-rescope at 39da69c7e6df1afb2ab005da5356b0d38fb75dba'
+created_at: '2026-06-06T01:02:16.441Z'
+updated_at: '2026-11-05T23:09:59.365Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-contracts/components/Spinner/
+    - packages/ds-contracts/components/Stat/
+    - packages/ds-contracts/components/Select/
+    - packages/ds-react/src/components/Spinner/
+    - packages/ds-react/src/components/Stat/
+    - packages/ds-react/src/components/Select/
+    - packages/ds-vue/src/components/Spinner/
+    - packages/ds-vue/src/components/Stat/
+    - packages/ds-vue/src/components/Select/
+    - packages/ds-svelte/src/components/Spinner/
+    - packages/ds-svelte/src/components/Stat/
+    - packages/ds-svelte/src/components/Select/
+    - packages/ds-angular/src/components/Spinner/
+    - packages/ds-angular/src/components/Stat/
+    - packages/ds-angular/src/components/Select/
+    - packages/ds-lit/src/components/Spinner/
+    - packages/ds-lit/src/components/Stat/
+    - packages/ds-lit/src/components/Select/
+    - packages/ds-figma-plugin/src/generated/components/Spinner/
+    - packages/ds-figma-plugin/src/generated/components/Stat/
+    - packages/ds-figma-plugin/src/generated/components/Select/
+    - docs/variant-style-audit/
+    - scripts/variant-style-audit/
+    - .caws/specs/VARIANT-STYLE-VAR-RESCOPE-BATCH-01.yaml
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts: []

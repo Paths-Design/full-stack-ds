@@ -1,0 +1,84 @@
+id: FIX-CONTRAST-DEBT-01
+title: 'Burn the component-contrast debt ledger: resolver alpha preservation + token fixes'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'resolver preserves DTCG alpha; hover/secondary token repairs; 47 fallbacks synced; contrast ledger burned to empty under the ratchet'
+created_at: '2026-08-15T03:28:08.921Z'
+updated_at: '2026-11-05T23:02:17.083Z'
+blast_radius:
+  modules:
+    - 'packages/ds-tokens/build/generators/resolve.ts (alpha-preserving color serialization)'
+    - 'packages/ds-tokens/src (interaction.text.hover, foreground.hover, foreground.secondary)'
+    - 'contract sidecars whose fallbacks chain to the changed tokens (fallback-stale driven)'
+    - 'packages/ds-codegen/src/validation/component-contrast-known-gaps.json (burned to empty)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-codegen/src'
+    - 'AGENTS.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-react
+    - packages/ds-vue
+    - packages/ds-svelte
+    - packages/ds-angular
+    - packages/ds-lit
+    - packages/ds-react-native
+    - packages/ds-figma-plugin
+    - packages/ds-swiftui
+  out: []
+invariants:
+  - 'A token named transparent resolves to a transparent value: the resolver''s color serialization preserves alpha by the same rule as the CSS emitter (hex + two-digit alpha when alpha < 1), so resolved.tokens.json and tokens.css never disagree about opacity again.'
+  - 'Ledger entries leave only because their pair now passes or is underivable — proven by the ratchet itself: removing the entries while any still reproduced would fail generate:check.'
+  - 'Fallback literals stay byte-equal to the resolved light value of their chain (fallback-stale enforces); every fallback this slice touches is a mechanically forced update, never a hand-picked value.'
+  - 'No generated framework bytes change: the fixes move token values and contract fallbacks only; governed:rail regenerates identical framework sources.'
+acceptance:
+  - id: A1
+    given: 'tokens with alpha < 1 in the DTCG source'
+    when: 'the token build resolves them'
+    then: 'resolved.tokens.json preserves alpha as 8-digit hex matching the CSS emitter rule, and core.color.mode.transparent resolves to #00000000'
+  - id: A2
+    given: 'the six ledgered contrast pair identities'
+    when: 'the token fixes land'
+    then: 'generate:check passes with the contrast ledger empty because no entry reproduces (the ratchet proves the burn)'
+  - id: A3
+    given: 'Accordion trigger hover, Select trigger/option hover, and secondary-on-secondary pairs'
+    when: 'measured after the fixes'
+    then: 'every theme measures at least 4.5:1 or is skipped because a terminal is transparent'
+  - id: A4
+    given: 'resolved.tokens.json and tokens.css are committed outputs'
+    when: 'the build reruns'
+    then: 'tokens:build:check exits 0 over the committed regenerated artifacts'
+  - id: A5
+    given: 'the full local gate'
+    when: 'root tests, typecheck, lint, and governed:rail run in the worktree'
+    then: 'all exit 0'
+non_functional: {}
+contracts:
+  - name: 'component-contrast-ledger'
+    type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "resolved.tokens.json now carries #00000000 for core.color.mode.transparent and #00000066 for semantic.color.overlay.scrim (verified post-build); rule matches generateCSSTokens.mjs byte-for-byte; resolve.test.ts 5/5 incl. fractional alpha, alpha=1 opaque passthrough, ref chains, themed variants"
+    recorded_at: "2026-08-15T03:43:42.385Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "component-contrast-known-gaps.json burned to empty; generate:check passed 49/49 with the empty ledger — had any of the six pairs still reproduced, the ratchet would have DRIFTed the emptiness; each entry's removal was individually DRIFT-demanded before it happened"
+    recorded_at: "2026-08-15T03:43:43.827Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "corpus-wide re-measure via deriveComponentContrastPairs over all 49 contracts: 132 pair/theme checks, 0 failing, 2 skipped (Walkthrough prev pair, transparent terminal by design); Accordion hover now 6.02 light / 4.98 dark, Select hover 4.68 both, secondary pair 6.02"
+    recorded_at: "2026-08-15T03:43:45.476Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "tokens:build:check exit 0: regenerated resolved.tokens.json + tokens.css committed and git diff --exit-code packages/ds-tokens/generated clean"
+    recorded_at: "2026-08-15T03:43:46.859Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "in worktree: root vitest 165 files / 2057 tests pass; pnpm run typecheck clean; pnpm run lint 0 errors (21 pre-existing warnings unchanged); governed:rail exit 0 (generate:check 49/49 before emission, validate-cli Overall PASS). Note: tokens:check-usage:gate fails on PRE-EXISTING drift (26 palette stops unused since the 2026-06-27 baseline) — verified identical failure set on main-equivalent state, out of scope, gate not wired to CI/pre-push"
+    recorded_at: "2026-08-15T03:43:48.200Z"

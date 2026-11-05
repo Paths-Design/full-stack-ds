@@ -1,0 +1,77 @@
+id: FEAT-COMPOSE-CUSTOM-PAINTED-001
+title: 'Custom-painted Compose toggle: foundation-only substrate owned by the design system'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Compose toggle family custom-painted on a foundation-only owned substrate, replacing the slot-capped Material wrapper'
+created_at: '2026-08-17T19:53:12.679Z'
+updated_at: '2026-11-05T22:59:47.546Z'
+blast_radius:
+  modules:
+    - 'ds-jetpack-compose toggle substrate'
+    - 'ds-codegen jetpack-compose emitter'
+    - 'examples settings compose lane'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose'
+    - 'examples/settings/compose'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The rendering strategy (wrap platform control vs paint from anatomy) is emitter-owned platform idiom — no contract or IR change; the native-toggle-affordance intent is honored by painting on Compose exactly as web renders from styles.'
+  - 'The substrate is committed hand-authored Kotlin beside the components root (the createCompoundContext/FsdsTheme substrate tier), importing no androidx.compose.material symbols.'
+  - 'Style resolution flows scope-data → LocalFsdsTheme with the RN-mirrored literal → theme-of-ref → fallback chain; slot lookup by name suffix grammar, never by component name.'
+  - 'Semantics parity is non-negotiable: Modifier.toggleable with Role.Switch plus the stateDescription behavior the wrapper emitted before.'
+  - 'Other targets regenerate byte-identical; the material3 dependency stays only for the tokens bridge.'
+  - 'New non-claims are ledgered, not hidden: owned interaction physics, unparsable cubic-bezier easing strings, and any slot family the graph still lacks.'
+acceptance:
+  - id: A1
+    given: 'the Material 3 Switch wrapper exposing only ~6 of the toggle contract''s 48 token slots'
+    when: 'a hand-authored FsdsToggle substrate lands and the emitter repaints the native-toggle family through it'
+    then: 'the substrate draws track, thumb, border, thumb shadow, focus indication, press response, and disabled states from resolved token values using only compose runtime/ui/foundation/animation — zero material imports in the substrate or the generated components — with semantics preserved via Modifier.toggleable role Switch'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'the emitter lowering resolves style from scope data through LocalFsdsTheme (literal then theme-of-ref then fallback) consuming at minimum the previous six slots plus disabled track/thumb colors, track border color, box-model padding, min tap-target, thumb shadow elevation, and press duration — each with graceful fallback where the graph carries no slot and suffix-grammar lookup, never component-name literals'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'both Switch and ToggleSwitch regenerate through the custom-painted path, import no androidx.compose.material3 symbols, and compile exit 0; the library''s material3 dependency remains solely for the tokens-module bridge; all other targets regenerate byte-identical'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'gates green: generate:check, root tests, lane compile through the composite build; bytecode shows the generated components referencing the substrate and theme runtime, not M3Switch'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'snapshot, knownGaps, and the lane README record the ownership shift and its new non-claims: hand-rolled interaction physics replace Google-maintained M3 behavior, easing curves stay cubic-bezier-string unparsable (ledgered), and the visual parity confirmation is the manual lane rerun'
+non_functional: {}
+contracts:
+  - name: 'Switch'
+    type: behavior
+    path: 'packages/ds-contracts/components/Switch/Switch.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/toggle/FsdsToggle.kt @ edea78b3 — 190-line foundation-only substrate (grep: zero androidx.compose.material imports), FsdsToggleStyle with track/thumb/border/shadow/focus/press/disabled surface, Modifier.toggleable role Role.Switch + stateDescription semantics"
+    recorded_at: "2026-08-17T20:02:42.880Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: generated Switch.kt/ToggleSwitch.kt resolve 8 color vals + border + focus + press-duration + min tap-target + PaddingValues from scope data through LocalFsdsTheme (suffix-grammar lookups); color vals always nullable-emitted so absent slots (ToggleSwitch carries no color slots) fall to ledgered constants
+    recorded_at: "2026-08-17T20:02:43.805Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "grep material3 in both generated components: 0; library + lane compileKotlin exit 0; material3 dep retained only in library/build.gradle.kts for the tokens bridge; full-corpus --target=all diff scope confined to the slice (other targets byte-identical)"
+    recorded_at: "2026-08-17T20:02:45.080Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "generate:check 49/49; root tests 2123/2124 with the single failure (rail-coverage CodeBlock projection) verified PRE-EXISTING on clean main via git-stash rerun — not this slice's regression; codegen build 0 TS errors"
+    recorded_at: "2026-08-17T20:02:46.031Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "snapshot row 46 ownership sentence (custom-painted, non-claims: hand-rolled physics, shadow approximation, unparsable easing); lane README 'Custom-painted toggles' section; visual parity confirmation = the pending manual lane rerun"
+    recorded_at: "2026-08-17T20:02:46.874Z"

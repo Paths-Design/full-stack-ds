@@ -1,0 +1,68 @@
+id: REL-UNIT-DIAGNOSTIC-CAUSE-RENAME-01
+title: 'Oracle correction: rename REL_UNIT_SUM_ACROSS_CURRENCY to REL_UNIT_SUM_INCOMMENSURABLE so the diagnostic names its cause'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Identifier-only oracle correction landed 3d1e8988 via merge 52588153: REL_UNIT_SUM_ACROSS_CURRENCY -> REL_UNIT_SUM_INCOMMENSURABLE in one corpus row and one catalogue row; causal behaviour proven unchanged by a 58-fixture canonical ledger diff that is byte-identical after identifier substitution; holdout digest re-recorded with reason. New custody baseline for REL-FIELD-ALGEBRA-02: corpus 6f8edea4f5aabef4, case schema 0b02d6eedcc3cfd4, vocabulary ba144b63b34c2371, denylist 0564902cf8d7d4ff, doctrine sections 8622d010f131c94f. Non-claim: the closed REL-FIELD-ALGEBRA-01 spec and the gitignored codegen dist still carry the old identifier as frozen history.'
+created_at: '2026-09-02T22:34:21.616Z'
+updated_at: '2026-11-05T23:07:20.780Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-pack/corpus.jsonl (one row: the diagnostic identifier only)'
+    - 'docs/architecture/analytical-relation-doctrine.md (one catalogue row: the identifier only)'
+    - 'packages/ds-contracts/analytical-fixtures (bindings neighbour key + triad hostileDiagnostic; holdout rule digest re-recorded)'
+    - 'packages/ds-codegen/src/analytical (DIAG constant and its test references)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-pack'
+    - 'docs/architecture'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+  out: []
+invariants:
+  - 'Exactly one corpus row and exactly one catalogue row change, and only in the diagnostic identifier: no cause text, term, stage, evidence class, verdict, engine, vocabulary term, or denylist entry changes. The catalogue cause ''values in different units are not summable'' is already generic; the identifier is what lied.'
+  - 'Causal behaviour is unchanged: the canonical judgment of every fixture is byte-identical before and after except for the substring REL_UNIT_SUM_ACROSS_CURRENCY -> REL_UNIT_SUM_INCOMMENSURABLE, proven by a ledger diff, not by test counts.'
+  - 'Holdout expectations are re-verified by hand (none carries the renamed code) and the rule digest is re-recorded only because engines.ts changed; the reason is on record in holdout.json.'
+  - 'This slice mints the custody baseline REL-FIELD-ALGEBRA-02 freezes against: post-rename sha256 of corpus.jsonl, corpus-case.schema.json, vocabulary.json, form-names.json and the doctrine catalogue+appendix sections. Nothing else rides in this slice.'
+acceptance:
+  - id: A1
+    given: 'the frozen stage-1 oracle'
+    when: 'the corpus row for CASE_REVENUE_SUMMED_ACROSS_CURRENCIES and its catalogue row are renamed'
+    then: 'git diff shows exactly one changed line in corpus.jsonl and one in the doctrine, corpus-integrity reports zero findings, and its 29 tests pass'
+  - id: A2
+    given: 'engines.ts with the DIAG constant renamed'
+    when: 'every fixture is judged before and after'
+    then: 'the two canonical judgment ledgers differ only by the identifier substring and the full analytical suite passes'
+  - id: A3
+    given: 'the renamed bindings (neighbour key, triad hostileDiagnostic) and the holdout'
+    when: 'the ledger check runs'
+    then: 'zero LEDGER_ findings and every holdout item matches under the newly recorded rule digest'
+  - id: A4
+    given: 'closure'
+    when: 'the five custody digests are recomputed'
+    then: 'they are recorded verbatim as the REL-FIELD-ALGEBRA-02 baseline, and only the corpus.jsonl and doctrine-section digests differ from the -01 values'
+non_functional: {}
+contracts:
+  - name: 'stage1-oracle'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/stage1.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "git diff --numstat 3d1e8988^..3d1e8988: corpus.jsonl 1/1, doctrine 1/1 (identifier only in both; catalogue cause text, terms, stage, evidence, engine, vocabulary, denylist untouched); pnpm exec vitest run packages/ds-codegen/src/analytical -> corpus-integrity.test.ts 29/29 incl. CORPUS_DOC_DRIFT both directions clean; merge 52588153"
+    recorded_at: "2026-09-02T22:39:45.611Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "tmp/ledger-dump.mts run on main before (tmp/ledger-before.txt) and in the worktree after: 58 canonical judgments, raw diff = 3 entries, diff after substituting REL_UNIT_SUM_ACROSS_CURRENCY->REL_UNIT_SUM_INCOMMENSURABLE = exit 0 (byte-identical); analytical suite 107/107; typecheck + eslint clean"
+    recorded_at: "2026-09-02T22:39:46.066Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "bindings.json neighbours key + triads[unit:commensurable].hostileDiagnostic renamed; holdout.json ruleDigest re-recorded 27701a78->5fc0509d with reason logged in $comment, all 8 items re-verified by hand (none carries the code); stage1.test.ts A2 ledger block: zero LEDGER_ findings; A8 block: digest equal and every holdout item exact"
+    recorded_at: "2026-09-02T22:39:46.513Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "custody digests on main after merge 52588153: corpus.jsonl 6f8edea4f5aabef4, corpus-case.schema.json 0b02d6eedcc3cfd4, vocabulary.json ba144b63b34c2371, form-names.json 0564902cf8d7d4ff, doctrine catalogue+appendix (sed '## Diagnostic catalogue'..'## Falsification conditions') 8622d010f131c94f; only corpus and doctrine differ from the -01 values (a426528ed0e657aa, c88ad2de6a1667a5); this is the REL-FIELD-ALGEBRA-02 baseline"
+    recorded_at: "2026-09-02T22:39:46.972Z"

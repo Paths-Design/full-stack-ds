@@ -1,0 +1,50 @@
+id: ICON-PLACEHOLDER-GLYPH-01
+title: 'Use placeholder SVG glyph in Icon component'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-05T23:38:45.448Z'
+updated_at: '2026-11-05T23:05:00.927Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/components/Icon/: contract-authored static SVG glyph matching src/assets/placeholder.svg.'
+    - 'packages/ds-{react,vue,svelte,angular,lit}/src/components/Icon/: regenerated Icon realizations only.'
+    - 'src/assets/placeholder.svg: reference asset supplied by the user, used as the glyph source of truth for this slice.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Icon/'
+    - 'packages/ds-react/src/components/Icon/'
+    - 'packages/ds-vue/src/components/Icon/'
+    - 'packages/ds-svelte/src/components/Icon/'
+    - 'packages/ds-angular/src/components/Icon/'
+    - 'packages/ds-lit/src/components/Icon/'
+    - 'src/assets/placeholder.svg'
+    - packages/ds-codegen/src/frameworks/react/component-source.ts
+    - packages/ds-codegen/src/frameworks/react/hook-source.test.ts
+    - packages/ds-codegen/src/frameworks/angular/component-source.ts
+  out: []
+invariants:
+  - 'The placeholder glyph is represented in the Icon contract DOM tree, not by hand-editing generated framework component files.'
+  - 'The rendered glyph preserves the supplied SVG geometry: 17x17 viewBox, two currentColor stroked circles, round stroke caps, and dash arrays.'
+  - 'Regeneration changes only Icon outputs for the five admitted web framework packages.'
+acceptance:
+  - id: A1
+    given: 'the supplied src/assets/placeholder.svg'
+    when: 'the Icon contract is updated'
+    then: 'Icon anatomy contains an inline SVG with equivalent circle geometry and currentColor stroke semantics'
+  - id: A2
+    given: 'the updated Icon contract'
+    when: 'Icon is regenerated for all web targets'
+    then: 'React, Vue, Svelte, Angular, and Lit Icon outputs render the placeholder SVG inside the Icon root'
+  - id: A3
+    given: 'the regenerated Icon outputs'
+    when: 'targeted validation/tests run'
+    then: 'contract validation passes and Icon component tests still pass'
+non_functional: {}
+contracts:
+  - name: 'icon-placeholder-glyph'
+    type: behavior
+    path: 'packages/ds-contracts/components/Icon/Icon.contract.json'

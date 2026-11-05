@@ -1,0 +1,56 @@
+id: FIX-BRAND-LAYER-THEME-LEAK-01
+title: 'Default brand''s unscoped :root dark block overrides an explicit light theme because @layer brand outranks @layer theme'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Default brand''s unscoped dark :root in @layer brand now pairs with an unscoped light guard, so an explicit data-theme=light on a dark-preference OS no longer resolves to dark values.'
+created_at: '2026-09-03T00:21:31.163Z'
+updated_at: '2026-11-05T23:01:54.641Z'
+blast_radius:
+  modules:
+    - 'ds-tokens'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/build'
+    - 'packages/ds-tokens/generated'
+  out: []
+invariants:
+  - 'An unscoped :root block emitted inside a prefers-color-scheme media query is always paired with an unscoped light guard in the same query, so an explicit data-theme wins over the OS preference'
+  - 'A higher cascade layer never silently overrides an explicit theme selection made in a lower one'
+acceptance:
+  - id: A1
+    given: 'a page with data-theme=light, no data-brand, on a dark-preference OS'
+    when: 'semantic.color.border.light is resolved at the document root'
+    then: 'it returns the LIGHT value (neutral.200 #b8b8b8), not the dark value (neutral.700 #474647)'
+  - id: A2
+    given: 'the same page'
+    when: 'every semantic token the default brand overrides is compared against its light-theme value'
+    then: 'none resolves to its dark-theme value'
+  - id: A3
+    given: 'a page with data-theme=dark on a light-preference OS'
+    when: 'the same tokens are resolved'
+    then: 'they still return dark values, proving the fix did not invert the bug'
+non_functional: {}
+contracts:
+  - name: 'brand-layer-css'
+    type: behavior
+    path: 'packages/ds-tokens/build/generators/global.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Measured in the showcase with Chrome DevTools colour-scheme emulation forced to dark (prefers-color-scheme: dark = true), html data-theme=light, no data-brand. BEFORE: --fsds-semantic-color-border-light computed #474647 (neutral.700, the DARK value); six rules matched and the winner was the brand layer's unscoped @media dark :root. AFTER: it computes #b8b8b8 (neutral.200, the LIGHT value), and a real Card renders border 1px rgb(184,184,184) uniform on all four sides over a #f7f7f7 surface."
+    recorded_at: "2026-09-03T00:28:50.136Z"
+    commit_sha: b72a6d9f
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "SCOPE OF PROOF, stated honestly: this was verified on a REPRESENTATIVE SET, not an exhaustive sweep of every default-brand-overridden token. Under prefers-color-scheme:dark emulation with data-theme=light and no data-brand, these five resolved to their LIGHT values with zero leaks: border.light #b8b8b8, border.subtle #d0d0d0, background.secondary #f7f7f7, foreground.accent #d92d2e, shape.card.border.medium #a0a0a1 - each distinct from its dark counterpart (#474647 / #474647 / #313131 / #e55b5a / #5c5b5c). An attempted 416-token sweep was abandoned because the CSSOM traversal I wrote returned zero rules (CSSRule.LAYER_BLOCK_RULE is undefined in this Chrome); I did not want to report a green from a probe that was silently matching nothing. The generator-level contract is pinned exhaustively instead by global.brand-theme-scope.test.ts, which asserts the guard is emitted, is unscoped, carries the light value, and is ordered after the dark :root."
+    recorded_at: "2026-09-03T00:29:01.461Z"
+    commit_sha: b72a6d9f
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inverse guard, proving the fix did not simply invert the bug. Same emulated dark preference, html data-theme=dark: border.light #474647, border.subtle #474647, background.secondary #313131, foreground.accent #e55b5a, shape.card.border.medium #5c5b5c - all still the DARK values. Also measured with the OS preference emulated to LIGHT and data-theme=dark: dark values still resolve. Pinned at the generator level by two tests that passed both before and after the change: 'still emits the dark value for an explicitly dark-themed page' and 'does not add an unscoped light guard for a NON-default brand' (an unscoped guard for a non-default brand would leak that brand onto unbranded pages)."
+    recorded_at: "2026-09-03T00:29:11.823Z"
+    commit_sha: b72a6d9f

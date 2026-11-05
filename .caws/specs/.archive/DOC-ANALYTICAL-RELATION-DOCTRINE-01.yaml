@@ -1,0 +1,54 @@
+id: DOC-ANALYTICAL-RELATION-DOCTRINE-01
+title: 'Doctrine for typed analytical relations with combinatorial projection'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Draft doctrine ARCH-ANALYTICAL-RELATION-001 merged at a563566f: L0-L5 stack with Shape and provenance axes, layer/facet/embed combinators with compositional admissibility, three checkability engines, 13 design invariants, the residue principle, stage-ordered falsifiers, and a 36-entry illegal-form corpus seed; status draft, nothing implemented.'
+created_at: '2026-09-02T18:03:05.877Z'
+updated_at: '2026-11-05T22:57:52.125Z'
+blast_radius:
+  modules:
+    - 'docs/architecture (doctrine draft) and docs/README.md (layout registration)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture'
+    - 'docs/README.md'
+    - 'docs/internal'
+  out: []
+invariants:
+  - 'The doctrine admits no chart-form name as a primitive below the projection layer; every named form is defined as a bundle of preconditions over a typed relation plus a projection.'
+  - 'Every claim in the doctrine is labelled draft or proposed; nothing is stated as implemented and the doc carries no verified_at_commit until a slice lands code.'
+acceptance:
+  - id: A1
+    given: 'the doctrine draft at docs/architecture/analytical-relation-doctrine.md'
+    when: 'the doc-frontmatter hook and pnpm run docs:check-claims run'
+    then: 'the doc carries authority architecture, status draft, a governs list naming the proposed paths, and is registered in the docs/README.md layout tree'
+  - id: A2
+    given: 'the seven properties and three falsification conditions in docs/normal-form.md'
+    when: 'the doctrine is read against them'
+    then: 'it names which properties analytical relations extend, states falsification condition 3 as the condition under test, and lists stage-ordered falsifiers with the residue principle as a guard against unfalsifiability'
+  - id: A3
+    given: 'the illegal-form catalogue in the doctrine'
+    when: 'each entry is read'
+    then: 'every entry names the field-algebra, grain, or derivation fact that makes it ill-typed without naming a chart form, or the doctrine records that the vocabulary is incomplete for that entry'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs/architecture/analytical-relation-doctrine.md carries authority: architecture, status: draft, and a governs: list of four proposed (non-existent, commented as such) paths. .caws/hooks/doc-frontmatter-check.sh run manually against the file exits 0 with no diagnostic (V3 governs present, V4 verified_at_commit not required for draft). pnpm run docs:check-claims: OK, 46 marked claims match derived values (the doc adds no count markers). docs/README.md layout tree lists analytical-relation-doctrine.md under architecture/ with the (draft) label."
+    recorded_at: "2026-09-02T18:22:08.633Z"
+    command: "pnpm run docs:check-claims"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Section 'What this tests that components and iconography could not' quotes normal-form falsification condition 3 verbatim and names properties 1, 4 and 5 as the ones analytical relations extend (contracts carrying constraints not facts; fail-loud boundary as type checker; per-target semantic interpretation). Section 'The residue principle' states the narrower claim as the unfalsifiability guard and invariant 8 / falsification condition 4 operationalise it. 'Order of construction' is a seven-row table (stages 0-6) each with a falsifier and a stop condition; 'Falsification conditions' lists eight, the seventh being condition 3 under direct test at stage 6 and the eighth the composite-special-case test at stage 3."
+    recorded_at: "2026-09-02T18:22:09.053Z"
+    command: "grep -n 'condition 3\\|residue\\|^| [0-6] |\\|^[1-8]\\. \\*\\*' docs/architecture/analytical-relation-doctrine.md"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "36 corpus rows. Each row's 'Ill-typed because' column names a meaningfulness, additivity/grain, dimensional, channel-capacity, provenance, task-invariant, derivation-typing or missing-declaration fact; form names appear only in the separate 'Colloquially' column, which exists to show the name is downstream of the cause. NON-CLAIM: this was verified by authoring and reading, not mechanically. The mechanical check (a vocabulary file, a schema, and a test asserting each entry's terms are drawn from the doctrine's L0-L4 vocabulary and that no form-name token appears outside the colloquial field) is the deliverable of the next slice, REL-ILLEGAL-CORPUS-01. No entry was recorded as vocabulary-incomplete."
+    recorded_at: "2026-09-02T18:22:09.478Z"
+    command: "grep -c '^| `REL_' docs/architecture/analytical-relation-doctrine.md"

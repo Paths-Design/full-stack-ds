@@ -1,0 +1,88 @@
+id: DOC-DOMAIN-REALIZATION-MAP-01
+title: 'Document domain realization authorities and repair analytical status drift'
+risk_tier: 2
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Documented domain realization authorities, extension criteria, and current analytical and icon boundaries'
+created_at: '2026-09-19T18:38:40.442Z'
+updated_at: '2026-11-05T22:58:01.706Z'
+created_by_session: '01a0baac-db3b-7e71-971d-17b3f2e48e16'
+blast_radius:
+  modules:
+    - 'cross-domain architecture documentation'
+    - 'component and icon realization documentation'
+    - 'analytical claim-boundary documentation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/domain-realization-comparison.md'
+    - 'docs/research-program.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/README.md'
+    - 'README.md'
+    - 'packages/ds-iconography/README.md'
+  out: []
+invariants:
+  - 'docs/current-implementation-snapshot.md remains the freshness authority for implemented and proven status'
+  - 'the bounded analytical projection experiment does not raise ratification beyond L0-L2 or imply a general production realization system'
+  - 'each domain retains its own authority and target-specific residue instead of becoming another component-contract alias'
+acceptance:
+  - id: A1
+    given: 'the component, iconography, and analytical authority surfaces'
+    when: 'a reader opens the durable comparison'
+    then: 'one extensible matrix identifies each domain authority, normalized substrate, composition, projections, residue, evidence, falsifier, and current maturity'
+  - id: A2
+    given: 'the bounded stage-three enumerator and lowerer exist while Stage 2 remains open'
+    when: 'the research program and canonical snapshot describe analytical status'
+    then: 'both distinguish implemented experimental machinery from the L0-L2 ratification boundary without claiming that no enumerator or realization exists'
+  - id: A3
+    given: 'component contracts consume governed glyph references while analytical relations remain a separate experimental authority'
+    when: 'a reader follows the documented integration paths'
+    then: 'the icon contract through IconGlyphIR route and the non-integration of analytics into component generation are explicit'
+  - id: A4
+    given: 'a future fourth governed domain'
+    when: 'its maintainers extend the comparison'
+    then: 'the document provides admission questions and a row template that add the domain without restructuring existing entries'
+  - id: A5
+    given: 'the documentation changes'
+    when: 'repository documentation claim and relative-link checks run'
+    then: 'all governed claims and tracked relative links pass'
+non_functional: {}
+contracts:
+  - name: 'domain-realization-map'
+    type: behavior
+    path: 'docs/domain-realization-comparison.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs/domain-realization-comparison.md defines the shared vocabulary and two comparison matrices for authority, substrate, composition, projections, residue, refusal, evidence, falsification boundary, and maturity"
+    recorded_at: "2026-09-19T19:09:06.944Z"
+    artifact_path: docs/domain-realization-comparison.md
+    commit_sha: "6801775fa33db753e0a08c2dd7a52d0900007fcf"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: docs/research-program.md and docs/current-implementation-snapshot.md distinguish the running bounded stage-three enumerator and two lowerings from the still-open L0-L2 ratification boundary
+    recorded_at: "2026-09-19T19:09:47.363Z"
+    artifact_path: docs/research-program.md
+    commit_sha: "6801775fa33db753e0a08c2dd7a52d0900007fcf"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: docs/domain-realization-comparison.md and packages/ds-iconography/README.md trace icon contract through IconGlyphIR and state that analytical relations do not enter ComponentIR or component emitters
+    recorded_at: "2026-09-19T19:10:18.351Z"
+    artifact_path: docs/domain-realization-comparison.md
+    commit_sha: "6801775fa33db753e0a08c2dd7a52d0900007fcf"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: docs/domain-realization-comparison.md supplies ten admission questions and a twelve-field append-only row template for another domain
+    recorded_at: "2026-09-19T19:10:42.121Z"
+    artifact_path: docs/domain-realization-comparison.md
+    commit_sha: "6801775fa33db753e0a08c2dd7a52d0900007fcf"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "node scripts/docs-claims-check.mjs and node scripts/docs-link-check.mjs both exited 0 on merged main: 84 governed claims match and 120 tracked links resolve"
+    recorded_at: "2026-09-19T19:11:05.596Z"
+    command: "node scripts/docs-claims-check.mjs && node scripts/docs-link-check.mjs"
+    exit_code: 0
+    commit_sha: "6801775fa33db753e0a08c2dd7a52d0900007fcf"

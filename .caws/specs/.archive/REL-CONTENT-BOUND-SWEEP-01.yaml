@@ -1,0 +1,43 @@
+id: REL-CONTENT-BOUND-SWEEP-01
+title: 'Bind sweep outcomes by content, and record that the specimen population shares ids'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Sweeps now bind outcomes by content, exposing 96 mis-attributed specimens and reducing the discriminable set from two to one; with that one failing the presence test, all 81 unresolved candidates are evidence-blocked.'
+created_at: '2026-09-15T05:55:10.114Z'
+updated_at: '2026-11-05T23:06:12.827Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/erasure-audit.test.ts (pin the id hazard and the corrected sweep)'
+    - 'docs/current-implementation-snapshot.md (the corrected decomposition of the unresolved candidates)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'An oracle outcome is bound to a fixture''s CONTENT, not to its id: the specimen population deliberately shares ids between a base and the variants synthesized from it, so an outcome resolved by id is the base''s answer applied to content that answer was never about.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the specimen population contains id-sharing specimens whose content differs from the bound fixture; when a witnessability sweep binds outcomes by content instead of by id; then the unresolved candidates with an oracle-separated collided pair fall from two to zero, the id-sharing and the number of mis-attributed specimens are pinned by test, and the snapshot records that no unresolved candidate is blocked by the instrument or by pair choice'
+non_functional: {}
+contracts:
+  - name: 'specimen-population'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/erasure-audit.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Measured the specimen population: 210 specimens, 106 distinct ids, 25 ids appearing more than once (every one with distinct contents, one with 31). Outcomes bound by id: 175; content-matching: 90; genuinely bound (both): 79; mis-attributed (has an outcome by id that is not about its content): 96. No production module resolves outcomes over the population by id -- all four outcomeOf call sites outside tests are corpus-keyed (resolveSide, groundedVocabulary, final-quotient, stimulus) -- so this was a hazard in ad-hoc sweeps, one of which was mine. Corrected sweep over the 81 unresolved candidates: by id 2 discriminable, by content 1 (evidence.rows.*#present), which then fails the presence test because all six of its content-resolved outcome-differing collided pairs carry rows on BOTH sides. The id-invented candidate was bin.closure:left-closed~right-closed, whose pair was a synthesized specimen inheriting its base's id and therefore its base's 'illegal' outcome; the corpus declares no right-closed fixture and only one case mentions closure. Three tests pin it: the id-sharing counts, the four binding counts, and the corrected sweep asserting both the one-candidate result and its presence failure. Non-claim: no production code was changed and nothing is adjudicated; the 96 mis-attributed specimens are correct members of the population (they exist to give footprint claims something to refute), and the defect was in the measurement, not the data; every one of the 81 remains unresolved and evidence-blocked."
+    recorded_at: "2026-09-15T05:58:28.413Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/erasure-audit.test.ts > the specimen population shares ids, so a sweep must bind outcomes by CONTENT > reduces the discriminating set to ONE, and that one is not a witness for presence either"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/analytical/erasure-audit.test.ts
+    commit_sha: "1c1999d4"

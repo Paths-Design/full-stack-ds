@@ -1,0 +1,45 @@
+id: FEAT-COMPOSE-CARD-ADMISSION-01
+title: 'Compound-part composer class; Compose Card admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Card admitted as the 49th compose component through a compound-part composer class that emits one scope region per declared part over the root chrome'
+created_at: '2026-09-13T06:56:11.678Z'
+updated_at: '2026-11-05T22:59:43.630Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (compound-part composer class)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'docs/normal-form.md'
+    - packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts
+  out: []
+invariants:
+  - 'The part composables come from the contract anatomy; no part name is written in the emitter.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Card declares nine compound parts and no dom, with a density axis and 21 root slots; when the compound-part composer class lowers the root chrome and one styled composable per declared part; then the generated Card compiles, the allowlist grows 48 to 49, React Native''s consumed card chrome is claimed by the path role, and SwiftUI regeneration is unchanged'
+non_functional: {}
+contracts:
+  - name: 'compound-part-composer'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge d2dca6bb: the generated Card emits a CardScope marker plus one region composable per declared compound part (header/media/content/footer/actions/badge/description/link/note) over the root chrome; gradlew :library:compileKotlin -> BUILD SUCCESSFUL; node scripts/compose-parity-diff.mjs -> 49 allowlisted, 0 failures with React Native's consumed card chrome claimed by the compoundPartComposer role; emitter suite 55/55; parity self-tests 20/20; pnpm run generate:check -> 52/52; swiftui regeneration byte-identical; pnpm test -> 3910/3910; pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree; docs:check-claims -> 75 claims with markers at 49 and normal-form.md restamped"
+    recorded_at: "2026-09-13T07:05:18.308Z"

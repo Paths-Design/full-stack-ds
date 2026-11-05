@@ -1,0 +1,57 @@
+id: FEAT-WALKTHROUGH-ANCHOR-CONSUMPTION-01
+title: 'Walkthrough steps[].anchor consumption: selector-anchored surface across five frameworks'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge walkthrough-anchor at 4eee3141ee46b22cd2f91943edca0b711368c80f'
+created_at: '2026-07-23T00:10:45.545Z'
+updated_at: '2026-11-05T23:01:24.032Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components/Walkthrough/'
+    - 'packages/ds-codegen/src/'
+    - 'packages/ds-react/src/components/Walkthrough/'
+    - 'packages/ds-vue/src/components/Walkthrough/'
+    - 'packages/ds-svelte/src/components/Walkthrough/'
+    - 'packages/ds-angular/src/components/Walkthrough/'
+    - 'packages/ds-lit/src/components/Walkthrough/'
+    - 'packages/ds-react-native/src/components/Walkthrough/'
+    - 'packages/ds-figma-plugin/src/generated/'
+    - 'packages/ds-codegen/.emission-manifest.json'
+    - 'scripts/behavior-realization-audit/'
+    - 'tmp/'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'schema surface.anchor gains a selector-source variant (prop + member path + index channel) alongside the trigger-part form, with fail-loud generate-check validation that the prop exists, is array-typed, and the channel exists'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'Walkthrough contract declares a kind=coachmark surface with anchored positioning and selector anchor, re-admits portal.enabled honestly; buildSurfaceIR produces a selector-anchored SurfaceIR without routing Walkthrough into the compound trigger/content surface emitter; openTriggers stays optional for selector-anchored surfaces'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'all five web emitters'' generic component path portals the root panel to body and positions it via the framework''s anchored-position primitive, anchor resolved from the active step''s selector and reactive to step changes, with data-placement and hidden-until-ready'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'behavior-realization audit derives anchored positioning + portal consumption obligations for Walkthrough per framework, all realized, matchers mutation-falsified before trusting green'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'real-Chromium harness proves the panel is parented to document.body, position fixed, tracks the active step''s anchor with the expected gap, and re-anchors on step change with zero page errors'
+non_functional: {}
+contracts:
+  - name: 'walkthrough-anchored-surface'
+    type: behavior

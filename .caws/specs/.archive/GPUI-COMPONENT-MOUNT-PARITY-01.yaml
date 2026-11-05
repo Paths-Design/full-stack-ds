@@ -1,0 +1,91 @@
+id: GPUI-COMPONENT-MOUNT-PARITY-01
+title: 'GPUI mount parity: every admitted component carries an executed mount witness'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Every admitted GPUI component now emits an executed mount witness, the pilot ratchets allowlist against witnesses in both directions, and all 55 pass on the pinned lane.'
+created_at: '2026-11-01T08:24:37.941Z'
+updated_at: '2026-11-05T23:04:37.038Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI generated mount witnesses and pilot coverage ratchet'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The seven bounded components keep their emitted semantics; only generated test modules are added to their source files'
+  - 'Every allowlisted component has exactly one generated mount witness, and the pilot fails when the allowlist and witness set diverge'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the allowlist; when generate --target=gpui runs; then every admitted component emits a mount witness module declared by the generated barrel'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the generated crate; when cargo test runs on the pinned lane; then every admitted component''s mount witness executes and asserts its root part renders'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given an allowlisted component without a witness; when the pilot runs; then it fails naming the missing witness, and vice versa'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the seven interaction witnesses; when the pilot runs; then they remain required and passing'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the target docs; when read after the slice; then the witness claim and its boundary (mount, not behaviour) are stated'
+non_functional: {}
+contracts:
+  - name: 'gpui-mount-witnesses'
+    type: contract-test
+    path: 'packages/ds-gpui/src/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "generate --target=gpui emits <Name>/<Name>.test.rs for every admitted component and the generated barrel declares each behind #[cfg(test)] (#[path=...] mod <module>_mount); the codegen test pins the barrel contract and asserts one witness per component"
+    recorded_at: "2026-11-01T08:33:27.941Z"
+    command: "pnpm run generate:gpui && pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/mod.rs
+    commit_sha: d59cd27dd
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "cargo test --all-targets on the pinned macOS lane runs the generated witnesses: 58 lib tests pass (55 mounts + 3 control unit tests) and the pilot receipt lists all 55 components::<module>_mount::mounts tests as passed with missingMountWitnesses empty"
+    recorded_at: "2026-11-01T08:33:29.672Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: d59cd27dd
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "negative run proves the ratchet bites: deleting packages/ds-gpui/src/components/Dialog/Dialog.test.rs made node scripts/gpui-pilot.mjs exit 1 with 'GPUI_MOUNT_WITNESS_GENERATION_REQUIRED: Dialog' before any cargo work; the executed-test direction is enforced by comparing expectedMountWitnesses (derived from the allowlist) against passed cargo test names and failing with GPUI_MOUNT_WITNESS_MISSING"
+    recorded_at: "2026-11-01T08:33:31.147Z"
+    command: node scripts/gpui-pilot.mjs
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: d59cd27dd
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "requiredEngineTests is unchanged at 16 hand-written interaction witnesses; the pilot receipt for the merged tree shows missingEngineTests=0 on the cargo test check alongside 55/55 mount witnesses"
+    recorded_at: "2026-11-01T08:33:37.041Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: scripts/gpui-pilot.mjs
+    commit_sha: d59cd27dd
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "gpui-target.md states the two-tier witness boundary (every admitted component mounts and renders; seven carry interaction witnesses; mount evidence is not behaviour) and the implementation snapshot records the mount witness in evidence, artifacts and non-claims; docs:check-claims passes 81 marked claims with 16 fresh stamped docs"
+    recorded_at: "2026-11-01T08:33:39.505Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-target.md
+    commit_sha: "0643374f9"

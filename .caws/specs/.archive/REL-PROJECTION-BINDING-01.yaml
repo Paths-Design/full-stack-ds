@@ -1,0 +1,111 @@
+id: REL-PROJECTION-BINDING-01
+title: 'Bind one admitted analytical operation through the projection boundary and observe its claims through two consumers'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Bound the admitted analytical operation through the projection boundary: every retained topology carries it, two structurally different consumers recover the same values by evaluating it rather than by trusting a claim label, a mutated field/grouping/aggregate is detected, the demonstrated omitted-partition and additivity-kind defects are repaired, and two precommitted predictions are recorded as refuted rather than as vacuous passes.'
+created_at: '2026-09-18T00:46:16.362Z'
+updated_at: '2026-11-05T23:07:02.859Z'
+created_by_session: 'session-69475cd2-20cf-4633-9893-09967382f4d8'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (BoundOperation, evaluateOperation, the two consumers, the repaired composition premise, the binding observer)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (binding, premise, consumer and mutation controls)'
+    - 'docs/current-implementation-snapshot.md (the predecessor''s interpretation corrected)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+  out: []
+invariants:
+  - 'The predecessor''s interpretation is CORRECTED, not discarded: its product construction, retained baseline sets and scale/grain/cyclic sensitivities stand; what is withdrawn is the claim that every retained program preserves the analytical claims attributed to it, and the precommit''s concrete readback-preservation prediction is recorded as REFUTED rather than vacuous.'
+  - 'A relevant premise that is unavailable is CARRIED as an obligation; a contradiction that is established is REFUSED. An omitted composition partition selects no completion, and no unrelated catalogue diagnostic is assigned to keep a result inside the existing cause list.'
+  - 'Expected values for a consumer come from the bound operation evaluated over a supplied population, NEVER from inducedClaims. A consumer that passes because its own classification function agrees with itself has demonstrated nothing.'
+  - 'Every asserted loss names what becomes unrecoverable, and an unmeasured loss stays unmeasured. Changing a claim label is not evidence of information loss.'
+  - 'Out of scope and not to be widened into: OHLC and graph support, the eight unimplemented tasks, projection combinators, production emission, stage-2 census accounting, and exhaustive realization residue. A need to redesign the projection algebra is a stopping result, not permission to widen.'
+  - 'Stage 2 stays unratified. This slice ratifies no coordinate and does not change the sequencing decision recorded for the predecessor experiment.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: >-
+      Every retained program carries the operation it displays - relation, field,
+      aggregate, the dimensions summed over and the result grain - and a candidate
+      whose operation is missing or does not match the admitted one is NOT retained:
+      it is carried as undecided under the missing premise, never admitted on the
+      favorable branch.
+  - id: A2
+    given: >-
+      The composition task's partition premise can be omitted, and the additivity
+      kind is read only through nonAdditiveAlong.
+    when: >-
+      A composition is enumerated with no partition declared, and again with a
+      measure whose kind is non-additive or ratio-measure.
+    then: >-
+      The omitted premise is CARRIED: those candidates are undecided under the
+      missing-premise obligation rather than retained on the favorable branch; a
+      non-additive measure is refused over any partition; a ratio-measure is refused
+      under the corpus's rate cause; and the explicitly declared illegal partition
+      is still refused under REL_ADDITIVITY_SUM_SEMIADDITIVE.
+  - id: A3
+    given: 'Two structurally different programs consume the same bound operation.'
+    when: >-
+      Each consumer recovers the analytical result over a supplied population and
+      the observer compares what they recovered against the operation's own
+      evaluation.
+    then: >-
+      Both consumers recover the SAME values computed from the operation rather than
+      from a classification function, the observer distinguishes them from the
+      incompatible aggregation direction, and the values are recovered for the
+      four-row population as 30 and 105 against the forbidden 110 and 25.
+  - id: A4
+    given: >-
+      A consumer's success could be reported from the declared explanation rather
+      than from the bound operation.
+    when: >-
+      One claim-bearing part of the binding - the bound field, the grouping, or the
+      aggregate - is mutated while the declared explanation is left unchanged.
+    then: >-
+      The mutation is either refused before consumption or produces an OBSERVED
+      disagreement between what the consumer recovered and what the operation
+      evaluates to, so the result cannot pass by inspecting its own certificate.
+  - id: A5
+    given: 'The predecessor''s completion record called every check passed.'
+    when: 'The retained record is read against the re-executed evidence.'
+    then: >-
+      It states the precommit's concrete readback-preservation prediction as REFUTED
+      rather than vacuous, names the POST-EXCLUSION candidate population rather than
+      claiming no candidate is silently dropped from the whole product, and states
+      loss labels as absent property names rather than measured information loss,
+      with realization-level residue still recorded as unmeasured.
+non_functional: {}
+contracts:
+  - name: 'projection-binding'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/projection.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (21 files / 915 tests; projection.test.ts 35) and pnpm test (303 files / 4136 tests), typecheck, lint, docs:check-claims and docs:check-links green; governed:rail and test:frameworks green in the worktree on merge 125a2301; all seven ledger gates green with unchanged numbers. MEASURED: bindOperation on the fixture own assertion gives sum(stock.on_hand) over [product] with result grain [date]; every one of the 42 retained programs carries a binding matching it (asserted per program, not by count). A binding that does not RESOLVE against the structure is not retained: naming an undeclared field (reserved) and summing over a dimension the grain does not contain (warehouse) both leave zero retained and every disposed candidate carried as undecided under grain:declared with a non-empty detail; an ABSENT binding does the same. The candidate population is now named rather than implied: 168 triples considered, 69 excluded where a channel has no slot for a scale, 99 disposed, and retained+refused+undecided equals disposed. NON-CLAIM: the binding is carried and checked by VALUE over one supplied population; it is not a general theorem about any topology, and it says nothing about rendered output."
+    recorded_at: "2026-09-18T00:59:13.991Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "The demonstrated defect is repaired and the repair is measured in three directions. OMITTED PARTITION: composition with no partition dimension no longer takes the favorable branch - 0 retained, 46 refused, 53 UNDECIDED under invariant:exhaustive, whereas the predecessor retained 43; the lawful completion (partition product) still retains 43 and the unlawful one (partition date) still retains 0 with REL_ADDITIVITY_SUM_SEMIADDITIVE, so the omitted input and the favorable completion are now DIFFERENT populations. ADDITIVITY KIND: reading only nonAdditiveAlong left the kind unconstrained because that array is empty for kinds other than semi-additive; composition over a measure declared non-additive now retains 0 with REL_ADDITIVITY_SUM_SEMIADDITIVE, and over a measure declared ratio-measure retains 0 with REL_RATIO_MEASURE_AVERAGED (each refused over any partition, not only a named one). The obligation term invariant:exhaustive is asserted to be a term the doctrine vocabulary appendix actually carries, via extractDoctrineVocabulary, rather than a name invented to fit. No unrelated catalogue diagnostic was assigned to keep any of this inside the existing cause list."
+    recorded_at: "2026-09-18T00:59:14.542Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "THE VALUES ARE ARITHMETIC, NOT ENGINE OUTPUT, and they are the discriminator the review named. Over the supplied four-row population, evaluateOperation on the bound operation (sum on_hand over product, grain [date]) returns day1=30 and day2=105; the direction the semi-additivity declaration forbids (along [date], grain [product]) returns A=110 and B=25. Both are asserted as literals in the test, so a change in the classification function cannot move them. A READBACK program (measure channel text) and a METRIC program (a non-readback measure channel with a declared zero baseline) are asserted to be structurally different topologies, and each recovers day1=30, day2=105 through its own consumer - recovered equal to expected on both sides, and equal to each other. The consumers expected side is evaluateOperation, NEVER inducedClaims; each declines the other channel (not-a-readback-channel, not-a-metric-channel) so agreement between two spellings of one consumer is not the claim; and the readback consumer rejects the forbidden direction. The total is identical (135) on both directions while the PARTITION differs, which is exactly why the values and not a label are what distinguish them. NON-CLAIM: this establishes the binding controls what is displayed for this population through two topologies; it is not a general theorem and does not establish rendered output."
+    recorded_at: "2026-09-18T00:59:40.850Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "bindingObserver runs the consumer the topology licenses and requires the values it recovered to equal the admitted operation evaluation, and it never reads the program claims array. Three mutations are exercised with the declared explanation left untouched, one per claim-bearing part of the binding: FIELD (on_hand to reserved) is rejected BEFORE consumption with reason binding-mismatch, and the recovered values 3 and 7 are observed to disagree with the expected 30 and 105; GROUPING (along and resultGrain swapped to the forbidden direction) is accepted by declarationObserver - the certificate still says ratio-comparability - while bindingObserver rejects it; AGGREGATE (sum to mean) is accepted by the OLD programObserver, which sees nothing wrong, while bindingObserver rejects it, which is the specific gap this slice closes. The unmutated pair is accepted through the same observer on both a readback and a metric program, so the control is a discriminator and not a blanket refusal."
+    recorded_at: "2026-09-18T00:59:41.318Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "The retained artifact carries a correctedAccount block and the durable snapshot was rewritten to match. readbackPrediction begins REFUTED and states that the precommit named the value-readback programs as preservable under ratio-to-ordinal, that ten existed and none survived, and that the general same-task requirement having an empty applicable set does NOT confirm the concrete prediction. A SECOND refutation is recorded that the binding exposed: grainPrediction states that the readback family was treated as grain-independent, which was true only of a program carrying no grain-bearing content - a bound program names a result grain, so an unknown grain leaves it unestablished in EVERY topology, which is why the declared->unknown control removes all 42 rather than a subset. The controls array therefore reports requirementMet and predictionRefuted separately (two controls have requirementMet true with predictionRefuted true, three have both clean), and the test asserts exactly those two refutations carry a correction rather than asserting that every control passed. closurePopulation states the POST-EXCLUSION set and the artifact records 168/69/99; lossLabels states a loss is an absent property NAME rather than measured information loss; residue states realization-level residue remains UNMEASURED. The snapshot sentence claiming 42 lawful programs whose shared claims are the intersection is withdrawn and replaced with what the slice establishes."
+    recorded_at: "2026-09-18T00:59:41.751Z"

@@ -1,0 +1,56 @@
+id: REL-TEMPORAL-FACT-01
+title: 'The declared temporal fact survives the projection boundary instead of being dropped'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The projection boundary transports the declared temporal kind, with the isolation control the pause record said was missing.'
+created_at: '2026-09-21T00:48:33.941Z'
+updated_at: '2026-11-05T23:07:18.974Z'
+created_by_session: 'session-d9bf6cd4-ea13-4823-8ad3-db20bfcc705f'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (temporality carried onto the projection facts)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (the isolation control the pause record said was missing)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+  out: []
+invariants:
+  - 'The projection boundary TRANSPORTS declared facts; it does not interpret them and it does not drop them. Carrying temporality.kind asserts nothing about duration or extent: the consumer that needs an extent still has to obtain it, and an absent extent stays absent.'
+  - 'A default must not be invented for a fact the declaration does not carry. No temporality on the field means no temporal fact on the projection facts, never an implicit instant.'
+  - 'The isolation control is the point of the slice: a change to temporality ALONE must move the facts, so the earlier control result (changing it moved nothing) is inverted rather than merely asserted against.'
+acceptance:
+  - id: A1
+    given: 'An admitted operation over a structure whose group or measure field declares a temporality kind.'
+    when: 'The projection facts are derived and inspected.'
+    then: 'given an admitted operation whose group or measure field declares temporality; when the projection facts are derived; then the temporality kind is carried on the facts'
+  - id: A2
+    given: 'Two admitted operations differing only in the declared temporality kind of the group field.'
+    when: 'Both fact sets are derived and compared.'
+    then: 'given two otherwise identical admitted operations whose group fields differ only in temporality kind; when their projection facts are compared; then the facts differ and the difference is attributable to temporality alone'
+  - id: A3
+    given: 'An admitted operation over a field declaring no temporality.'
+    when: 'The projection facts are inspected.'
+    then: 'given a field that declares no temporality; when the projection facts are derived; then no temporal fact is asserted rather than a default being invented'
+non_functional: {}
+contracts:
+  - name: 'projection-temporal-fact'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts: the declared TEMPORAL kind is CARRIED at the result boundary (a.facts.dimension.temporality equals the declaration) (vitest run packages/ds-codegen/src/analytical, 22 files 1037 tests green)"
+    recorded_at: "2026-09-21T00:56:33.052Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts: same test - aRest equals bRest, so the difference is attributable to temporality alone (vitest run packages/ds-codegen/src/analytical, 22 files 1037 tests green)"
+    recorded_at: "2026-09-21T00:56:33.528Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts: same test - temporality in c.facts.dimension is false and no default is invented (vitest run packages/ds-codegen/src/analytical, 22 files 1037 tests green)"
+    recorded_at: "2026-09-21T00:56:33.993Z"

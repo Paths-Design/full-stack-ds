@@ -1,0 +1,47 @@
+id: FEAT-COMPOSE-SHUTTLE-ADMISSION-01
+title: 'Array-iterated list predicate to shared substrate; Compose Shuttle admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T03:12:44.279Z'
+updated_at: '2026-11-05T23:00:08.899Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the array-iterated list gate is target-neutral IR extraction; when it moves to the shared substrate and Shuttle is admitted on the compose array-list class; then swift regeneration stays byte-identical, Shuttle compiles via gradle, compose grows 32 to 33, and parity/doc gates stay green'
+non_functional: {}
+contracts:
+  - name: 'array-iterated-list'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isArrayIteratedList moved to native-emission-class.ts (pure IR extraction: one non-Date array channel over an array-iteration node); swift regeneration after the rewire is byte-identical (52 groups, zero diff); compose 32-to-33: gradlew :library:compileKotlin BUILD SUCCESSFUL (Shuttle.kt: array channel controlled/uncontrolled, removable rows, chrome from scopes); compose-parity-diff 33/33 0 failures (arrayList path+role); governed:rail PASS; pnpm test 3886/3887 with the unrelated analytical erasure-plan load-flake passing 55/55 in isolation; frameworks 87/87; docs:check-claims 74/74; typecheck clean; generate:check 52/52"
+    recorded_at: "2026-09-13T03:29:40.143Z"

@@ -1,0 +1,66 @@
+id: GODOT-COMPARATIVE-PILOT-01
+title: 'Godot contract target and Unity comparative behavior pilot'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Bounded Godot target, frozen engine state comparison, scene roundtrip and macOS export witnesses completed.'
+created_at: '2026-09-06T08:32:18.713Z'
+updated_at: '2026-11-05T23:04:16.716Z'
+created_by_session: '01a07581-2e8c-7851-abc0-0126a0e13465'
+blast_radius:
+  modules:
+    - 'Godot target runtime token projection and comparative engine witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-godot'
+    - 'packages/ds-codegen'
+    - 'packages/ds-unity/Tests'
+    - 'scripts/godot-pilot.mjs'
+    - 'scripts/engine-comparison.mjs'
+    - 'fsds.targets.json'
+    - 'pnpm-workspace.yaml'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/normal-form.md'
+  out: []
+  support:
+    - AGENTS.md
+invariants:
+  - 'Shared traces are frozen before implementation and engine adaptations remain explicit.'
+  - 'Unsupported declared capabilities reject admission rather than silently disappear.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given shared behavior traces; when Unity and Godot execute them; then normalized observations agree for admitted operations'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Godot generated controls; when imported saved reopened and exported; then runtime and standalone witnesses prove the bounded pilot'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given token facts and unsupported capabilities; when generation runs; then projected theme values reach runtime and unsupported facts diagnose explicitly'
+non_functional: {}
+contracts:
+  - name: 'engine-traces'
+    type: behavior
+    path: 'packages/ds-godot/fixtures/traces.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Frozen traces committed at 84046e07; node scripts/engine-comparison.mjs run 5af9bd21-83b8-4e79-ad7c-6fa825ccc9a2 matches all five state sequences; tmp/godot-comparative/comparison.json binds traces and source hashes. Unity Editor panel versus Godot runtime/export, not physical input."
+    recorded_at: "2026-09-06T08:46:18.483Z"
+    commit_sha: "62f37334"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Godot 4.7.2 fresh import, separate editor API scene save/reload, macOS export and template-build receipt passed; tmp/godot-comparative/read.log export.log godot.json godot.png; runnable project preserved."
+    recorded_at: "2026-09-06T08:46:19.098Z"
+    commit_sha: "62f37334"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Seven emitter tests pass including unknown-prop/surface rejection and changed foreground token; Godot changed-token fixture resolves #123456 in Theme resource; known prop and styling exclusions emitted in capabilities.json. Full repository rail and suites passed."
+    recorded_at: "2026-09-06T08:46:19.692Z"
+    commit_sha: "62f37334"

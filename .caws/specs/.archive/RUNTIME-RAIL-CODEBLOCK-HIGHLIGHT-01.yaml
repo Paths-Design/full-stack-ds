@@ -1,0 +1,52 @@
+id: RUNTIME-RAIL-CODEBLOCK-HIGHLIGHT-01
+title: 'Runtime rail: CodeBlock highlight facts across all five frameworks'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'CodeBlock highlight facts runtime-proven in the Chromium rail across all five frameworks against the frozen golden baseline; gate-off degradation asserted; snapshot row upgraded'
+created_at: '2026-08-17T18:56:05.797Z'
+updated_at: '2026-11-05T23:07:43.264Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/runtime-rail.spec.ts'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the preview mounts CodeBlock with code+language through the fsds:config bus; when the rail runs across react/vue/svelte/lit/angular; then the rendered [data-token] kind sequence equals the frozen golden typescript stream and the concatenated span text equals the source exactly'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given highlight=false through the same seam; when the rail runs across all five frameworks; then zero [data-token] spans render and the code element text round-trips the source'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the extended rail; when pnpm run e2e:rail executes; then all facts pass (OS-agnostic assertions, no screenshots in CI proof) and the snapshot row upgrades the highlight facts from test-proven to runtime-proven'
+non_functional: {}
+contracts:
+  - name: 'runtime-rail-codeblock'
+    type: contract-test
+    path: 'e2e/runtime-rail.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "e2e:rail at merge 894f28b1: all five frameworks render the golden typescript [data-token] kind sequence exactly (expected kinds loaded from golden-fixtures.json at runtime) with span text reassembling the source — 10/10 new facts green, 84 passed total"
+    recorded_at: "2026-08-17T18:59:31.973Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "gate-off facts: highlight=false via the fsds:config bus renders zero [data-token] spans in all five frameworks and the code element round-trips the source (trimmed for Vue/Angular template whitespace)"
+    recorded_at: "2026-08-17T18:59:32.918Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run e2e:rail exit 0 (84 passed, 1 skipped screenshot baseline); assertions are OS-agnostic DOM facts; snapshot content-transform row upgraded to runtime-proven citing e2e/runtime-rail.spec.ts"
+    recorded_at: "2026-08-17T18:59:33.892Z"

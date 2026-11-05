@@ -1,0 +1,75 @@
+id: GODOT-COLLECTION-REALIZATION-01
+title: 'Godot collections+date family realization: Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel pending-ledger closure'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Collections/date family completed by refusal: eight components at zero pending leaves, with the date-grid, paged-set, dynamic component-ref, formatting, inert-axis, navigation and authored-binding facts refused with written reasons'
+created_at: '2026-11-01T09:56:48.514Z'
+updated_at: '2026-11-05T23:04:15.890Z'
+created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
+blast_radius:
+  modules:
+    - 'Godot collections/date realization: formatting, dynamic component refs, paged sets and navigation adjudication'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A pending fact moves to lowered only with a headless witness, and to refused only with a written reason'
+  - 'No admitted component may rely on a catch-all boundary rule; the audit stays at zero violations'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the eight collection/date components; when the support boundary is re-audited; then every pending leaf is realized and flipped to lowered with a witness or refused with a written reason, and audit:godot-boundary exits 0 with zero pending leaves for all eight'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the adjudicated realizable subset; when the shared runtimes run headless; then whatever is claimed lowered is exercised by a pilot row'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pilot lane; when pnpm run test:godot runs; then all pre-existing rows stay unchanged and green'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs and capability receipts; when read; then the bounded claim and non-claims for collections/date (dynamic component refs, paged sets, formatting) are stated'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus-wide gates; when run after the slice; then generate --target=godot is byte-stable, generate:check passes, the boundary audit exits 0, the ds-codegen godot suites and pnpm run test:godot pass'
+non_functional: {}
+contracts:
+  - name: 'collection-runtimes'
+    type: behavior
+    path: 'packages/ds-godot/addons/full_stack_ds/runtime/sequence.gd'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "collection-family pending probe (node tmp/coll-pending.mjs) prints no component rows -> Calendar, Table, Pagination, PageNavigator, NavTree, NavList, Skeleton, Carousel all at 0 pending; pnpm run audit:godot-boundary exit 0 with ledger 161 rules, pending 74 corpus-wide, 0 unclassified, inventory matching a fresh regen"
+    recorded_at: "2026-11-01T10:06:38.428Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "No fact was claimed lowered for this family, so no new witness was required: every pending leaf was reclassified refused with a written reason (date-grid model, paged-set model, dynamic component-ref facts, formatting/highlighting, inert flags/axes, navigation targets, authored bindings). The claim is conservative: an earlier draft that marked variant axes lowered was reverted after inspecting the generated configs (Pagination/Calendar/PageNavigator carry zero predicate rules, so those axes are inert) — the ledger records the refusal instead of the stronger claim."
+    recorded_at: "2026-11-01T10:06:39.450Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 31 rows; no row added (nothing realized) and every pre-existing row is unchanged; catalog-load admitted 55 failures []"
+    recorded_at: "2026-11-01T10:06:40.538Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Collections and date family' section states the family closed entirely by refusal, lists each refusal with its reason, and says behavioural completion would need new runtimes (date grid, paged set, dynamic ref mounting); packages/ds-godot/README.md and docs/current-implementation-snapshot.md updated; docs:check-claims and docs:check-links pass"
+    recorded_at: "2026-11-01T10:06:41.734Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=godot twice -> tree unchanged (byte-stable); pnpm run generate:check exit 0; pnpm run audit:godot-boundary exit 0; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 92 tests passed (boundary.test.ts updated where narrowed rules changed expected dispositions); pnpm run test:godot passed"
+    recorded_at: "2026-11-01T10:06:42.967Z"

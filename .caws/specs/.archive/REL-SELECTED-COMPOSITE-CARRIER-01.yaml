@@ -1,0 +1,94 @@
+id: REL-SELECTED-COMPOSITE-CARRIER-01
+title: 'Carry selected analytical meaning through detached readback and metric artifacts'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Immutable selected carrier and independent artifact recovery landed with seven executed acceptance receipts; browser realization remains a separate slice.'
+created_at: '2026-10-01T01:44:11.962Z'
+updated_at: '2026-11-05T23:07:11.978Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Immutable selected composite carrier and output-only artifact recovery'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical/composite-selection.ts'
+    - 'packages/ds-codegen/src/analytical/composite-artifacts.ts'
+    - 'packages/ds-codegen/src/analytical/composite-output.test.ts'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/analytical/authority.ts
+  out: []
+invariants:
+  - 'Output selection consumes retained carried meaning; downstream consumers never reinterpret source rows or mutable declarations'
+  - 'A metric range cannot choose between conflicting carried endpoint values or manufacture quantity/unit authority'
+  - 'Stage-2 ratification M5 and M6 remain open; no endpoint roles ordering or aggregation expansion is claimed'
+acceptance:
+  - id: A1
+    given: 'a retained nested qualified composite'
+    when: 'selection snapshots it and source/request data change'
+    then: 'datasets identities field facts view bindings standing and derived relationships remain immutable'
+  - id: A2
+    given: 'refused unproven unsupported or empty requests'
+    when: 'selection and lowering run'
+    then: 'no output exists and cast unselected lowering is refused'
+  - id: A3
+    given: 'a selected composite'
+    when: 'detached readback and calibrated metric artifacts are independently decoded using only output'
+    then: 'complete carried values identities relationships and standing survive'
+  - id: A4
+    given: 'co-registered snapshots with conflicting endpoint values'
+    when: 'metric selection requests their shared derived range'
+    then: 'endpoint incoherence is surfaced without choosing an output'
+  - id: A5
+    given: 'a metric request'
+    when: 'quantity licences units or lossless scale support are absent'
+    then: 'the request cannot silently produce unlawful geometry'
+  - id: A6
+    given: 'output mutations of values associations ranges panels or standing'
+    when: 'output-only recovery runs'
+    then: 'each mutation changes the recovered observation'
+  - id: A7
+    given: 'unfamiliar renamed fields and reordered source populations'
+    when: 'the generic pipeline runs'
+    then: 'preservation holds without form or fixture branches and stage-2 claims remain unchanged'
+non_functional: {}
+contracts:
+  - name: 'selected-composite'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/composite-selection.ts'
+  - name: 'artifact-preservation'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/composite-output.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); snapshots meaning, deduplicates shared authority and detaches produced output; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:26:23.450Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); produces no artifact on unsupported, contradicted, unresolved or empty paths; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:26:31.387Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); recovers complete meaning independently from serialized readback and metric output; literal same-carrier reference asserted; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:26:39.626Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); does not coalesce contradictory endpoint snapshots into one metric range; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:26:47.621Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); requires metric quantity/unit authority and a genuinely lossless scale; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:26:55.204Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); observes five distinct output mutations instead of agreement on totals; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:27:03.044Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); preserves renamed declarations and reorders by identity without any adapter change; authority partition 32 tests pass; stage2 digests unchanged; analytical:freeze:check 166 erasures/130 verdicts and final-quotient 34/34 held; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:27:10.498Z"

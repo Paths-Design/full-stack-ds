@@ -1,0 +1,44 @@
+id: REL-PEERS-NAMESPACE-01
+title: 'Declare the peers namespace so its incidence erasure rebinds instead of tokenizing'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Peers namespace declared on the structure and threaded through the ELEMENTS step: the last tokenizing residue is discharged, never-discharged falls 6 -> 5, no verdict moved.'
+created_at: '2026-09-15T16:06:01.759Z'
+updated_at: '2026-11-05T23:06:58.134Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/relation-model.ts + census.ts (the structure-level operand map and the array-elements threading)'
+    - 'the emitted schemas and the re-recorded ledgers (the executor is unchanged: the relation pool already reads the fixture)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-contracts/relation.contract.schema.json'
+    - 'packages/ds-contracts/quotient-image.schema.json'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - "The namespace a name list ranges over is a DECLARATION fact read where the walk reads every other namespace fact: the walk does not infer a namespace from a path, and only an array's ELEMENTS inherit their annotated property's namespace -- nothing deeper does."
+  - 'Only peers gains a namespace this round: the map is authored per property, and a name list with no namespace keeps the tokenizing erasure unchanged.'
+  - 'Replacing an erasure moves the erasure authority, so every ledger is re-recorded and the pins that named the old refusal are corrected rather than deleted.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given structure.peers[]#incidence is never discharged because its names are rewritten to reserved tokens, which the boundary reports as missing inputs; when the relational structure declares the peers namespace with the same x-fsds-operands map the branches carry and an array''s elements inherit their annotated property''s namespace; then the peers incidence erasure rebinds each peer set to declared relation names, every image it produces is a legal declaration, and the coordinate leaves the never-discharged list for a measured reason with the analytical suite, every gate and every ledger agreeing'
+non_functional: {}
+contracts:
+  - name: 'binding-erasure'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/erasure-plan.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (19 files / 841 tests green) and pnpm run analytical:check-schemas check-baseline closures:check footprints:check freeze:check final-quotient stimuli fixtures:check, all green in worktree peers-namespace-land before merge 11c6ba73; full root suite 301 files / 4062 tests, typecheck, all green. Measured outcome: the annotation reaches the peers locator through the ELEMENTS step (pinned in erasure-plan.test.ts), each peer set rebinds to the first k declared relation names, and structure.peers[]#incidence is DISCHARGED on every fixture where it moves (2 move, 2 are identity and discharge by unchanged) -- never-discharged falls 6 -> 5. The image is lawful for a measured reason: the canonical bind lands on the structure's first-declared relation, a BASE relation in this corpus, and the divergence law is conditioned on every member being an aggregate, so the rebound set is a lawful vacuous peer claim -- the operand-typing question answered by the corpus in miniature. NON-CLAIM: no verdict moved -- witnesses.json unchanged, no witness names the coordinate, the freeze holds the same 126 verdicts (16/2/34/74) and the supersession (forget-reference-incidence=1, reach 4 -> 2) is over images; the executor is untouched and the erasure authority moved through its emitted schema artifact alone. DEVIATION from the AC wording: the coordinate left the never-discharged list DISCHARGED (the AC's 'measured reason' allowed corpus-dead or a named refusal too); a fixture declaring two aggregates first would put the lawful-image claim to the test, which is recorded as the open edge."
+    recorded_at: "2026-09-15T16:21:12.563Z"

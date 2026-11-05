@@ -1,0 +1,49 @@
+id: DOC-SNAPSHOT-RESWEEP-01
+title: 'Snapshot ledger re-sweep: reconcile 9 drifted rows against live code'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Re-swept all 33 snapshot rows at main@90804abc: 24 accurate, 9 drifted (6 stale counts, 3 under-claims), zero over-claims and zero broken evidence paths.'
+created_at: '2026-08-17T21:22:06.843Z'
+updated_at: '2026-11-05T22:58:30.760Z'
+blast_radius:
+  modules:
+    - 'claim ledger'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Every count in a row matches its live source at sweep time'
+  - 'A Next-admissible-move entry names work that is actually outstanding'
+acceptance:
+  - id: A1
+    given: 'a reader trusts a ledger count'
+    when: 'they re-derive it from the cited source'
+    then: 'the two agree'
+  - id: A2
+    given: 'a campaign has been fully burned down'
+    when: 'a reader reads its row'
+    then: 'it is recorded as landed, not listed as pending work'
+  - id: A3
+    given: 'the sweep'
+    when: 'complete'
+    then: 'the header records the new sweep point and which rows were verified'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge 7bc5ab78: every ledger count re-derived from its cited source and made to agree — a11y 156 (grep spec field of known-gaps.json: COMPOSITE-KEYBOARD 140 + TABLE-SEMANTICS 10 + LABEL-ID-ASSOCIATION 6); dead-slot 50/906/792, 114 inert = 98 dead + 16 shadowed (dead-slot-matrix.json); dispositions review 66 / wire 19 / delete 10 / unconsumed-vocabulary 3 / shadowed 16 summing to 114 (known-dead.json); corpus 50 in three rows; behavior self-tests 31 restated as derived-not-frozen. docs:check-claims exit 0, 12/12 marked claims match derived values."
+    recorded_at: "2026-08-17T21:35:26.596Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "merge 7bc5ab78: three finished campaigns no longer read as pending. FEAT-A11Y-RELATIONSHIP-STRAGGLERS-01 (closed, 0 entries in known-gaps.json) now says 'done — do not re-open'; the dead-slot repoint disposition is recorded empty, its 18 entries burned under FIX-DEAD-SLOT-VARIANT-REPOINT-02 (closed completed, -01 closed superseded) and removed from the burn-lane list; FIX-SWIFTUI-PRESS-PROOF-01 (closed) is now cited with what it proved, its blast_radius.modules having named this snapshot. Inverse also checked: the two open a11y lanes are flagged as having no spec YAML."
+    recorded_at: "2026-08-17T21:35:36.381Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "merge 7bc5ab78: the freshness header carries the re-sweep as its own numbered entry (2) — 'main@90804abc (2026-08-17, DOC-SNAPSHOT-RESWEEP-01), all 33 rows re-verified: 24 accurate, 9 drifted (6 stale counts, 3 under-claims), zero over-claims and zero broken evidence paths' — without overwriting the c5cda2c9 full-sweep record at (1), and the re-sweep-due rule now points at (2). Adds what the sweep learned about which claims rot. The stale-doc section records the sweep and re-runs both defects the prior sweep left open: render-binding audit exit 0 (50 components / 309 prop rows, 0 failing class A/B) and mobile-parity --check exit 0 ('50 components, 8 targets, 8 dimensions; derivations consistent'). docs:check-links exit 0, 66 links resolve / 3 skipped as gitignored."
+    recorded_at: "2026-08-17T21:35:46.585Z"

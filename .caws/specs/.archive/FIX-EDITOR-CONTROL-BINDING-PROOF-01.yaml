@@ -1,0 +1,95 @@
+id: FIX-EDITOR-CONTROL-BINDING-PROOF-01
+title: 'The properties editor must only surface controls whose slot is provably read'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Properties panel now offers controls only for slots the generated CSS provably reads; 11 measured mis-bound gap roles fixed, unread slots render explicitly unwired'
+created_at: '2026-07-30T04:49:21.152Z'
+updated_at: '2026-11-05T23:02:42.310Z'
+blast_radius:
+  modules:
+    - 'src/components/properties-panel/control-derivation.ts (resolveBoxModel, ROLE_MATCHERS)'
+    - 'src/components/properties-panel/{BoxModelEditor,PropertiesPanel}.tsx'
+    - 'packages/ds-codegen/src/ir.ts (expose which slots a rule reads, if not already derivable)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/components/properties-panel'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'docs/architecture/tokens-architecture.md'
+    - e2e/editor-binding-rail.spec.ts
+  out: []
+invariants:
+  - >-
+    A component-scoped token IS the design-tool override interface — that is its
+    purpose, and its declaration is legitimate whether or not it is wired yet. The
+    defect is not the declaration; it is the EDITOR claiming a control it cannot
+    honour. Fix the derivation, do not delete the slots.
+  - >-
+    resolveBoxModel (control-derivation.ts:467-511) derives controls from slot NAME
+    patterns — first regex match per role, with a used-set to avoid double-binding.
+    It never checks whether any rule reads the slot it picked, so it renders a
+    control on the strength of a name. 115 slots corpus-wide are read by var() in
+    zero rules, so any control resolving to one of those is dead on arrival.
+  - >-
+    An override is only live if some rule READS the custom property. The box-model
+    pool is wired by construction (renderBoxModelConsumers emits a consumer for
+    every pool slot on every root); component-scoped slots are wired only when a
+    styles.json entry binds them. The editor must distinguish these two cases
+    rather than assuming a declared slot is settable.
+  - >-
+    A dead knob is worse than an absent one: it teaches the designer the system is
+    broken and costs a debugging session to disprove. Prefer omitting or explicitly
+    marking a control over rendering one that silently does nothing.
+acceptance:
+  - id: A1
+    given: 'A component slot that no CSS rule reads (one of the 115 measured)'
+    when: 'the properties panel derives its controls'
+    then: >-
+      no editable control is offered for it, or it is rendered explicitly as
+      unwired. Verified in a browser by changing the control and asserting the
+      computed style does NOT move — the pre-fix behaviour, which must now be
+      unreachable.
+  - id: A2
+    given: 'A component slot that a rule does read'
+    when: 'the panel derives its controls'
+    then: >-
+      the control is offered AND changing it moves the computed style. Both
+      directions measured, so the fix cannot be satisfied by hiding everything.
+  - id: A3
+    given: 'A component declaring both box-model.gap and <prefix>.size.gap.default'
+    when: 'resolveBoxModel picks a slot for the gap role'
+    then: >-
+      it binds the slot that actually wins the cascade, not merely the first name
+      match in row order. This is an UNVERIFIED risk as of spec authoring — row
+      ordering was not checked — so the first task is to determine whether any of
+      the 17 shadowed entries is currently mis-bound, and report the finding either
+      way rather than assuming.
+  - id: A4
+    given: 'The derivation logic'
+    when: 'a mutation removes the read-proof check'
+    then: 'a test fails naming the component and slot that regained a dead control.'
+non_functional: {}
+contracts:
+  - name: 'control-derivation'
+    type: behavior
+    path: 'src/components/properties-panel/control-derivation.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "e2e/editor-binding-rail.spec.ts A1 at merge 082d41b1 (2 passed): Button's unread box-model.gap renders explicitly unwired (badge + disabled input, data-unwired attr) and no editable control for it exists anywhere in the panel — the pre-fix dead knob is unreachable"
+    recorded_at: "2026-08-21T23:32:37.510Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "e2e/editor-binding-rail.spec.ts A2 at merge 082d41b1: gap control offered under button.size.gap.default (the read slot), fill 24px moves preview computed gap to 24px, clearing restores the recorded baseline — both directions measured"
+    recorded_at: "2026-08-21T23:32:37.980Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Investigated before implementation (tmp/a3-shadowed-gap-probe.mjs, corpus scan of sidecars x generated React CSS): 22 components declare 2+ gap-matching slots; 11 mis-bound — editor bound box-model.gap (first in sidecar order) while CSS reads only the component-prefixed slot (Button/Tabs/Card/etc.); two severity classes (Tabs outright dead, distinct resolvesTo; Button alive only via semantic-var echo with cross-component blast radius). Finding reported in fix commit c6ab1e67 and pinned replayably by 'A3 pin' in control-derivation.test.ts (asserts the split read-truth from committed Button.css)"
+    recorded_at: "2026-08-21T23:32:38.390Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "'A4 mutation kill' in control-derivation.test.ts (54/54 at merge 082d41b1): unmarked rows ARE the mutation control — identical input minus read-proof degenerates to the legacy box-model.gap binding, and the test asserts the marked path must not, naming Button + box-model.gap on failure; full gate (governed:rail + 479 root tests + test:frameworks) exit 0 in the merged worktree"
+    recorded_at: "2026-08-21T23:32:38.808Z"

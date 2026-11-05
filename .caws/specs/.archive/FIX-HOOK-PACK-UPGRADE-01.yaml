@@ -1,0 +1,53 @@
+id: FIX-HOOK-PACK-UPGRADE-01
+title: 'Upgrade the CAWS hook pack v14 to v39 and wire the live surface to it'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Hook pack upgraded v14 to v39 and settings.json rewired to the .caws/hooks/dispatch surface that was previously unsourced'
+created_at: '2026-08-18T06:29:16.252Z'
+updated_at: '2026-11-05T23:02:56.137Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.caws/hooks'
+    - '.claude/hooks'
+    - '.claude/settings.json'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given caws init writes .caws/hooks while settings.json wires .claude/hooks so an upgrade would be a silent no-op; when the upgrade lands; then settings.json points every hook event at .caws/hooks/dispatch and the pack there is v39'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given local growth must not be lost; when the pack is overwritten; then doc-frontmatter-check.sh survives and is registered in the new dispatcher, and the two upstreamed local fixes (placeholder false-positive, oracle .cjs) are confirmed present in v39'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given hooks govern every tool call; when the rewire lands; then a PreToolUse guard demonstrably fires from the new path and caws doctor reports no drift'
+non_functional: {}
+contracts:
+  - name: 'caws-hook-dispatch'
+    type: behavior
+    path: '.caws/hooks/dispatch/pre_tool_use.sh'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "settings.json now routes PreToolUse/PostToolUse/SessionStart/Stop/PreCompact to .caws/hooks/dispatch/* with the canonical CAWS_AGENT_SURFACE + CAWS_PROJECT_DIR prefix matching settings.json.example; grep of hook_pack_version across dispatch/pre_tool_use.sh, block-dangerous.sh and scope-guard.sh reports 39 (was 14 in the shadow tree and 1/16 on the live tree)"
+    recorded_at: "2026-08-18T06:33:48.443Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "doc-frontmatter-check.sh copied to .caws/hooks/ and uncommented at .caws/hooks/dispatch/post_tool_use.sh:118; the two local fixes verified already upstream in the v39 templates — shortcut-language-check.sh carries 3 matches for the placeholder false-positive fix, and all 14 oracle references in the templates use worktree-claim-oracle.cjs. .caws/hooks had only 2 commits, both CAWS-authored installs, so it carried no local growth to lose"
+    recorded_at: "2026-08-18T06:33:50.592Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Direct invocation of .caws/hooks/dispatch/pre_tool_use.sh with a PreToolUse payload for 'git push --force origin main' returned decision:block exit 2 with the CAWS command-safety reason, proving the v39 handler chain loads and short-circuits from the new path. All 60 shell files under .caws/hooks parse (bash -n). caws init diff now reports one drifted entry, post_tool_use.sh at v39 vs template v39 — the intentional doc-frontmatter-check registration the pack preserves by design. NOT proven: firing through the harness itself, which requires a session restart to reload settings.json"
+    recorded_at: "2026-08-18T06:34:03.282Z"

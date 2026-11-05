@@ -1,0 +1,52 @@
+id: FIX-SUITE-TIMEOUT-FLAKE-01
+title: 'Root vitest suite flakes: module-registry tests race the 5s default timeout under parallel load'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Raised testTimeout to 20s in cli.test.ts and ui.test.ts only; 6/6 clean full-suite runs against a pre-fix baseline of 2/6.'
+created_at: '2026-09-03T00:58:52.201Z'
+updated_at: '2026-11-05T23:03:37.373Z'
+blast_radius:
+  modules:
+    - 'ds-figma-plugin'
+    - 'ds-codegen'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-figma-plugin/src/ui.test.ts'
+    - 'packages/ds-codegen/src/cli.test.ts'
+  out: []
+invariants:
+  - 'No production or non-test source is modified: the fix is confined to test-harness timeout budgets in the three affected test files.'
+  - 'The raised budget is per-file, never a global testTimeout change — the other 241 root-suite files keep the 5s default so genuine hangs still fail fast.'
+  - 'No assertion is weakened, skipped, or deleted to obtain green; the three files keep every test and every expectation they have today.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the root vitest suite run under full 244-file parallel load; when pnpm test is executed repeatedly; then no test in the three vi.resetModules+dynamic-import files fails with ''Test timed out in 5000ms'''
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given ui.test.ts whose second case asserts a ''Missing #app root.'' throw; when the suite runs under load; then it never reports the cascaded ''from_html is not a function'' assertion produced by resetModules racing an in-flight import'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the timeout budgets are raised; when a test genuinely hangs; then it still fails rather than hanging the runner, and the raised budget is scoped to the three affected files only'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "6 consecutive 'pnpm test' runs on canonical main post-merge 82520551, all exit=0 at 2978/2978 (tmp/postfix-1..6.txt); 'grep -l \"Test timed out\" tmp/postfix-*.txt' returns NONE. Pre-fix baseline on the same tree: 6 runs failing 2,1,0,1,0,3 tests (tmp/loadrun-*.txt, tmp/full-suite-run3.txt)."
+    recorded_at: "2026-09-03T01:07:53.712Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "'grep -l from_html tmp/postfix-*.txt' returns NONE across all 6 post-fix runs. Correlation established pre-fix: the cascaded 'from_html is not a function' appeared only in tmp/loadrun-3.txt, the one run where 'mounts the plugin app into the #app root' timed out, and never independently across the other 5 runs. NON-CLAIM: the cascade is removed by removing its trigger, not by structurally decoupling the two ui.test.ts cases; a timeout that did fire could still corrupt the sibling registry."
+    recorded_at: "2026-09-03T01:08:01.011Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Falsification that vi.setConfig is load-bearing and not inert: setting testTimeout to 1 in cli.test.ts made its cases fail with 'Test timed out in 1ms', proving the file-scoped override controls these tests and that a genuine hang still fails rather than hanging the runner. Scope proven by 'git show --stat 3feea501' = 2 files (packages/ds-codegen/src/cli.test.ts, packages/ds-figma-plugin/src/ui.test.ts); no vitest.config.ts change, so the other 242 root-suite files keep the 5s default. plugin.test.ts was dropped from scope on evidence (26 tests in 242ms, no Svelte compile, no risk) rather than widened without cause."
+    recorded_at: "2026-09-03T01:08:08.946Z"

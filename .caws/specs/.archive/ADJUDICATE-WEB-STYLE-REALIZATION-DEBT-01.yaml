@@ -1,0 +1,185 @@
+id: ADJUDICATE-WEB-STYLE-REALIZATION-DEBT-01
+title: 'Adjudicate web style-realization debt: burn the determinate forward carriers, decide the inverse axes'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Forward carrier ledger 18 findings / 11 carriers -> 0. Seven carriers resolved by realizing declared anatomy (Checkbox composite control, Button spinner/loadingText, Skeleton stack/row/shape), two by selector repair (Details namespaced icon keys, Tabs part-suffixed root key), two by contract retirement (Text error/success, justified from the contract alone). Inverse ledger 47 -> 43 across 20 axes, every finding carrying adjudication/evidence/remedy: 22 structural-behavioral, 10 visual-obligation, 8 unresolved-contract-semantics, 3 stale-vocabulary. Card''s five unknown-topology carriers audited (realization gap; cause is the COMPOUND_PARTS name allowlist; repair deferred with measured blast radius) and its historical badge-slot deletion re-audited (stands, on rule 5b''s contract-sourced ground rather than the withdrawn one). Principal unplanned finding: five non-web emission predicates keyed on web DOM topology as a proxy for a contract fact, so each web carrier repair silently changed or hard-broke another target; all five re-keyed to contract facts with generated native trees byte-identical to the merge base. Forward validator deliberately still not promoted into generate:check.'
+created_at: '2026-09-03T19:21:26.605Z'
+updated_at: '2026-11-05T22:56:54.354Z'
+created_by_session: 'd97cce86-6592-41ba-857f-a6ec646948c1'
+blast_radius:
+  modules:
+    - 'carrier-reachability adjudication record'
+    - 'contract corpus (Button/Checkbox/Details/Skeleton/Text/Tabs/Card)'
+    - 'generated web + react-native trees'
+    - 'variant-realization inverse census'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/carrier-reachability-audit'
+    - 'scripts/variant-style-audit'
+    - 'docs/carrier-reachability-audit'
+    - 'docs/current-implementation-snapshot.md'
+    - 'packages/ds-contracts/components/Button'
+    - 'packages/ds-contracts/components/Checkbox'
+    - 'packages/ds-contracts/components/Details'
+    - 'packages/ds-contracts/components/Skeleton'
+    - 'packages/ds-contracts/components/Text'
+    - 'packages/ds-contracts/components/Tabs'
+    - 'packages/ds-contracts/components/Card'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'e2e'
+    - packages/ds-figma-plugin/src/generated
+    - packages/ds-codegen/src
+    - docs/state-suppression-audit
+  out: []
+invariants:
+  - 'A reachability or realization finding is evidence of disagreement, not authority about which side is wrong'
+  - 'Multiple selector occurrences requiring the same impossible carrier are ONE topology obligation with multiple witnesses'
+  - 'An unrealized variant value is censused independently of styling intent, but classifying it as visual, structural, behavioral or stale requires evidence independent of the absence of styling itself'
+  - 'known-impossible, known-reachable and unknown-topology are three distinct states; a zero forward ledger claims only that every carrier whose production topology is DETERMINATE is reachable'
+acceptance:
+  - id: A1
+    given: 'the 18 forward rows'
+    when: 'they are adjudicated'
+    then: 'they normalize into 11 unique carrier obligations with every selector occurrence preserved as a witness, and the machine-derived census is not rewritten by the adjudication record'
+  - id: A2
+    given: 'each determinate forward carrier'
+    when: 'it is adjudicated'
+    then: 'it carries exactly one terminal disposition of selector-repair, realization-repair or contract-retirement, with no generic review or accept bucket counting as closure'
+  - id: A3
+    given: 'a contract-retirement disposition'
+    when: 'it is recorded'
+    then: 'its evidence is independent of generated absence, per FIX-DEAD-SLOT-UNRENDERED-PART-AUTHORITY-01'
+  - id: A4
+    given: 'Details icon-none and icon-right'
+    when: 'adjudicated'
+    then: 'the resolution is selector repair to the classRecipe-authoritative bare forms rather than an emitter rename, and browser evidence shows none removes the 12x12 icon carrier and right changes its order/margin — without claiming the empty indicator became functionally complete'
+  - id: A5
+    given: 'Button spinner and loadingText and the contract statement that loading replaces content with a spinner'
+    when: 'adjudicated'
+    then: 'realization is supplied if that statement stands, and deletion is inadmissible on the ground that generation omitted the parts'
+  - id: A6
+    given: 'Checkbox input and indicator and its composite-control contract semantics'
+    when: 'adjudicated'
+    then: 'the repair proves the carrier topology exists and that checked/unchecked/focus/disabled selectors attach, with native-checkbox sameness as the negative baseline'
+  - id: A7
+    given: 'Skeleton shape/stack, Text error/success and Tabs root'
+    when: 'adjudicated'
+    then: 'each receives independent semantic adjudication before any mutation, and current absence alone never chooses realization or retirement'
+  - id: A8
+    given: 'the implemented dispositions'
+    when: 'the forward rail runs'
+    then: 'its ledger is zero for every partsDeterminate component, and a mutation restoring one impossible selector or removing one repaired carrier makes the rail fail'
+  - id: A9
+    given: 'Card with partsDeterminate false'
+    when: 'the forward ledger reaches zero'
+    then: 'its five historical part selectors are separately adjudicated and the absence of anatomy.dom is recorded as epistemic incompleteness, never hidden by that zero'
+  - id: A10
+    given: 'the Card badge slot deletion from the 114-to-98 burn'
+    when: 'it is re-audited from history'
+    then: 'it is either re-earned without the withdrawn generated-part-absent ground or recorded as unresolved historical contract loss, never retroactively blessed'
+  - id: A11
+    given: 'the 47 inverse findings'
+    when: 'they are adjudicated'
+    then: 'they are grouped primarily by their 22 axes, with value-level dispositions retained only where values within an axis differ materially'
+  - id: A12
+    given: 'each inverse axis'
+    when: 'adjudicated'
+    then: 'it carries a visual-obligation, structural-behavioral, stale-vocabulary or unresolved-contract-semantics disposition with concrete evidence, and stylingIntent may be reported but never decides it'
+  - id: A13
+    given: 'Checkbox.size, Progress.size, Progress.variant and ToggleSwitch.size'
+    when: 'the slice closes'
+    then: 'their computed-style sameness remains recorded as a positive falsifier of the old heuristic even where their semantic disposition differs'
+  - id: A14
+    given: 'a structural or behavioral disposition'
+    when: 'it is recorded'
+    then: 'it rests on positive semantic evidence from the contract or the realization mechanism, and the absence of a selector or token is explicitly invalid evidence for non-visuality'
+  - id: A15
+    given: 'the inverse ledger at close'
+    when: 'it is inspected'
+    then: 'it is still two-directional and still retains adjudicated non-visual entries, so non-visual is not synonymous with removed-from-census'
+  - id: A16
+    given: 'this slice'
+    when: 'it closes'
+    then: 'no visual-intent boolean or enum has been added to the contract schema, and any demonstrated need for one is handed to a following schema/IR slice; the forward validator is NOT promoted into generate:check here'
+non_functional: {}
+contracts:
+  - name: 'carrier-adjudication-record'
+    type: schema
+    path: 'docs/carrier-reachability-audit/adjudication.md'
+  - name: 'determinate-forward-zero'
+    type: behavior
+    path: 'scripts/carrier-reachability-audit/audit.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: docs/carrier-reachability-audit/adjudication.md — 18 forward rows normalized to 11 carriers with witness selectors preserved; per-carrier adjudication and outcome
+    recorded_at: "2026-09-03T22:37:39.929Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Forward ledger 18 -> 0. node scripts/carrier-reachability-audit/audit.mjs: 51 components, 0 unreachable carriers, findings=0 ledgered=0 unledgered=0 stale=0, PASS"
+    recorded_at: "2026-09-03T22:37:49.572Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Text error/success are the only contract retirements; justified from the contract alone (no error/success variant, prop or token). Details/Tabs resolved by selector repair, not deletion. adjudication.md forward table"
+    recorded_at: "2026-09-03T22:37:49.991Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Button spinner/loadingText realized in anatomy.dom (commit 93ce4195); loading opacity moved to .button[aria-busy=true] .button__loadingText. governed:rail PASS all six targets"
+    recorded_at: "2026-09-03T22:37:50.510Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: Details icon-none/icon-right and Tabs --vertical __root repaired as selector defects (classRecipe owns modifier spelling); both dropped out of the forward set and the 2 stale inverse rows were cleared
+    recorded_at: "2026-09-03T22:38:01.071Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Checkbox composite realized (label > input + indicator). e2e/style-carrier-rail.spec.ts, Chromium, 5 web frameworks: carrier topology asserted by value; checked indicator repaints and the unchecked sibling under a shared ancestor does not. Native-checkbox sameness is the negative baseline. Mutation: unanchoring the three :has() keys fails the scoping assertion in all 5 (sibling reads rgb(217,45,46) where rgb(255,255,255) is required)"
+    recorded_at: "2026-09-03T22:38:01.490Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "Skeleton stack/shape realized from contract-side evidence (usage example lines:3, part descriptions, multiple:true). e2e/style-carrier-rail.spec.ts: lines=3 -> 1 stack/3 rows/3 shapes in all 5 web frameworks; no lines -> 0; lines=0 -> no literal 0"
+    recorded_at: "2026-09-03T22:38:01.915Z"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "Rail mutation proof, both directions: restoring the retired Text error block -> FAIL 1 unledgered (Text error -> .text__error); removing Skeleton's realized shape child -> FAIL 2 unledgered. Both revert to PASS. Plus per-guard unit mutations in swiftui component-source.test.ts (dom-tag guard -> Chip; projection guard -> TextField; locality guard -> Select x3; iteration guard -> synthetic)"
+    recorded_at: "2026-09-03T22:38:13.182Z"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "adjudication.md 'Card: five carriers of unknown topology (audit only)'. Realization gap on contract-sourced evidence (a2ui.usageHints name Card.Link/Actions/Media). Cause: hardcoded COMPOUND_PARTS allowlist in semantics.ts. Repair deferred with measured blast radius: Card is the only dom-less component affected, but isCompoundPart applies to all 29 slot-bearing components"
+    recorded_at: "2026-09-03T22:38:13.596Z"
+  - criterion_id: A10
+    status: pass
+    evidence_ref: "adjudication.md 'Card's historical badge-slot deletion, re-audited'. Commit 571efd96 cited the withdrawn ground verbatim. Deletion STANDS on rule 5b's contract-sourced ground: Card declares no success/warning/info/error/neutral vocabulary in variants, types or props"
+    recorded_at: "2026-09-03T22:38:14.023Z"
+  - criterion_id: A11
+    status: pass
+    evidence_ref: "All 43 inverse findings across 20 axes carry adjudication/evidence/remedy, stamped by scripts/variant-style-audit/apply-adjudication.mjs which throws on any unruled finding. Counts: 22 structural-behavioral, 10 visual-obligation, 8 unresolved-contract-semantics, 3 stale-vocabulary"
+    recorded_at: "2026-09-03T22:38:24.632Z"
+  - criterion_id: A12
+    status: pass
+    evidence_ref: "visual-obligation (10): Checkbox.size, ToggleSwitch.size, Progress.size, NavTree.iconSize, NavList.orientation=horizontal (the list part hard-codes flex-direction: column), Badge.variant=status (unpainted peer of painted counter/tag)"
+    recorded_at: "2026-09-03T22:38:25.068Z"
+  - criterion_id: A13
+    status: pass
+    evidence_ref: "structural-behavioral (22): Popover/Tooltip/Walkthrough placement are anchored+flip-shift, so a CSS modifier would assert a runtime-flipped side — wrong, not merely absent; List.as is realized by the polymorphic root (const As = as ?? 'ul'); Accordion.type, Calendar.mode, OTP.mode, Tabs.activationMode, Toast.politeness are behavior/a11y facts"
+    recorded_at: "2026-09-03T22:38:25.499Z"
+  - criterion_id: A14
+    status: pass
+    evidence_ref: "stale-vocabulary (3): Badge/Chip variant=default and Divider orientation=horizontal are base rules flagged only because the keyed prop declares no default (variantDefault reads only the declared default). Remedy is a one-line declaration. Details' two equivalents were in scope and are fixed, taking the ledger 45 -> 43"
+    recorded_at: "2026-09-03T22:38:36.754Z"
+  - criterion_id: A15
+    status: pass
+    evidence_ref: "unresolved-contract-semantics (8): Progress.variant=circular needs a different subtree (SVG arc), not a modifier class; Select.position occurs exactly once in its contract (the axis declaration) with no surface.positioning to consume it; Postcard.type names media kinds the contract renders no differently"
+    recorded_at: "2026-09-03T22:38:37.180Z"
+  - criterion_id: A16
+    status: pass
+    evidence_ref: "validateStylesCarrierReachability is still NOT wired into generate:check; promotion at the now-zero baseline is a separate slice. Recorded in adjudication.md Non-claims and the snapshot row"
+    recorded_at: "2026-09-03T22:38:37.600Z"

@@ -1,0 +1,39 @@
+id: RAIL-BEHAVIOR-REALIZATION-AUDIT-01
+title: 'Behavior-realization audit rail: contract-derived obligations for events, compound wiring, and portals'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge behavior-audit-rail at 9a8d7eb67cc6d3711701c3f855ead44dcf491fb6'
+created_at: '2026-07-22T10:30:02.143Z'
+updated_at: '2026-11-05T23:05:36.269Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/behavior-realization-audit/'
+    - 'package.json'
+    - '.github/workflows/ci.yml'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'obligations derived from the live contract corpus (never a committed frozen classification)'
+    when: 'the audit runs against generated output'
+    then: 'every anatomy.dom events wire is realized as a handler in each admitted framework, every disclosure/compound container realizes iteration plus trigger wiring, and every portal-qualifying surface realizes portal consumption, with per-obligation pass/fail and typed skip reasons.'
+  - id: A2
+    given: 'the doctrine that pins must be fixed points'
+    when: 'the audit encounters known deferred gaps'
+    then: 'deferrals are derived from contract facts (e.g. no events wire declared = no obligation), never from a hardcoded component allowlist.'
+  - id: A3
+    given: 'the rail must be wired or deleted'
+    when: 'the audit is green locally against main'
+    then: 'a package script and a CI step run it, and a falsification pass proves it fails when a realized handler is removed from generated output.'
+non_functional: {}
+contracts:
+  - name: 'behavior-realization-audit'
+    type: behavior

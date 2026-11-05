@@ -1,0 +1,50 @@
+id: REL-SEQUENCE-DECLARATION-01
+title: 'Make the declaration carry whether a name list''s order is semantic, and emit the order facet only where it is'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Made the declaration carry whether a name list''s order is semantic: the census throws on an unmarked list and emits the order facet only for the two ordered ones, so five set-valued facets left the kernel with representation-artifact verdicts, the unadjudicated count fell to 72 of 118, and final-quotient gained declared-set-order as a third factorization form.'
+created_at: '2026-09-15T07:16:49.898Z'
+updated_at: '2026-11-05T23:07:12.829Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/relation-model.ts + census.ts (the sequence fact and the facet rule it drives)'
+    - 'the emitted schemas: relation.contract.schema.json, analytical-fixtures/{fixture,assertion,quotient-image}.schema.json'
+    - 'packages/ds-contracts/analytical-fixtures/subtraction-stage2.json (five representation-artifact verdicts) and the three re-recorded ledgers'
+    - 'docs/architecture/analytical-relation-doctrine.md + docs/current-implementation-snapshot.md (invariant 18 landed)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-contracts/relation.contract.schema.json'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-contracts/quotient-image.schema.json
+  out: []
+invariants:
+  - 'The necessity census claims only degrees of freedom the declaration expresses. Where the emitted schema cannot say whether a name list''s order is semantic, the census must not emit an order facet for it, and a name list that declares no sequence fact is a defect the walk refuses rather than a coordinate the walk invents.'
+  - 'The sequence fact is stated where the authority is: a list is `set` when no rule, engine or operator law reads the position of its members, and `ordered` when one does. It is recorded in the model that emits the schema the census reads, so the fact and the coordinate rule cannot drift apart.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the census emits an order facet on every name list while the emitted schema cannot say whether a sequence is semantic, and project.keep and structure.peers[] order is measured inert; when the declaration is made to carry the fact and the walk refuses to guess; then every name-list declaration states set or ordered, the order facet is emitted only for the ordered ones, the five set-valued order coordinates leave the kernel with representation-artifact verdicts, and a test makes an unmarked list arrive failing rather than silent'
+non_functional: {}
+contracts:
+  - name: 'sequence-fact'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Made the declaration carry whether a name list's order is semantic, and made the walk refuse to guess. THE FACT: every array-of-Name in relation-model.ts (8 sites: nonAdditiveAlong, toGrain, levels, keep, grain, peers' inner list, along, grainWitness' value) now carries x-fsds-sequence set|ordered, a custom keyword z.toJSONSchema propagates and every validator here ignores (all Ajv instances are strict:false). sequenceFacts is collected in the SAME walk that emits the facets, so the fact a coordinate was emitted under and the fact final-quotient reads when it recognizes that coordinate's removal cannot drift. THE RULE: listFacets throws on a name list that states neither value, so a new list arrives failing rather than silently gaining an order facet nothing can adjudicate -- C1g pins that with a non-vacuity count (8 declarations, 2 ordered, 6 set). THE CONSEQUENCE: the five set-valued order facets (keep, along, nonAdditiveAlong, peers[], grainWitness) left the kernel with representation-artifact verdicts; the unadjudicated count fell 77 -> 72 and the closure dependency set 23 -> 21 (gate: 72 of 118, 22 provisional, 21 unsettled). levels and toGrain keep their facet and are semantically real: permuting levels moves the judgment, and toGrain order carries a holding witness from an authored pair because no committed fixture has a two-element target grain. THE THIRD FORM: final-quotient's FactorizationForm gains declared-set-order -- its own comment requires a new census rule to be added there on purpose -- with recognition reading the SAME declaration the walk read (so nest.levels#order, which IS ordered, is refused as that form), its own check branch (non-vacuity is that the list OCCURS; the second count is how often it occurs with more than one member, the only shape a permutation could have moved), and carriers keep#arity + keep#incidence. All 34 artifacts held, up from 29. THE SUPERSESSION: the freeze records what this record supersedes -- census=5, verdict=5 -- each with an authored effect in SUPERSESSION_EFFECT, and the other two authorities were harmonised first because a supersession absorbs only the erasure authority's movement. NON-CLAIMS: the corpus could not decide along, nonAdditiveAlong or grainWitness (no committed instance long enough to permute) -- their verdicts rest on the LAWS, which never read a position in those collections (membership and set-equality only), and the corpus-bounded measurement is reported as untested rather than as inert; the verdicts judge the ENCODING, not the collections -- every name is still carried, and each removed leaf keeps its #arity and #incidence coordinates; relation.grain is a name list declared as a union, so the walk emits the leaf and none of the three facets, and its order is inert over 32 instances -- an asymmetry the declaration does not yet reach; and the removal of assertion.aggregate.along#order and field.additivity.semi-additive.nonAdditiveAlong#order cost the C3d masking demonstration its keep-order row and the non-confluence pin its keep example, both of which were REBUILT on surviving coordinates (assertion.aggregate.relation#incidence and toGrain#arity+order) rather than dropped. Verified by the analytical suite (19 files, 825 tests), the full root suite (301 files, 4046 tests), all eight analytical gates, docs:check-claims and docs:check-links."
+    recorded_at: "2026-09-15T07:40:27.988Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/necessity.test.ts > C1g — the ORDER facet is emitted only where the DECLARATION says the sequence is read"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/analytical/relation-model.ts
+    commit_sha: "288ed556"

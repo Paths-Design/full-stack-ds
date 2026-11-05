@@ -1,0 +1,33 @@
+id: DOC-COMPOSE-REMAINING-DISPOSITION-01
+title: 'Remaining-component disposition table in the native admission criteria'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T03:52:18.246Z'
+updated_at: '2026-11-05T22:57:59.936Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/native-target-admission.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given 16 compose components remain unadmitted; when the criteria doc gains a per-component disposition table naming each required class, its shared-substrate move, and its concrete blocker or decision; then docs:check-links and docs:check-claims stay green and the table matches the measured class map'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs/architecture/native-target-admission.md gains the 16-row disposition table (component / required class / substrate move / blocker-decision) with the measured-vs-inferred footnote for Card/Field/NavTree; docs:check-claims 74/74 and docs:check-links 107/107 green on the worktree commit"
+    recorded_at: "2026-09-13T03:53:21.017Z"

@@ -1,0 +1,46 @@
+id: REL-BINDING-QUOTIENT-01
+title: 'Prototype a resolution-preserving incidence quotient for bound references, and measure which operand kinds it reaches'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Measured a resolution-preserving incidence quotient: canonical rebinding reaches thirteen of the twenty-one bound reference-topology coordinates including nest.levels, and leaves eight whose laws write the same binding twice in the result declaration, so the residue is a locator question rather than a corpus one.'
+created_at: '2026-09-15T08:05:09.251Z'
+updated_at: '2026-11-05T23:06:01.492Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/necessity.test.ts (the prototype''s measurement pinned)'
+    - 'docs/architecture/analytical-relation-doctrine.md (the candidate quotient and its measured limits)'
+    - 'docs/current-implementation-snapshot.md (the closure gate''s blocker restated as a quotient requirement)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A quotient is admissible for a coordinate only if its image is a legal declaration the authority can still type. Where destroying co-reference necessarily destroys RESOLUTION, the erasure is the corruption rather than an ablation, and no amount of corpus closes it.'
+  - 'A prototype is measured, never asserted: the candidate erasure is run against the real fixtures and its images checked for schema validity and for introduced boundary findings, so which operand kinds it reaches is a measurement and the kinds it cannot reach are named individually.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given eighteen reference-topology coordinates inside the derivation boundary have an erasure the boundary refuses, so no witness can ever be admitted for them; when a resolution-preserving incidence erasure is prototyped and measured against the real fixtures and the isolation obligations; then the operand kinds it reaches and the kinds it cannot are both recorded with the measurement, and the closure gate''s blocker is restated as a quotient requirement rather than as missing corpus'
+non_functional: {}
+contracts:
+  - name: 'binding-quotient'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Prototyped and measured a resolution-preserving incidence quotient for bound references. THE PROBLEM (round 25): the census's incidence erasure rewrites a reference's names to reserved tokens, which is a legal QUOTIENT image but not a legal DECLARATION, so for a reference the derivation boundary must RESOLVE the boundary reports REL_DERIVATION_INPUT_MISSING or REL_DERIVATION_RESULT_NOT_DERIVABLE, checkIsolation refuses it, and no witness can be admitted. Eighteen coordinates are in that position and every route to closing the closure gate passes through them. THE CANDIDATE: canonical REBINDING -- replace the slot's names with the operand's OWN first k declared names (a relation-valued operand ranges over the structure's relations, a field-valued one over the input relation's fields). The image resolves because the names are declared, arity is preserved, and every pair of stimuli differing only in WHICH declared things the slot binds is identified. MEASURED over the twenty-one reference-topology coordinates at derivation operands: REACHES THIRTEEN -- aggregate-to-grain.from#incidence, bin.from#incidence, graph.edgeFrom#incidence, graph.from#incidence, graph.value#incidence, join.from#incidence, nest.from#incidence, nest.levels#arity, nest.levels#incidence, nest.levels#order, normalize.field#incidence, normalize.from#incidence, project.from#incidence. Every image is schema-valid (invalid-image = 0) and none introduces a boundary finding. It IDENTIFIES the pair C1f used to show the distinction is real: on FX_N_NESTED_SUBTOTAL_AT_PREFIX the images of levels=[country,state] and levels=[revenue,state] are canonically EQUAL, the a-side is byte-unchanged by the erasure, and neither side gains a finding. LEAVES EIGHT, each refused by REL_DERIVATION_RESULT_NOT_DERIVABLE and each named: aggregate-to-grain.toGrain#{arity,incidence,order}, bin.field#incidence, graph.edgeTo#incidence, join.with#incidence, project.keep#{arity,incidence}. THE DOMINANT CAUSE IS STRUCTURAL: for toGrain, keep, bin.field and edgeTo the law writes the SAME binding a second time in the RESULT's own declaration -- sameSet(out.grain, d.toGrain), sameSet(fieldNames(out), d.keep), the retained binned field -- so rebinding the operand alone leaves a declaration that no longer agrees with itself. The coordinate's extent is WIDER THAN ITS LOCATOR, and a quotient for those has to name both sides, which is a claim about where the coordinate LIVES and therefore a CENSUS change rather than an erasure change. That is the substrate answer this round produces: the binding quotient exists and is constructive for a majority of the family, and the residue is a locator question, not a corpus question. NON-CLAIMS: this is a MEASUREMENT, not a landed erasure -- census.ts, erasure-plan.ts and every ledger are untouched, so no verdict moved and the closure gate still reports 22 provisional and 21 unsettled dependencies; the partition is the candidate's, so the eight refusals are refusals BY THIS CANDIDATE and two of them (join.with, whose distinctness from join.from is a two-operand constraint, and graph.edgeTo) may yield to a smarter canonical rule rather than being structurally unreachable; canonical rebinding is also not claimed to be the ONLY resolution-preserving erasure, nor that its images are semantically well-motivated beyond being legal and identifying; and C1h runs the candidate as a local helper in the test, so the measurement is reproducible but not a production code path. C1h pins the reach set, the refusal set, the schema-validity of every image, the introduced code, and the pair. Verified by the analytical suite (19 files, 837 tests), the full root suite (301 files, 4058 tests), all eight analytical gates, docs:check-claims and docs:check-links."
+    recorded_at: "2026-09-15T08:11:08.592Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/necessity.test.ts > C1h — the incidence erasure at a BOUND reference has a resolution-preserving candidate, measured"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/analytical/necessity.test.ts
+    commit_sha: dbc2afa6

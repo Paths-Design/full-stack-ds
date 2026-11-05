@@ -1,0 +1,119 @@
+id: REL-FACET-PARTITION-BINDING-01
+title: 'M3 facet composition: partition binding derives exact source-grain panels from carried identity'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Facet partition binding landed: the facet resolves its declared partition against the carried source-grain population, derives exact once-only panels, binds the inner layer''s range into them, conserves standing, keeps scale policy orthogonal, and preserves the aggregate family''s carried-partition behavior.'
+created_at: '2026-09-22T15:12:44.634Z'
+updated_at: '2026-11-05T23:06:21.877Z'
+created_by_session: 'session-bd42da68-ec3b-4aed-b4b4-701f8fc1b865'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (carried population on composite readings; facet partition adjudication over that population; panels binding the inner derived structure)'
+    - 'packages/ds-codegen/src/analytical/codes.ts (facet partition refusal vocabulary with stated authority)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (nested facet controls, two precommitted mutants, OHLC second witness)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - packages/ds-contracts/analytical-fixtures
+  out: []
+invariants:
+  - 'PARTITION BINDING IS REAL: for population-carrying operands the facet resolves the declared partition to a carried source-grain coordinate and its verdict exposes the resulting panel membership; for the aggregate family the partition stays carried and unadjudicated.'
+  - 'POPULATION COMES FROM CARRIED IDENTITY: panels are constructed from the qualified/composite reading alone; the facet never reopens source rows or the original relation declaration.'
+  - 'POPULATION IS CONSERVED EXACTLY ONCE: every qualified observation belongs to exactly one panel and the union of panel structured keys equals the input key set — no silent intersection, drops, or duplicates.'
+  - 'PARTITION IS NOT ORDERING: panel membership says which observations belong together; it says nothing about traversal order, and member order within range groups stays canonical, never semantic.'
+  - 'NESTED STRUCTURE IS CARRIED, NOT RECONSTRUCTED: each panel binds the inner layer''s derived bounded-range groups as they were derived; a facet that preserves membership but loses the relationship is defective.'
+  - 'STANDING AND EXISTING RULES ARE CONSERVED: a faulted operand refuses or unproves the facet before panels exist; scale policy stays orthogonal to membership; no form lore participates.'
+acceptance:
+  - id: A1
+    given: 'a layer over co-registered qualified field views carrying a derived bounded-range group, faceted by one carried grain coordinate'
+    when: 'the facet judges'
+    then: 'the verdict exposes panels whose membership is derived from the carried bindings, each panel binding the inner layer''s range group unreconstructed'
+  - id: A2
+    given: 'the facet''s panels'
+    when: 'their structured keys are collected'
+    then: 'the union equals the operand population''s key set exactly — every observation in exactly one panel, none dropped or duplicated'
+  - id: A3
+    given: 'the operand observations arbitrarily reordered before qualification'
+    when: 'the facet judges and panels are compared by normalized fields'
+    then: 'panels are equivalent, and the precommitted positional-assignment mutant provably differs under the same reorder'
+  - id: A4
+    given: 'one observation whose partition-coordinate value alone is changed'
+    when: 'the facet judges'
+    then: 'exactly that observation''s key changes panel membership and no unrelated observation moves'
+  - id: A5
+    given: 'a declared partition coordinate the carried bindings do not bind'
+    when: 'the facet judges'
+    then: 'it refuses before any panels are produced, naming the unbound coordinate — never row[partition] defaulting'
+  - id: A6
+    given: 'an operand observation carrying a contradicted or unproven standing'
+    when: 'the facet composes over it'
+    then: 'the facet inherits the operand''s fault attributed to the part and no clean panels are produced'
+  - id: A7
+    given: 'the same bound composition under facet policy shared and free'
+    when: 'both are judged'
+    then: 'membership, range topology and standing are identical and only the comparability claim and profile differ'
+  - id: A8
+    given: 'a consistent rename of relation, grain fields, partition coordinate, range fields, references and rows'
+    when: 'judged and compared by normalized fields'
+    then: 'panels and ranges are equivalent'
+  - id: A9
+    given: 'the neutral case green and the real corpus fixture'
+    when: 'the same implementation facets the qualified OHLC range by a carried grain coordinate'
+    then: 'panels derive without adaptation and without form vocabulary'
+  - id: A10
+    given: 'the precommitted range-dropping mutant (grouping that loses the inner derived structure)'
+    when: 'the nested-structure criterion evaluates the real verdict against it'
+    then: 'the real panels carry the inner range groups and the mutant''s shape is distinguished'
+non_functional: {}
+contracts:
+  - name: 'facet-partition-binding'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'facet-partition-vocabulary'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/codes.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 8 'A1: the facet derives panel membership from the carried bindings, and each panel binds the inner layer's range unreconstructed' — nested layer→facet retained; panels exactly S1/S2 with their structured keys, each carrying ranges [{floor, ceiling, [value_a, value_b]}] read off the inner layer's verdict. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:21.316Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts 'A2: population is conserved exactly once' — union of panel keys equals the qualified population's key set as a multiset (same length, same sorted content), and no key is duplicated (Set size equals list length). Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:21.895Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts 'A3: row order is irrelevant' — reordering the input before qualification leaves normalized panels equal, while the precommitted positional mutant (panel value = index % 2) provably changes under the same reorder and never names the carried coordinate value. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:22.399Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts 'A4: partition identity is sensitive' — moving one observation's station to S3 puts exactly that key in the S3 panel, removes exactly it from S2, and leaves the S1 panel byte-identical. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:22.912Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection.test.ts 'A5: an unresolvable partition refuses before panels exist' — partition 'hour' refuses with causes [REL_FACET_PARTITION_UNBOUND] attributed to combinator, detail names hour, and panels are undefined (no row-value defaulting). Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:23.430Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection.test.ts 'A6: nested structure survives' — every panel carries the inner layer's derived group; the precommitted range-dropping mutant (correct grouping, empty ranges) is distinguished by normalized comparison and by the absence of the range spelling. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:31.924Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "projection.test.ts 'A7: standing is conserved' — contradicted member: facet refused with [REL_FIELD_BOUNDS_VIOLATED] attributed from part, panels undefined; unproven member: facet unproven from part, panels undefined; no clean panels either way. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:32.397Z"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "projection.test.ts 'A8: scale policy is orthogonal' — shared vs free yield identical normalized panels/ranges while only the cross-panel-comparability claim and the profile differ. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:32.864Z"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "projection.test.ts 'A9: alpha invariance' — consistent rename of relation, grain fields, partition coordinate, range fields, references and rows: panels equivalent, keys carry only the renamed grain spellings (site/date), ranges carry renamed endpoint/member spellings (base/cap, first_value/second_value). Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:33.321Z"
+  - criterion_id: A10
+    status: pass
+    evidence_ref: "projection.test.ts 'A10: second witness' — the same implementation facets the qualified OHLC range by symbol: panels AAA/BBB, each carrying range {low, high, [close, open]}, with exactly-once conservation over the real population and no form vocabulary. Run on landed main@04774acc: vitest analytical 1095/1095."
+    recorded_at: "2026-09-22T15:38:33.795Z"

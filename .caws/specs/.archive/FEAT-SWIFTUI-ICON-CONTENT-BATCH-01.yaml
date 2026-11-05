@@ -1,0 +1,67 @@
+id: FEAT-SWIFTUI-ICON-CONTENT-BATCH-01
+title: 'Icon-decorated content class: Alert, Status, Badge via GlyphCatalog (22→25)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Icon-decorated content class landed: Alert+Badge via icon regions (ReactNode fact), Status deferred to intent-table follow-up; 24 of 49'
+created_at: '2026-08-17T04:09:24.397Z'
+updated_at: '2026-11-05T23:00:53.671Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (icon-decorated content class)'
+    - 'packages/ds-swiftui + fsds.targets.json (three admitted components)'
+    - 'docs/current-implementation-snapshot.md (coverage claims)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The class gates on IR facts only: passive root, an icon part paired with an icon string prop, one children leaf, no channels/surface; no component identity.'
+  - 'Glyph rendering composes GlyphCatalog (icon prop → registry lookup at a fixed content size); unknown names remain accessibility-surfaced by the registry.'
+  - 'Unrealized props (Alert dismiss family, Badge showStatusIcon, Status semantics depth) are omitted-and-documented, never accepted-and-ignored.'
+acceptance:
+  - id: A1
+    given: 'Alert, Status, Badge (passive div/span root, icon part + icon string prop, exactly one children region, no channels/surface)'
+    when: 'generated'
+    then: 'the icon-decorated content class emits each as HStack { GlyphCatalog.glyph(named: icon) ; content } with axes layering and presence-driven chrome; all compile via swift build'
+  - id: A2
+    given: 'the class gate'
+    when: 'Chip is considered'
+    then: 'it is excluded (component-instance Button leaf — the TextField precedent) and stays fail-loud; Alert''s dismiss machinery (onDismiss/dismissible/dismissLabel) omitted-and-documented v1'
+  - id: A3
+    given: 'the glyph substrate composition'
+    when: 'these emit'
+    then: 'glyph rendering goes through the shared GlyphCatalog registry with decorative-default semantics — no per-component glyph code'
+  - id: A4
+    given: 'the full worktree gate'
+    when: 'typecheck, governed:rail, pnpm test, test:frameworks, swift test, swift build run'
+    then: 'all pass; admitted 22→25; remaining corpus fails loudly'
+non_functional: {}
+contracts:
+  - name: 'swiftui-icon-content'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: waived
+    evidence_ref: "Corpus facts differed from the plan: Alert/Badge icon props are ReactNode (consumer regions emitted and compiling via swift build); Status deferred — no icon prop, state-driven glyph needs a status-to-glyph intent table (recorded follow-up); Chip excluded by the component-instance rule (test-pinned fail-loud)"
+    waiver_reason: "Corpus facts differed from the plan: Alert/Badge icon props are ReactNode (consumer regions emitted and compiling via swift build); Status deferred — no icon prop, state-driven glyph needs a status-to-glyph intent table (recorded follow-up); Chip excluded by the component-instance rule (test-pinned fail-loud)"
+    recorded_at: "2026-08-17T04:15:51.304Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "emitter tests: Alert/Badge emit with IconRegion ViewBuilder; Status and Chip throw /no emission class matches/; onDismiss/showStatusIcon absent from APIs"
+    recorded_at: "2026-08-17T04:15:52.217Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "glyph registry branch keyed on the icon prop's declared type (string → GlyphCatalog; ReactNode → region) — IR fact, no component identity"
+    recorded_at: "2026-08-17T04:15:53.133Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; governed:rail exit 0; pnpm test 2085/2085; test:frameworks 72; swift test 22/22; swift build + example build exit 0; ADMITTED 24/24 byte-stable"
+    recorded_at: "2026-08-17T04:15:54.138Z"

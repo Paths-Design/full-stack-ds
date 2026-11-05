@@ -1,0 +1,84 @@
+id: DESIGN-VISUAL-AUTHORING-PAPER-03
+title: 'Specify visual authoring token scope and component extraction in draft 0.3.0'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Qualified visual-authoring paper and review fixes; execution receipts inspected separately from verified tracked producer citations; required gates pass; runtime obligations remain open; no remote publication'
+created_at: '2026-10-02T16:43:26.051Z'
+updated_at: '2026-11-05T22:57:48.931Z'
+created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
+blast_radius:
+  modules:
+    - 'Isolated visual-authoring paper schemas original fixtures and coverage lineage'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/design/shared-document-model/'
+    - 'packages/ds-contracts/document-model/'
+  out: []
+  support:
+    - CLAUDE.md
+invariants:
+  - 'Token eligibility constrains property consumers independently of token value type for both human and agent edits'
+  - 'Definition bodies have one owner; editable placements and instances retain references without flattening nested definitions'
+  - 'Project changes describe atomic page and source ownership without claiming persistence or execution'
+  - 'All runtime statuses remain not-implemented and no UI renderer evaluator adapter or generated component changes occur'
+acceptance:
+  - id: A1
+    given: 'the approved sixteen-step Button-to-Banner workflow'
+    when: 'paper semantics and independent tables are inspected'
+    then: 'named objects ownership creation defaults token scope extraction correspondence layout and inverse boundaries describe every step without implicit decisions'
+  - id: A2
+    given: 'draft 0.3.0 schemas and original authoring examples'
+    when: 'qualification runs'
+    then: 'examples and malformed neighbors qualify with nonmutation and weakened-schema controls while general evaluation and persistence remain explicitly unverified'
+  - id: A3
+    given: 'the prior ledger and retained handoff'
+    when: 'coverage is reconciled'
+    then: 'history and recovery preserve lineage every named unresolved obligation remains visible and the workflow plus handoff scenarios have a decision and evidence crosswalk'
+  - id: A4
+    given: 'the scoped source commits'
+    when: 'paper documentation and required local gates run'
+    then: 'checks pass and the source diff remains confined to paper contracts with no remote publication'
+non_functional: {}
+contracts:
+  - name: 'visual-authoring'
+    type: schema
+    path: 'packages/ds-contracts/document-model/visual-node.schema.json'
+  - name: 'definition-body'
+    type: schema
+    path: 'packages/ds-contracts/document-model/definition.schema.json'
+  - name: 'project-change'
+    type: schema
+    path: 'packages/ds-contracts/document-model/project-change.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Reviewed source 3aae40f19: sixteen-step ownership/defaults/token/extraction/layout contract plus exact restoration and structured reset forms; independent Banner rename/extraction undo and redo tables; paper semantics only."
+    recorded_at: "2026-10-03T01:21:06.644Z"
+    artifact_path: docs/architecture/design/shared-document-model/visual-authoring.md
+    commit_sha: "3aae40f19"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Directly observed qualification at source 3aae40f19 and after merge: 18 schemas, 65 original records, 65 schema neighbors, 26 fixture neighbors and 16 sensitivity controls. The tracked qualifier is cited as the producer; ignored execution receipt .caws/state/visual-authoring-review-fixes/postmerge-paper.log was inspected separately. CAWS --verify confirms source citation only and does not rerun the declared command. Nonmutation, effective-instance scope, receipt provenance/pairing, canonical typography and complete compensation records qualify; no evaluator/inverse executor is claimed."
+    recorded_at: "2026-10-03T01:29:06.417Z"
+    command: node packages/ds-contracts/document-model/verify.mjs
+    exit_code: 0
+    artifact_path: packages/ds-contracts/document-model/verify-visual.mjs
+    commit_sha: "3aae40f19"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected retained ledger and handoff/workflow crosswalk at 3aae40f19; verifier checks 43 requirements, history/recovery lineage and named open obligations, owned references, crosswalk coverage and all runtime statuses not-implemented. Review additions retain partial coverage and identify future inverse custody and general repair."
+    recorded_at: "2026-10-03T01:21:09.007Z"
+    artifact_path: packages/ds-contracts/document-model/design-ledger.json
+    commit_sha: "3aae40f19"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Directly observed token build, governed rail, 4788 root tests and all framework suites exit 0; final paper and documentation checks and canonical documentation checks pass. Producers are declared in the cited package.json; inspected raw receipts remain ignored under .caws/state/visual-authoring-review-fixes/. CAWS source-citation verification does not rerun these commands. The final two-file paper refinement leaves broad runtime inputs unchanged; scoped source diff was reviewed independently. Local CLAUDE.md markers corrected under supporting-file admission; no generated output change, remote publication or empty-diff scope claim."
+    recorded_at: "2026-10-03T01:29:07.631Z"
+    command: "pnpm run tokens:build && pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: package.json
+    commit_sha: "3aae40f19"

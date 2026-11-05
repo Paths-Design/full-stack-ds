@@ -1,0 +1,79 @@
+id: FEAT-COMPOUND-RN-001
+title: 'Tabs compound-state path on React Native'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Tabs compound-selection lowering admitted on React Native via the shared IR gate, ported primitive, and generated interaction proofs'
+created_at: '2026-08-15T18:43:25.645Z'
+updated_at: '2026-11-05T23:00:22.377Z'
+blast_radius:
+  modules:
+    - 'ds-codegen react-native emitter'
+    - 'ds-react-native generated package'
+    - 'admission rail emission manifest'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/react-native/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/factory.ts'
+    - 'packages/ds-react-native/src'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/validation/frameworks/react-native.ts
+  out: []
+invariants:
+  - 'No contract or schema change — the Tabs contract already carries every compound-state fact this slice lowers.'
+  - 'The RN emitter branch gates on the same isCompoundStateContainer IR fact the web emitters consume; no component-name special-casing enters the emitter.'
+  - 'ds-react-native must not depend on ds-react — createCompoundContext is ported source, not an import.'
+  - 'The ported primitive is committed substrate under ds-react-native/src/primitives (the same provenance tier as stack.tsx and the ds-react seed hooks), consumed by generated code and covered by the RN package typecheck/test gates; it must not import from ds-react.'
+  - 'Generated trees for every component other than Tabs remain byte-identical after regeneration.'
+  - 'Platform divergences (touch keyboard navigation, indicator animation, orientation layout, unmountInactive=false visual suppression) are emitter-owned, recorded as knownGaps, never pushed into the contract.'
+acceptance:
+  - id: A1
+    given: 'the Tabs contract''s compound-state facts and the web-proven isCompoundStateContainer IR gate'
+    when: 'the react-native emitter lowers a compound-state container'
+    then: 'generated RN Tabs exports context-wired Tabs/TabsList/TabsTab/TabsPanel with no contract change and no per-component emitter lore'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'createCompoundContext is ported into the ds-react-native primitives as committed substrate beside stack.tsx (mirroring the ds-react seed pattern — primitives sit outside the emission manifest in both packages), with no ds-react dependency, and rail coverage flows through the RN package typecheck and test gates that consume it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'generated react-test-renderer tests prove press fires onValueChange with the tab value, flips accessibilityState.selected, omits the inactive panel under default unmountInactive, honors controlled value, and throws for TabsTab outside Tabs'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'governed rail, root tests, and the RN framework suite pass inside the worktree with all other components'' generated trees byte-identical'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'the snapshot row and RN knownGaps record the named non-claims: touch keyboard navigation, indicator animation, orientation layout, hidden-but-mounted panels'
+non_functional: {}
+contracts:
+  - name: 'Tabs'
+    type: behavior
+    path: 'packages/ds-contracts/components/Tabs/Tabs.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-react-native/src/components/Tabs/Tabs.tsx @ ea1f3f2b — context-wired Tabs/TabsList/TabsTab/TabsPanel emitted through isCompoundSelectionContainer (= isCompoundStateContainer && !isDisclosureContainer from react/hook-source, the same gates web consumes); no contract/schema diff in merge"
+    recorded_at: "2026-08-15T19:08:09.490Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "packages/ds-react-native/src/primitives/hooks/createCompoundContext.ts + barrel re-export @ ea1f3f2b; pnpm run typecheck:react-native exit 0 (no ds-react import; grep-verified)"
+    recorded_at: "2026-08-15T19:08:10.506Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Tabs — 3/3: press→onValueChange+accessibilityState.selected flip+panel omission, controlled override, outside-provider throw"
+    recorded_at: "2026-08-15T19:08:11.446Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "full gate in worktree compound-rn-tabs pre-merge: pnpm run governed:rail (required mode) OK; pnpm test 2072/2072; pnpm run test:frameworks (RN suite 72/72); audit:behavior-realization + audit:a11y-realization PASS; git status byte-clean after full-target regen (only Tabs + primitives + emitter sources changed)"
+    recorded_at: "2026-08-15T19:08:18.840Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "docs/current-implementation-snapshot.md 'Non-web generation (substrate)' row + packages/ds-codegen/src/validation/frameworks/react-native.ts knownGaps @ ea1f3f2b — named touch divergences (no keyboard/roving, static indicator, no orientation layout, unmountInactive=false mounted-but-suppressed)"
+    recorded_at: "2026-08-15T19:08:20.315Z"

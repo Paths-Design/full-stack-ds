@@ -1,0 +1,74 @@
+id: DOC-STRUCTURAL-FREEZE-DOCTRINE-01
+title: 'Structural freeze doctrine: freezes admitted only at release candidate; void-hazard rule for token gates'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'ADR-0001 structural freeze doctrine: RC-gated state freezes + void-hazard rule; token-consumption audit demoted report-only one day after landing'
+created_at: '2026-08-18T02:57:07.051Z'
+updated_at: '2026-11-05T22:58:35.166Z'
+blast_radius:
+  modules:
+    - 'docs/architecture/adr: ADR-0001 structural freeze doctrine (new tree, first ADR)'
+    - 'gate posture: token-consumption audit demoted report-only-until-RC (ci.yml, .githooks/pre-push, ledger comments); no correctness-class gate touched'
+    - 'docs: AGENTS.md, current-implementation-snapshot.md row, successor ledger'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/adr'
+    - 'scripts/token-consumption-audit'
+    - '.github/workflows/ci.yml'
+    - '.githooks/pre-push'
+    - 'AGENTS.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'No gate is weakened to dodge a failing check: the token-consumption audit is green (29/29 ledgered, 0 stale) at demotion time; this is owner-directed reclassification of its admissibility class, not evasion.'
+  - 'Correctness-class gates (golden stream identity, resolvability, WCAG contrast, realization ledgers) keep their blocking posture pre-RC — the doctrine separates classes, it does not disarm the rail.'
+  - 'The demoted audit keeps manual exit-code semantics and its committed ledger so the RC flip is a one-line wiring change over a live tool, not a rebuild.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the owner pushback that state-freezes and forced-consumption gates fight legitimate pre-release growth and bias agents toward deleting vocabulary (creating voids that get filled with ad-hoc decisions); when the ADR lands; then it mirrors sterling ADR-0051 structure (two-class doctrine, rationale-bearing requirement, freeze placement, evolution protocol, decision vocabulary, review tests, anti-patterns, precedents, canonical statement) and adds two FSDS-specific rules: the RELEASE-CANDIDATE GATE (freeze-class gates are admitted only once an RC is declared with a written release schedule; before that they run report-only and must not be wired blocking) and the VOID-HAZARD RULE (a gate whose cheapest discharge is deletion of unconsumed vocabulary is inadmissible at any lifecycle stage)'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given RAIL-TOKEN-CONSUMPTION-AUDIT-01 wired as blocking in CI and pre-push; when the doctrine applies retroactively; then the audit is demoted to report-only until RC — CI step continue-on-error and renamed, the pre-push blocking invocation removed with the scope flag retained so the RC flip is a one-line change, the ledger comment names the sanctioned once-at-RC re-derivation, and the manual exit-code semantics are preserved so the tool remains the RC baseline'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given correctness-class gates must NOT be weakened by the retroactive clause; when the classification table is written; then golden token-stream fixtures (cross-framework identity with a sanctioned regenerate-and-audit discharge), token-resolvability, WCAG contrast ledgers, and the realization ledgers stay blocking pre-RC with their class recorded — and the demotion slice changes none of their behavior'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs gates and the audit family wiring; when the slice lands; then AGENTS.md, the snapshot token-consumption row, and the successor ledger reflect report-only-until-RC, docs:check-links passes over the new ADR, lint and the prepush scope contract tests pass, and the demoted audit still runs green manually (29/29 ledgered)'
+observability:
+  - 'The ADR itself is the observable artifact; the demotion is visible as CI continue-on-error on the token-consumption step and the removed pre-push blocking invocation; the classification table names every gate surface and its pre/post-RC posture.'
+rollback:
+  - 'git revert the slice commits — the audit returns to blocking, the ADR is removed; nothing else moves.'
+non_functional:
+  security:
+    - 'Docs and gate-posture changes only; no secrets, no runtime surface.'
+contracts:
+  - name: 'token-consumption-audit'
+    type: behavior
+    path: 'scripts/token-consumption-audit/audit.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs/architecture/adr/0001-structural-freeze-doctrine.md — mirrors sterling 0051 structure (§1 two classes, §4 rationale-bearing, §5 placement, §6 decision vocabulary, §7 review tests, §8 anti-patterns, §9 precedents, §11 canonical statement) and adds §2 release-candidate gate (RC = declared marker + written schedule) and §3 void-hazard rule (deletion must never be the cheapest discharge)"
+    recorded_at: "2026-08-18T03:00:46.199Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "demotion applied: ci.yml Token-consumption step renamed '(report-only until RC per ADR-0001)' + continue-on-error: true; .githooks/pre-push blocking invocation removed with RUN_TOKEN_CONSUMPTION flag retained (RC flip = one line); known-dead-namespaces.json comment carries the once-at-RC re-derivation clause; audit.mjs header records the posture; manual run green 29/29 ledgered, exit semantics preserved"
+    recorded_at: "2026-08-18T03:00:47.516Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: ADR §10 classification table records every surface; golden fixtures classified structural-identity (§9 precedent names the regen mandate and its honest test-6 weakness); resolvability/contrast/realization ledgers untouched — git show 3ad92731 touches no correctness-gate code except comments
+    recorded_at: "2026-08-18T03:00:48.723Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs:check-links 66/66 resolve; docs:check-claims 12/12; eslint clean; prepush-scope contract tests 36/36; selfcheck 8/8; AGENTS.md + snapshot row reflect report-only-until-RC"
+    recorded_at: "2026-08-18T03:00:49.895Z"

@@ -1,0 +1,101 @@
+id: FIX-SURFACE-PART-CLASS-01
+title: 'Anchored-surface trigger and content must carry their part classes'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge surface-part-class at 67d7edadc17a5ce7c42d0b30d0efc61a90f4c3de'
+created_at: '2026-07-30T00:30:54.643Z'
+updated_at: '2026-11-05T23:03:38.823Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/{react,vue,svelte,angular,lit}/surface-emit.ts'
+    - 'packages/ds-contracts/components/{Popover,Tooltip}/*.styles.json'
+    - 'Generated Tooltip + Popover across all six emission targets'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/react/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/surface-part-class.test.ts'
+    - 'packages/ds-contracts/components/Popover'
+    - 'packages/ds-contracts/components/Tooltip'
+    - 'packages/ds-react/src/components'
+    - 'packages/ds-vue/src/components'
+    - 'packages/ds-svelte/src/components'
+    - 'packages/ds-angular/src/components'
+    - 'packages/ds-lit/src/components'
+    - 'packages/ds-react-native/src/components'
+    - 'packages/ds-figma-plugin/src/generated/components'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/ir.ts
+    - packages/ds-codegen/src/styles-to-css.test.ts
+  out: []
+invariants:
+  - >-
+    A contract part styled by part key gets a rendered element carrying that
+    part class. The anchored-surface path marked trigger/content with a data-*
+    attribute only, so part-keyed styles compiled to a selector matching zero
+    elements; the disclosure path (Accordion) already emits part classes, so this
+    converges surfaces onto existing behaviour rather than inventing a mechanism.
+  - >-
+    The data-* markers are NOT removed. Generated surface tests assert them and
+    Popover's styles reference them; they are the behavioural marker, the class
+    is the styling hook, and both keep their jobs.
+  - >-
+    A consumer-supplied className must COMPOSE with the part class, never replace
+    it. The part class is emitted first and the consumer value appended.
+  - >-
+    Surface chrome belongs to the content part, never the host. Popover's root is
+    "a host that coordinates trigger and content" — a closed Popover must paint
+    nothing.
+  - >-
+    Styles are authored by PART KEY, not by hand-written attribute selectors.
+    Popover's raw "[data-popover-content]" keys were a workaround for this defect
+    and are migrated, so the vocabulary is the only authoring surface.
+acceptance:
+  - id: A1
+    given: 'Tooltip, whose content part declares 11 surface properties by part key'
+    when: 'a tooltip is opened in Chromium'
+    then: >-
+      the content element matches .tooltip__content and computes the declared
+      background-color, border, padding and max-width — measured, not inferred
+      from the emitted CSS.
+  - id: A2
+    given: 'A closed Popover'
+    when: 'its trigger is rendered'
+    then: >-
+      the host paints nothing: no background-color, border-color, box-shadow,
+      padding or border-radius resolves on .popover, while the open content
+      surface still carries all of them.
+  - id: A3
+    given: 'All five web targets'
+    when: 'Tooltip and Popover are regenerated'
+    then: >-
+      each emits the part class on both trigger and content by its own idiom
+      (className, :class, class:, HostBinding, classList) — verified per framework
+      from its own generated source, not assumed from React.
+  - id: A4
+    given: 'A consumer passing className to Trigger or Content'
+    when: 'the element renders'
+    then: 'both the part class and the consumer class are present.'
+  - id: A5
+    given: 'The orphaned-part-class sweep over generated CSS vs generated source'
+    when: 're-run after this slice'
+    then: >-
+      .tooltip__content and .tooltip__trigger are gone from the orphan set, and
+      the remaining entries are exactly the 14 never-rendered-part overclaims,
+      which this slice does not touch.
+  - id: A6
+    given: 'A mutation removing the part class from any one framework emitter'
+    when: 'the surface part-class test runs'
+    then: 'it fails for that framework — proving the pin can fail for the right reason.'
+non_functional: {}
+contracts:
+  - name: 'popover-styles'
+    type: schema
+    path: 'packages/ds-contracts/components/Popover/Popover.styles.json'

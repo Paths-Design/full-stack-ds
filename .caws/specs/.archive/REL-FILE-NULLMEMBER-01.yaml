@@ -1,0 +1,39 @@
+id: REL-FILE-NULLMEMBER-01
+title: 'File the null-member censored-suppressed witness'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Filed observation.null:censored~suppressed (null enum''s second member pair): authored pair over FX_SURVIVAL_MEAN_WITH_CENSORED_ROWS moving one null marker to suppressed, atomic class so it ratifies; subtraction 64/118, freeze 20/70, ratified 62, legacy re-recorded.'
+created_at: '2026-09-16T00:05:04.199Z'
+updated_at: '2026-11-05T23:06:27.743Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given observation.null:censored~suppressed is unresolved and ratifiable with a single-path separating shape; when the authored stimulus is filed (FX_SURVIVAL_MEAN_WITH_CENSORED_ROWS as committed, illegal REL_NULL_CENSORED_AS_OBSERVED, against the same fixture with evidence.rows carrying suppressed in place of censored, unproven null:missing-mechanism) and checkWitness admits it; then the verdict moves unresolved to witnessed, the coordinate classes atomic so the witness ratifies primitive standing, the drift check stays green on all three bases, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-admission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (20 files / 870 tests, including the two generated per-witness cases C2 and C7 for the filed coordinate) and pnpm test (302 files / 4091 tests); pnpm run analytical:subtraction:gate prints 'drift ... OK' on all three bases with 64 of 118 candidates still unadjudicated; analytical:footprints:check (0 illegal quotient images over 212 specimens), analytical:freeze:check (20 witnessed / 70 unresolved of 126 verdicts), analytical:final-quotient (primitives: 62 single-coordinate witnesses), analytical:check-schemas, analytical:check-baseline, analytical:closures:check, analytical:stimuli, fixtures:check, legacy-comparison --check (34980 pairs over 212 specimens and 160 coordinates), docs:check-claims, docs:check-links, lint and typecheck all pass on merge 4d8a1ca4. NON-CLAIM: the witness is AUTHORED because the corpus carries the censored case and its cause but no committed near-neighbour differing only in this member, so what is proven is that the member pair is PRIMITIVE relative to the already-existing cause REL_NULL_CENSORED_AS_OBSERVED, not that the corpus witnesses it; and the b-side's required outcome is an OBLIGATION (unproven null:missing-mechanism) rather than an illegal judgment, so the pair separates the members by which finding they attract and does not show that either member is itself necessary to the corpus. The subtraction gate stays red by design (64 unresolved), so this filing does not close REL-VIEW-ALGEBRA-01."
+    recorded_at: "2026-09-16T00:11:59.113Z"

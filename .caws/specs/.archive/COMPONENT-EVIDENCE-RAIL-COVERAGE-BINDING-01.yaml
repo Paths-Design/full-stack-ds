@@ -1,0 +1,84 @@
+id: COMPONENT-EVIDENCE-RAIL-COVERAGE-BINDING-01
+title: 'Bind committed runtime-rail coverage projection into component evidence pages'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge rail-coverage-binding at ba4fa58eb5a6a82dd4a9f3d50af2e587e35fe555'
+created_at: '2026-06-05T02:09:53.536Z'
+updated_at: '2026-11-05T22:57:29.619Z'
+blast_radius:
+  modules:
+    - showcase component evidence surface (DesignView EvidencePanel)
+    - runtime rail coverage projection (data module + coherence test)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - src/runtime/rail-coverage.ts
+    - src/runtime/rail-coverage.test.ts
+    - src/views/sections/EvidencePanel.tsx
+    - src/views/sections/evidence-sections.test.tsx
+  out:
+    - e2e/runtime-rail.spec.ts
+    - vite-plugin-fsds-data.ts
+    - packages
+    - .claude/hooks
+    - docs
+invariants:
+  - >-
+    src/runtime/rail-coverage.ts is the committed in-app PROJECTION of rail
+    coverage (not a second source of truth) — guarded by a coherence test
+    against the asserted rail surface discoverable in e2e/runtime-rail.spec.ts.
+  - >-
+    Coverage-first only: the evidence page says "rail facts asserted" / "no rail
+    facts asserted", never "passed". It binds no last-run pass/fail, no CI
+    artifact, no freshness model (those are the reserved
+    COMPONENT-EVIDENCE-CI-STATUS-BINDING-01 slice).
+  - >-
+    The runtime rail's assertions are unchanged — e2e/runtime-rail.spec.ts is
+    read as source by the coherence test but never edited.
+  - >-
+    Absence of rail coverage for a component is rendered as neutral ("no rail
+    facts asserted"), never as a failure.
+acceptance:
+  - id: A1
+    given: a component the rail covers (e.g. Progress)
+    when: its Evidence/Residuals panel renders
+    then: >-
+      it shows, per framework, whether the rail asserts DEFAULT-prop facts and
+      whether it asserts NON-default facts; non-default distinguishes
+      R/V/S/L query-param coverage from Angular fixed-fixture coverage — all
+      sourced from the committed coverage projection.
+  - id: A2
+    given: src/runtime/rail-coverage.test.ts
+    when: the committed coverage projection drifts from the asserted rail surface
+      discoverable in e2e/runtime-rail.spec.ts
+    then: >-
+      the coherence test fails (a component/framework/prop-class present in one
+      but not the other is caught).
+  - id: A3
+    given: the EvidencePanel residuals/non-claims copy
+    when: a reader checks the runtime-rail line
+    then: >-
+      the old "Runtime-rail facts are not bound in-app" residual is replaced by
+      the bound coverage plus explicit non-claims (coverage is not last-run
+      green; no visual-quality, a11y, or product-suitability claim).
+  - id: A4
+    given: a component with no rail coverage (e.g. Button or Dialog)
+    when: its panel renders
+    then: >-
+      it shows "no rail facts asserted" as a neutral fact, not a present/absent
+      or failure signal.
+  - id: A5
+    given: the slice's changes
+    when: git diff is reviewed and tests run
+    then: >-
+      e2e/runtime-rail.spec.ts is byte-identical (unchanged), and
+      `pnpm exec vitest run src/runtime/rail-coverage.test.ts
+      src/views/sections/evidence-sections.test.tsx` passes.
+non_functional: {}
+contracts:
+  - name: 'rail-coverage-coherence'
+    type: contract-test
+    path: 'src/runtime/rail-coverage.test.ts'

@@ -1,0 +1,40 @@
+id: DOC-QUALITY-PASS-001
+title: 'De-barnacle authoritative docs: what/how/why only; lineage lives in git and closed specs'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-11T08:04:34.442Z'
+updated_at: '2026-11-05T22:58:16.550Z'
+blast_radius:
+  modules:
+    - tracked docs only (content quality; no code)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - docs/**
+  out: []
+invariants:
+  - >-
+    Authoritative docs carry what/how/why in the present tense; lineage
+    (when/which spec/what changed) lives in git history and closed CAWS
+    specs. No status-reconciliation sections, no was/now diff narrative,
+    no phase plans inside architecture docs.
+  - >-
+    De-barnacling never weakens technical claims; stale claims found
+    during the pass are corrected against verified current code, not
+    deleted.
+acceptance:
+  - id: A1
+    given: the tracked docs flagged by the temporal-language survey
+    when: this spec closes
+    then: >-
+      no tracked doc contains status-reconciliation sections, dated
+      narrative, or was/now framing; the two stale claims (angular surface
+      gate, manifest FrameworkId vocabulary) are corrected to verified
+      present-tense fact; the session work log mislabelled as an ADR moves
+      to docs/internal/; governance audit 0 violations and
+      docs:check-claims passes.
+non_functional: {}
+contracts: []

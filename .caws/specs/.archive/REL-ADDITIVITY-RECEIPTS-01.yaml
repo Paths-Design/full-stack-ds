@@ -1,0 +1,42 @@
+id: REL-ADDITIVITY-RECEIPTS-01
+title: 'Author the two missing additivity occurrence receipts'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Both missing additivity occurrence receipts authored, frozen before the engine was asked, and confirmed: 9 receipts held, promotable controlled receipts 6 to 8, and no closure now carries stimuli without a held receipt.'
+created_at: '2026-09-15T04:41:56.724Z'
+updated_at: '2026-11-05T23:05:56.696Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-fixtures/stimulus-receipts-stage2.json (the two field.additivity receipts)'
+    - 'packages/ds-codegen/src/analytical/stimulus.ts (only if a clause needs correcting)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+  out: []
+invariants:
+  - 'A prediction is frozen before the engine is asked: its digest covers the authored fields, and the engine observation lands in a later commit than the prediction it judges.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the two field.additivity closures declare a and b stimuli but carry no occurrence-bound receipt; when receipts are authored for the one holder occurrence each cause explains and the engine is asked only after they are frozen; then both receipts hold every structural clause, their engine observations are recorded in a later commit than the predictions, and closures --gate reports no closure carrying stimuli without a held receipt'
+non_functional: {}
+contracts:
+  - name: 'stimulus-receipts'
+    type: contract-test
+    path: 'packages/ds-contracts/analytical-fixtures/stimulus-receipts-stage2.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "stimulus-receipts-stage2.json now carries 9 receipts, 9 held and 0 failed: the two field.additivity closures (additive~semi-additive on FX_STOCK_SUM_ALONG_DATE, semi-additive~ratio-measure on FX_GDP_PER_CAPITA_ROLLUP_MEAN) each bind their cause to ONE holder occurrence -- structure.relations.stock.fields.on_hand.additivity and structure.relations.regions.fields.gdp_per_capita.additivity -- with every structural clause held (occurrence is a holder instance, spells source then target member, all differing paths contained, rewrite schema-valid, finding-bearing sides name grounded law, no precondition inside the occurrence). Freeze order held across two commits: d1b60dfc froze the predictions with recomputed digests, 23f1e059 appended the engine observations, so no prediction could be edited toward a result it had seen. The recording convention was validated rather than assumed: replaying every receipt's patch through judge and projecting with codesOf/termsOf reproduces all seven previously recorded observations exactly. Effect measured by 'analytical:closures:gate': promotable controlled receipts 6 -> 8, engine run on 9 with 12 of 12 locus checks agreeing, and the line 'N closure(s) carry stimuli with no held occurrence receipt' is gone. Non-claim: the gate still fails on the two program conditions it already failed on -- 22 of 22 carriers provisional and 24 dependency coordinates without settled standing -- and this slice does not move them; both new carriers remain provisional, and field.additivity.semi-additive.nonAdditiveAlong#incidence is primitive, so this encoding cannot prove that closure's carrier primitive at all."
+    recorded_at: "2026-09-15T04:45:28.978Z"
+    command: "pnpm run analytical:stimuli && pnpm exec vitest run packages/ds-codegen/src/analytical"
+    exit_code: 0
+    artifact_path: packages/ds-contracts/analytical-fixtures/stimulus-receipts-stage2.json
+    commit_sha: d47d67f2

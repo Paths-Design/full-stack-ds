@@ -1,0 +1,51 @@
+id: FEAT-CHANNEL-UPDATE-OPERATIONS-01
+title: 'Closed channel-update operation vocabulary (OTP set-char-at-index, Select multi-select toggle)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge channel-update-ops at 123fdf0de081da82f11fcdb599bf355b00560248'
+created_at: '2026-07-22T18:30:38.035Z'
+updated_at: '2026-11-05T22:59:32.614Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/'
+    - 'packages/ds-codegen/src/'
+    - 'packages/ds-react/src/components/'
+    - 'packages/ds-vue/src/components/'
+    - 'packages/ds-svelte/src/components/'
+    - 'packages/ds-angular/src/components/'
+    - 'packages/ds-lit/src/components/'
+    - 'packages/ds-react-native/src/components/'
+    - 'packages/ds-figma-plugin/src/generated/'
+    - 'e2e/runtime-rail.spec.ts'
+    - 'scripts/behavior-realization-audit/'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'interactions whose next channel value composes the current value with an event payload or iteration local (OTP char at index, Select membership toggle)'
+    when: 'the grammar gains a closed vocabulary of NAMED update operations (no arbitrary expressions, each operation admitted only with a corpus consumer)'
+    then: 'contracts declare the operation, the IR normalizes it, and all five web emitters lower it idiomatically, pinned per framework with falsification.'
+  - id: A2
+    given: 'the OTP field input wire using the set-char-at-index operation'
+    when: 'a user types in field N'
+    then: 'character N of the value channel updates without overwriting the rest, proven by behavioral tests in at least react plus one other framework.'
+  - id: A3
+    given: 'Select in multiple mode using the membership-toggle operation'
+    when: 'an option is clicked'
+    then: 'the selection array adds or removes that options value, single-select replace behavior unchanged, proven behaviorally.'
+  - id: A4
+    given: 'the behavior-realization audit and both Playwright rails'
+    when: 'the feature lands'
+    then: 'the audit derives obligations for the new operation form and stays green, and byte-stability holds for components not using the new operations.'
+non_functional: {}
+contracts:
+  - name: 'channel-update-operations'
+    type: schema

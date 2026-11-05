@@ -1,0 +1,76 @@
+id: FEAT-SWIFTUI-STACK-PRIMITIVE-01
+title: 'SwiftUI Stack primitive: emitPrimitives lowering from PrimitiveIR'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'SwiftUI Stack primitive emitted from PrimitiveIR with axis-mode gating; example composes rows with it; mutation-falsified'
+created_at: '2026-08-15T01:51:10.065Z'
+updated_at: '2026-11-05T23:01:11.361Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/primitives/Stack.primitive.json (implementation.targets.swiftui entry)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui (new primitive-source.ts + test; factory emitPrimitives)'
+    - 'packages/ds-swiftui (generated Sources/DsSwiftUI/primitives/Stack.swift)'
+    - 'examples/settings/swift (rows composed with DsSwiftUI.Stack)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/primitives'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'examples/settings/swift'
+  out: []
+invariants:
+  - 'The swiftui primitive emitter derives every layout fact from PrimitiveIR (axisByVariant, axisModes, displayByMode keys, gap token identity); branching on hand-authored Stack lore instead of IR facts is a violation.'
+  - 'Axis-mode gating mirrors the web doctrine (FIX-STACK-NATIVE-AXIS-LEAK-01): the flex axis applies only in axisModes modes; native layout renders a neutral container with no imposed spacing.'
+  - 'The gap token''s concrete value is NOT invented by the emitter — spacing is a consumer-settable parameter; value projection arrives with the FsdsTheme module.'
+  - 'Consumer-only changes to examples/settings/swift must not weaken its non-claims ledger; Stack replaces hand-rolled row containers where the spec mandates Stack.'
+acceptance:
+  - id: A1
+    given: 'the Stack primitive contract and the swiftui emitter with emitPrimitives'
+    when: 'pnpm run generate -- --target=swiftui Switch ToggleSwitch runs'
+    then: 'Sources/DsSwiftUI/primitives/Stack.swift is emitted and swift build --package-path packages/ds-swiftui exits 0'
+  - id: A2
+    given: 'the emitted Stack'
+    when: 'its source is inspected'
+    then: 'the axis (VStack/HStack) derives from ir.axisByVariant, applies only in ir.axisModes modes, and the gap is exposed as a spacing parameter referencing the ir.gap token identity — no hand-authored layout lore in the emitter'
+  - id: A3
+    given: 'the settings swift lane'
+    when: 'the Preferences rows are composed'
+    then: 'they use DsSwiftUI.Stack for row layout and the example still compiles (consumer proof of the primitive)'
+  - id: A4
+    given: 'a mutation removing axis-mode gating'
+    when: 'the swiftui primitive unit test runs'
+    then: 'it fails (the native-layout no-spacing fact is pinned mutation-style)'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'governed:rail, pnpm test, and test:frameworks run'
+    then: 'all pass with no committed-tree drift outside packages/ds-swiftui'
+non_functional: {}
+contracts:
+  - name: 'swiftui-stack-primitive'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/primitive-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: pnpm run generate -- --target=swiftui Switch ToggleSwitch emits Sources/DsSwiftUI/primitives/Stack.swift (PRIMITIVE log line); swift build --package-path packages/ds-swiftui exit 0
+    recorded_at: "2026-08-15T01:59:59.877Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "primitive-source.ts derives all facts from ir.layout.{axisByVariant,displayByMode,gap} + ir.props defaults; unit test pins VStack/HStack arms, axisModes-only gating, gap token doc reference"
+    recorded_at: "2026-08-15T02:00:00.893Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "SettingsExampleApp.swift preferencesSection composes Stack(variant: .horizontal) rows; swift build --package-path examples/settings/swift exit 0"
+    recorded_at: "2026-08-15T02:00:01.750Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "mutation-falsified live: replacing ${axisModes.has(mode)} with true made primitive-source.test.ts fail (case .native: return true diff); reverted and re-verified 9/9 green"
+    recorded_at: "2026-08-15T02:00:02.585Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: governed:rail exit 0; pnpm test 2043/2043 (163 files); test:frameworks 573+492+532+70; typecheck clean; drift confined to packages/ds-swiftui + contract + emitter"
+    recorded_at: "2026-08-15T02:00:03.404Z"

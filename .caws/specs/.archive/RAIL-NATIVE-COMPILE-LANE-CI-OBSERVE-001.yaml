@@ -1,0 +1,28 @@
+id: RAIL-NATIVE-COMPILE-LANE-CI-OBSERVE-001
+title: 'CI closeout for slice 3: observe native-compile-rail green on GitHub Actions, record toolchain cost; no feature change'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'CI closeout for slice 3 observed green. Run 28277613849, job ''Native compile rail'' (id 83787273658) conclusion=success, 17s on ubuntu-latest. A1 ran on GH Actions; A2 positive Smoke.kt compile exit=0 -> lane PASS (3834ms); A3 negative SmokeInvalid.kt ?? operator compile exit=1 -> lane PASS (compiler emitted ''syntax error: Unexpected tokens''), discharging byte-stability!=compilation in CI; A4 toolchain cost: setup-java temurin JDK21 0s (preinstalled), pinned kotlinc 2.0.21 download+unzip+verify 5s (kotlinc-jvm 2.0.21 JRE 21.0.11), no Gradle/SDK/emulator, total 17s. Observed via side branch ci-observe/rail-arc (origin/main + the 3 rail commits cherry-picked) to avoid the shared feat/semantic-layer-granularity branch''s pre-existing, unrelated token-usage drift and a peer''s active work; that branch''s gate job also passed clean. No source modified. Evidence: docs/internal/ci-observe-rail-native-compile-lane-03a.md + ci-native-compile-rail.joblog.txt (machine-local, gitignored).'
+created_at: '2026-06-27T03:36:28.087Z'
+updated_at: '2026-11-05T23:05:43.973Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'TODO: list the file(s) or directories this spec authorizes.'
+    - docs/internal/ci-observe-rail-native-compile-lane-03a.md
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts: []

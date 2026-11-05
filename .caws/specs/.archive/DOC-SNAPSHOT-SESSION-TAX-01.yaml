@@ -1,0 +1,41 @@
+id: DOC-SNAPSHOT-SESSION-TAX-01
+title: 'Claim-ledger tax for landed work: propertyBindings row, corpus-count fix, styling-audit rails row'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge snapshot-tax at 4929d53a7b6d9fe6f15d31c3f9a2073ede3124c6'
+created_at: '2026-07-21T23:29:58.137Z'
+updated_at: '2026-11-05T22:58:32.095Z'
+blast_radius:
+  modules:
+    - docs
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Claim-ledger updates record only claims verified against live code THIS session, with honest claim strength: propertyBindings is test-proven (jsdom mount + reactive-update, per-framework falsified), NOT runtime-rail-proven; the styling audits are measured/script-derived standalone node runners, NOT CI gates. No row is upgraded beyond its evidence.'
+  - 'This is a partial update, not a full reconciliation: rows not touched here were last verified 2026-06-11 and the snapshot must say so explicitly rather than letting a bumped updated: date imply whole-document freshness. The known broader drift (componentRef/ComponentInstanceIR, slot-projection, textOverflow, native compile lanes, iconography) is deferred to a future reconcile spec and named in the doc, not silently absorbed.'
+  - 'Prose corpus counts follow the ledger''s own doctrine (loader is authority): the stale "47 component contracts" in the RN row is corrected in a form that cites the loader-discovered count at verification time, not a bare number that rots identically.'
+acceptance:
+  - id: A1
+    given: 'the updated claim ledger'
+    when: 'the DOM-property reflection row is read'
+    then: 'it states the propertyBindings IR class with five-framework lowering, cites ir.ts/emitters/generated Checkbox tests and the closed DOM-PROPERTY-REFLECTION-IR-CHECKBOX-INDETERMINATE-01 spec, and carries the non-claims (jsdom-proven not runtime-rail-proven; single member fact; RN accessibilityState path unchanged).'
+  - id: A2
+    given: 'the updated RN row'
+    when: 'grepped for "47"'
+    then: 'the stale count is gone, replaced by loader-anchored phrasing reflecting the 49-contract corpus at this verification.'
+  - id: A3
+    given: 'the updated ledger'
+    when: 'the styling-realization audits row is read'
+    then: 'it covers both scripts/variant-style-audit and scripts/pseudo-state-audit as measured claims (49 components / 231 obligations / 62 realized / 19 gaps for pseudo-state), marked standalone-not-CI-gated, with locked discriminator tests as evidence.'
+  - id: A4
+    given: 'the partial-update honesty invariant'
+    when: 'the doc frontmatter and stale-corrections section are read'
+    then: 'the updated: date is current AND the doc explicitly scopes which rows this update verified, naming the deferred full reconciliation for the remaining ~6 weeks of drift.'
+non_functional: {}
+contracts: []

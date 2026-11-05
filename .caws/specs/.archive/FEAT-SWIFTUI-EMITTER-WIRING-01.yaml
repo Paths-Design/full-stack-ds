@@ -1,0 +1,78 @@
+id: FEAT-SWIFTUI-EMITTER-WIRING-01
+title: 'Register swiftui as an explicit builtin target with a SwiftPM output package'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'swiftui registered as an explicit-only builtin target emitting Switch/ToggleSwitch into the ds-swiftui SwiftPM package; swift build green; rail untouched'
+created_at: '2026-08-15T01:27:10.623Z'
+updated_at: '2026-11-05T23:00:49.170Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/emitter.ts (BuiltinTargetId/KNOWN_TARGETS widening)'
+    - 'packages/ds-codegen/src/target-packs/{builtin,config}.ts (swiftui manifest + default-config filter)'
+    - 'packages/ds-codegen/src/registry.ts (swiftui binding + Package.swift package marker)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui (factory wiring, hook/tests/barrel/discover honesty fixes)'
+    - 'packages/ds-swiftui (new SwiftPM output package: Package.swift, README, generated tree)'
+    - 'docs/current-implementation-snapshot.md (stale no-SwiftUI-emitter claim correction)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The swiftui emitter never branches on component identity — only on IR facts (collapse intents, normalized channels, defined types, token facts), per the binding-rule doctrine in docs/codegen-authority.md.'
+  - 'swiftui is explicit-only in this slice: absent from fsds.targets.json, from FrameworkId/NativeLaneId, and carrying no railFrameworkId, so --target=all and governed:rail outputs must be byte-identical to pre-slice. Corpus-wide/default-rail admission is a later spec.'
+  - 'The SwiftPM library target contains only generator-owned .swift files under Sources/DsSwiftUI/Components plus hand-maintained Package.swift/README at the package root; no test files and no non-Swift files inside the target directory (SwiftPM rejects unhandled files).'
+  - 'The workspaceExists generalization accepts Package.swift as an alternative package marker without weakening existing gating: the six pnpm targets remain gated on package.json exactly as before.'
+  - 'Unimplemented emitter surfaces (multi-part anatomy, anchored surfaces) fail loudly with explicit errors when invoked — never silently degrade to wrong output.'
+acceptance:
+  - id: A1
+    given: 'the swiftui emitter and the new packages/ds-swiftui SwiftPM package on disk'
+    when: 'pnpm run generate -- --target=swiftui Switch runs'
+    then: 'it emits Sources/DsSwiftUI/Components/Switch/Switch.swift and exits 0'
+  - id: A2
+    given: 'the generated package tree'
+    when: 'swift build runs with package path packages/ds-swiftui'
+    then: 'the build exits 0 (compile-positive over the generated Swift source)'
+  - id: A3
+    given: 'a multi-part contract with no collapse intent (Button)'
+    when: 'pnpm run generate -- --target=swiftui Button runs'
+    then: 'the command fails with the explicit not-implemented anatomy error (fail-loud negative control)'
+  - id: A4
+    given: 'fsds.targets.json unchanged'
+    when: 'pnpm run governed:rail runs'
+    then: 'swiftui is not generated and all rail outputs are byte-identical to pre-slice (explicit-only registration, no railFrameworkId)'
+  - id: A5
+    given: 'the widened BuiltinTargetId and new builtin manifest'
+    when: 'pnpm run typecheck and pnpm test run at the root'
+    then: 'both pass including the manifest validation test iterating all builtin packs'
+non_functional: {}
+contracts:
+  - name: 'swiftui-switch-emission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: pnpm run generate -- --target=swiftui Switch ToggleSwitch (exit 0; Switch.swift + barrel emitted)
+    recorded_at: "2026-08-15T01:41:57.222Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "swift build --package-path packages/ds-swiftui (exit 0, Build complete over Switch+ToggleSwitch)"
+    recorded_at: "2026-08-15T01:41:58.269Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=swiftui Button (exit 1: explicit native-toggle-affordance not-implemented error)"
+    recorded_at: "2026-08-15T01:41:59.191Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "pnpm run governed:rail (exit 0; swiftui absent from regen-all; no drift in committed trees)"
+    recorded_at: "2026-08-15T01:42:00.167Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run typecheck (0 errors) + pnpm test (2021/2021, incl. manifest pack iteration + 4 swift emitter tests)"
+    recorded_at: "2026-08-15T01:42:01.094Z"

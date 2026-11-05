@@ -1,0 +1,64 @@
+id: DESIGN-SEMANTIC-PORTABILITY-RECON-01
+title: 'Measure design binding authority and cross-target semantic preservation'
+risk_tier: 2
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Completed reproducible design portability recon; retained the Web binding API and localized existing native clipping and radius-unit losses with bounded evidence, without production changes.'
+created_at: '2026-09-06T06:49:14.668Z'
+updated_at: '2026-11-05T22:57:48.232Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Reproducible design-contract recon and bounded claim adjudication'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/design-contract-recon.mjs'
+    - 'scripts/design-contract-recon.test.mjs'
+    - 'docs/architecture/design/design-contract-recon.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Recon preserves production contracts, emitters and runtime behavior; differences are classified against declared target support.'
+  - 'No universal success or failure is inferred from a bounded witness; schema limitations, backend defects and new-binding causality remain separate.'
+acceptance:
+  - id: A1
+    given: 'the current target and design contracts'
+    when: 'probe obligations are established'
+    then: 'each experiment distinguishes admitted behavior from unsupported extension and names its oracle'
+  - id: A2
+    given: 'unchanged production code'
+    when: 'counterexamples and positive controls run'
+    then: 'emitted artifacts and runtime or executable adapter facts establish whether meaning is preserved with and without design metadata'
+  - id: A3
+    given: 'the recorded observations'
+    when: 'the recon is adjudicated'
+    then: 'a reproducible bounded verdict identifies any demonstrated defect and the narrowest justified next action without speculative rearchitecture'
+non_functional: {}
+contracts:
+  - name: 'design-property-meaning'
+    type: contract-test
+    path: 'packages/ds-codegen/src/design-properties.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs/architecture/design/design-contract-recon.md defines three hypotheses, target admission boundaries, clipping oracle, absolute-radius positive controls and measurement ceilings"
+    recorded_at: "2026-09-06T06:59:54.772Z"
+    artifact_path: /Users/darianrosebrook/.codex/visualizations/2026/09/06/01a074e8-6c81-7f93-8d64-5c64eca9cfa6/design-contract-recon/report.json
+    commit_sha: b27a8202
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Reproducible counterexamples: all-platform visible/hidden survives platform normalization and changes Chromium hit testing while RN and Swift emissions remain byte-identical with and without metadata; actual Swift runtime resolves 20px to 20 and 50% to nil then consumer zero; complete corpus metadata erasure preserves native emissions and defaults"
+    recorded_at: "2026-09-06T07:00:15.502Z"
+    command: node scripts/design-contract-recon.mjs
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/.codex/visualizations/2026/09/06/01a074e8-6c81-7f93-8d64-5c64eca9cfa6/design-contract-recon/report.json
+    commit_sha: b27a8202
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Committed recon retains Web binding implementation and localizes native clipping and radius-unit limitations without a production rewrite. Governed rail, 3765 root tests, 2527 framework tests with two existing skips, 24 browser checks and three probe self-checks pass; source and probe hashes verified after local merge."
+    recorded_at: "2026-09-06T07:00:17.351Z"
+    artifact_path: /Users/darianrosebrook/.codex/visualizations/2026/09/06/01a074e8-6c81-7f93-8d64-5c64eca9cfa6/design-contract-recon/report.json
+    commit_sha: ab9e1231330bf6ef905a2c9cba115a0e139e20c0

@@ -1,0 +1,74 @@
+id: FEAT-SWIFTUI-ICON-GLYPH-01
+title: 'SwiftUI glyph pipeline: SVGPath runtime, generated GlyphCatalog, Icon via iconGlyph class'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Glyph pipeline landed: SVGPath runtime + generated GlyphCatalog substrate + Icon via the iconGlyph class; 20 of 49 admitted; Alert/Status/Badge/Chip unlocked'
+created_at: '2026-08-16T22:55:42.705Z'
+updated_at: '2026-11-05T23:00:54.973Z'
+blast_radius:
+  modules:
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Glyphs (SVGPath runtime + generated GlyphCatalog)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui (glyph catalog emission + glyph-host class)'
+    - 'fsds.targets.json + docs (Icon admitted; claims updated)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The glyph host class keys on the IR iconGlyph fact (any component whose dom carries it emits through the same path); the catalog emission is data-driven from packages/ds-iconography with no per-icon emitter lore.'
+  - 'SVGPath is hand-maintained runtime alongside FsdsTheme (like RN''s tokens/index.tsx); the arc→cubic conversion is the spike-validated endpoint parameterization.'
+  - 'Decorative-by-default comes from catalog semantics, not emitter defaults; unknown glyph names are accessibility-surfaced, never silent blanks.'
+acceptance:
+  - id: A1
+    given: 'the spike-validated SVG path kernel'
+    when: 'shipped as hand-maintained runtime'
+    then: 'Sources/DsSwiftUI/Glyphs/SVGPath.swift parses the catalog''s closed M/L/H/V/A/Z vocabulary with arc→cubic conversion, XCTested against real Alarm glyph bounds and relative/h/v forms'
+  - id: A2
+    given: 'the 29-icon iconography catalog'
+    when: 'generation runs'
+    then: 'GlyphCatalog.swift is generated (name→variants with viewBox+stroke data) and emitted through the shared-substrate channel alongside the Stack primitive; byte-stable across runs'
+  - id: A3
+    given: 'Icon (dom node carrying iconGlyph: nameFrom/sizeFrom with sm:16 md:20 lg:24 xl:32 hints)'
+    when: 'generated'
+    then: 'the glyph-host class emits Icon(name:size:) rendering the catalog glyph at the hinted size, decorative-by-default (accessibilityHidden per catalog semantics), unknown names surfaced through a11y (never silently blank); compiles'
+  - id: A4
+    given: 'the compositional-behavior direction'
+    when: 'this slice lands'
+    then: 'the glyph registry is a shared substrate (Badge/Status/Alert icon parts will lower through the same registry by iconGlyph facts, not per-component emission), and the presence-projection duplication across Dialog/Tooltip/Details/Sheet is recorded as the next compositional extraction'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'typecheck, governed:rail, pnpm test, test:frameworks, swift test, swift build run'
+    then: 'all pass; allowlist 19→20; remaining corpus fails loudly'
+non_functional: {}
+contracts:
+  - name: 'swiftui-icon-glyph'
+    type: contract-test
+    path: 'packages/ds-swiftui/Tests/DsSwiftUITests/SVGPathTests.swift'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "SVGPath.swift runtime + SVGPathTests: 3/3 spike tests pass in-package (real Alarm bounds, arc circle 16x16 center tolerance, relative/h/v exact)"
+    recorded_at: "2026-08-16T23:04:33.132Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "GlyphCatalog.swift generated from the 29-icon catalog via the shared-substrate channel; GlyphCatalogTests pin alarm 16+24 grids, viewBox 24, 3 paths, decorativeDefaults contains alarm"
+    recorded_at: "2026-08-16T23:04:34.215Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Icon.swift: GlyphCatalog.glyph(named:size:) lookup, sm/md/lg/xl hint switch (16/20/24/32), synthesized IconSize inline enum, accessibilityHidden via decorativeDefaults"
+    recorded_at: "2026-08-16T23:04:35.272Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: Glyph registry shared substrate (Alert/Status/Badge/Chip will compose it by iconGlyph facts); presence-projection duplication recorded as the next compositional extraction in the commit + research doc
+    recorded_at: "2026-08-16T23:04:36.256Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; governed:rail exit 0; pnpm test 2079/2079; test:frameworks 72 passed; swift test 13/13; swift build + example build exit 0; ADMITTED 20/20 byte-stable"
+    recorded_at: "2026-08-16T23:04:37.230Z"

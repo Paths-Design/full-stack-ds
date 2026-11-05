@@ -1,0 +1,48 @@
+id: FEAT-COMPOSE-REFERENCE-REALIZATION-01
+title: 'Component-reference lowering in Compose; Chip admission; a reference-realization gate'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Compose lowers declared component references through one fail-loud fact vocabulary, admitting Chip as the 46th component, and the new C8 rung makes every declared reference realized or ledgered in both directions'
+created_at: '2026-09-13T05:23:53.176Z'
+updated_at: '2026-11-05T23:00:05.219Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (reference-call lowering + the referenced-action-composite class)'
+    - 'scripts/compose-parity-diff.mjs (reference-realization gate)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'scripts/compose-parity-diff.test.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'A reference lowers to a call on the referenced composable with only facts the node declares, and an unmapped fact is a loud emit-time failure rather than a silent drop.'
+  - 'SwiftUI regeneration is byte-identical: this slice changes only the compose emitter and the compose-only gate.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus declares component references (Chip''s two Button controls, Alert''s dismiss, Command''s search icon, Button''s spinner, Status''s icon, Details'' and Accordion''s chevrons); when Compose lowers a declared reference to a call on the referenced generated composable and the parity gate requires every declared reference to be either realized or explicitly ledgered; then Chip is admitted, the lowered references compile through gradle, SwiftUI regeneration stays byte-identical, and no declared reference is silently dropped'
+non_functional: {}
+contracts:
+  - name: 'component-reference-realization'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge b292adc8: node --test scripts/compose-parity-diff.test.mjs -> 19/19 (incl. the reference check in both directions, a ledger-typo guard, and the composed-component marker ignoring family substrates); node scripts/compose-parity-diff.mjs -> 46 allowlisted, 0 failures, with the Command:searchIcon entry removed it reports UNREALIZED REFERENCE for that component alone; gradlew :library:compileKotlin :library:test -> BUILD SUCCESSFUL; node packages/ds-codegen/dist/cli.js --target=swiftui -> packages/ds-swiftui byte-identical; pnpm run generate:check -> 52/52; pnpm run docs:check-claims -> 75 marked claims (remainder 7 -> 6); pnpm test -> 291 files / 3907 tests pass; pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree; fsds.targets.json jetpack-compose allowlist 45 -> 46"
+    recorded_at: "2026-09-13T05:38:48.380Z"

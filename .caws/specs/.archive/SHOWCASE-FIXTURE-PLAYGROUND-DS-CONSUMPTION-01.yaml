@@ -1,0 +1,65 @@
+id: SHOWCASE-FIXTURE-PLAYGROUND-DS-CONSUMPTION-01
+title: 'Analytical fixture playground consumes DS controls'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Fixture playground controls are DS components now: DS Input search, DS Select filters with visible value captions, DS Button index, DS Badge labels, DS List assertions; guard forbids raw control markup'
+created_at: '2026-09-02T22:20:11.755Z'
+updated_at: '2026-11-05T23:08:01.783Z'
+blast_radius:
+  modules:
+    - 'src/views/AnalyticalFixturesScratchView.tsx'
+    - 'src/views/AnalyticalFixturesScratchView.smoke.test.tsx'
+    - 'src/styles/app.css (afx- section only)'
+    - 'src/consumption/consumption-guard.test.ts'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/views/AnalyticalFixturesScratchView.tsx'
+    - 'src/views/AnalyticalFixturesScratchView.smoke.test.tsx'
+    - 'src/styles/app.css'
+    - 'src/consumption/consumption-guard.test.ts'
+  out: []
+invariants:
+  - 'The playground renders zero raw <input>, <select>, or <button> elements from its own source: every control is DS Input, DS Select, or DS Button, and a consumption-guard test fails if raw control markup returns.'
+  - 'Filter semantics are unchanged: search narrows by id substring, scale and assertion-kind filters narrow exactly as the fixture data implies; only the control wiring changes.'
+  - 'Static labels are non-interactive: qualifier/trait/grain/count badges render as DS Badge (span), never DS Chip (which embeds a Button), so the index and tables introduce no nameless buttons.'
+  - 'The realization zone stays a no-engine placeholder: this slice adds no chart, projection, or invented semantics.'
+acceptance:
+  - id: A1
+    given: 'The playground view source.'
+    when: 'The consumption-guard test inspects it.'
+    then: 'Every control is a DS component (DS Input for search, DS Select for both filters, DS Button for index entries), the source imports them from @full-stack-ds/react, and it contains no raw <input>, <select>, or <button> tags.'
+  - id: A2
+    given: 'A fixture with evidence rows and declared field traits.'
+    when: 'The view renders it.'
+    then: 'Qualifier labels (null/provenance/uncertainty/unit), trait labels, grain and count labels render as DS Badge elements (data-fsds-component="badge"), and the assertions and pending-query lists render through DS List (ul.list).'
+  - id: A3
+    given: 'The DS controls.'
+    when: 'The user types an id substring into the DS Input or chooses a scale via the DS Select combobox interaction (open, then pick an option).'
+    then: 'The index narrows exactly as the fixture data implies, and a visible caption states the current filter value for each select.'
+  - id: A4
+    given: 'The extended consumption guard.'
+    when: 'Its negative control runs.'
+    then: 'The raw-control guard bites on pasted raw markup and stays silent on DS component tags (capitalized <Input>/<Select>/<Button>).'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "src/consumption/consumption-guard.test.ts: SHOWCASE-FIXTURE-PLAYGROUND-DS-CONSUMPTION-01 A1 test - view imports DS Input/Select/Button/Badge/List and contains zero raw <input>/<select>/<button> (verified 15/15 on merged main 35582a2)"
+    recorded_at: "2026-09-02T22:30:52.479Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "smoke test 'renders evidence rows with per-observation DS Badge qualifiers': censored qualifier is [data-fsds-component=badge]; 'renders structure and assertions through DS List': .afx-assertions carries DS ul.list"
+    recorded_at: "2026-09-02T22:30:53.622Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "smoke tests: search via DS Input narrows index by id substring (exact id list asserted); scale filter via DS Select combobox interaction (trigger click + option pick) narrows exactly as data implies; .afx-filter-value caption shows current value"
+    recorded_at: "2026-09-02T22:30:54.987Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "guard negative control: raw-control patterns bite on <input>/<select>/<button> and stay silent on <Input>/<Select>/<Button>; full root suite 2819/2819 green in worktree before merge"
+    recorded_at: "2026-09-02T22:30:56.057Z"

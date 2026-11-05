@@ -1,0 +1,112 @@
+id: INPUT-COMPOSITION-STYLING-01
+title: 'Repair input surfaces and composed focus/state styling'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Fixed input surface ownership, checkbox marks, Switch visible focus and alignment, Select search and selection styling, and consumer cascade; validated all five web previews, required suites, admission rail, and native consumer compilation.'
+created_at: '2026-09-30T19:06:31.819Z'
+updated_at: '2026-11-05T23:05:04.744Z'
+created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
+blast_radius:
+  modules:
+    - 'Input contract styling and generated target realizations'
+    - 'Showcase reset cascade and browser regression checks'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Field/'
+    - 'packages/ds-contracts/components/Checkbox/'
+    - 'packages/ds-contracts/components/Switch/'
+    - 'packages/ds-contracts/components/Select/'
+    - 'packages/ds-contracts/components/ToggleSwitch/'
+    - 'packages/ds-react/src/'
+    - 'packages/ds-vue/src/'
+    - 'packages/ds-svelte/src/'
+    - 'packages/ds-angular/src/'
+    - 'packages/ds-lit/src/'
+    - 'packages/ds-react-native/src/'
+    - 'packages/ds-swiftui/'
+    - 'packages/ds-jetpack-compose/'
+    - 'packages/ds-figma/'
+    - 'packages/ds-codegen/src/'
+    - 'src/styles/app.css'
+    - 'e2e/input-styling.spec.ts'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-figma-plugin/
+    - packages/ds-unity/
+    - packages/ds-godot/
+    - src/main.tsx
+  out: []
+invariants:
+  - 'Component styling intent remains in authored contracts and style/token sidecars; emitters contain no component-name exceptions.'
+  - 'Consumer CSS overrides remain possible without important declarations.'
+  - 'Existing form-control state and label/description associations remain intact.'
+acceptance:
+  - id: A1
+    given: 'Field compositions with Input and Select'
+    when: 'controls receive focus or invalid state'
+    then: 'controls own one visible focus ring and one surface with explicit invalid treatment.'
+  - id: A2
+    given: 'checkbox and switch controls'
+    when: 'mixed state or keyboard focus is active'
+    then: 'mixed marks and visible focus indicators render and switch thumbs remain centered.'
+  - id: A3
+    given: 'open searchable Select and selected options'
+    when: 'light or dark theme is used'
+    then: 'the search input is themed and selected/hover fills are consumed.'
+  - id: A4
+    given: 'showcase composition consumers and generated web targets'
+    when: 'button control state changes'
+    then: 'package-defined fills/colors survive the consumer reset and scoped browser checks pass.'
+  - id: A5
+    given: 'regenerated outputs'
+    when: 'governed rail and root/framework suites run'
+    then: 'generated source is admitted and existing checks pass.'
+non_functional: {}
+contracts:
+  - name: 'input-composition'
+    type: behavior
+    path: 'packages/ds-contracts/components/Field/Field.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Manually inspected post-merge Chromium receipt docs/internal/input-visual-audit/fix-2ea8c7ac/postmerge-browser.log: Field Input/Select composition checks in light/dark pass for one child-owned surface/ring, explicit invalid Input and error-description association. Browser MCP edit-profile Dialog confirms one ring. The tracked artifact below is the test source; generated runtime receipts remain ignored."
+    recorded_at: "2026-09-30T19:57:24.860Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Manually inspected post-merge receipt docs/internal/input-visual-audit/fix-2ea8c7ac/postmerge-browser.log: all five web targets in light/dark differentiate unchecked/checked/mixed checkbox marks, show Switch track keyboard focus, and center sm/md/lg thumbs. Tracked citation is test source; ignored receipts prove the observed run."
+    recorded_at: "2026-09-30T19:57:25.866Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Manually inspected post-merge receipt docs/internal/input-visual-audit/fix-2ea8c7ac/postmerge-browser.log: all five web targets in light/dark theme the named search input and consume selected/unselected-hover option fills. Contract selected-text contrast validation passed. Tracked citation is the executed test source; runtime receipts remain ignored."
+    recorded_at: "2026-09-30T19:57:26.798Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Manually inspected docs/internal/input-visual-audit/fix-2ea8c7ac/validation.json and postmerge-browser.log: Settings ToggleSwitch keeps its fill and changes fill on activation; all 33 checks pass. Token layer order precedes components and reset is in core. Three unchanged-main sensitivity controls failed before merge. Tracked artifact is test source; generated run artifacts are ignored."
+    recorded_at: "2026-09-30T19:57:27.733Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Manually inspected ignored validation.json and rail/root/frameworks logs under docs/internal/input-visual-audit/fix-2ea8c7ac/: required admission rail passed all six admitted targets; 4601 root tests passed; Vue/Lit/Svelte/Angular/RN suites passed with two existing Lit skips. Checked 2ea8c7ac package/src/e2e source is byte-identical to merged main. Lint, styling/usage gates, docs, native token parity and SwiftUI/Compose consumer compiles passed. Tracked citation is the contract; CLI verifies source/commit custody, not execution. No native runtime or remote CI claim."
+    recorded_at: "2026-09-30T19:57:28.830Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: packages/ds-contracts/components/Field/Field.contract.json
+    commit_sha: "2ea8c7ac7b6885bec31335c496ad206cfa0a1084"

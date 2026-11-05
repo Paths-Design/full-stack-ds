@@ -1,0 +1,75 @@
+id: FEAT-SWIFTUI-COVERAGE-BATCH-01
+title: 'SwiftUI coverage batch: Details, Sheet, Label, Blockquote, Command (8→13 admitted)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Coverage batch 8-to-15 via disclosure collapse, sheet routing, static-content class, and search-channel projection; 34 remaining fail loud'
+created_at: '2026-08-15T17:39:36.696Z'
+updated_at: '2026-11-05T23:00:42.311Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (disclosure collapse + static-content class)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.ts (sheet routing + search-channel projection)'
+    - 'packages/ds-swiftui + fsds.targets.json (five new admitted components)'
+    - 'docs/current-implementation-snapshot.md (coverage claims)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Every new admission is IR-fact-driven: collapse intent for Details, root-tag+children-only for static content, surface kind for Sheet, second-channel presence for Command search — no component-identity branching anywhere.'
+  - 'Unrealized props (Details icon/variant styling depth, Blockquote cite, Label htmlFor/form, Sheet side/modal, Command filter/emptyMessage/label/shouldFilter) are omitted-and-documented, never accepted-and-ignored.'
+  - 'Prior 8 outputs byte-stable; explicit requests for still-unadmitted contracts keep failing loudly.'
+acceptance:
+  - id: A1
+    given: 'Details (native-disclosure intent, open boolean channel, summary string prop, content compound part)'
+    when: 'generated'
+    then: 'the collapse table maps native-disclosure to SwiftUI DisclosureGroup with the open channel projected and summary as the label — compiles via swift build'
+  - id: A2
+    given: 'Label (label root, children-only dom), Blockquote, Links, and List (passive non-container roots, children-only dom)'
+    when: 'generated'
+    then: 'the static-content class emits content-closure components with presence-driven chrome and axis layering (Label exports as FsdsLabel via the reserved table; untyped axes omitted); all compile'
+  - id: A3
+    given: 'Sheet (surface kind sheet, openness channel, compound regions)'
+    when: 'generated'
+    then: 'the sheet kind routes through the centered-modal branch and compiles; side/modal props omitted-and-documented'
+  - id: A4
+    given: 'Command (dialog surface with a second search string channel + placeholder prop)'
+    when: 'generated'
+    then: 'the dialog branch projects the search channel as a panel-top TextField keyed on channel presence; compiles; Dialog (no string channel) gains no search surface'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'governed:rail, pnpm test, test:frameworks run'
+    then: 'all pass; allowlist grows to 15; --target=all regenerates byte-stably; remaining corpus contracts still fail loudly'
+non_functional: {}
+contracts:
+  - name: 'swiftui-coverage-batch'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Details.swift: DisclosureGroup(isExpanded: Binding(get:{isOpen},set:{setOpen($0)})) with summary label + onOpenChange; swift build exit 0"
+    recorded_at: "2026-08-15T17:49:16.500Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Label(FsdsLabel)/Blockquote/Links/List static-content emissions compile; List `as` axis keyword-escaped; Links untyped size axis omitted (31/31 swift tests)"
+    recorded_at: "2026-08-15T17:50:44.564Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Sheet.swift routes through centered-modal: .sheet(isPresented:)+open projection; side:/modal: absent (surface-emit.test pins)"
+    recorded_at: "2026-08-15T17:50:45.574Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Command.swift: search trio + panel-top TextField(prompt: Text(\"Search...\")); Dialog contrast-pinned without search surface"
+    recorded_at: "2026-08-15T17:50:46.523Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; rail exit 0 ADMITTED 15/15 byte-stable; pnpm test 2062/2062; frameworks 573+492+532+70; main re-verified builds + clean tree"
+    recorded_at: "2026-08-15T17:50:47.506Z"

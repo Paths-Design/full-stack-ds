@@ -1,0 +1,60 @@
+id: UNITY-CAPABILITY-PLAYER-01
+title: 'Unity capability inventory and standalone Player witness'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Corpus inventory and fresh standalone Player witness completed; optional Test Framework packaging dependency fixed.'
+created_at: '2026-09-06T08:17:30.003Z'
+updated_at: '2026-11-05T23:09:11.846Z'
+created_by_session: '01a07581-2e8c-7851-abc0-0126a0e13465'
+blast_radius:
+  modules:
+    - 'Unity capability accounting and standalone consumer verification'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-unity'
+    - 'scripts/unity-player.mjs'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Inventory must distinguish emitted support from omitted facts and runtime proof.'
+  - 'Player results must come from a fresh standalone process with matching run identity.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the contract corpus; when Unity inventory runs; then every component and declared prop has an explicit disposition with unsupported facts visible'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a generated Unity package; when a fresh consumer is built and launched; then standalone results prove asset loading and bounded control behavior or identify the exact blocking dependency'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the inventory and Player evidence; when scope is documented; then supported environment and prioritized remaining dependencies are explicit'
+non_functional: {}
+contracts:
+  - name: 'unity-capability'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/unity/capabilities.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "capabilities.test.ts: corpus enumeration, unknown valid prop exposed, API versus semantics distinction; tmp/unity-capability-player/capabilities.json"
+    recorded_at: "2026-09-06T08:26:52.533Z"
+    commit_sha: "3044082d"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node scripts/unity-player.mjs: fresh minimal OSXPlayer run 9e7113e5-da40-4802-9e9b-8b8c0df36f90 passed 11 exact checks; source hashes result and screenshot in tmp/unity-capability-player; optional Editor tests pass 17 without imposing Test Framework on consumers"
+    recorded_at: "2026-09-06T08:26:54.096Z"
+    commit_sha: "18abc116"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "docs/architecture/unity-target.md records source-accounting limits, standalone environment, minimum-version and input/accessibility gaps, ordered dependencies; documentation and repository gates passed"
+    recorded_at: "2026-09-06T08:26:55.979Z"
+    commit_sha: "6019b5e7"

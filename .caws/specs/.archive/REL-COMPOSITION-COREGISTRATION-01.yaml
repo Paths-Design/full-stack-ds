@@ -1,0 +1,96 @@
+id: REL-COMPOSITION-COREGISTRATION-01
+title: 'M3 layer composition: qualified operands co-register by structured source-grain identity, not row position'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Layer co-registration landed: qualified operands carry their structured source-grain key sets into the layer rule, alignment is set identity (reorder-invariant, cardinality-blind), standing is conserved through composition, the positional mutant family is killed by precommitted controls, and judgeLayer''s existing channel rules are unchanged.'
+created_at: '2026-09-22T03:59:08.417Z'
+updated_at: '2026-11-05T23:06:07.940Z'
+created_by_session: 'session-bd42da68-ec3b-4aed-b4b4-701f8fc1b865'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (qualified operand part, its reading with source-grain identity, and the layer co-registration rule alongside the existing channel rules)'
+    - 'packages/ds-codegen/src/analytical/codes.ts (composition-boundary diagnostic vocabulary with stated authority)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (co-registration controls and the precommitted positional mutant)'
+    - 'docs/architecture/analytical-relation-doctrine.md (name the composition boundary in the boundary-owned diagnostic note)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+  out: []
+invariants:
+  - 'COREGISTRATION IS SET IDENTITY: two layer operands are co-registered exactly when the analytical observations they carry the same structured source-grain key sets; never row order, never index, never cardinality, never field spelling, never relation name.'
+  - 'POPULATION IS NOT ALIGNMENT: a missing observation leaves the population/alignment premise explicitly unresolved with the unmatched keys named; an equal-cardinality key mismatch is an observed unregistration, refused; neither silently intersects the operands.'
+  - 'STANDING IS CONSERVED THROUGH COMPOSITION: an unproven operand leaves the composite unproven with the operand''s own obligation; a contradicted operand refuses the composite with the operand''s own cause, attributed to that operand at its recorded path with the observation''s structured key named; composition never summarizes an operand''s standing away.'
+  - 'NO FORM LORE IN THE RULE: the layer rule consumes structured keys and declared facts only; no OHLC branch, no reopening of raw rows, no reorder dependence.'
+  - 'EXISTING LAYER SEMANTICS ARE PRESERVED: judgeLayer''s shared-channel, scale-policy, unit-conflict and commensurability rules are unchanged; the co-registration decision is added before them for qualified operands and mixed operand families are unsupported rather than improvised.'
+acceptance:
+  - id: A1
+    given: 'two qualified field views of one qualified relational population presenting disjoint channels'
+    when: 'layer composes them'
+    then: 'the composite is retained lawful, and the same population with one operand''s rows reordered is also retained with an equal normalized verdict, because alignment is key-set identity'
+  - id: A2
+    given: 'two qualified operands with equal observation cardinality whose structured key sets differ by one key'
+    when: 'layer composes them'
+    then: 'the composite is refused with the composition-boundary uncoregistered cause naming the keys present on one side only, and cardinality equality is asserted so the refusal cannot be read as cardinality-derived'
+  - id: A3
+    given: 'one qualified operand lacking an observation the other carries'
+    when: 'layer composes them'
+    then: 'the composite is unproven with the co-registration obligation naming the unmatched keys on each side, leaving the population/alignment premise explicit rather than silently intersecting'
+  - id: A4
+    given: 'one qualified operand whose standing is unproven because a participating value was unreadable'
+    when: 'layer composes it with a qualified operand'
+    then: 'the composite is unproven with the operand''s own obligation attributed to the part at its recorded path'
+  - id: A5
+    given: 'one qualified operand carrying a scoped bounds contradiction'
+    when: 'layer composes it with a qualified operand'
+    then: 'the composite is refused with the operand''s own diagnostic attributed to the part, naming the violated observation''s structured key'
+  - id: A6
+    given: 'a consistent alpha-rename of the relation, grain fields, participating fields, bounds references, rows and both operands'' views'
+    when: 'both compositions are judged and compared by normalized verdict fields (kind, cause or obligation vocabulary, attribution, channels)'
+    then: 'they are equivalent'
+  - id: A7
+    given: 'the precommitted positional-alignment mutant (left[i] paired with right[i]) and its cardinality-only variant'
+    when: 'the reordered-lawful control and the equal-cardinality/different-key control are evaluated against them'
+    then: 'the controls kill the positional family in opposite directions, the real rule lawful where the key-positional mutant refuses and refused where the cardinality-only mutant accepts'
+non_functional: {}
+contracts:
+  - name: 'layer-coregistration'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'composition-vocabulary'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/codes.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 6 'A1: two views of one population compose lawfully, and reordering one operand's rows changes nothing' — two disjoint-channel qualified views of one population retained with combinator layer; the same population with one operand reordered before qualification retained with an equal normalized verdict (kind, combinator, channels, claims). Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:06.107Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts 'A2: equal cardinality cannot rescue a changed key' — cardinality equality asserted before composing; composite refused with causes=[REL_LAYER_OPERANDS_UNCOREGISTERED] attributed to combinator, detail naming the structured keys (KSFO, wed) not indices. Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:06.688Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts 'A3: a missing observation leaves the population premise explicitly unresolved' — three-row operand against four-row: unproven with obligation grain:coregistered attributed to combinator, detail naming the unmatched key on the side that lacks it; no silent intersection. Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:07.272Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts 'A4: an unproven operand keeps the composite unproven' — operand with one unreadable participating value: composite unproven with the operand's own obligation bounds:row-consistent attributed from part, and the operand's disposition on the record at path 0. Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:21.502Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection.test.ts 'A5: a scoped contradiction refuses the composite with the operand's own cause' — one-row bounds violator: composite refused with causes=[REL_FIELD_BOUNDS_VIOLATED] attributed from part, detail naming the violated observation's structured key (KSFO); operand disposition on the record at path 0. Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:22.069Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection.test.ts 'A6: a consistent rename of relation, fields, bounds references, rows and views yields equivalent normalized verdicts' — lawful and refusal paths both equivalent under the rename by normalized fields (kind, causes/obligation vocabulary, attribution, channels); detail prose differs by spelling and is excluded. Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:22.645Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "projection.test.ts 'A7: the precommitted positional mutants are killed in opposite directions' — key-positional mutant refuses the LAWFUL reordered pair (false refusal) while the real rule retains it; cardinality-only mutant accepts the UNLAWFUL key-changed pair (false acceptance, cardinality asserted equal) while the real rule refuses it. Run on landed main@e6b54cf8: vitest analytical 1076/1076."
+    recorded_at: "2026-09-22T04:19:23.192Z"

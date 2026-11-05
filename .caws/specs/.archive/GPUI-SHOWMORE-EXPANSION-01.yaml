@@ -1,0 +1,73 @@
+id: GPUI-SHOWMORE-EXPANSION-01
+title: 'GPUI boolean expansion state with a declared trigger toggle'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'ShowMore expansion state realized through a declared-trigger toggle with ChangeRequest emission; behavior 13->14, props 259->261, surfaces byte-identical.'
+created_at: '2026-11-01T12:19:07.134Z'
+updated_at: '2026-11-05T23:04:51.481Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI expansion state: prop-named open API, declared-trigger toggle, witness, clamp omission'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only boolean channels with a declared interaction trigger generalize presence; surface behaviour keeps its guarded-part semantics'
+  - 'Text-measurement clamping remains a receipted omission, never a claimed realization'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract with a boolean channel and a declared trigger; when generate --target=gpui runs; then the component exposes prop-named expansion state and a trigger toggle that requests the change'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when ShowMore is clicked and keyed; then its expansion state toggles and controlled values drive it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-showmore-expansion'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "ShowMore plans expansion state from its boolean channel and declared trigger: generated source carries expanded/default_expanded/set_expanded/is_expanded, a generated toggle_open with ChangeRequest emission (channel/handler names embedded), the trigger part's pointer+Space+Enter activation and impl EventEmitter<ChangeRequest>; surface presence keeps guarded-part semantics and regenerates byte-identically; the receipt names triggerPart and the text-clamp-measurement omission"
+    recorded_at: "2026-11-01T12:29:24.336Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/ShowMore/ShowMore.rs
+    commit_sha: ef80f6f15
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_show_more_expansion_toggles_from_trigger_click_and_keyboard passes: collapsed by default, click expands, the trigger takes focus, Space collapses and Enter expands, and a controlled expanded(Some(true)) keeps content mounted; the pilot requires it and reports GPUI_NATIVE_PASS with all 16 native witnesses"
+    recorded_at: "2026-11-01T12:29:25.823Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: ef80f6f15
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "ratchet rebaselined: GPUI props 259/379 -> 261/379 and behavior 13/30 -> 14/30 (ShowMore realizes expansion); parts/a11y/refs unchanged; two generation runs hash identically and --check is green on main after merge"
+    recorded_at: "2026-11-01T12:29:27.433Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: "7369fdde6"

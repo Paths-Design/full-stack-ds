@@ -1,0 +1,47 @@
+id: FEAT-COMPOSE-INTERACTIVE-COMPOSITE-01
+title: 'Interactive-composite predicate to shared substrate; Compose Accordion and Tabs admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T03:30:45.576Z'
+updated_at: '2026-11-05T22:59:57.379Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the interactive-composite gate is target-neutral IR extraction; when it moves to the shared substrate and compose admits Accordion (union openness) and Tabs (scalar activeTab) on the compound-context class; then swift regeneration stays byte-identical, both compile via gradle, compose grows 33 to 35, and parity/doc gates stay green'
+non_functional: {}
+contracts:
+  - name: 'interactive-composite'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Round-9 baseline re-established on the branch tip carrying rounds 4-8: governed:rail Overall PASS; pnpm test 291/291 files, 3889/3889 tests (the analytical erasure-plan sweep's intermittent 5s load-flake passed on repeat); compose-parity-diff 35/35 0 failures; test:frameworks 87/87; generate:check 52/52; swift regeneration byte-identical (52 groups, zero diff). Slice evidence: isInteractiveComposite moved to native-emission-class.ts; compose 33-to-35 with gradle :library:compileKotlin BUILD SUCCESSFUL (Accordion compound-context union toggling, Tabs scalar selection, compositionLocalOf subcomponents); emitter tests 34/34"
+    recorded_at: "2026-09-13T03:47:03.342Z"

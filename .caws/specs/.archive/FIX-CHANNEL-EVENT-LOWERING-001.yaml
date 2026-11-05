@@ -1,0 +1,53 @@
+id: FIX-CHANNEL-EVENT-LOWERING-001
+title: 'Angular/Lit channel click events on non-input hosts must toggle, not read input state'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge channel-fix at eb601ad6d38bd638537db6dac8bf23e9f412070d'
+created_at: '2026-06-10T21:30:00.538Z'
+updated_at: '2026-11-05T23:02:00.390Z'
+blast_radius:
+  modules:
+    - angular + lit component emitters (channel event lowering)
+    - generated ds-angular / ds-lit packages
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-codegen/src/frameworks/angular/**
+    - packages/ds-codegen/src/frameworks/lit/**
+    - packages/ds-angular/**
+    - packages/ds-lit/**
+  out: []
+invariants:
+  - >-
+    Event lowering is host-aware, not channel-shaped: reading element state
+    (checked/value) is only valid when the bound host is a form input;
+    click events on button/div hosts toggle the boolean channel, matching
+    react/vue/svelte/react-native.
+  - >-
+    Input-host components (Checkbox, Switch, ToggleSwitch, Input, Select
+    field) keep their element-state handlers byte-identical.
+acceptance:
+  - id: A1
+    given: a dom-tree channel click event bound to a button host (ShowMore/Truncate/Details triggers, Dialog/Sheet/Toast close buttons)
+    when: the angular and lit emitters lower it
+    then: >-
+      the generated handler toggles the boolean channel
+      (set<Channel>(!<channel>)) instead of reading
+      (event.target as HTMLInputElement).checked, and generated tests press
+      the trigger and assert the channel callback fires with the toggled
+      value.
+  - id: A2
+    given: the regenerated ds-angular and ds-lit packages
+    when: all suites and the governed rail run
+    then: >-
+      angular and lit package tests pass, input-host components are
+      byte-identical, the other generated trees are untouched, and
+      governed:rail passes in required mode.
+non_functional: {}
+contracts:
+  - name: 'channel-click-toggle'
+    type: behavior
+    path: 'packages/ds-angular/src/components'

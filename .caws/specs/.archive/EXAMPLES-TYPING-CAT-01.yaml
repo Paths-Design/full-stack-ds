@@ -1,0 +1,60 @@
+id: EXAMPLES-TYPING-CAT-01
+title: 'Typing cat: over-the-shoulder cat puppet driving a live DS site on laptop, tablet and phone'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Typing cat merged; verify-cat 31/31 and spatial console verify-runtime 15/15 on main'
+created_at: '2026-09-22T22:32:43.136Z'
+updated_at: '2026-11-05T22:59:16.547Z'
+created_by_session: '40ac09ec-5e89-4d7a-a01d-85b6bee26253'
+blast_radius:
+  modules:
+    - 'examples/spatial-console'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/spatial-console'
+    - 'examples/README.md'
+  out: []
+invariants:
+  - 'Site panels import only public package exports; the cat is a puppet of the user''s real input, never a source of synthetic input'
+  - 'One framework-neutral store backs all three device screens'
+  - 'No change to contracts, codegen, generated packages, or the existing spatial console page''s behavior'
+acceptance:
+  - id: A1
+    given: 'the cat page in flagged Chrome'
+    when: 'it loads'
+    then: 'laptop, tablet and phone screens show the same live site at three distinct layouts (desktop/tablet/mobile)'
+  - id: A2
+    given: 'a site text field focused on the laptop'
+    when: 'the user types'
+    then: 'the text appears on all three screens and the cat''s left or right paw slaps the keyboard side matching each key''s physical position'
+  - id: A3
+    given: 'the user moves the mouse'
+    when: 'the pointer moves across the window'
+    then: 'the cat''s right paw moves on the trackpad to the matching position, and clicks on a screen reach the DS control drawn there'
+  - id: A4
+    given: 'the camera'
+    when: 'the page loads'
+    then: 'the frame reads as over-the-cat''s-shoulder looking down at the desk, per the reference layout'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "node examples/spatial-console/web/e2e/verify-cat.mjs on main 0a87c614 (31/31): A1 checks laptop innerWidth 1152 two columns, tablet 768 one column, phone 390 stacked actions + wrapped nav, all uploaded"
+    recorded_at: "2026-09-23T00:02:22.973Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "verify-cat.mjs on main 0a87c614: A2 checks 16 boundary keys (1/5|6/0 Q/T|Y/P A/G|H/L Z/B|N/M) slapped by the correct paw landing on the key; typed text reads back on all three screens; Space uses both paws; keyboard-layout.test.ts"
+    recorded_at: "2026-09-23T00:02:23.489Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "verify-cat.mjs on main 0a87c614: A3 checks right paw trackpad UV equals pointer place in the laptop viewport at 4 points (pins at edge off-screen); tablet drawn Order treats/Order clicks update the store and the phone; trackpad.test.ts homography inverse"
+    recorded_at: "2026-09-23T00:02:23.965Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "verify-cat.mjs on main 0a87c614: A4 framing check (tablet left, phone right, paws below laptop screen, all in view) plus screenshots test-results/typing-cat/*.png reviewed against the reference angle; user confirmed on screen recording"
+    recorded_at: "2026-09-23T00:02:24.451Z"

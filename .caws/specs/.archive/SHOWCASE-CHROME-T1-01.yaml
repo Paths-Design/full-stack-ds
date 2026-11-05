@@ -1,0 +1,63 @@
+id: SHOWCASE-CHROME-T1-01
+title: 'Core DS chrome adoption across existing showcase surfaces'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: '34 DS families adopted as static app chrome behind a chrome-coverage ratchet; Text/Field deferred with documented blockers'
+created_at: '2026-08-18T03:01:23.073Z'
+updated_at: '2026-11-05T23:07:50.061Z'
+blast_radius:
+  modules:
+    - 'src/ showcase: Header/TracePanel/CodeViewer/FrameworkPreview/views/sections adopt ~25 DS families as real chrome'
+    - 'consumption guard suite: chrome-coverage ratchet + ds-package-contract A2 extension'
+    - 'test fallout: Header.test/TracePanel.test/sections tests updated alongside adoption, never weakened'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+  out: []
+invariants:
+  - 'Adoption is honest: each family lands where it has a real job (tooltip on trace hits, skeleton on preview loading, details on Home''s disclosure, select on the scratch chooser); no decorative imports just to satisfy the ratchet'
+  - 'DS-component-host styling overrides (.fw-tabs/.fw-tab/.header-appearance-row) and CSS-owned layout (grids, scroll, sticky) are not converted into component misuse'
+  - 'Contested surfaces stay untouched: properties-panel (FIX-EDITOR-CONTROL-BINDING-PROOF-01) and the Walkthrough tour (waits for its contract rename); product-tail families (Command/Dialog/Sheet/Shuttle/OTP/Calendar/Postcard/Markdown/Image) land in phase 3 surfaces, not forced here'
+acceptance:
+  - id: A1
+    given: 'the showcase surfaces (Header, TracePanel, CodeViewer, FrameworkPreview, views, sections)'
+    when: 'they render'
+    then: 'they consume the DS Tooltip/Status/Truncate/ShowMore/Skeleton/Spinner/Alert/AlertNotice/Progress/Divider/Blockquote/Icon/Avatar/ProfileFlag/Breadcrumbs/Text/CodeSnippet/CodeBlock/Details/Accordion/Select/Toast statically from @fullstack-ds/react where each has an honest job, with e2e-coupled class names (.preview-status--error) preserved'
+  - id: A2
+    given: 'the chrome-coverage ratchet test'
+    when: 'it runs'
+    then: 'every component family under packages/ds-react/src/components that has landed its adoption tier must appear in src/''s static import graph - failure lists the missing families, so the gap cannot silently reopen'
+  - id: A3
+    given: 'ds-package-contract.test.ts A2'
+    when: 'the showcase adopts new families'
+    then: 'the REQUIRED export list grows to include every statically adopted family'
+  - id: A4
+    given: 'the markup-coupled tests (Header.test, TracePanel.test, TokensView.consumption, e2e smoke)'
+    when: 'the adoption lands'
+    then: 'they keep passing - updated where the adoption legitimately changes structure, never weakened'
+non_functional: {}
+contracts:
+  - name: 'chrome-coverage-ratchet'
+    type: behavior
+    path: 'src/consumption/chrome-coverage.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "commit 01007868 + pnpm test (174 files / 2179 tests green) + browser smoke on :5201 — Accordion triggers wired on #/standards/accessibility, Skeleton/Spinner/Alert in FrameworkPreview with .preview-status--error preserved (0 errors), Breadcrumbs end-crumb 'Badge', Home Details disclosure, scratch Label+Select single-label wiring, Status dots + Interactive-preview checkbox on #/component/Badge/developer"
+    recorded_at: "2026-08-18T03:48:54.074Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: pnpm exec vitest run src/consumption/chrome-coverage.test.ts — 35 families (incl. NavTree) statically imported by chrome files; exhibit namespace surfaces excluded; no phantom families; negative control bites
+    recorded_at: "2026-08-18T03:48:55.094Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "ds-package-contract A2 REQUIRED extended to 48 exports (all adopted families + compound parts + Stack), green under pnpm test"
+    recorded_at: "2026-08-18T03:48:56.073Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Header.test / TracePanel.test / TokensView.consumption / evidence-sections all green unmodified; e2e-coupled .preview-status--error class preserved on the Alert host; Text deferred via residual backlog (contract declares children slot, emitter TextProps omits it) and Field deferred to phase-3 Input pairing - both documented in chrome-coverage.test.ts header"
+    recorded_at: "2026-08-18T03:48:57.223Z"

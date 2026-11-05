@@ -1,0 +1,95 @@
+id: RAIL-TOKEN-REFERENCE-RESOLVABILITY-01
+title: 'Gate token health on reference resolvability, not reference count'
+risk_tier: 2
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge token-resolvability at 45c00b1037aca3d81cfa491f2f8dbb3c657a8520'
+created_at: '2026-07-30T04:48:46.543Z'
+updated_at: '2026-11-05T23:05:54.309Z'
+blast_radius:
+  modules:
+    - 'packages/ds-tokens/build/runners/usage.ts (gate mode)'
+    - 'packages/ds-tokens/build/analytics/usageTracker.ts (what counts as a reference)'
+    - 'packages/ds-tokens/usage-baseline.json (retired or re-scoped)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/build/runners/usage.ts'
+    - 'packages/ds-tokens/build/analytics/usageTracker.ts'
+    - 'packages/ds-tokens/usage-baseline.json'
+    - 'docs/architecture/tokens-architecture.md'
+    - scripts/token-resolvability-audit
+    - scripts/prepush-scope.mjs
+    - .githooks
+    - .github/workflows/ci.yml
+    - package.json
+    - docs/token-resolvability-audit
+    - docs/current-implementation-snapshot.md
+    - packages/ds-tokens/package.json
+    - scripts/prepush-scope.test.mjs
+    - scripts/dead-slot-audit
+  out: []
+invariants:
+  - >-
+    "Declared but unreferenced" is not a defect for a vocabulary layer. The base,
+    semantic and brand scopes exist to be DRAWN FROM: contracts reference base and
+    semantic by path, and the brand layer may declare a family, a single override,
+    or a ramp for later use. A ramp shipped for later use is unreferenced by
+    definition, so usage-gating the brand layer contradicts a stated purpose of
+    that layer.
+  - >-
+    The real health question is the inverse: every reference must RESOLVE. An
+    unresolvable reference silently falls back to a literal, which makes the token
+    layer decorative for that binding while every existing gate stays green.
+  - >-
+    Measured evidence for the inversion: at the 2026-06-27 baseline, all 413
+    "unused" tokens were vocabulary (198 core.*, 215 semantic.*, zero
+    component-level), and the palette is generated as complete 10-stop ramps by
+    build/generators/generate-palette-ramps.ts. Meanwhile 23 camelCase --fsds-*
+    custom properties are READ by generated CSS and declared nowhere — codegen
+    preserves camelCase while the token build kebab-cases it — including
+    semantic.shape.control.border.defaultWidth across 17 components. The current
+    gate cannot see any of those 23 while flagging 26 palette stops.
+  - >-
+    The baseline floor is not raised to pass. Re-baselining the 26 orphaned palette
+    stops would record a brand redesign as a permanent debt increase and leave the
+    wrong question being asked. Scope the gate instead.
+acceptance:
+  - id: A1
+    given: 'A brand file declaring a palette ramp with no consumer yet'
+    when: 'the token gate runs'
+    then: 'it passes — declaring vocabulary ahead of use is legal and not gated.'
+  - id: A2
+    given: 'A generated CSS file reading var(--fsds-x) that the token graph never declares'
+    when: 'the gate runs'
+    then: >-
+      it FAILS and names the reader, the missing name and the fallback it silently
+      resolved to. Proven against the 23 known camelCase cases, which must all be
+      reported before any of them is fixed.
+  - id: A3
+    given: 'The 26 palette stops orphaned by the brand-persona replacement (aea36cc3)'
+    when: 'the new gate runs'
+    then: >-
+      they are not reported, and the run is green WITHOUT re-baselining — the push
+      blocker clears because the question changed, not because the floor moved.
+  - id: A4
+    given: 'A semantic or component token that genuinely lost its last consumer'
+    when: 'the gate runs'
+    then: >-
+      state explicitly whether this is still detected and by which gate. If the
+      inversion drops that signal, say so as a non-claim rather than implying the
+      new gate is a superset of the old one.
+  - id: A5
+    given: 'The three-scope consumption model'
+    when: 'this slice lands'
+    then: >-
+      docs/architecture/tokens-architecture.md records which gate applies to which
+      scope and why, so the next author does not re-litigate whether an unreferenced
+      ramp is debt.
+non_functional: {}
+contracts:
+  - name: 'usage-gate'
+    type: behavior
+    path: 'packages/ds-tokens/build/runners/usage.ts'

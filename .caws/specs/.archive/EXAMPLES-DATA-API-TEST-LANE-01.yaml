@@ -1,0 +1,54 @@
+id: EXAMPLES-DATA-API-TEST-LANE-01
+title: 'Committed examples data/API test lane'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge examples-test-lane at 899d493a5ff947324be408d6c8aa5bcfb8b845ed'
+created_at: '2026-06-27T04:35:43.173Z'
+updated_at: '2026-11-05T22:59:03.494Z'
+blast_radius:
+  modules:
+    - examples-data-api-tests
+    - root-test-scripts
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - vitest.examples.config.ts
+    - package.json
+    - examples/README.md
+    - examples/operations-dashboard/README.md
+    - examples/storefront-checkout/README.md
+    - examples/social-feed/README.md
+    - .caws/specs/EXAMPLES-DATA-API-TEST-LANE-01.yaml
+  out: []
+invariants:
+  - The examples Vitest config runs in the node environment and includes ONLY the
+    three example data/API src globs; it never picks up framework lane files or
+    generated packages.
+  - Adding the examples test lane does not change root `pnpm test` behavior — the
+    root vitest.config.ts include/exclude is untouched and still excludes
+    examples/**.
+  - No fixture or data/API implementation file under examples/*/src or
+    examples/*/fixtures is modified by this slice.
+acceptance:
+  - id: A1
+    given: the dedicated examples Vitest config and the new root script
+    when: a developer runs `pnpm run test:examples:data-api`
+    then: all three example data/API suites (operations-dashboard, storefront-checkout,
+      social-feed) run and report 47 passing tests (15 + 16 + 16).
+  - id: A2
+    given: the new examples Vitest config exists
+    when: root `pnpm test` (`vitest run`) is invoked
+    then: it behaves as before — examples/** suites are not collected, because the
+      root vitest.config.ts include still covers only packages/** and src/**.
+  - id: A3
+    given: the docs updates land
+    when: a reader consults examples/README.md and each app README "Tests" section
+    then: they name `pnpm run test:examples:data-api` as the committed lane, drop the
+      explicit-scratch-config caveat, and keep the non-claim (not framework app
+      parity, not visual proof, not backend proof, not generated-artifact admission;
+      CI adoption is a future slice).
+non_functional: {}
+contracts: []

@@ -1,0 +1,38 @@
+id: REL-SUPPORT-SWEEP-01
+title: 'Pin the footprint-class triage over the basis candidates: which can earn primitive standing and which cannot'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Candidate triage pinned: 74 atomic / 8 own-refinements / 2 sibling-facet / 1 outside; 65 ratifiable of 68 unresolved, three can never be, measured before any filing.'
+created_at: '2026-09-15T22:34:10.889Z'
+updated_at: '2026-11-05T23:07:18.048Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/support.test.ts (the pinned triage)'
+    - 'docs (the candidate triage, so filing is done against a measured partition)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - "The triage is measured through the ONE classifier, not hand-listed: a coordinate is unwitnessable-by-primitive-claim exactly when a single-coordinate witness on it would destroy a sibling facet or reach outside its own proposition."
+  - "The pin is two-directional: a future erasure change that moves a candidate into the non-ratifiable classes, or out of them, fails rather than being absorbed as a count update."
+  - "Being ratifiable is stated as necessary and not sufficient: an atomic candidate whose erasure changes no fixture is corpus-dead, not witnessed."
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the standing repair reads each candidate through one classifier, and filing witnesses without knowing which candidates can ever ratify would repeat the round-38 mistake at scale; when the class of a single-coordinate witness on every live basis candidate is measured against the claimed footprint; then the partition is pinned by class with the non-ratifiable coordinates named (sibling-facet: nest.levels#incidence and toGrain#incidence; outside: structure.peers[]#present), the unresolved ratifiable set is counted with its corpus-moving subset, a future erasure change that widens the non-ratifiable set fails the pin, and the analytical suite and gates agree'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (19 files / 860 tests green) and every analytical gate green (check-schemas, check-baseline, closures:check, footprints:check, freeze:check, final-quotient, stimuli, fixtures:check) in worktree support-sweep before merge 686b5bef; full root suite 302 files / 4081 tests, typecheck, both docs gates green. Measured outcome: read as SINGLE-coordinate witnesses through the one classifier, the live basis candidates partition 74 atomic / 8 own-refinements / 2 sibling-facet / 1 outside. 65 of the 68 unresolved candidates could in principle be ratified and 51 of those 65 actually change a fixture, so a witness is conceivable for them; the remaining 14 ratifiable-but-identity candidates are corpus-dead (their erasure IS the binding the corpus writes), which is a corpus fact and not a defect. Exactly THREE can never be ratified by a primitive claim and are pinned by name: relation.derivedBy.nest.levels#incidence and relation.derivedBy.aggregate-to-grain.toGrain#incidence (each destroying its own #order) and structure.peers[]#present (whose erasure reaches outside the holder it names); those are owned by the interaction family rather than by a primitive claim. The pin is TWO-DIRECTIONAL: a later erasure change that widens or narrows the unwitnessable set fails it rather than being absorbed as a count update. NON-CLAIM: this is a measurement plus a pin -- no production module, no ledger artifact and no verdict moved in this round, and being ratifiable is stated as necessary and not sufficient (an atomic candidate can still be corpus-dead or evidence-blocked). The triage exists so that filing proceeds against a measured partition instead of discovering the standing question after the fact, which is the round-38 failure mode."
+    recorded_at: "2026-09-15T22:41:00.521Z"

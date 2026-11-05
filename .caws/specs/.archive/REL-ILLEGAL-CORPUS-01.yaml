@@ -1,0 +1,70 @@
+id: REL-ILLEGAL-CORPUS-01
+title: 'Machine-readable illegal-form corpus and vocabulary for the analytical-relation doctrine'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Stage 0 landed: analytical-pack (vocabulary, form-name denylist, schema, 40-entry illegal-form corpus) plus the codegen corpus-integrity checker with 20 tests reaching every finding code; corpus and doctrine table drift-gated both ways; probe surfaced and closed four falsifier-free vocabulary families.'
+created_at: '2026-09-02T18:23:05.810Z'
+updated_at: '2026-11-05T23:06:38.430Z'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-pack (new: vocabulary, schema, corpus, test)'
+    - 'packages/ds-contracts/package.json (files field)'
+    - 'docs/architecture/analytical-relation-doctrine.md (only if the vocabulary falsifier fires)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-pack'
+    - 'packages/ds-contracts/package.json'
+    - 'docs/architecture'
+    - packages/ds-codegen/src/analytical
+  out: []
+invariants:
+  - 'Every corpus entry''s terms are drawn from vocabulary.json, which is the doctrine''s L0-L4 vocabulary; an entry that needs a term outside it fails the test rather than being paraphrased around.'
+  - 'No form-name token appears outside the colloquial field of any entry; the denylist is pack data, not test code.'
+  - 'The corpus carries no engine, no relation schema, and no geometry; stage 0 is data plus a test that can fail for the right reason.'
+acceptance:
+  - id: A1
+    given: 'vocabulary.json, illegal-form.schema.json and illegal-forms.jsonl mirroring the doctrine''s corpus table'
+    when: 'pnpm exec vitest run packages/ds-contracts/analytical-pack'
+    then: 'every line validates against the schema, ids are unique and match ^REL_[A-Z0-9_]+$, and each entry''s engine is one of the declared engines'
+  - id: A2
+    given: 'each entry''s terms list'
+    when: 'the test runs'
+    then: 'every term resolves in vocabulary.json, so an entry describable only with a term the doctrine lacks fails and names the term'
+  - id: A3
+    given: 'the form-name denylist in the pack'
+    when: 'the test scans asserted and cause fields'
+    then: 'no denylisted token appears, and a mutated entry carrying a form name in cause fails for that reason (self-check pins the falsifier)'
+  - id: A4
+    given: 'the doctrine''s corpus table'
+    when: 'the test extracts its REL_ ids'
+    then: 'the table''s id set equals the jsonl''s id set, so doc and corpus cannot drift silently'
+non_functional: {}
+contracts:
+  - name: 'illegal-form-corpus-schema'
+    type: schema
+    path: 'packages/ds-contracts/analytical-pack/illegal-form.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "20/20 tests pass; typecheck (root+codegen) and eslint clean on the new files. Probe output verbatim: 'entries: 40  doctrine rows: 40  findings: 0'. Per engine: meaningfulness 2, task-invariant 8, additivity 5, declaration-missing 8, dimensional 3, derivation-typing 6, channel-capacity 6, provenance 2 (40 total, every engine exercised). Schema validity is enforced by Ajv against illegal-form.schema.json; id pattern is pinned by a test where 'rel_lowercase' yields CORPUS_SCHEMA_INVALID; engine membership by a test where engine 'vibes' yields CORPUS_ENGINE_UNKNOWN and CORPUS_SCHEMA_INVALID; schema enum vs vocabulary.engines by a test that slices the enum and gets CORPUS_SCHEMA_ENGINE_DRIFT. Full root suite in the worktree: run 1 failed 13 tests in packages/ds-tokens/build/runners/runner-mains.test.ts, run 2 failed 7 in packages/ds-figma-plugin/src/FigmaPluginApp.test.ts (rune_outside_svelte, stack resolves svelte via ../../../node_modules/.pnpm); both files pass 7/7 on unmodified main and neither path is in the slice diff, so classified as worktree symlinked-node_modules environment, not pre-existing on main and not caused here. CI on canonical is authoritative."
+    recorded_at: "2026-09-02T18:35:47.297Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/analytical && pnpm exec tsx tmp/corpus-probe.ts"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Live corpus: 0 CORPUS_TERM_UNKNOWN findings; every term is namespace:term and resolves in vocabulary.json (143 terms, 21 namespaces). Falsifier reached for real: mutating one entry to add 'scale:vibes' printed {code:CORPUS_TERM_UNKNOWN, id:REL_ADDITIVITY_STACK_SEMIADDITIVE, detail:'term \"scale:vibes\" does not resolve in vocabulary.json'}; an unnamespaced 'ordinal' also fails, pinned. The probe also listed vocabulary terms with no illegal entry: 53 before, 49 after adding four entries (null taxonomy, sequential-on-nominal, geographic projection, temporal grain) to corpus and doctrine together. NON-CLAIM: term membership proves each entry is written in the doctrine's vocabulary, not that its analytical cause is true (oracle problem); truth is stage 1's engine work."
+    recorded_at: "2026-09-02T18:35:47.765Z"
+    command: pnpm exec tsx tmp/corpus-probe.ts
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Live corpus: 0 CORPUS_FORM_NAME_LEAK findings across 40 entries' asserted and cause fields against the 36-phrase denylist in form-names.json. Falsifier reached for real: setting one cause to 'looks like a bad stacked bar chart' printed three findings verbatim: form name \"chart\" / \"bar chart\" / \"bar\" appears in cause. Pinned: a form name in asserted leaks; a form name in colloquial does NOT leak (the field exists to carry the downstream name); matching is whole-word so 'barrier' does not match 'bar'. Denylist deliberately omits words that are also L0-L4 vocabulary (graph, area, line, polar, stack) and lists only their form-name phrases."
+    recorded_at: "2026-09-02T18:35:48.204Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/analytical -t 'form name'"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "extractDoctrineIds reads only table rows anchored at line start (regex on '| REL_... |'), pinned by a test where a REL_ code mentioned in prose and an indented row are both ignored. Live: doctrine rows 40 == corpus entries 40, symmetric difference empty. Both drift directions reached for real: adding REL_ONLY_IN_DOC to the doctrine id set yields CORPUS_DOC_DRIFT 'not in illegal-forms.jsonl'; adding REL_ONLY_IN_CORPUS to the corpus yields CORPUS_DOC_DRIFT 'not in the doctrine table'. The four entries added during this slice were added to the table and the jsonl in the same commit, which is exactly the coupling this criterion exists to enforce."
+    recorded_at: "2026-09-02T18:35:48.652Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/analytical -t 'DOC_DRIFT'"

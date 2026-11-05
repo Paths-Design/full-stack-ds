@@ -1,0 +1,45 @@
+id: COMPOSE-HIGHLIGHT-MINHEIGHT-01
+title: 'Preserve minimum height in Compose supplied-source chrome'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Restored the Compose source chrome minimum-height consumer; token parity, Kotlin tests, required suites and documentation checks pass.'
+created_at: '2026-09-28T06:22:56.953Z'
+updated_at: '2026-11-05T22:57:34.488Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Compose supplied-source lowering'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/highlight-source.ts'
+    - 'packages/ds-codegen/src/frameworks/consumer-content.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/CodeBlock/'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Minimum height constrains all source branches without imposing a fixed height or component-name dispatch.'
+acceptance:
+  - id: A1
+    given: 'token-backed source chrome'
+    when: 'Compose output is generated'
+    then: 'the minimum-height slot resolves and heightIn applies to the shared outer chrome with parity and native compile checks passing.'
+rollback:
+  - 'Revert the emitter and generated minimum-height binding together.'
+non_functional: {}
+contracts:
+  - name: 'compose-token-parity'
+    type: contract-test
+    path: 'scripts/compose-parity-diff.test.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "The shared source chrome resolves box-model.min-height and applies heightIn before padding for all three rendering branches; renamed-contract emission assertions pass. Compose token parity passes across 52 components; Kotlin library compile and tests pass. Full admission rail, 4419 root tests, framework suites, lint and docs pass. Raw logs: tmp/compose-highlight-minheight/. No Android rendered-layout claim. Citation verification checks tracked source/commit reachability; test commands were executed separately."
+    recorded_at: "2026-09-28T06:30:04.599Z"
+    command: "./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/consumer-content.test.ts
+    commit_sha: "99a273dadf60701609b3b6231dac73f2bc033e63"

@@ -1,0 +1,60 @@
+id: CODEBLOCK-PREFORMATTED-WHITESPACE-01
+title: 'Preserve authored preformatted content without template indentation'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Preserve authored preformatted content through template emission with five-framework browser verification and full local gates.'
+created_at: '2026-09-10T23:30:09.922Z'
+updated_at: '2026-11-05T22:57:08.313Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Vue and Angular DOM template emission'
+    - 'CodeBlock cross-framework browser evidence'
+    - 'Svelte and Lit preformatted template emission'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/'
+    - 'packages/ds-vue/'
+    - 'packages/ds-angular/'
+    - 'e2e/'
+    - 'docs/'
+    - packages/ds-svelte/
+    - packages/ds-lit/
+  out: []
+invariants:
+  - 'Generated formatting must not add characters inside preformatted content or trim authored whitespace.'
+  - 'The fix follows DOM preformatted context, not component identity or CSS compensation.'
+acceptance:
+  - id: A1
+    given: 'single-line CodeBlock content'
+    when: 'rendered in every Web framework'
+    then: 'text content matches the source exactly and Vue and Angular have no extra lines'
+  - id: A2
+    given: 'intentional leading whitespace, blank lines and trailing newline'
+    when: 'highlighting is enabled and disabled'
+    then: 'every Web framework preserves the exact authored text'
+  - id: A3
+    given: 'an arbitrary preformatted DOM subtree'
+    when: 'Vue and Angular emit nested and conditional content'
+    then: 'markup formatting introduces no rendered whitespace'
+non_functional: {}
+contracts:
+  - name: 'preformatted-content'
+    type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "e2e/codeblock-whitespace.spec.ts: Chromium exact single-line text and geometry pass for all five Web frameworks; tmp/codeblock-whitespace/browser.log and single-line screenshots."
+    recorded_at: "2026-09-11T00:00:41.991Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "e2e/codeblock-whitespace.spec.ts: tabs, blank lines, leading and trailing whitespace, markup-like text and empty content remain exact with highlighting on and off across five Web frameworks; tmp/codeblock-whitespace/browser.log."
+    recorded_at: "2026-09-11T00:00:42.733Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "packages/ds-codegen/src/frameworks/preformatted-whitespace.test.ts: four emitters pass the unrelated nested preformatted fixture with conditional iteration; tmp/codeblock-whitespace/unit.log. Full pre-push, framework suites and CAWS gates pass; tmp/codeblock-whitespace/verification.md."
+    recorded_at: "2026-09-11T00:00:43.561Z"

@@ -1,0 +1,43 @@
+id: FEAT-COMPOSE-REFERENCE-CLOSURE-01
+title: 'Realize Command''s search glyph and Button''s loading spinner; restamp the stale governed doc'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Command''s declared search glyph is realized through the reference mechanism (C8 ledger 6 to 5), a stray un-allowlisted NavTree tree committed by a probe is removed, and normal-form.md is restamped'
+created_at: '2026-09-13T05:52:10.127Z'
+updated_at: '2026-11-05T23:00:03.121Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (reference realization in the centered surface and the projected-children action)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'scripts/compose-parity-diff.test.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'The C8 ledger shrinks only by realizing the reference: a removed entry with an unrealized reference fails the gate.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given two of the six ledgered component references are realizable from facts their nodes already declare; when Compose lowers them and the C8 ledger drops those entries; then gradle compiles the changed components, the gate''s stale-entry direction proves the ledger shrank, the ledger still names the four references that remain unrealized, and the governed doc''s stamp is refreshed'
+non_functional: {}
+contracts:
+  - name: 'reference-realization'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge 209d9204: node scripts/compose-parity-diff.mjs -> 47 allowlisted, 0 failures with the Command:searchIcon ledger entry REMOVED (the gate's stale-entry direction and the realized call agree) and the five remaining entries still enforced; gradlew :library:compileKotlin -> BUILD SUCCESSFUL including the deleted stray NavTree tree; node --test scripts/compose-parity-diff.test.mjs -> 20/20; emitter suite 55/55; pnpm test -> 3910/3910; pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree; pnpm run docs:check-claims -> 75 marked claims with normal-form.md restamped at 679b3e3d"
+    recorded_at: "2026-09-13T06:00:06.743Z"

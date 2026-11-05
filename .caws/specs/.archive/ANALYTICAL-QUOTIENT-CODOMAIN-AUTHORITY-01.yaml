@@ -1,0 +1,133 @@
+id: ANALYTICAL-QUOTIENT-CODOMAIN-AUTHORITY-01
+title: 'The quotient has a declared codomain: erased representations are typed images, not damaged source declarations'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Merged as 85c8e5a2. A1 independently reviewed PASS. A7 PASS under governing invariant e093391b. Remaining semantic obligations are transferred to REL-VIEW-ALGEBRA-01; closure of this successor does not assert Stage 2 is closed.'
+created_at: '2026-09-04T18:36:42.497Z'
+updated_at: '2026-11-05T22:56:54.934Z'
+created_by_session: 'b2dd0282-810d-45e6-99c5-ae3bd21162f1'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical (a typed QuotientImage authority; executor and canonicalizer retargeted off Fixture; the audit split into source-language departure vs quotient-language invalidity; three-part evidence identity)'
+    - 'packages/ds-contracts (emitted quotient-image schema, erasure evidence authority record, specimen population)'
+    - 'package.json (quotient validation and authority-digest commands)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-contracts/quotient-image.schema.json'
+    - 'package.json'
+  out:
+    - packages/ds-contracts/analytical-pack
+invariants:
+  - 'The terminal invariant is quotientLanguageInvalid == 0, NOT sourceLanguageDeparture == 0. An erasure image that cannot be parsed as an unmodified source declaration is often expected and is not by itself a defect: a compiler IR is not invalid because it does not parse as source. What must never happen is an image invalid in the language of quotient images.'
+  - 'Deleting a required leaf must NOT delete its enclosing declaration. That repair is refused as the general rule: it forgets the whole semantic object rather than the named leaf, and it would convert the present subsumes-refinements result on assertion.aggregate.op into real sibling over-erasure. Declaration deletion stays reachable only through an explicit holder-presence or composite-declaration operation.'
+  - 'No standing moves as a byproduct of the codomain change. Every witness or closure verdict that changes under quotient images is reported for adjudication with its old and new outcome; none is applied silently, and none is preserved merely because it is the incumbent.'
+  - 'The digest is attribution, not correctness: the tests prove behavior, the digest proves the recorded verdicts still refer to that behavior. erasureAuthorityDigest must cover executor and compiler SOURCE, not only the declarative plan registry - the predecessor session found two defects (a slot written into existence, an array element deleted as a null hole) where the declarative plan was unchanged and the executor was wrong.'
+  - 'The oracle stays frozen: packages/ds-contracts/analytical-pack is scope.out and closure must show corpus.jsonl 86f2b03a9fe7affe, corpus-case.schema.json e961af232d3ede45, vocabulary.json 5bd9dfddab19dc33, form-names.json 0564902cf8d7d4ff and the doctrine catalogue+appendix 123e73dfc61ab2ab unchanged.'
+  - 'REL-VIEW-ALGEBRA-01 stays open and blocked on this spec, and two different acts on the same coordinates are kept apart. MIGRATION REEVALUATION - rerunning a witness on quotient images and recording its old and new outcome, which A6 requires - happens inside this spec and confers no standing by itself; a result may be negative or non-promoting, and restoring a previous tally is not a success condition. SUBTRACTION ADJUDICATION - deciding whether a coordinate is necessary and may be removed - is reserved for REL-VIEW-ALGEBRA-01: the three holder-presence coordinates, the 24 footprint dependency coordinates, join.cardinality and the four required-leaf witnesses receive no subtraction verdict until this spec merges. The earlier wording said only "are NOT adjudicated until this spec merges", which read as forbidding the reevaluation A6 mandates.'
+  - 'A6 population is identity-based, not count-based: every witness listed in codomain-adjudications.json is rerun under the quotient codomain; each changed result and each affected standing is reported independently; no migration reevaluation itself confers or removes subtraction standing. The phrase ''the four required-leaf witnesses'' in A6 describes the population at authoring time and is not the acceptance object.'
+  - 'A7 coverage is collective: witness and closure evidence is bound to the authority identity set (coordinateBasisDigest, erasureAuthorityDigest, witnessAuthorityDigest, quotientSchemaVersion, ruleDigest), which together cover the plan registry, the plan compiler and executor source closure, the canonical quotient-image serializer, the quotient schema version, the ordering graph and the schema-derived locator machinery. The locator machinery moves coordinateBasisDigest; ''erasureAuthorityDigest'' in A7 names the erasure cause, and the union is what the evidence is bound to. Closure evidence must carry the authority block it was verified under and be refused, not re-read, when any identity moves.'
+  - 'A9 population is the complete population produced by the bound specimen authority at measurement time, with its membership digest and observed counts recorded in the evidence receipt. The counts in A9 (205 specimens: 90 corpus, 22 resolved stimuli, 93 synthesized) describe the population at authoring time and are not a target; replacing them with a later count is equally not the acceptance object.'
+  - 'A10 pair basis is all unordered pairs in the bound executable-plan registry at measurement time, with the registry digest and observed pair count recorded in the evidence receipt (9730 over 140 plans at authoring time, not a target). Closure normalization plans belong to the executable-plan population. Saturated merge semantics (all and only connected member classes), listing-order independence of every live witness and closure set, and refusal of a genuinely non-confluent set at evidence admission are separate propositions the pair count does not stand in for.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a source fixture that validates against the relation contract schema; when every executable erasure plan is applied to it; then the resulting image validates against the quotient-image schema, so quotientLanguageInvalid is 0 across the whole specimen population'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given an erased image is not a source declaration; when quotient.ts and the canonicalizer type it; then neither casts it back to Fixture, and a departure from the source language is reported as sourceLanguageDeparture rather than counted as a defect'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a required leaf carries a coordinate; when that coordinate is erased; then the slot becomes a typed forgotten value and every sibling fact in the enclosing declaration survives unchanged'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given declaration deletion forgets more than the leaf that names it; when a plan requires it; then it is reachable only through an explicit holder-presence or composite-declaration operation, never as the primitive erasure of a leaf value'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the live coordinate population; when plans are derived; then every non-reference coordinate has exactly one plan, every deliberate no-plan coordinate carries a typed reason, and no plan exists without a coordinate'
+  - id: A6
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the four required-leaf witnesses currently hold on schema-invalid images; when they are rerun under the quotient codomain; then each is re-decided on the new images and any standing change is reported as an adjudication finding rather than applied automatically'
+  - id: A7
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given witness and closure evidence is bound to an erasureAuthorityDigest covering the plan registry, the plan compiler and executor source closure, the canonical quotient-image serializer, the quotient schema version, the ordering graph and the schema-derived locator machinery; when any of those inputs moves; then the evidence is rejected rather than silently re-read'
+  - id: A8
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given footprint-derived classifications are population-sensitive while a witness is existential; when the specimen population moves; then classifications bound to footprintBasisDigest are rejected and witnesses bound only to erasureAuthorityDigest survive'
+  - id: A9
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the legacy erasure freeze was taken over 84 fixtures; when legacy and new paths are compared; then the equivalence runs over the complete current population of 205 specimens - 90 corpus, 22 resolved stimuli, 93 synthesized - and every divergence is adjudicated individually rather than resolved in favour of the incumbent'
+  - id: A10
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given commutation was previously sampled over 15 representative plans; when composition is checked; then all 9730 unordered plan pairs are evaluated across the specimen population, independent pairs commute, ordered pairs obey their declared edge, every witness and closure set yields a listing-order-independent canonical image, and a genuinely non-confluent plan set is refused as evidence rather than normalized through one implementation order'
+non_functional: {}
+contracts:
+  - name: 'quotient-image'
+    type: schema
+    path: 'packages/ds-contracts/quotient-image.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Independent review PASS: one-report certification; complete recorded/current evidence admission; malformed and asymmetric scope evidence refuses; 0 illegal quotient images over the bound 208-specimen population; skipped pairs proven no-op; input-vs-image and synthesized-population falsifiers discriminate. Bounded to the recorded population and authority; no universal-legality or semantic-necessity claim."
+    recorded_at: "2026-09-05T23:51:44.500Z"
+    artifact_path: packages/ds-contracts/analytical-fixtures/evidence-map.json
+    commit_sha: "85c8e5a2763dc1b192dae15c67aeca66327cf79b"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "quotient-image.ts types the codomain (QuotientImage; executePlan/executeAll/erase/canonical accept Fixture | QuotientImage and return QuotientImage); quotient-image.test.ts 'a QuotientImage cannot enter an API that requires a source Fixture, while every Fixture is trivially an image' -- two @ts-expect-error assignments gated by pnpm run typecheck (tsc fails if either stops being an error), Fixture positive control, runtime hole asserted; erasure-audit.ts reports sourceLanguageDeparture (62/112 authored) apart from quotientLanguageInvalid (0/208)"
+    recorded_at: "2026-09-05T19:25:42.377Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "erasure-plan.test.ts: lawful forgetting table, forget-value rows (IDENTIFIES/SEPARATES, required leaf becomes a typed hole, siblings survive) + operationFor chooses forget-value from requiredLeaves; authority.test.ts: 'a wrong-but-local operation fails the law, moves exactly the erasure identity, and both consumers refuse the evidence earned under the old one' (binding to erasureAuthorityDigest, with unmutated-relocation control); law-table receipts L1/L2 killed"
+    recorded_at: "2026-09-05T11:33:03.368Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Required leaves holed, optional deleted; holder deletion only via delete-holder/delete-tagged-holder; absence of a required leaf spelled as absence of the declaration. QUALIFICATION: delete-tagged-holder and forget-branch-field have no law-table row (reachable only via synthesizePlan)."
+    recorded_at: "2026-09-05T06:54:57.721Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/erasure-plan.test.ts > spells absence of a REQUIRED leaf as absence of its whole declaration, not of the tag"
+    artifact_path: packages/ds-contracts/analytical-fixtures/evidence-map.json
+    commit_sha: c8f2c19281392b1a1920f1cc9c7274467211d859
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Every coordinate has a locator; the only no-plan coordinates are kind 'reference'; plans.size == census.size - references (exact both directions). Typed reason = kind 'reference', pinned by the alpha-renaming no-op test; not a dedicated field."
+    recorded_at: "2026-09-05T06:54:58.171Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/erasure-plan.test.ts > gives every coordinate a locator and every non-reference coordinate exactly one plan"
+    artifact_path: packages/ds-contracts/analytical-fixtures/evidence-map.json
+    commit_sha: c8f2c19281392b1a1920f1cc9c7274467211d859
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Identity rerun on tip 0d0fe106 (tmp/a6-reevaluate.mts, read-only; fixture digests unchanged before/after): all 3 witnesses listed in codomain-adjudications.json rerun under the quotient codomain still fail with exactly the recorded NO_COLLISION, every isolation obligation discharged (no ERASURE_ISOLATION_UNEVALUATED, so the first-refutation proof ceiling is not reached here). Standing per declared coordinate, independently: evidence suspended x3, assertion.aggregate.op holding via primitive; recorded disposition unchanged; reinterpretHistorically drift none. Bounded reevaluation 1 (temporality, both holders declared): whole-leaf witness over the interval/instant pair HOLDS with both isolations discharged -- observation, not applied. Bounded reevaluation 2 (assertion closure): NO assertion carrier is ledgered (repair text corrected c353e3a6); one is derivable (residue aggregate:[op], minRawEdit 2, footprint 7); carrier+normalization collides while either alone does not; obligation 8 FAILS (all 7 footprint coordinates primitive); obligation 7 no control; obligation 3 unevaluable BY THE CHECKER (no 'assertion' locator, forgetPath throws) -- checker limit, not a verdict; nothing promoted. Decisive: necessity.test.ts 'every suspension points from a recorded historical standing to a measured current failure'; full record evidence-map.json criteria.A6. Acceptance text ('four required-leaf witnesses') is governed by invariant e093391b; no CLI amends then: text."
+    recorded_at: "2026-09-05T20:38:59.949Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "PASS under governing invariant e093391b: witness and closure evidence is bound to the collective authority identity set. Locator machinery is covered by coordinateBasisDigest, not by erasureAuthorityDigest alone. All covered causes are refused or re-evaluated on movement; this does not claim erasureAuthorityDigest individually covers every cause named in the authoring-time A7 text."
+    recorded_at: "2026-09-05T23:51:45.036Z"
+    artifact_path: packages/ds-contracts/analytical-fixtures/evidence-map.json
+    commit_sha: "85c8e5a2763dc1b192dae15c67aeca66327cf79b"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "Two experiments on the final tip 0d0fe106 over the relocation harness (tmp/a8-experiments.mts; control relocation indistinguishable). Population-only: the copy's specimen builder drops one synthesized specimen (208->207); this tree's gate rejects every footprintBasisDigest-bound classification and names the moved quotientLanguageInvalid population; all three identities unmoved; 44/44 witness verdicts and every witness audit entry unchanged; the copy's freeze check passes. Witness-input: one stimulus patch (min->mean) on assertion.aggregate.op:count~min in a real contracts copy; exactly that witness is reevaluated (ok -> NO_COLLISION) and its audit entry moves (holds true->false, standing primitive->none); the other 46 unchanged; identities unmoved; the population also moves (the stimulus is a specimen) and the gate names the moved input and populations. Decisive: erasure-audit.test.ts 'admits each population description before comparing it, on either side' + checkReport's 'every footprint classification bound to footprintBasisDigest is rejected'; record evidence-map.json criteria.A8."
+    recorded_at: "2026-09-05T20:39:00.742Z"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "legacy-comparison.ts --check OK on tip 0d0fe106: the legacy walker pinned at 38e37a41 (quotient.ts blob c9026097, verified by blob sha) materialized from git history vs the quotient codomain, over the bound specimen authority's complete population (208 = 90 corpus + 22 stimuli + 96 synthesized; membership digest eb2cc4e0, equal to the footprint report's), 165 coordinates, 34320 pairs, compared through a neutral key-sorted serializer with no renaming: 25507 agree (bound by count and digest); 8813 divergences, each an individual record [plan, specimen, legacy, new, class] with the operation law and a disposition decided by the law, in 6 classes (5200 reference coordinates unplanned by the new census -- reported, not scored; 2352 + 262 merge rewrites; 921 + 48 required-leaf deletions; 30 below-floor truncations); 0 records where the new path must answer, asserted absent. Ledger: packages/ds-contracts/analytical-fixtures/legacy-erasure-comparison.json. Decisive: legacy-comparison.test.ts 'files every divergence under a class that carries a law-based disposition, and the class counts add up' and 'holds no record where the new path has to answer'. The population is the bound one (invariant e093391b); 205/93 is not replaced with 208 in the text."
+    recorded_at: "2026-09-05T20:39:01.529Z"
+  - criterion_id: A10
+    status: pass
+    evidence_ref: "All 11175 unordered pairs of the bound executable-plan registry (140 census plans + 10 closure normalization plans) across all 208 specimens on tip 0d0fe106 (tmp/a10-measure.mts): 1042 edges (837 declared + 205 derived), every one listing-independent and agreeing with its edge-order composition; 9953 independent pairs commute raw; 180 do not, in exactly two kinds: 159 same-leaf merges reconciled by saturation and proven against an independent union-find partition (365 subsets, 75920 images, 0 violations), and 21 genuinely non-confluent census pairs (merge vs absence-spelling on one leaf; arity vs order on one list) which admission REFUSES (checkWitness ERASURE_NOT_CONFLUENT before any collision; checkClosure obligations 4-6 unevaluable). Every live witness set (2) and closure set (22; 418 permutations) yields one image under every listing: 0 violations after deriving the branch-before-discriminator edge (903fe3f5) -- 514 violations before it on the merge candidate. Refusal falsified in the relocation harness: an edge-less copy refuses all 3 closures with stimuli by name while this tree admits them. Decisive: erasure-plan.test.ts 'every closure set yields one image whatever its listing', necessity.test.ts 'a merge and an absence-spelling on one leaf: refused...', authority.test.ts 'a copy without the derived ordering edge refuses...'. The registry is the bound one (invariant e093391b); 9730 is C(140,2) at authoring time."
+    recorded_at: "2026-09-05T20:39:02.352Z"

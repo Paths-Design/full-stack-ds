@@ -1,0 +1,64 @@
+id: SHOWCASE-CHROME-T2-01
+title: 'Product-tail DS families land as real showcase surfaces'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Product-tail families land as real surfaces (palette/Settings/Activity/About/tour); full-corpus ratchet with three documented emitter blockers (Command/Shuttle/Text)'
+created_at: '2026-08-18T03:51:21.835Z'
+updated_at: '2026-11-05T23:07:50.931Z'
+blast_radius:
+  modules:
+    - 'src/ showcase: new Settings/Activity views, About dialog, Command palette, Walkthrough tour, Header triggers, router+app wiring'
+    - 'vite-plugin-fsds-data.ts: build-time activity feed (recent commits/spec events)'
+    - 'consumption ratchets: chrome-coverage + package-contract grow to the full corpus'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+    - 'vite-plugin-fsds-data.ts'
+  out: []
+invariants:
+  - 'Each surface is real functionality, not a demo: the palette navigates, settings persist and take effect, activity shows real build-time data, the tour walks real anchors'
+  - 'No Sidebar edits (nav entries are the palette/Header job until the NAVTREE follow-up); no properties-panel edits (overlay migration stays deferred)'
+  - 'Text adoption stays deferred until the emitter declares its contract children slot; that blocker is tracked, not hacked around'
+acceptance:
+  - id: A1
+    given: 'the showcase app'
+    when: 'a user opens it'
+    then: 'real functional surfaces consume the product-tail DS families statically - Command palette (Cmd+K navigation over views+components), Settings view (Field/Label/Checkbox/ToggleSwitch/Select/TextField/Shuttle + OTP as destructive-reset gate, persisted to localStorage), About dialog (Dialog+Markdown+Image+Avatar/ProfileFlag identity + CodeBlock bash fence), Activity view (Postcard+Calendar from build-time git/caws data via vite-plugin-fsds-data), and a first-run Walkthrough tour anchored to app chrome'
+  - id: A2
+    given: 'the chrome-coverage ratchet and ds-package-contract A2'
+    when: 'tier 2 lands'
+    then: 'both lists grow to the full corpus - every family statically imported as chrome, closing the adoption gap completely'
+  - id: A3
+    given: 'the new routes (#/settings, #/activity) and Header additions'
+    when: 'rendered'
+    then: 'existing tests stay green, Header.test extended for the new triggers, and the surfaces are reachable without Sidebar (Command palette + Header) since nav entry lands with NAVTREE follow-up'
+  - id: A4
+    given: 'preferences (localStorage)'
+    when: 'Settings changes them'
+    then: 'Toast confirms and the app honours them (default framework tab on component routes, trace-panel visibility, preview interactivity)'
+non_functional: {}
+contracts:
+  - name: 'chrome-coverage-full-corpus'
+    type: behavior
+    path: 'src/consumption/chrome-coverage.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "commit 27d6356f + ChromeT2.surfaces.test.tsx (palette Dialog+entries, Settings 2 toggles + 9 group checkboxes + reset gate, Activity 2 Postcards + Calendar, About markdown+figure) + pnpm test 174 files / 2183 tests green"
+    recorded_at: "2026-08-18T04:18:33.419Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "chrome-coverage ratchet now requires the FULL corpus minus BLOCKED_FAMILIES=[Command,Shuttle,Text] (each with its documented emitter-composition blocker); package-contract A2 extended to 51 exports; negative control asserts blocked families have no imports"
+    recorded_at: "2026-08-18T04:18:34.253Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "#/settings + #/activity routed (router.tsx kinds + buildHref), Header gains palette/tour/about triggers (Header.test green unmodified - onOpenPalette optional); surfaces reachable via Header buttons + palette without Sidebar"
+    recorded_at: "2026-08-18T04:18:35.096Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: src/prefs.ts localStorage store (get/set/reset/usePrefs via useSyncExternalStore); DeveloperView initialises framework + interactivePreview from prefs; app.tsx gates trace panel on prefs.tracePanelVisible; Settings Toast confirms on every change
+    recorded_at: "2026-08-18T04:18:35.947Z"

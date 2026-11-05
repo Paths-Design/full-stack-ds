@@ -1,0 +1,75 @@
+id: FEAT-SWIFTUI-PRESENCE-COMPOSITION-01
+title: 'Compositional controllable-value substrate: one state machine derived from channel facts; Toast as generative proof'
+risk_tier: 2
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'ControllableValue substrate landed: one state machine from channel facts, 56 duplicated projections eliminated, Toast emitted generatively; 21 of 49 admitted'
+created_at: '2026-08-16T23:10:18.088Z'
+updated_at: '2026-11-05T23:01:03.198Z'
+blast_radius:
+  modules:
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Presence/ControllableValue.swift (runtime substrate)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/controllable.ts (channel-fact emission helper) + refactored emissions'
+    - 'fsds.targets.json + docs (Toast admitted; compositional claim recorded)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/__golden__
+  out: []
+invariants:
+  - 'ControllableValue is generic over the channel''s valueType and parameterized only by IR facts (channel value/default/onChange prop names); no component identity anywhere in the substrate or helper.'
+  - 'Presentation remains a fact-keyed table: surface.kind (dialog/sheet/toast/tooltip) and collapsibleTo (toggle/disclosure) select idioms; adding a presentation is a table row, never a new state machine.'
+  - 'The controlled-takes-precedence semantics are pinned in runtime tests, not per-component tests — the rule lives in one place.'
+acceptance:
+  - id: A1
+    given: 'the controlled/uncontrolled/onChange trio duplicated across 8 components (56 projection occurrences measured)'
+    when: 'the substrate lands'
+    then: 'a generic ControllableValue<Value> runtime (hand-maintained alongside FsdsTheme) plus one emitter helper derived from ir.behavior.normalizedChannels replaces every per-class copy — emitted code per component shrinks to field+init+binding lines'
+  - id: A2
+    given: 'ControllableValue<Value>'
+    when: 'XCTest runs'
+    then: 'controlled-takes-precedence, onChange-on-every-set, and binding round-trip semantics are pinned — identical to the React useControllableState rule the projections encoded'
+  - id: A3
+    given: 'Toast (surface kind toast, ephemeral presence, open channel, motion dwell tokens)'
+    when: 'generated'
+    then: 'it emits THROUGH THE SAME substrate with only a new presentation-table row (overlay + task-driven dwell auto-dismiss from token scopes) — zero new state-machine code; admitted 20→21; compiles'
+  - id: A4
+    given: 'the composition-survives-generation claim'
+    when: 'this slice closes'
+    then: 'every controllable emission (presence AND value channels) derives from the channel facts through one helper; presentation differs only by the surface.kind/collapsibleTo table; measured duplication before/after recorded'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'typecheck, governed:rail, pnpm test, test:frameworks, swift test, swift build run'
+    then: 'all pass; prior surfaces'' tests updated to the substrate emission; remaining corpus fails loudly'
+non_functional: {}
+contracts:
+  - name: 'swiftui-controllable-value'
+    type: contract-test
+    path: 'packages/ds-swiftui/Tests/DsSwiftUITests/ControllableValueTests.swift'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "grep: zero controlledOpen/controlledChecked/controlledValue/controlledSearch/uncontrolled identifiers in the generated tree; 9 components emit @StateObject ControllableValue fields (Switch, ToggleSwitch, Checkbox, Input, Details, Dialog, Sheet, Command, Tooltip)"
+    recorded_at: "2026-08-16T23:24:52.587Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "ControllableValueTests 6/6: controlled precedence, default+set, onChange-on-every-set, binding round-trip, controlled write-through, toggle"
+    recorded_at: "2026-08-16T23:24:54.419Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Toast.swift: substrate field + 150ms dwell task from motion token scopes, presence-fact gated; toast emitter test pins zero bespoke state machine (not.toContain controlledOpen/setOpen); admitted 21"
+    recorded_at: "2026-08-16T23:24:56.508Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "before/after recorded in commit message: 8 components × 7 projection occurrences (56) eliminated; Switch golden refreshed to substrate emission"
+    recorded_at: "2026-08-16T23:24:57.813Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; governed:rail exit 0; pnpm test 2080/2080; test:frameworks 72 passed; swift test 19/19; swift build + example build exit 0; ADMITTED 21/21 byte-stable"
+    recorded_at: "2026-08-16T23:24:58.900Z"

@@ -1,0 +1,42 @@
+id: TEST-COVERAGE-RAISE-TOKENS-10
+title: 'Unit tests for type generation and resolver-module deep branches'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Resolver deep-branch suite took tokens from 57.67 to 58.39 lines; floor ratchets to 56.'
+created_at: '2026-09-01T04:34:50.800Z'
+updated_at: '2026-11-05T23:08:55.014Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given type-generation and resolver-module tests; when pnpm run test:coverage:tokens runs; then every tokens test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the tokens floor ratchets to measured minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:tokens (worktree tokens-types): 23/23 files, 291/291 tests pass, All files 58.39 lines / 81.30 branches / 93.79 functions — above the previous 57.67/80.61/92.75 and above the ratcheted floors 56/79/91/56"
+    recorded_at: "2026-09-01T04:38:43.842Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json tokens ratcheted 55->56 statements, 78->79 branches, 90->91 functions, 55->56 lines (measured minus 2-point margin, all margins >= 2.38); pnpm run docs:check-claims: 46 marked claims OK with tokens at 56"
+    recorded_at: "2026-09-01T04:38:44.307Z"

@@ -1,0 +1,37 @@
+id: DOC-SNAPSHOT-RECONCILE-02
+title: 'Full claim-ledger reconciliation: record ~6 weeks of landed work, correct stale rows'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge snapshot-reconcile at 778f934aa71f6483ab7a43f86b115df91ae7b26c'
+created_at: '2026-07-22T00:29:50.425Z'
+updated_at: '2026-11-05T22:58:29.475Z'
+blast_radius:
+  modules:
+    - docs
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Every row added or corrected is backed by evidence verified against live code at the reconciliation commit by a dedicated read-only verification pass (subagent lanes for: recursive composition + slot-projection; textOverflow/RN IR-authority + the RN standing finding; native compile lanes + rail descriptor architecture + target-pack rows; iconography; and a staleness audit of all remaining rows). No row is written from memory, older docs, or commit messages alone — claims that could not be re-verified are omitted or explicitly downgraded, never carried forward on faith.'
+  - 'Claim strength never exceeds evidence: measured/script-derived claims say so; unit-test-proven says jsdom/mocked, not runtime-proven; CI-observed lanes are distinguished from CI-gating lanes. Every row keeps a non-empty Non-claims cell.'
+  - 'After this reconciliation the row-scoped partial-update caveats from 2026-07-21 (snapshot-point note + stale-corrections bullet) are collapsed into a single whole-document verification statement at the new snapshot point — the doc must not carry both a "fully reconciled" claim and leftover partial-update hedges.'
+acceptance:
+  - id: A1
+    given: 'the reconciled ledger'
+    when: 'each drift area named in the 2026-07-21 partial-update note is checked (recursive composition/ComponentInstanceIR, composer slot-projection, textOverflow, Kotlin/Swift native compile lanes, iconography)'
+    then: 'each has a ledger row (or an explicit correction to an existing row) with evidence, non-claims, and next move — none remain absent from the ledger.'
+  - id: A2
+    given: 'the rows audited for staleness'
+    when: 'compared with live code at the reconciliation commit'
+    then: 'every stale fragment identified by the audit lanes is corrected (or the row confirmed CURRENT), and no correction is speculative — each traces to a verified file/commit/command output.'
+  - id: A3
+    given: 'the reconciled doc'
+    when: 'its snapshot-point note and stale-corrections section are read'
+    then: 'they state one coherent verification point for the whole ledger, the partial-update hedges are gone, and any surfaces still known-unrecorded are named rather than silently absent.'
+non_functional: {}
+contracts: []

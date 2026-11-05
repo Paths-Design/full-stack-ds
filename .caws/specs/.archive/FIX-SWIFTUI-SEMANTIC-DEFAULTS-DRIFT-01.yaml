@@ -1,0 +1,75 @@
+id: FIX-SWIFTUI-SEMANTIC-DEFAULTS-DRIFT-01
+title: 'Regenerate SwiftUI semantic-defaults table from the token graph and drift-gate it'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Generated FsdsSemanticDefaults.light from the token graph (204 entries) and drift-gated it in CI, fixing the Swift semantic-defaults test failures'
+created_at: '2026-09-03T21:54:33.475Z'
+updated_at: '2026-11-05T23:03:45.828Z'
+created_by_session: 'session-f8cdb1f5-46f6-4406-b46f-3745decbb166'
+blast_radius:
+  modules:
+    - 'packages/ds-swiftui'
+    - 'scripts'
+    - '.github/workflows/ci.yml'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift'
+    - 'packages/ds-swiftui/Tests/DsSwiftUITests/FsdsThemeTests.swift'
+    - 'scripts/generate-swiftui-semantic-defaults.mjs'
+    - 'package.json'
+    - '.github/workflows/ci.yml'
+    - docs/current-implementation-snapshot.md
+    - README.md
+  out: []
+invariants:
+  - 'FsdsSemanticDefaults.light is a generated function of resolved.tokens.json plus the Swift corpus refs; hand-edits to its entries are overwritten by regeneration'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a token-graph change; when the SwiftUI semantic-defaults table is regenerated; then every entry (key and value) equals the graph-derived set for the Swift corpus refs'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a stale FsdsSemanticDefaults.light table; when swiftui:semantic-defaults:check runs; then it exits non-zero and names the regeneration command'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a push; when the CI gate job runs; then the semantic-defaults drift check runs before the macOS Swift test and fails on drift'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the regenerated table; when swift test --package-path packages/ds-swiftui runs; then FsdsSemanticDefaultsTests passes'
+non_functional: {}
+contracts:
+  - name: 'swiftui-semantic-defaults'
+    type: contract-test
+    path: 'scripts/generate-swiftui-semantic-defaults.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: node scripts/generate-swiftui-semantic-defaults.mjs regenerates FsdsSemanticDefaults.light to 204 entries (126 string + 78 adaptive) with all six drifted light halves corrected; swift test passes
+    recorded_at: "2026-09-03T22:05:00.599Z"
+    command: swift test --package-path packages/ds-swiftui
+    exit_code: 0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "negative probe: corrupted semantic.color.background.secondary light to #000000; swiftui:semantic-defaults:check exited 1 and printed the exact diff plus the regeneration command"
+    recorded_at: "2026-09-03T22:05:09.816Z"
+    command: node scripts/generate-swiftui-semantic-defaults.mjs --check
+    exit_code: 1
+  - criterion_id: A3
+    status: pass
+    evidence_ref: ".github/workflows/ci.yml adds the 'Verify SwiftUI semantic-defaults table is up-to-date' step (pnpm run swiftui:semantic-defaults:check) in the gate job immediately after tokens:build:check and before the macOS Swift test"
+    recorded_at: "2026-09-03T22:05:12.063Z"
+    commit_sha: "33b1a99d"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "swift test --package-path packages/ds-swiftui: Executed 40 tests, 4 skipped (AX interaction), 0 failures — FsdsSemanticDefaultsTests passes against the regenerated 204-entry table"
+    recorded_at: "2026-09-03T22:05:14.327Z"
+    command: swift test --package-path packages/ds-swiftui
+    exit_code: 0

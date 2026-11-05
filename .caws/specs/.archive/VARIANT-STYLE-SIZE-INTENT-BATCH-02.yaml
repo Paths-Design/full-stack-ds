@@ -1,0 +1,84 @@
+id: VARIANT-STYLE-SIZE-INTENT-BATCH-02
+title: 'Realize size axes (Spinner/Avatar/Stat/List) + Progress.intent via per-value tokens from existing semantic/core tokens'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge batch2-size-intent at 521dbb2b0dfaf2b32423ec1bee3993a70322d518'
+created_at: '2026-06-06T02:59:51.245Z'
+updated_at: '2026-11-05T23:09:58.453Z'
+blast_radius:
+  modules:
+    - 'The 5 component contracts'' tokens.json + styles.json (Spinner, Avatar, Stat, List, Progress): author the missing per-value tokens (each resolvesTo an existing semantic/core token) and the consuming variant selectors, then regenerate across all five frameworks + figma. Plus the variant-style audit report and its locked discriminator test.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-contracts/components/Spinner/
+    - packages/ds-react/src/components/Spinner/
+    - packages/ds-vue/src/components/Spinner/
+    - packages/ds-svelte/src/components/Spinner/
+    - packages/ds-angular/src/components/Spinner/
+    - packages/ds-lit/src/components/Spinner/
+    - packages/ds-figma-plugin/src/generated/components/Spinner/
+    - packages/ds-contracts/components/Avatar/
+    - packages/ds-react/src/components/Avatar/
+    - packages/ds-vue/src/components/Avatar/
+    - packages/ds-svelte/src/components/Avatar/
+    - packages/ds-angular/src/components/Avatar/
+    - packages/ds-lit/src/components/Avatar/
+    - packages/ds-figma-plugin/src/generated/components/Avatar/
+    - packages/ds-contracts/components/Stat/
+    - packages/ds-react/src/components/Stat/
+    - packages/ds-vue/src/components/Stat/
+    - packages/ds-svelte/src/components/Stat/
+    - packages/ds-angular/src/components/Stat/
+    - packages/ds-lit/src/components/Stat/
+    - packages/ds-figma-plugin/src/generated/components/Stat/
+    - packages/ds-contracts/components/List/
+    - packages/ds-react/src/components/List/
+    - packages/ds-vue/src/components/List/
+    - packages/ds-svelte/src/components/List/
+    - packages/ds-angular/src/components/List/
+    - packages/ds-lit/src/components/List/
+    - packages/ds-figma-plugin/src/generated/components/List/
+    - packages/ds-contracts/components/Progress/
+    - packages/ds-react/src/components/Progress/
+    - packages/ds-vue/src/components/Progress/
+    - packages/ds-svelte/src/components/Progress/
+    - packages/ds-angular/src/components/Progress/
+    - packages/ds-lit/src/components/Progress/
+    - packages/ds-figma-plugin/src/generated/components/Progress/
+    - docs/variant-style-audit/
+    - scripts/variant-style-audit/
+  out: []
+invariants:
+  - 'Every per-value token added in this batch resolvesTo an existing semantic/core token; no literal design value is invented (Spinner.size.md is converted from a hardcoded literal to a resolvesTo). A clean generate:check confirms all refs resolve.'
+  - 'The five axes (Spinner.size, Avatar.size, Stat.size, List.size, Progress.intent) become fully realized in the variant-style audit; no other axis classification changes (remaining candidate set stable).'
+acceptance:
+  - id: A1
+    given: 'Spinner.size {xs,sm,md,lg} with no default, visual sized at 1em'
+    when: 'a size variant class is present'
+    then: '.spinner--{size} sets font-size on the root from per-value tokens (xs=glyph.small 12px, sm=icon.size.sm 16px, md=icon.size.md 20px, lg=icon.size.lg 24px); the 1em visual width+height track that font-size; an unsized/inline spinner inherits the parent font-size'
+  - id: A2
+    given: 'Avatar.size {small,medium,large,extra-large} with only avatar.size.default today'
+    when: 'a size variant class is present'
+    then: '.avatar--{size} sets width+height from per-value tokens 16/24/32/48 (core.spacing.06/07/08/09)'
+  - id: A3
+    given: 'Stat.size {sm,md,lg} default=md, value font-size at heading.02 (24px)'
+    when: 'a size variant class is present'
+    then: '.stat--{sm,lg} set font-size (sm=heading.04 18px, lg=heading.01 32px); md realized by the base rule; the stale 28px fallback on stat.size.value.md is corrected to 24px'
+  - id: A4
+    given: 'List.size {sm,md,lg} with no font-size token today'
+    when: 'a size variant class is present'
+    then: '.list--{sm,md,lg} set font-size (sm=body.03 14px, md=body.02 16px, lg=body.01 18px); the List root gains a base font-size'
+  - id: A5
+    given: 'Progress.intent {info,success,warning,danger} with only the info fill color today'
+    when: 'an intent variant class is present'
+    then: '.progress--{success,warning,danger} recolor the fill via semantic.color.status.{success,warning,danger}; info realized by the base rule'
+  - id: A6
+    given: 'the regenerated artifacts and the audit'
+    when: 'the batch completes'
+    then: 'the five axes leave confirmed-defect with the remaining candidate set stable; the locked test is updated; generate:check + governed:rail pass; framework tests pass; runtime computed-style proves distinct values per axis (no invented design values)'
+non_functional: {}
+contracts: []

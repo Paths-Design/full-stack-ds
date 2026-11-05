@@ -1,0 +1,76 @@
+id: FEAT-SWIFTUI-CARD-COMPOSER-01
+title: 'SwiftUI compound-part composer emission class; Card first'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Card lands through the compound-part composer class with FsdsTheme chrome; Field is the new fail-loud boundary'
+created_at: '2026-08-15T02:23:10.790Z'
+updated_at: '2026-11-05T23:00:39.385Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (composer class + shared suffix vocabulary)'
+    - 'packages/ds-swiftui (generated Card + barrel)'
+    - 'examples/settings/swift (FsdsCard sections)'
+    - 'docs/current-implementation-snapshot.md + examples/README.md (claims)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'examples/settings/swift'
+    - 'examples/README.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The composer class admits only: no root dom, no surface block, at least one compound part, passive container root. Everything else still throws the explicit no-emission-class error.'
+  - 'Region API is one ViewBuilder closure per compound part in contract part order, each defaulting to EmptyView; no per-component region lore.'
+  - 'All styling derives from ir.tokenScopes through FsdsTheme with the shared suffix vocabulary (extended with radius.default/foreground.primary forms); unparsable slots are skipped, not approximated; interactive-only web props are omitted from the API and documented, never accepted-and-ignored.'
+acceptance:
+  - id: A1
+    given: 'Card (compound parts header/content/footer/description, no root dom, no surface)'
+    when: 'pnpm run generate -- --target=swiftui Card runs'
+    then: 'the composer class emits a compiling FsdsCard with one ViewBuilder region closure per compound part and swift build exits 0 with prior outputs byte-stable'
+  - id: A2
+    given: 'the emission class gate'
+    when: 'another corpus contract is considered'
+    then: 'only Card matches (Popover/Tooltip carry ir.surface and dispatch to the surface path; contracts with root dom route to their own classes) and the fail-loud negative control moves from Card to Field'
+  - id: A3
+    given: 'ir.tokenScopes for Card'
+    when: 'the component renders'
+    then: 'chrome is presence-driven through FsdsTheme (background/border/radius/padding/gap with radius.default + foreground.primary suffix forms), status/density axes layer variant scopes, and the statusAccent color+width pair paints a leading accent bar only when both slots resolve'
+  - id: A4
+    given: 'the settings swift lane'
+    when: 'rebuilt'
+    then: 'all three sections compose FsdsCard regions replacing the hand-rolled NOT FSDS section chrome and the lane compiles'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'governed:rail, pnpm test, test:frameworks run'
+    then: 'all pass with drift confined to packages/ds-swiftui and the swiftui emitter'
+non_functional: {}
+contracts:
+  - name: 'swiftui-card-composer'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: generate -- --target=swiftui Switch ToggleSwitch Button Card emits 4 + Stack primitive; swift build exit 0; Switch golden + Button structural tests byte-stable (15/15)
+    recorded_at: "2026-08-15T02:35:59.642Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "corpus sweep: only Card matches the composer gate (Popover/Tooltip carry ir.surface); negative control moved Card→Field, throws /no emission class matches/"
+    recorded_at: "2026-08-15T02:36:00.572Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Card.swift: CardTokens.scopes data; chrome via FsdsTheme with radius.default+foreground.primary alternatives; status optional + compactMap layering; statusAccent color+width → leading bar; case `default` keyword-escaped"
+    recorded_at: "2026-08-15T02:36:01.518Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "SettingsExampleApp.swift: all three sections compose Card { } content: { } footer: { }; sectionHeading + hand-rolled chrome removed; example swift build exit 0"
+    recorded_at: "2026-08-15T02:36:02.576Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck clean; governed:rail exit 0; pnpm test 2049/2049; test:frameworks 573+492+532+70"
+    recorded_at: "2026-08-15T02:36:03.765Z"

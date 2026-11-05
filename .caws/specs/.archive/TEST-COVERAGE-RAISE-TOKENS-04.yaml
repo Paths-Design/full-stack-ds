@@ -1,0 +1,42 @@
+id: TEST-COVERAGE-RAISE-TOKENS-04
+title: 'Unit tests for the DTCG w3c-validator core'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'DTCG w3c-validator suite took tokens from 27.45 to 31.86 lines; floor ratchets to 29.'
+created_at: '2026-09-01T04:01:32.693Z'
+updated_at: '2026-11-05T23:08:49.333Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given unit tests for the w3c DTCG validator; when pnpm run test:coverage:tokens runs; then every tokens test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the tokens floor ratchets to measured minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:tokens (worktree): 12/12 files, 194/194 tests pass, All files 31.86 lines / 78.96 branches / 79.41 functions — above the previous 27.45/77.31/78.22 and above the ratcheted floors 29/76/77/29; w3c-validator.ts itself at 96.75 lines / 92.85 branches"
+    recorded_at: "2026-09-01T04:05:49.980Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json tokens ratcheted 25->29 statements, 75->76 branches, 76->77 functions, 25->29 lines (measured minus 2-point margin, all margins >= 2.41); pnpm run docs:check-claims: 46 marked claims OK with tokens at 29"
+    recorded_at: "2026-09-01T04:05:50.436Z"

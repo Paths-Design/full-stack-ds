@@ -1,0 +1,40 @@
+id: FEAT-COMPOSE-ALERT-DISMISS-REALIZATION-01
+title: 'Realize Alert''s declared dismiss control, with reference-bound props as parameters'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Alert''s dismiss is composed through the reference vocabulary (C8 ledger 3 to 2), which gained the capability of declaring a reference''s bound props and render guard as parameters'
+created_at: '2026-09-13T06:17:34.511Z'
+updated_at: '2026-11-05T22:59:37.519Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (reference-bound parameter declaration + the icon-decorated trailing reference)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Every prop the reference binds or handles is declared as a parameter with the contract default; a bound prop the class does not declare is an emit-time error.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Alert declares a dismiss Button reference bound to its dismissLabel prop and onDismiss callback; when the icon-decorated class declares the reference''s bound props as parameters and composes the control; then the generated Alert compiles, the C8 ledger loses that entry while the two painted-chevron entries stay enforced, and SwiftUI regeneration is unchanged'
+non_functional: {}
+contracts:
+  - name: 'reference-realization'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge 4ba3ec19: the generated Alert signature gains dismissible/dismissLabel/onDismiss and calls the generated Button behind the node's own guard; gradlew :library:compileKotlin -> BUILD SUCCESSFUL; node scripts/compose-parity-diff.mjs -> 47 allowlisted, 0 failures with the Alert:dismiss ledger entry REMOVED and the two chevron entries still enforced; pnpm exec vitest run component-source.test.ts -> 55/55; node --test scripts/compose-parity-diff.test.mjs -> 20/20; pnpm run generate:check -> 52/52; swiftui regeneration byte-identical; pnpm test -> 3910/3910; pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree; docs:check-claims -> 75 claims with normal-form.md restamped"
+    recorded_at: "2026-09-13T06:29:26.679Z"

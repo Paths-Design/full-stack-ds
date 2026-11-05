@@ -1,0 +1,64 @@
+id: SHOWCASE-COMPONENT-ADOPTION-02
+title: 'Replace showcase surrogates with generated component compositions'
+risk_tier: 2
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Showcase component adoption merged and verified with acceptance evidence recorded.'
+created_at: '2026-09-11T01:34:21.091Z'
+updated_at: '2026-11-05T23:07:53.032Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Showcase surfaces and inspector compositions'
+    - 'Showcase consumption guards and browser verification'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+    - 'e2e/'
+    - 'docs/'
+  out: []
+invariants:
+  - 'Preserve application behavior, labeling, keyboard access and token override reachability during adoption.'
+  - 'Use existing generated components through supported APIs; remaining gaps must name their missing capability rather than hide a second runtime.'
+acceptance:
+  - id: A1
+    given: 'the showcase production sources'
+    when: 'replacement candidates are inventoried'
+    then: 'actual JSX controls and surrogates are counted independently of documentation code strings and remaining contract gaps are recorded.'
+  - id: A2
+    given: 'showcase panels, metadata, disclosures and token editors'
+    when: 'existing generated APIs support their behavior'
+    then: 'they compose generated components and the retired raw implementations and CSS are removed.'
+  - id: A3
+    given: 'a selected JSON trace path and inspector controls'
+    when: 'disclosures, search, binding, editing and reset are used'
+    then: 'the expected content, values, callbacks and keyboard access are preserved.'
+  - id: A4
+    given: 'migrated showcase routes'
+    when: 'desktop and narrow viewport browser checks and repository gates run'
+    then: 'representative surfaces render and function without overflow or consumption regressions.'
+non_functional: {}
+contracts:
+  - name: 'showcase-adoption'
+    type: contract-test
+    path: 'src/consumption/dogfooding-guard.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "src/consumption/dogfooding-guard.test.ts passes in the 3842-test root run; exact JSX census 25 to 8 and panel/pill sites 14 to 0, with four upstream capability gaps recorded in docs/architecture/design/showcase-component-adoption.md; tmp/showcase-adoption/verification.md"
+    recorded_at: "2026-09-11T03:04:17.950Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Merged a2fdd3d2: generated Card, Badge, Accordion, Details, Button and Input adoption; source and CSS consumption guards pass; browser-ready.log shows 17 passing cases including Card appearance isolation; tmp/showcase-adoption/verification.md"
+    recorded_at: "2026-09-11T03:04:20.237Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "src/components/showcase-compositions.test.tsx verifies selected array trace revelation, manual collapse, independent actions, token search and binding; e2e/editor-binding-rail.spec.ts verifies actual 8px to 24px to default preview gap; e2e/showcase-adoption.spec.ts verifies keyboard and responsive editor behavior; all pass in tmp/showcase-adoption/browser-ready.log and prepush.log"
+    recorded_at: "2026-09-11T03:04:22.533Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Full PREPUSH_FULL=1 hook passes with two workers; root, Vue, Lit, Svelte, Angular and React Native suites pass (two existing Lit skips). Seventeen Chromium cases pass on a ready local server; desktop/narrow screenshots and traces reviewed. Cold preview startup remains a separate recorded limitation. See tmp/showcase-adoption/verification.md, prepush.log, frameworks.log and browser-ready/"
+    recorded_at: "2026-09-11T03:04:24.691Z"

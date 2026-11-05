@@ -1,0 +1,50 @@
+id: TEST-COVERAGE-RAISE-TOKENS-13
+title: 'Burn orphaned legacy scripts and spawn-test the live usage and contrast runners'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Orphan burn, brand-refs main guard and live-runner spawn tests took tokens from 73.14 to 78.28 lines; floor ratchets to 76.'
+created_at: '2026-09-01T04:46:38.237Z'
+updated_at: '2026-11-05T23:08:57.431Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given orphaned scripts removed and runner spawn tests added; when lint typecheck tokens-build and the governed rail run; then no check names any dependent and every gate stays green'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the removal and tests; when pnpm run test:coverage:tokens runs; then every tokens test passes and measured line coverage rises above the current floor'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the tokens floor ratchets to measured minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "POLO probe in worktree tokens-burn3 after severance of utils/generator.ts, _oneshot/byte-compare-tokens.ts, generate-palette-ramps.ts, utils/resolver-integration.ts, runners/index.ts: lint 0 errors; typecheck exit 0; tokens:build green; test:coverage:tokens 289/289 exit 0; governed:rail exit 0; tokens:check-brand-refs and tokens:check-contrast both exit 0"
+    recorded_at: "2026-09-01T04:52:38.871Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:coverage:tokens (worktree tokens-burn3): 289/289 tests pass, exit 0, All files 78.28 lines / 81.75 branches / 94.69 functions — above the previous 73.14/81.65/95.88 and above the ratcheted floors 76/79/92/76"
+    recorded_at: "2026-09-01T04:52:39.344Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "coverage-floors.json tokens ratcheted 71->76 statements, 79->79 branches, 93->92 functions, 71->76 lines (measured minus 2-point margin, all margins >= 2.28); pnpm run docs:check-claims: 46 marked claims OK with tokens at 76"
+    recorded_at: "2026-09-01T04:52:39.808Z"

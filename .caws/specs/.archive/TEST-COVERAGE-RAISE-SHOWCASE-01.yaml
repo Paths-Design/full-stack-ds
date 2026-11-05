@@ -1,0 +1,43 @@
+id: TEST-COVERAGE-RAISE-SHOWCASE-01
+title: 'Raise showcase coverage via view render-smoke suites'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Showcase line coverage 32.3 to 65.5 via view render-smoke suites; floor ratcheted to 63 (next wave certifies)'
+created_at: '2026-09-01T02:41:43.358Z'
+updated_at: '2026-11-05T23:08:42.171Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+    - vitest.showcase.config.ts
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the view smoke suites; when pnpm run test:coverage:showcase runs; then every showcase test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the showcase floor ratchets to the measured value minus the standard margin and docs:check-claims derives the markers without drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:showcase exit 0: 32/32 test files, measured 65.49% lines (from 32.27) / 70.61% branches / 59.07% functions"
+    recorded_at: "2026-09-01T02:49:03.466Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json showcase ratchet 30/68/54/30 -> 63/68/57/63; measured 65.49 leaves 2.49 margin; docs-claims-check 46/46 after the floor marker update"
+    recorded_at: "2026-09-01T02:49:03.895Z"

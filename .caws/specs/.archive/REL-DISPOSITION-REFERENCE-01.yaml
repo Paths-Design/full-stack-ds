@@ -1,0 +1,93 @@
+id: REL-DISPOSITION-REFERENCE-01
+title: 'Absent implementation is not an analytical contradiction, and the graph necessity record is corrected'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Absent implementation is now its own disposition decided at the request boundary and scoped per result kind, and the graph endpoint minimality claim is withdrawn in favour of executed single-coordinate evidence.'
+created_at: '2026-09-18T18:46:36.338Z'
+updated_at: '2026-11-05T23:06:17.733Z'
+created_by_session: 'session-69475cd2-20cf-4633-9893-09967382f4d8'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (the support decision at the enumerator boundary, and the relation-path reference comparison)'
+    - 'packages/ds-codegen/src/analytical/graph-projection.ts (task-scoped soundness, the endpoint and key-field necessity records)'
+    - 'packages/ds-contracts/analytical-fixtures/graph-experiment.json (the corrected necessity census)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+  out: []
+invariants:
+  - 'ABSENT IMPLEMENTATION IS NOT A SEMANTIC JUDGMENT. A task the experiment does not implement is reported as unsupported, decided at the request boundary before any candidate exists, and never as an analytical refusal. A diagnostic cause names a rule the facts violate; using one for a rule that was never written makes "we did not ask" indistinguishable from "the facts forbid it".'
+  - 'Support is decided per RESULT KIND and task together. A task implemented on one path is not thereby implemented on another, and the support decision does not read the inventory, so an empty inventory cannot turn an unsupported request into an ordinary empty result.'
+  - 'A necessity disposition is bounded by the premise that established it. Withdrawing a minimality claim does not license adding a restriction to rescue it, and a redundancy that holds under a unique-key premise is not a family-wide erasure permission.'
+  - 'A soundness helper answers the question its name asks. It checks the declared task, or it is explicitly scoped to the topology programs it was written for.'
+acceptance:
+  - id: A1
+    given: 'An enumerator invocation naming a result kind and a task the experiment does not implement, with a non-empty inventory.'
+    when: 'The enumeration is inspected.'
+    then: 'given a result kind and task the experiment does not implement; when the enumerator is invoked; then it returns an explicit unsupported disposition decided before candidate generation and no candidate carries an analytical diagnostic for absent implementation'
+  - id: A2
+    given: 'The same unimplemented task with an inventory that hosts no channel at all.'
+    when: 'The enumeration is inspected.'
+    then: 'given an empty inventory and an unimplemented task; when the enumerator is invoked; then the unsupported disposition is returned rather than a silently empty result'
+  - id: A3
+    given: 'The task name `topology` requested through the relation-valued path and through the graph path.'
+    when: 'Each path''s support decision is inspected.'
+    then: 'given one task name on the relation path and the graph path; when support is decided; then topology is supported on the graph path and unsupported on the relation path'
+  - id: A4
+    given: 'The graph-view endpoint binding in the committed census, and an authored source carrying a third declared endpoint field.'
+    when: 'Each single-coordinate neighbour is denoted and the census record is read.'
+    then: 'given the graph-view endpoint binding; when each endpoint field is changed alone; then the joint-minimality claim is withdrawn and replaced by independently separating single-coordinate evidence and no new restriction is added to the contract'
+  - id: A5
+    given: 'An authored source declaring two unique key fields.'
+    when: 'Each keyField binding is denoted and the census record is read.'
+    then: 'given a source declaring more than one unique key field; when keyField is changed; then the redundancy disposition is qualified to the single-key premise that established it'
+  - id: A6
+    given: 'A program whose assignment induces one claim while its declared task requires another.'
+    when: 'The soundness helper is called.'
+    then: 'given graphCandidateIsSound; when a program declares a task other than the one its assignment induces claims for; then it is not reported sound'
+  - id: A7
+    given: 'An inventory and a variant that adds a channel the inventory genuinely does not contain.'
+    when: 'Both memberships are compared.'
+    then: 'given the irrelevant-capability control; when the added channel is genuinely absent from the inventory; then membership is unchanged'
+non_functional: {}
+contracts:
+  - name: 'enumerator-disposition'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'graph-necessity-record'
+    type: schema
+    path: 'packages/ds-contracts/analytical-fixtures/graph-experiment.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts: reports a task it does not implement as UNSUPPORTED, not as a task whose candidates all failed (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:41.587Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts: support is decided at the request boundary - agrees with itself across inventories that host everything and nothing (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:42.080Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts: does not treat a task implemented on ANOTHER path as one whose requirements merely went unmet (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:42.574Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "graph-projection.test.ts: the single-coordinate endpoint pairs are EXECUTED, not asserted (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:43.050Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "graph-projection.test.ts: the key-field redundancy holds UNDER A PREMISE, and the counterexample is executed (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:43.531Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "graph-projection.test.ts: the soundness helper answers the question its name asks (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:44.039Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "graph-projection.test.ts: INVARIANCE a capability this domain cannot host changes nothing (pnpm exec vitest run packages/ds-codegen/src/analytical, 22 files 986 tests green)"
+    recorded_at: "2026-09-18T18:57:44.574Z"

@@ -1,0 +1,50 @@
+id: TEST-COVERAGE-RAISE-RN-02
+title: 'Raise react-native coverage via a second batch of leaf companion suites'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'RN line coverage 47.5 to 63.2 via the second companion batch; floor ratcheted to 61 (next batch closes the gap to 80)'
+created_at: '2026-09-01T02:27:03.345Z'
+updated_at: '2026-11-05T23:08:39.325Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-react-native/src'
+    - 'coverage-floors.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the added companion suites; when pnpm run test:coverage:react-native runs; then every RN test passes and measured line coverage rises above the current floor'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the measured coverage; when coverage-floors.json is updated; then the RN floor ratchets to the measured value minus the standard margin and docs:check-claims derives the markers without drift'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the companion additions; when governed:rail regenerates all targets; then the companions survive and the generated trees show no drift'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run test:coverage:react-native exit 0: 68/68 test files, 123/123 tests, measured 63.16% lines (from 47.52) / 79.7% branches / 93.36% functions"
+    recorded_at: "2026-09-01T02:31:29.346Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "coverage-floors.json react-native ratchet 45/74/90/45 -> 61/77/91/61; measured 63.16 leaves 2.16 margin; docs-claims-check 46/46 after the floor marker update"
+    recorded_at: "2026-09-01T02:31:29.809Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run governed:rail exit 0 overall pass with eight more companion files in the drift-gated RN tree: zero generated drift (git status clean)"
+    recorded_at: "2026-09-01T02:31:30.272Z"

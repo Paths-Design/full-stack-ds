@@ -1,0 +1,54 @@
+id: GATE-A11Y-KEYBOARD-FALLOUT-01
+title: 'Clear the docs-claims and custom-region gate failures left by the Select/Tabs keyboard merge'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Restamped both docs against the read keyboard delta and ledgered the two authored Select keyboard test regions; both gates exit 0.'
+created_at: '2026-09-07T06:42:36.403Z'
+updated_at: '2026-11-05T23:04:13.937Z'
+created_by_session: 'f46106db-10cf-4869-b035-5bb63e5a1fc2'
+blast_radius:
+  modules:
+    - 'docs'
+    - 'custom-region ledger'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/normal-form.md'
+    - 'docs/architecture/design/box-model-primitive.md'
+    - 'scripts/custom-region-audit/known-authored-regions.json'
+  out: []
+invariants:
+  - 'A verified_at_commit stamp is advanced only after the governed delta since the prior stamp is read: either it provably does not bear on the doc''s claims, or the prose is updated to match. The stamp is never bumped to silence the gate.'
+  - 'A custom-region ledger entry names a region that is genuinely hand-authored hostile-path coverage no contract implies; ledgering is not a substitute for pushing a fact into the contract, and the entry set only grows with a stated reason.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs/normal-form.md and docs/architecture/design/box-model-primitive.md both carry stamps predating the keyboard-realization merge; when each doc''s governed delta is read and the stamp advanced on that basis; then docs:check-claims exits 0'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given two hand-authored keyboard test regions in the Angular and Lit Select suites are unledgered; when each is recorded in known-authored-regions.json with the reason it is authored rather than derived; then audit:custom-regions exits 0 with zero unledgered and zero stale findings'
+non_functional: {}
+contracts:
+  - name: 'gate-clearance'
+    type: contract-test
+    path: 'scripts/custom-region-audit/audit.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "docs:check-claims exit 0 at 5a288c9d -- 'OK: 69 marked claim(s) match derived values; 11 verified stamp(s) fresh or ledgered (4 ledgered stale)'; freshness selftest 9 passed / 0 failed. normal-form.md restamped after reading a 1999-insertion governed delta and adding a buildKeyboardActions paragraph to the section it bears on; box-model-primitive.md restamped after confirming the ir.ts delta contains zero box-model/StyleProfile/morphology/geometry lines and that box-model.ts, css.ts and cli.ts are untouched"
+    recorded_at: "2026-09-07T06:45:36.334Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    commit_sha: "5a288c9d"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "audit:custom-regions exit 0 at 5a288c9d -- 'findings=84 (ledgered=84) unledgered=0 stale=0', preceded by 'selfcheck PASS - every check held' (12 checks). The two new entries name FEAT-A11Y-SELECT-TABS-KEYBOARD-01 and state the host facts a contract cannot express (TestBed mounting, shadow-root activeElement, jsdom rAF timing) rather than reusing the generic hostile-path note"
+    recorded_at: "2026-09-07T06:45:36.932Z"
+    command: "pnpm run audit:custom-regions"
+    exit_code: 0
+    commit_sha: "5a288c9d"

@@ -1,0 +1,46 @@
+id: FEAT-COMPOSE-DIALOG-ADMISSION-01
+title: 'Centered-surface predicate to shared substrate; Compose Dialog admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Dialog admitted on the centered-surface class; surface family opened; compose 38-to-39'
+created_at: '2026-09-13T04:13:21.934Z'
+updated_at: '2026-11-05T22:59:48.844Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the surface IR exposes positioning.strategy and a boolean openness channel; when the centered-surface predicate lands in the shared substrate and Dialog is admitted on a foundation Dialog host with dismissal wiring and dialog chrome; then Dialog compiles via gradle, compose grows 38 to 39, parity/doc gates stay green, and anchored surfaces remain routed to their scaffold'
+non_functional: {}
+contracts:
+  - name: 'centered-surface'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isCenteredSurface added to native-emission-class.ts (surface positioning.strategy === centered; anchored surfaces still route to the scaffold and viewport-edge is a separate class); compose 38-to-39: gradlew :library:compileKotlin BUILD SUCCESSFUL (Dialog.kt: foundation Dialog host via import alias ComposeDialog, controlled/uncontrolled open channel, onDismissRequest honoring closeOnEscape/closeOnBackdropClick, dialog chrome + box-model family, panel renders only while open); compose-parity-diff 39/39 0 failures (centeredSurface path+role, self-test 8/8); generate:check 52/52; typecheck clean; docs:check-claims 74/74; emitter tests 38/38"
+    recorded_at: "2026-09-13T04:16:39.239Z"

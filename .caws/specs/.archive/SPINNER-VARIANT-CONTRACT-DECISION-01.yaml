@@ -1,0 +1,58 @@
+id: SPINNER-VARIANT-CONTRACT-DECISION-01
+title: 'Constrain Spinner to the implemented ring morphology — remove the dots/bars variant overclaim'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge spinner-ring at d3d8f25b9f5388a06ea0980238d6aa7852a5277e'
+created_at: '2026-06-06T06:24:55.502Z'
+updated_at: '2026-11-05T23:08:13.650Z'
+blast_radius:
+  modules:
+    - 'Spinner contract sidecars: remove the `variant` prop, the `SpinnerVariant` type, and the `variant` entry from `variants` (the contract promised ring|dots|bars but the anatomy only ever rendered a single ring visual — a contract↔impl overclaim, not a styling gap). Remove the vestigial `spinner.dots.gap` token + the no-op root `gap` that consumed it. Regenerate Spinner across all five frameworks + figma; the generated variant smoke tests disappear with the axis.'
+    - 'Spinner.usage.jsonl: drop `variant:"ring"` from the two curated examples (the prop no longer exists). Plus the variant-style audit report + locked test (Spinner.variant ceases to be a tracked axis). Spinner.size + Spinner.thickness are untouched and stay realized.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Spinner/'
+    - 'packages/ds-react/src/components/Spinner/'
+    - 'packages/ds-vue/src/components/Spinner/'
+    - 'packages/ds-svelte/src/components/Spinner/'
+    - 'packages/ds-angular/src/components/Spinner/'
+    - 'packages/ds-lit/src/components/Spinner/'
+    - 'packages/ds-figma-plugin/src/generated/components/Spinner/'
+    - 'scripts/variant-style-audit/'
+    - 'docs/variant-style-audit/'
+  out: []
+invariants:
+  - 'After the slice the Spinner contract no longer declares any morphology it does not implement: no `variant` prop, no `SpinnerVariant` type, no `dots`/`bars`. The component renders exactly one ring visual (unchanged DOM).'
+  - 'No dead variant artifacts remain: no `.spinner--ring|dots|bars` class is emitted in any framework, and the `spinner.dots.gap` token / root `gap` are gone. Spinner.size and Spinner.thickness are unchanged and remain realized.'
+  - 'Spinner.variant ceases to exist as a variant axis, so it is absent from the audit entirely (not merely re-labelled); fully-dead axis count drops by exactly one (Spinner.variant); no other component changes.'
+acceptance:
+  - id: A1
+    given: 'Spinner declares variant {ring,dots,bars} but the anatomy renders a single ring visual unconditionally, with no consumers of dots/bars'
+    when: 'the overclaim is closed'
+    then: 'the `variant` prop, the `SpinnerVariant` type, and the `variant` entry in `variants` are removed (a single-value prop would be redundant); no dots/bars morphology is built'
+  - id: A2
+    given: 'the regenerated Spinner across all five frameworks'
+    when: 'the emitted classes are inspected'
+    then: 'no `.spinner--ring` / `.spinner--dots` / `.spinner--bars` class is emitted anywhere; the dead `spinner.dots.gap` token and the no-op root `gap` declaration are removed'
+  - id: A3
+    given: 'the variant-style audit'
+    when: 'it reclassifies'
+    then: 'Spinner.variant no longer appears as a fully-dead axis (it is gone from the axis list); fully-dead count drops from 6 to 5; no other component reclassifies; the locked test is updated to assert Spinner.variant is absent'
+  - id: A4
+    given: 'the contract change'
+    when: 'codegen runs for all targets'
+    then: 'Spinner is regenerated across react/vue/svelte/angular/lit + figma; the generated per-value variant smoke tests are gone; Spinner.usage.jsonl no longer references the removed prop'
+  - id: A5
+    given: 'the regenerated Spinner mounted in a browser'
+    when: 'computed styles are read'
+    then: 'the spinner still renders the ring visual and Spinner.size (font-size 12/16/20/24) + Spinner.thickness (border-width) remain realized and distinct — proving the removal did not regress the surviving axes'
+  - id: A6
+    given: 'the regenerated artifacts'
+    when: 'the gates run'
+    then: 'generate:check + generate:validate-usage pass; governed:rail PASSES (diff confined to Spinner + audit/docs); root vitest + all five framework suites pass'
+non_functional: {}
+contracts: []

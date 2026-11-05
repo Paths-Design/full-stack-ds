@@ -1,0 +1,47 @@
+id: SHOWCASE-TOKENS-STICKY-01
+title: 'Fix Tokens-table sticky header (panel overflow:hidden clips the sticky context)'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge tokens-sticky at 0718a0982dd1f38db18f49db9fea7afa275753ff'
+created_at: '2026-06-05T05:29:25.101Z'
+updated_at: '2026-11-05T23:08:09.540Z'
+blast_radius:
+  modules:
+    - 'src/styles/app.css: the .panel / .tokens-card overflow that creates the clipping ancestor; the .tokens-table sticky-header rules'
+    - 'src/views/TokensView.tsx: the token explorer panel/table structure (only if the fix needs to lift the table out of the clipping panel)'
+  data_migration: false
+operational_rollback_slo: 5m
+# DIAGNOSIS (COMPONENT-AUDIT-TOOL-01 manual check, dev-server DOM probe):
+# The Tokens column header (`<th>` with position:sticky; top:0) never pins. The
+# ancestor chain shows `.panel.tokens-card { overflow: hidden }` (app.css:395
+# .panel + app.css:858 .tokens-card) is a clipping scroll-container between the
+# <th> and the real scroller `main.app-main`. Sticky binds to that clipping
+# ancestor — which does not scroll — so the header scrolls away with the body
+# (measured: th viewport-top 478 -> -422 under a +900px scroll, i.e. exactly
+# the no-sticky delta). PRE-EXISTING: the raw <table> also lived in `.panel
+# .tokens-card` before SHOWCASE-CONSUMPTION-03, so this is not a migration
+# regression. The A2 override `.tokens-table.table { overflow-x: visible }` is
+# still required (it stops the DS wrapper adding a SECOND clipping ancestor);
+# this spec removes the FIRST (the panel).
+scope:
+  in:
+    - 'src/styles/app.css'
+    - 'src/views/TokensView.tsx'
+    - e2e/
+  out: []
+invariants:
+  - 'The Tokens-table column header stays pinned to the scroll container (main.app-main) top while the table body scrolls — position:sticky on the <th> is honored because no ancestor between it and the scroller clips/scrolls.'
+  - 'Freeing the sticky context does NOT regress the rounded-corner clipping of OTHER .panel surfaces: either the overflow change is scoped to the tokens table''s container, or the table is lifted out of the clipping panel — bare .panel keeps overflow:hidden.'
+acceptance:
+  - id: A1
+    given: 'the Tokens page rendered in the running app, scrolled within main.app-main'
+    when: 'the table body is scrolled past the header row'
+    then: 'the <th> header row stays pinned at the scroll-container top (thead viewport-top stays ~= the scroller top, not the no-sticky delta), proven by a DOM/geometry assertion on the th rect under scroll'
+  - id: A2
+    given: 'the other .panel surfaces in the showcase (cards, etc.)'
+    when: 'the sticky fix is applied'
+    then: 'they keep their overflow:hidden corner-clipping (no visual regression elsewhere); only the tokens-table sticky context is freed'
+non_functional: {}
+contracts: []

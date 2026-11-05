@@ -1,0 +1,75 @@
+id: GODOT-PASSIVE-REALIZATION-01
+title: 'Godot passive/style long tail realization: Image, Postcard, Label, Avatar, ProfileFlag, ShowMore, Truncate, CodeBlock, Markdown, Progress and remainder closure'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Final family completed: media projection realised with a witness, all remaining facts refused with reasons, and pending leaves across the 55 admitted components are now zero'
+created_at: '2026-11-01T10:06:54.524Z'
+updated_at: '2026-11-05T23:04:23.152Z'
+created_by_session: 'session-4714d88b-933e-417c-b311-352a7726fb2d'
+blast_radius:
+  modules:
+    - 'Godot passive/style realization: media props, content transforms, structured data and remainder adjudication'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A pending fact moves to lowered only with a headless witness, and to refused only with a written reason'
+  - 'The corpus boundary must reach zero pending leaves with every fact accounted for'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the remaining components with pending leaves; when the support boundary is re-audited; then every pending leaf is realized and flipped to lowered with a witness or refused with a written reason, and audit:godot-boundary exits 0 with zero pending leaves across the corpus'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the adjudicated realizable subset; when the shared runtimes run headless; then each realized fact is exercised by a pilot row'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pilot lane; when pnpm run test:godot runs; then all pre-existing rows stay unchanged and green'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given docs and capability receipts; when read; then the bounded claim and non-claims for the passive/media/text families are stated'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus-wide gates; when run after the slice; then generate --target=godot is byte-stable, generate:check passes, the boundary audit exits 0, the ds-codegen godot suites and pnpm run test:godot pass'
+non_functional: {}
+contracts:
+  - name: 'passive-runtimes'
+    type: behavior
+    path: 'packages/ds-godot/addons/full_stack_ds/runtime/anatomy.gd'
+  - name: 'corpus-component-contracts'
+    type: contract-test
+    path: 'packages/ds-contracts/components'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run audit:godot-boundary -> exit 0: 'godot support boundary: {\"lowered\":8915,\"pending\":0,\"refused\":8586,\"unclassified\":0} rules 163 dead 0 shape-variance 183' and 'every leaf classified, no admitted catch-all reliance, no dead rules, every admitted component emitted, every excluded prop adjudicated and named in its receipt, inventory matches a fresh regen'; pending is 0 across all 55 admitted components"
+    recorded_at: "2026-11-01T10:28:25.663Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:godot row passive-media-projection: a Texture set as src reaches the native TextureRect on the Image scene and alt reaches accessibility_description; the anatomy runtime also accepts a loadable res:// path (remote fetching refused and named)"
+    recorded_at: "2026-11-01T10:28:26.629Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run test:godot -> passed:true, 32 rows; only passive-media-projection was added; all 31 prior rows unchanged; catalog-load admitted 55 failures []"
+    recorded_at: "2026-11-01T10:28:27.769Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/godot-target.md 'Passive/style long tail and the closed corpus boundary' section states the closure (8915 lowered / 8586 refused / 0 pending / 163 rules), the media realization and every refusal class; packages/ds-godot/README.md gains a 'Boundary state' section; docs/current-implementation-snapshot.md updated; docs:check-links passes. docs:check-claims fails identically on unmodified canonical main and this branch for docs/architecture/unity-target.md (stamp stale since 95d422c31, another lane's commit) — a pre-existing failure, not caused or restamped by this slice"
+    recorded_at: "2026-11-01T10:28:28.907Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate -- --target=godot twice -> tree unchanged (byte-stable); pnpm run generate:check exit 0; pnpm run audit:godot-boundary exit 0 (pending 0); pnpm exec vitest run packages/ds-codegen/src/frameworks/godot packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts -> 92 tests passed (boundary.test.ts updated: pending count now asserted 0, no-dead-rule example moved to the refused bucket); pnpm run test:godot passed"
+    recorded_at: "2026-11-01T10:28:30.160Z"

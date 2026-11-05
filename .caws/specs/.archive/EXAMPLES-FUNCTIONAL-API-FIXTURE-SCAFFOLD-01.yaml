@@ -1,0 +1,32 @@
+id: EXAMPLES-FUNCTIONAL-API-FIXTURE-SCAFFOLD-01
+title: 'Pilot fixture -> adapter -> promise-returning functional API seam for examples/operations-dashboard only (app-layer data/API scaffold, no framework app code)'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge ops-dashboard-api at 5a4d7d55215bf97f01b9cbc85e3569392fc3619c'
+created_at: '2026-06-27T00:07:32.415Z'
+updated_at: '2026-11-05T22:59:04.584Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - examples/operations-dashboard/fixtures/**
+    - examples/operations-dashboard/src/data/**
+    - examples/operations-dashboard/src/api/**
+    - examples/operations-dashboard/src/types/**
+    - examples/operations-dashboard/README.md
+    - examples/operations-dashboard/spec.md
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts: []

@@ -1,0 +1,40 @@
+id: FIX-BRAND-TOKEN-NAMESPACE-01
+title: 'Brand-layer refs name declared token paths, so tokens.css declares every name it reads'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Brand-layer refs now name the declared token paths; the resolvability rail reports zero unresolvable references across zero distinct names at 83dd2326.'
+created_at: '2026-09-14T14:06:45.505Z'
+updated_at: '2026-11-05T23:01:56.681Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-tokens/src/brands (ref spelling for the two undeclared names)'
+    - 'packages/ds-tokens/generated (regenerated tokens.css and resolved.tokens.json)'
+    - 'docs/token-resolvability-audit and docs/pseudo-state-audit (regenerated reports)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'docs/token-resolvability-audit'
+    - 'docs/pseudo-state-audit'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the expanded brand layer references {color.background.primary} and {typography.font.family.monaspace}; when those refs name the declared paths and tokens.css is regenerated; then the token-resolvability audit reports zero unresolvable references and every name tokens.css reads is declared in the same sheet'
+non_functional: {}
+contracts:
+  - name: 'token-resolvability'
+    type: contract-test
+    path: 'docs/token-resolvability-audit/resolvability-matrix.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run audit:token-resolvability at 83dd2326: RAIL-TOKEN-REFERENCE-RESOLVABILITY-01 — 0 unresolvable reference(s) across 0 distinct name(s); findings=0 unledgered=0 stale=0. Committed tokens.css reads the declared names (27x --fsds-semantic-color-background-primary, 9x --fsds-core-typography-font-family-monaspace) and 0x the two undeclared spellings; tokens:build:check reproduces the committed output byte-identically."
+    recorded_at: "2026-09-14T14:10:27.847Z"

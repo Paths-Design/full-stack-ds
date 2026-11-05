@@ -1,0 +1,45 @@
+id: REL-ISOLATION-SLOT-LOCAL-01
+title: 'Extend the isolation exemption to any erasure confined to the coordinate''s own slot'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The isolation exemption is stated for what it measures (slot locality) instead of one class, which admits the ideal bin.closure pair and adjudicates both coordinates as witnessed; the well-formedness guard is pinned and no disposition was needed.'
+created_at: '2026-09-15T05:42:27.619Z'
+updated_at: '2026-11-05T23:06:41.924Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/necessity.ts (checkIsolation''s semantic-finding exemption)'
+    - 'packages/ds-contracts/analytical-fixtures/witnesses.json + subtraction-stage2.json (the two bin.closure verdicts)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A semantic finding that appears because an erasure was confined to the coordinate''s own slot IS the distinction under test, not collateral damage; a WELL-FORMEDNESS refusal stays collateral for every class, because a dangling input or underivable result means the erasure broke the structure and a collision would be that break.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the isolation clause refuses the only pair two stage-2 candidates can have, and its stated rationale already exempts discriminator member pairs; when the exemption is extended to every erasure confined to the coordinate''s own slot; then both coordinates accept a holding witness, every existing falsifier that rejects a non-isolated substitution still rejects it, well-formedness refusals remain collateral for all classes, and neither coordinate is adjudicated until its witness is verified'
+non_functional: {}
+contracts:
+  - name: 'isolation'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "The exemption in checkIsolation was scoped to c.kind === 'member-pair' && c.leaf.endsWith('.kind') while its own comment stated the principle generally. It is now slotLocal: changed paths within the coordinate's slots, or an ancestor CONTAINER of one (changedPaths reports the parent alongside the leaf it lost -- the same impliedBy rule checkCombinedIsolation already applies). Result: relation.derivedBy.bin.closure and relation.derivedBy.bin.closure:left-closed~<absent> now ACCEPT a holding single-coordinate witness built from FX_READINGS_BINNED_NO_CLOSURE (illegal, REL_BIN_CLOSURE_UNDECLARED) against FX_N_READINGS_BINNED_LEFT_CLOSED (admissible) -- a pair that is literally one fixture minus the declaration, with nothing authored to reach the verdict -- and both record witnessed verdicts; unadjudicated 83 -> 81. The third spelling still fails NO_COLLISION because the corpus has no pair varying only which side is closed. The guard is pinned rather than assumed: relation.derivedBy.bin.field#incidence is slot-local and STILL refused, because the finding it introduces is REL_DERIVATION_RESULT_NOT_DERIVABLE, one of the boundary's own well-formedness refusals, and the test asserts both the checkIsolation violation and the checkWitness refusal. Non-claim: this corrects one clause's scope, not the isolation principle; well-formedness refusals remain collateral for every class; no disposition was added to the vocabulary (the declared case turned out to need none, because witnessed was already the right verdict); and the remaining 81 unresolved candidates are untouched."
+    recorded_at: "2026-09-15T05:49:14.654Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/necessity.test.ts > an oracle-separated pair is NECESSARY for a witness and not sufficient > accepts a slot-local erasure whose introduced finding is the CORPUS's semantic rule, and still refuses a well-formedness break"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/analytical/necessity.ts
+    commit_sha: "6c13e550"

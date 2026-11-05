@@ -1,0 +1,53 @@
+id: FIX-ANGULAR-PREVIEW-COMPILE-RACE-01
+title: 'Serialize fsds-angular preview compiles and contain rejections'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Serialized fsds-angular preview compile queue plus contained rejections stop regen-wave races from killing the dev server'
+created_at: '2026-10-06T18:01:31.585Z'
+updated_at: '2026-11-05T23:01:52.966Z'
+created_by_session: 'session-7e52d34d-e6a6-4a24-b5b7-a8af524f4fd5'
+blast_radius:
+  modules:
+    - 'showcase angular preview dev-server plugin'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/runtime/angular-compiler/vite-plugin.ts'
+    - 'src/runtime/angular-compiler/vite-plugin.test.ts'
+  out: []
+invariants:
+  - 'runCompile passes never overlap: a new kickCompile chains after the previous compile promise settles, because clearHosts rm-rf''s the preview-hosts dir each pass and concurrent passes destroy each other''s inputs'
+  - 'a compile rejection is never unhandled: the stored compile promise carries a no-op catch so process-level unhandled-rejection death cannot occur, while middleware awaiters still receive the rejection'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a compile already in flight, when kickCompile is invoked again, then the second runCompile starts only after the first completes and no two passes overlap'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a compile pass that rejects while no middleware awaiter holds the promise, when the rejection surfaces, then the dev-server process survives without an unhandled rejection'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a full codegen regeneration rewriting ds-angular/src while the dev server runs, when the wave completes, then the server process remains up with queued compiles, zero ENOTEMPTY or ENOENT failures, and the analytical scratch route still renders'
+non_functional: {}
+contracts:
+  - name: 'angular-preview-compile'
+    type: behavior
+    path: 'src/runtime/angular-compiler/vite-plugin.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run src/runtime/angular-compiler/vite-plugin.test.ts ('kicks serialize' passes: second runCompile starts only after first settles); in-vivo: worktree dev-server log shows 'compiling (change: Badge)' -> 'done in 3514ms' -> 'compiling (change: Dialog)' with the Dialog event delivered mid-flight and its kick deferred until Badge settled"
+    recorded_at: "2026-10-06T18:12:08.695Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "vite-plugin.test.ts 'a rejected kick reaches its awaiter, is contained, and does not wedge the queue' and 'a rejection with no awaiter never surfaces as an unhandled rejection'; suite green 10/10 in the slice worktree"
+    recorded_at: "2026-10-06T18:12:09.398Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Worktree dev server (port 5174) survived a 190-event ds-angular/src rewrite storm plus a mid-flight burst: HTTP 200 after, compiles completed with 0 error(s), zero ENOTEMPTY/ENOENT in logs, worktree git-clean; #/scratch/analytical-fixtures rendered 'Selected composite output' after the storm"
+    recorded_at: "2026-10-06T18:12:10.012Z"

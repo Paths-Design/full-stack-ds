@@ -1,0 +1,47 @@
+id: FEAT-COMPOSE-TEXTFIELD-ADMISSION-01
+title: 'Labeled text-control predicate to shared substrate; Compose TextField admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T03:54:05.048Z'
+updated_at: '2026-11-05T23:00:16.269Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the labeled text-control gate is target-neutral IR extraction; when it moves to the shared substrate and TextField is admitted on the compose labeled-control class with its label/description/error regions and string channel; then swift regeneration stays byte-identical, TextField compiles via gradle, compose grows 36 to 37, and parity/doc gates stay green'
+non_functional: {}
+contracts:
+  - name: 'labeled-text-control'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isLabeledTextControl moved to native-emission-class.ts (pure IR extraction: div root, one string channel, an input node) with byte-identical swift regeneration (52 groups, zero diff); compose 36-to-37: gradlew :library:compileKotlin BUILD SUCCESSFUL (TextField.kt: label/description/error regions derived from DOM parts, error gated by invalid, string channel trio, text-field.border chrome + box-model family); compose-parity-diff 37/37 0 failures (labeledText path+role, self-test 8/8); generate:check 52/52; typecheck clean; docs:check-claims 74/74; emitter tests 36/36"
+    recorded_at: "2026-09-13T03:57:40.819Z"

@@ -1,0 +1,33 @@
+id: DOC-NORMALFORM-RESTAMP-WALKTHROUGH-01
+title: 'Restamp normal-form.md after the Walkthrough emitter slice'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'normal-form.md restamped after the Walkthrough coachmark emitter changed its governed globs'
+created_at: '2026-09-14T02:54:49.705Z'
+updated_at: '2026-11-05T22:58:15.896Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given normal-form.md governs packages/ds-codegen/src/frameworks/**; when the Walkthrough coachmark emitter lands; then the doc''s verified_at_commit is refreshed to a commit containing that change and docs:check-claims is green'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge d3dba2a1: docs/normal-form.md verified_at_commit refreshed to 18cc1f66 (the Walkthrough coachmark emitter commit, which changed packages/ds-codegen/src/frameworks/**); node scripts/docs-claims-check.mjs -> 75 marked claims OK, all stamps fresh"
+    recorded_at: "2026-09-14T02:55:20.949Z"

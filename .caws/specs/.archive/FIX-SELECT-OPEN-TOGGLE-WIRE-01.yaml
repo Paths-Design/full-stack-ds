@@ -1,0 +1,46 @@
+id: FIX-SELECT-OPEN-TOGGLE-WIRE-01
+title: 'Wire Select trigger open/close via contract events (Button-onClick precedent)'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge select-open-wire at 9a64f310c0917adf5da93261eafd8ee18fa0c23c'
+created_at: '2026-07-22T06:34:06.773Z'
+updated_at: '2026-11-05T23:03:30.551Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Select/Select.contract.json'
+    - 'packages/ds-react/src/components/Select/'
+    - 'packages/ds-vue/src/components/Select/'
+    - 'packages/ds-svelte/src/components/Select/'
+    - 'packages/ds-angular/src/components/Select/'
+    - 'packages/ds-lit/src/components/Select/'
+    - packages/ds-react-native/src/components/Select/
+    - packages/ds-codegen/src/frameworks/lit/tests.ts
+    - packages/ds-codegen/src/frameworks/angular/tests.ts
+    - packages/ds-codegen/src/frameworks/react-native/tests.ts
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'the Select contract trigger node gains a click event wire to the open channel'
+    when: 'Select regenerates for all five frameworks'
+    then: 'each generated Select attaches a click handler on the trigger that toggles the open channel idiomatically per framework, verified in the regenerated files.'
+  - id: A2
+    given: 'the determination that option selection is a schema gap with no call-with-argument binding form'
+    when: 'this spec lands'
+    then: 'option-selection wiring is explicitly not attempted here (contract edit only, no emitter or schema changes) and the orphaned setSelection remains owed to the grammar-extension spec.'
+  - id: A3
+    given: 'the full corpus regeneration'
+    when: 'git status is inspected after regenerating all targets'
+    then: 'only Select files changed across the five framework trees, and generate checks plus root tests pass.'
+non_functional: {}
+contracts:
+  - name: 'select-open-toggle-parity'
+    type: behavior

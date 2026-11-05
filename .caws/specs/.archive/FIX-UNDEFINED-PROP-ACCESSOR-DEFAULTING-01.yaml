@@ -1,0 +1,46 @@
+id: FIX-UNDEFINED-PROP-ACCESSOR-DEFAULTING-01
+title: 'Default-aware prop accessors in lit/angular emitters (Icon size, Skeleton decorative a11y divergence)'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge undef-prop-defaults at 2800d15b35968c5ff7ffe897d060c3c87f3801b9'
+created_at: '2026-07-22T06:49:32.455Z'
+updated_at: '2026-11-05T23:03:55.321Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/lit/'
+    - 'packages/ds-codegen/src/frameworks/angular/'
+    - 'packages/ds-lit/src/components/'
+    - 'packages/ds-angular/src/components/'
+    - packages/ds-codegen/src/frameworks/iteration-bindings.test.ts
+    - packages/ds-codegen/src/frameworks/events-content-bindings.test.ts
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'the lit and angular prop-accessor helpers made default-aware at the accessor layer'
+    when: 'a prop operand with a contract defaultExpr flows through conditional bindings, predicate bindings, or class-modifier loops'
+    then: 'the emitted read applies the contract default on explicit undefined, matching react parameter-default semantics, pinned by codegen unit tests with falsification proof.'
+  - id: A2
+    given: 'the Icon glyph size lookup that emitted size ?? empty-string'
+    when: 'Icon regenerates for lit and angular'
+    then: 'an undefined size resolves to the contract default md and its 20px hint instead of falling through to natural SVG size, verified in regenerated output.'
+  - id: A3
+    given: 'Skeleton decorative with contract default true'
+    when: 'Skeleton regenerates for lit and angular with decorative explicitly undefined'
+    then: 'role, aria-busy, and aria-hidden match reacts output (presentation, false, true) instead of announcing the skeleton to screen readers.'
+  - id: A4
+    given: 'the full corpus regeneration'
+    when: 'git status is inspected'
+    then: 'only components exercising the fixed accessor paths change in lit and angular trees, react/vue/svelte stay byte-identical, and all suites plus the governed rail pass.'
+non_functional: {}
+contracts:
+  - name: 'undefined-prop-default-parity'
+    type: behavior

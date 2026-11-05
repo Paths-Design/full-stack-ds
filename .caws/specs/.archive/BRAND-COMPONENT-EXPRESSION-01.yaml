@@ -1,0 +1,67 @@
+id: BRAND-COMPONENT-EXPRESSION-01
+title: 'Refresh component and application brand expression'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Refreshed component and application brand expression with consumed-destination validation, default and portal cascade fixes, responsive runtime witnesses, full local gates and preserved visual evidence.'
+created_at: '2026-09-12T01:19:49.299Z'
+updated_at: '2026-11-05T22:56:57.267Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Brand token composition and component overrides'
+    - 'Showcase application theme consumption'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/src/brands'
+    - 'packages/ds-tokens/build/generators'
+    - 'packages/ds-tokens/build/runners'
+    - 'src/styles/app.css'
+    - 'e2e/brand-expression.spec.ts'
+    - 'docs/architecture/design/brand-expression.md'
+    - packages/ds-codegen/src/validation/brand-component-overrides.ts
+    - packages/ds-codegen/src/validation/brand-component-overrides.test.ts
+    - packages/ds-codegen/src/cli.ts
+    - packages/ds-react/src/primitives/surfaces
+    - packages/ds-vue/src/primitives/surfaces
+    - packages/ds-svelte/src/primitives/surfaces
+    - packages/ds-angular/src/primitives/surfaces
+    - packages/ds-lit/src/primitives/surfaces
+    - src/runtime/angular-compiler/vite-plugin.ts
+    - src/runtime/shells/angular.ts
+    - src/runtime/shells/angular.test.ts
+  out: []
+  support:
+    - packages/ds-tokens/generated/tokens.css
+    - packages/ds-tokens/generated/resolved.tokens.json
+    - docs/architecture/tokens-architecture.md
+    - docs/architecture/design/box-model-primitive.md
+    - docs/pseudo-state-audit/pseudo-state-matrix.json
+    - docs/pseudo-state-audit/pseudo-state-matrix.md
+    - docs/token-resolvability-audit/resolvability-matrix.json
+    - docs/token-resolvability-audit/resolvability-matrix.md
+invariants:
+  - 'Brand component overrides must address current consumed component tokens or design slots; no legacy aliases or allowance ledger.'
+  - 'Control shapes and content-surface shapes vary independently; app styling consumes semantic or component tokens without per-brand CSS branches.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'Given all shipped brands; when component overrides are built; then every declared component override names a current consumed token or design slot.; Given surfaces and controls; when brands are switched; then surface radii remain bounded while control shape, spacing, typography and elevation express the selected brand.; Given the showcase application; when the selected brand changes; then its shell and shared components reflect the brand beyond color in light and dark modes without overflow or broken interactions.'
+non_functional: {}
+contracts:
+  - name: 'brand-overrides'
+    type: schema
+    path: 'packages/ds-tokens/src/brands/_schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "tmp/brand-expression/verification.md: final source f2003359805b713341e6612f4f2b054aebdc7791; full pre-push passed; all framework suites passed with two existing Lit skips; nine brand browser witnesses passed; 25 screenshots preserved; canonical docs gate passed after merge."
+    recorded_at: "2026-09-12T02:22:43.643Z"
+    test_nodeid: e2e/brand-expression.spec.ts
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5199 pnpm exec playwright test e2e/brand-expression.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: f2003359805b713341e6612f4f2b054aebdc7791

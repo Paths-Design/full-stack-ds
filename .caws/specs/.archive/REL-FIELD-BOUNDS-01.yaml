@@ -1,0 +1,77 @@
+id: REL-FIELD-BOUNDS-01
+title: 'A declared field-to-field bounds relationship is carried, and supplied rows that violate it leave a named obligation'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The generic bounds declaration is carried, observed as an instance obligation, and its erasure targets the holder; the unresolved-reference boundary refuses malformed declarations before any row is read.'
+created_at: '2026-09-21T01:58:48.764Z'
+updated_at: '2026-11-05T23:06:23.879Z'
+created_by_session: 'session-d9bf6cd4-ea13-4823-8ad3-db20bfcc705f'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/relation-model.ts (the bounds declaration, in the whole/perRow family)'
+    - 'packages/ds-codegen/src/analytical/engines.ts (the instance obligation over supplied rows)'
+    - 'packages/ds-contracts/analytical-fixtures/fixtures.jsonl (FX_P_OHLC_PAIR declares its bounds)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'src/data/analytical-fixtures'
+    - packages/ds-contracts/quotient-image.schema.json
+    - packages/ds-contracts/relation.contract.schema.json
+  out: []
+invariants:
+  - 'GENERIC, NOT ARTIFACT-SPECIFIC: the declaration is over any three sibling fields and no layer below L4 names OHLC, a candle, or any form.'
+  - 'STANDING WITHOUT AUTHORITY: violating rows carry the obligation term bounds:row-consistent and NO diagnostic, because an illegal judgment needs an owner-licensed cause. The weaker claim is deliberate and stated: measured violation reads as an unresolved premise until the owner upgrades the term to a diagnostic.'
+  - 'INSTANCE EVIDENCE ONLY: no rows means no check and no obligation — absent evidence is not contradiction.'
+  - 'ALPHA-INDEPENDENCE: renaming the three fields together changes nothing.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a field declaring bounds over two sibling fields; when the schema is emitted and parsed; the declaration validates and appears in the emitted schema'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given rows satisfying the declared bounds; when the structure is judged; the judgment is admissible with no bounds obligation'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given supplied rows violating the declared bounds; when the structure is judged with rows; the bounds:row-consistent obligation is carried, naming the field, and no diagnostic is emitted'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the bounds declaration and no rows; when the structure is judged; no bounds obligation is emitted, because instance evidence is absent rather than contradictory'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the same three fields renamed everywhere together; when the judgment is compared; nothing changes'
+non_functional: {}
+contracts:
+  - name: 'field-bounds-declaration'
+    type: schema
+    path: 'packages/ds-codegen/src/analytical/relation-model.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "stage1.test.ts REL-FIELD-BOUNDS-01 A1: the declaration validates through the real schema path via FX_P_OHLC_PAIR and the emitted schemas are drift-gated (vitest analytical 1048/1048; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-21T14:50:01.778Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "stage1.test.ts A2: satisfying supplied rows are admissible with NO bounds obligation (vitest analytical 1048/1048; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-21T14:50:02.270Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "stage1.test.ts A3: violating rows carry the complete occurrence bounds:row-consistent r.close aggregate:sum field-bounds instance with NO diagnostic (vitest analytical 1048/1048; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-21T14:50:02.749Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "stage1.test.ts A4: a valid declaration with NO rows emits no bounds obligation (vitest analytical 1048/1048; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-21T14:50:03.231Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "stage1.test.ts A5: consistent renaming of fields references and row keys preserves the judgment including attribution (vitest analytical 1048/1048; typecheck lint rail root frameworks green)"
+    recorded_at: "2026-09-21T14:50:03.698Z"

@@ -1,0 +1,46 @@
+id: REL-INCIDENCE-QUOTIENT-LIMIT-01
+title: 'Measure and pin why the derivation-operand topology facets cannot be witnessed: their erasure is not a legal quotient'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Measured and pinned that 18 of 39 reference-topology coordinates have an erasure the derivation boundary refuses, so no witness can ever be admitted for them; the distinction is oracle-separated and the collision holds, so this is a limit of the quotient rather than missing corpus coverage, and the keystone partitions into 18 quotient / 10 corpus-shape / 6 corpus-coverage.'
+created_at: '2026-09-15T06:36:43.706Z'
+updated_at: '2026-11-05T23:06:39.341Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/necessity.test.ts (pin the quotient-limit partition)'
+    - 'docs/architecture/analytical-relation-doctrine.md (the incidence-erasure limit as a cost)'
+    - 'docs/current-implementation-snapshot.md (the analytical row''s forward plan)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A coordinate is adjudicated from evidence that can actually be produced. Where a coordinate''s own erasure makes the representation an illegal declaration, so that every witness naming it fails the isolation obligation by construction, the absence of a verdict is a measured limit of the quotient and must not be converted into a disposition, nor read as missing corpus coverage.'
+  - 'A refusal is classified by what produced it: an erasure refused because the boundary can no longer resolve the structure is a different fact from an erasure that is a no-op for want of a corpus instance, and the two are enumerated separately rather than collapsed into "no witness found".'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the derivation-operand topology facets stand unresolved and the keystone was recorded as a per-facet authored-stimulus obligation; when each coordinate''s own erasure is run over every committed fixture where it moves bytes; then no derivation-operand erasure is ever discharged, the partition is measured exactly and pinned by test, and the distinction the coordinates name is shown to be oracle-separated so the absence of a verdict is a limit of the quotient rather than missing corpus coverage'
+non_functional: {}
+contracts:
+  - name: 'derivation-operand-quotient'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Measured every live reference-topology coordinate's own erasure over the 119 committed fixtures. Result: 18 of 39 are NEVER discharged on any fixture where the erasure moves bytes -- 16 relation.derivedBy.* operand references (15 #incidence plus project.keep#arity) and structure.peers[]#incidence -- because forgetting the names a bound reference shares leaves the derivation boundary an input it cannot resolve, and REL_DERIVATION_INPUT_MISSING / REL_DERIVATION_RESULT_NOT_DERIVABLE stay collateral for every class by design. Decomposed against the 34 unadjudicated reference-topology facets the partition is exact and total: 18 never discharged, 10 erase nothing on any committed fixture (a corpus-shape gap a longer or unsorted list would close), 6 discharged and awaiting a separating pair. The distinction is REAL, not a corpus silence: on FX_N_NESTED_SUBTOTAL_AT_PREFIX rebinding level 0 from country to revenue moves exactly one path (.structure.relations.hierarchy.derivedBy.levels[0]), leaves both sides boundary-clean, and flips admissible -> REL_GRAIN_SUBTOTAL_MISMATCH under the existing cause CASE_NESTED_SUBTOTALS_OFF_GRAIN; the incidence erasure identifies those two stimuli so the COLLISION obligation HOLDS and isolation alone fails, which is why the committed nest.levels#order witness over the same pair is accepted while that pair re-cited for #incidence is refused with ERASURE_NOT_ISOLATED, and an authored {base, patch} is refused for the same reason. C1f pins all four facts against the live census and corpus, not a hardcoded reading, and was falsified once (a wrong id in the expectation fails the equality). NON-CLAIMS: this adjudicates NO coordinate -- the ledger verdicts for these 18 stay unresolved, because no disposition in the code-owned vocabulary is true of them (not an artifact: the erasure does identify two oracle-separated representations; not required-derived-vocabulary: the degree of freedom is independent; not not-yet-admitted: active authority requires the distinction), so the subtraction gate is correctly still red at 78 of 118; it measures the QUOTIENT, not the semantics, and does not claim the coordinates are unnecessary; the 18 are an enumeration over the live kernel and the committed fixtures at e323c467 and will move if either grows; and the population is the oracle's corpus fixtures only, so no witness-side stimulus is counted in it. The open question is a resolution-preserving incidence quotient, whose shape Coordinate.slots (an unemitted binding facet) already declares."
+    recorded_at: "2026-09-15T06:47:12.809Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/necessity.test.ts > C1f — an erasure the boundary REFUSES is not a quotient, and no corpus case can mend it > the reference-topology coordinates whose own erasure is never discharged are exactly these"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/analytical/necessity.test.ts
+    commit_sha: e323c467

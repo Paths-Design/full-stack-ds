@@ -1,0 +1,72 @@
+id: REL-EMBED-HOST-STANDING-01
+title: 'The embedded projection''s HOST is an operand: its standing is read, recorded at its own path, and affects the embed'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The embed host is now an operand: read through the support and certification path, recorded at an unambiguous host path, attributed distinctly from the embedded part, and unable to be hidden by a supported child.'
+created_at: '2026-09-19T06:00:11.845Z'
+updated_at: '2026-11-05T23:06:19.351Z'
+created_by_session: 'session-81b74ef5-48d2-46ae-a53d-880593255530'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (the embed rule and the composite judgement read the host)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (the host standing controls)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+  out: []
+invariants:
+  - 'THE HOST IS AN OPERAND. A composite is judged from its operands, and an embed declares two: the host projection and the embedded part. A checker that reads only one of them cannot establish the composite it claims to judge.'
+  - 'Host and embedded part are attributed DISTINCTLY. The host path is unambiguous against every part path, so a refusal names which operand failed rather than a single undifferentiated "part".'
+  - 'A supported child never hides a faulty host. The child is still read, and its disposition stays on the record, but it cannot upgrade a host that has no standing.'
+  - 'The correction adds no host constraint the doctrine does not name. It establishes the host''s STANDING through the paths that already exist; it does not invent a rule about what a host must be.'
+acceptance:
+  - id: A1
+    given: 'An embed whose host is a retained program and whose embedded part is a retained program.'
+    when: 'The composite is judged and the record read.'
+    then: 'given an embed whose host and whose embedded part are both retained programs; when the composite is judged; then it is retained and the host''s standing is on the record at its own path'
+  - id: A2
+    given: 'An embed whose host declares a task the relation path does not implement, with a retained embedded part.'
+    when: 'The composite is judged.'
+    then: 'given an embed whose host declares a task the relation path does not implement; when it is judged; then the embed is unsupported and attributed to the HOST, and the embedded part''s own disposition is still on the record'
+  - id: A3
+    given: 'An embed whose host is built on an operation the analytical rules contradict, with a retained embedded part.'
+    when: 'The composite is judged.'
+    then: 'given an embed whose host''s operation the analytical rules contradict; when it is judged; then the embed is refused carrying the host''s own named cause and attributed to the host'
+  - id: A4
+    given: 'An embed whose host is contradicted and whose embedded part is unsupported.'
+    when: 'The composite is judged.'
+    then: 'given an embed whose host and whose embedded part are BOTH faulty; when it is judged; then both origins are on the record at distinct paths and neither erases the other'
+  - id: A5
+    given: 'A retained embed and the existing cell-budget controls.'
+    when: 'The record''s paths are compared and the budget controls re-run.'
+    then: 'given an embed; when its record is read; then the host path is unambiguous against every part path, and the existing cell-budget controls are unchanged'
+non_functional: {}
+contracts:
+  - name: 'embed-host-standing'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts HOST STANDING: the host is read recorded at its own path and a retained pair stays retained (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1023 tests green))"
+    recorded_at: "2026-09-19T06:09:44.409Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts HOST STANDING: an unimplemented HOST makes the embed unsupported and the child is still reported (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1023 tests green))"
+    recorded_at: "2026-09-19T06:09:44.921Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts HOST STANDING: a CONTRADICTED host refuses the embed with the host's own cause (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1023 tests green))"
+    recorded_at: "2026-09-19T06:09:45.437Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts HOST STANDING: a faulty host and a faulty child are BOTH on the record (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1023 tests green))"
+    recorded_at: "2026-09-19T06:09:46.446Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection.test.ts HOST STANDING: the host is not required to be tabular because no cause names one (pnpm exec vitest run packages/ds-codegen/src/analytical (22 files, 1023 tests green))"
+    recorded_at: "2026-09-19T06:09:47.047Z"

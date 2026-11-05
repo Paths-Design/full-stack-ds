@@ -1,0 +1,39 @@
+id: REL-FILE-AGGFROM-01
+title: 'File the aggregate-to-grain from-incidence witness: rebinding the input relation decides it'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Filed relation.derivedBy.aggregate-to-grain.from#incidence: authored pair over FX_NESTED_SUBTOTAL_OFF_HIERARCHY moving subtotals.derivedBy.from to sales, atomic class so it ratifies primitive standing; subtraction 66/118 unresolved, freeze 18/72, ratified 60.'
+created_at: '2026-09-15T23:23:07.376Z'
+updated_at: '2026-11-05T23:06:25.083Z'
+created_by_session: 'session-b6592f79-7786-4ee0-994b-98b934cd1254'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given relation.derivedBy.aggregate-to-grain.from#incidence is ratifiable and its separating shape is a single-path patch measured against an existing cause; when the authored stimulus is filed (subtotals.derivedBy.from hierarchy -> sales on FX_NESTED_SUBTOTAL_OFF_HIERARCHY) and checkWitness admits it; then the verdict moves unresolved -> witnessed, the coordinate classes atomic so the witness ratifies primitive standing, the drift check stays green on all three bases, and the analytical suite, every gate and every ledger agree'
+non_functional: {}
+contracts:
+  - name: 'witness-admission'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/necessity.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/analytical (20 files / 866 tests, including the two generated per-witness cases C2 and C7 for the filed coordinate) and pnpm test (302 files / 4087 tests); pnpm run analytical:subtraction:gate prints 'drift ... OK' on all three bases with 66 of 118 candidates still unadjudicated; analytical:footprints:check (0 illegal quotient images over 212 specimens), analytical:freeze:check (18 witnessed / 72 unresolved of 126 verdicts), analytical:final-quotient (primitives: 60 single-coordinate witnesses), analytical:check-schemas, analytical:check-baseline, analytical:closures:check, analytical:stimuli, fixtures:check, docs:check-claims, lint and typecheck all pass on merge 83d03924. NON-CLAIM: the witness is AUTHORED because no corpus case separates the two sides, so what is proven is that the coordinate is PRIMITIVE relative to the already-existing cause CASE_NESTED_SUBTOTALS_OFF_GRAIN, not that the corpus witnesses it; and the subtraction gate stays red by design (66 unresolved), so this filing does not close REL-VIEW-ALGEBRA-01 and the three structurally-unwitnessable coordinates remain without a terminal class."
+    recorded_at: "2026-09-15T23:41:30.833Z"

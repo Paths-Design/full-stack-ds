@@ -1,0 +1,73 @@
+id: GPUI-COLLECTION-ACCORDION-01
+title: 'GPUI accordion collection state: open value and trigger toggle'
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Accordion realizes its string open value with a trigger toggle and gated panel; behavior 12->13, props 257->259, other targets byte-identical.'
+created_at: '2026-11-01T12:06:12.961Z'
+updated_at: '2026-11-05T23:04:35.650Z'
+created_by_session: 'session-9a5ca3d6-91ee-4724-a1d7-805db3686623'
+blast_radius:
+  modules:
+    - 'GPUI accordion: string value channel, trigger method activation, gated panel, witness'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/gpui'
+    - 'packages/ds-gpui'
+    - 'scripts/gpui-pilot.mjs'
+    - 'scripts/gpui-web-consistency-audit.mjs'
+    - 'docs/architecture/gpui-target.md'
+    - 'docs/architecture/gpui-web-consistency.md'
+    - 'packages/ds-gpui/web-consistency-baseline.json'
+  out: []
+invariants:
+  - 'Only string-valued disclosure channels with a click trigger are admitted; other collection channels keep the anatomy fallback'
+  - 'Components without such a channel regenerate byte-identically'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract with a string openness channel and a trigger part; when generate --target=gpui runs; then the component exposes controlled open value, a trigger toggle on pointer and keyboard, and a panel gated on open'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the mounted suite; when an Accordion is clicked and keyed; then its panel appears only while open and the value setter drives it'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the consistency audit; when it runs after the slice; then GPUI behavior coverage rises and no dimension regresses'
+non_functional: {}
+contracts:
+  - name: 'gpui-collection-accordion'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/gpui/anatomy.ts'
+  - name: 'gpui-web-consistency-baseline'
+    type: schema
+    path: 'packages/ds-gpui/web-consistency-baseline.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Accordion plans a string open-value channel from its declared interaction trigger: generated source carries open_value:Option<SharedString>, value/set_value/default_value/is_open builders, a generated toggle_open, the trigger part's pointer+Space+Enter activation and the content part wrapped in when(self.open_value.is_some()); receipt records valueChannel triggerPart/gatedPart and names the non-carried opens (multi-open array, item identities, collapsible suppression); only Accordion regenerates"
+    recorded_at: "2026-11-01T12:17:57.628Z"
+    command: "pnpm run generate:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/src/components/Accordion/Accordion.rs
+    commit_sha: "172d1e806"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "mounted_accordion_collection_open_toggles_trigger_and_gated_panel passes: collapsed by default with no content bounds, click opens (is_open true, panel laid out), second click collapses, Space opens and Enter collapses with the trigger focused, and a controlled value(Some(item)) renders the panel without a click; the pilot requires it and reports GPUI_NATIVE_PASS"
+    recorded_at: "2026-11-01T12:17:59.187Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: "172d1e806"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "ratchet rebaselined: GPUI props 257/379 -> 259/379 and behavior 12/30 -> 13/30 (Accordion realizes its collection open value); parts/a11y/refs unchanged; two generation runs hash identically and --check is green on main"
+    recorded_at: "2026-11-01T12:18:00.956Z"
+    command: node scripts/gpui-web-consistency-audit.mjs --check
+    exit_code: 0
+    artifact_path: packages/ds-gpui/web-consistency-baseline.json
+    commit_sha: "803835714"

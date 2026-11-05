@@ -1,0 +1,77 @@
+id: FEAT-SWIFTUI-PARITY-BATCH-01
+title: 'Parity batch 1: static/div-root content, prop-text, media, expandable, popover, skeleton, smoke harness (25→38)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Parity batch 1: 25-to-39 admitted with NSHostingController body-eval smoke coverage; 10 remain fail-loud'
+created_at: '2026-08-17T04:56:06.277Z'
+updated_at: '2026-11-05T23:01:00.529Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui (class widenings + 4 new classes + popover row)'
+    - 'packages/ds-swiftui (13 new components + smoke harness)'
+    - 'fsds.targets.json + docs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Every new class gates on IR facts (root tag family, children-leaf count, content binding kind, channel trio, surface kind); no component identity; unrealized props omitted-and-documented.'
+  - 'The smoke harness must exercise every allowlisted component by name-list derived from the allowlist — a new admission that is not smoke-tested fails the harness''s completeness assertion.'
+acceptance:
+  - id: A1
+    given: 'the widened static-content class (any passive root tag, wrapper elements allowed above a single children leaf)'
+    when: 'Stat, ProfileFlag, Postcard, Breadcrumbs, NavList generate'
+    then: 'all compile — content closure + presence-driven chrome + axes'
+  - id: A2
+    given: 'prop-text leaf class (root or code-part content bound to a string prop)'
+    when: 'CodeSnippet and CodeBlock generate'
+    then: 'they render the prop as monospaced text with chrome; compile'
+  - id: A3
+    given: 'media leaf class (img root with src/alt) and the src-or-fallback componentRef composition'
+    when: 'Image and Avatar generate'
+    then: 'Image lowers to AsyncImage(src) with alt via conditional a11y; Avatar renders Image when src else Text(name); both compile'
+  - id: A4
+    given: 'expandable content class (expanded boolean channel + content + lines/expandable props)'
+    when: 'Truncate and ShowMore generate'
+    then: 'content lineLimits to lines unless expanded, with a disclosure toggle Button when the contract authors one; compiles'
+  - id: A5
+    given: 'the popover surface kind and the decorative-box class (no children, no channels, passive root)'
+    when: 'Popover and Skeleton generate'
+    then: 'Popover emits through the ControllableValue substrate as a manual-open anchored surface (no hover); Skeleton emits chrome-only rounded box; AlertNotice admitted (already emits); all compile'
+  - id: A6
+    given: 'a body-evaluation smoke harness in the SwiftPM test target'
+    when: 'swift test runs'
+    then: 'EVERY admitted component instantiates and its body evaluates through NSHostingController without crashing — the kink-class the compile-only gates cannot see; plus full worktree gates green and --target=all byte-stable'
+non_functional: {}
+contracts:
+  - name: 'swiftui-parity-smoke'
+    type: contract-test
+    path: 'packages/ds-swiftui/Tests/DsSwiftUITests/ComponentSmokeTests.swift'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Generated files Stat/ProfileFlag/Postcard/Breadcrumbs/NavList/Status.swift under Sources/DsSwiftUI/Components/ (39 dirs on disk); swift build 'Build complete!' exit 0"
+    recorded_at: "2026-08-17T05:15:33.865Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "CodeSnippet(text:)/CodeBlock(code:) emitted with monospaced Text + chrome; compiled in package build"
+    recorded_at: "2026-08-17T05:15:34.850Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Image.swift: AsyncImage(url:) with phase image/error/ProgressView branches, fsdsAccessibilityLabel(alt); Avatar.swift: DsSwiftUI.Image(src:alt:) | Text(name) Group"
+    recorded_at: "2026-08-17T05:15:35.871Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Truncate/ShowMore.swift: @StateObject expanded ControllableValue<Bool>, lineLimit(expanded.value ? nil : lines/maxLines), toggle Button; compiled"
+    recorded_at: "2026-08-17T05:15:36.854Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Popover.swift emitted (tooltip minus hover — 3-line splice verified by compile); Skeleton.swift chrome-only box; AlertNotice.swift admitted; ComponentSmokeTests.swift: 39-factory table + completeness assertion, 'Executed 25 tests, with 0 failures' via swift test; full gates: typecheck 0, rail 0, pnpm test 2086/2086, frameworks 72"
+    recorded_at: "2026-08-17T05:15:37.745Z"

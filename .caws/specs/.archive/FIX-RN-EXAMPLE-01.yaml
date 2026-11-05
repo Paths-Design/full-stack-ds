@@ -1,0 +1,47 @@
+id: FIX-RN-EXAMPLE-01
+title: 'Align RN example consumer with the generated component surface'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'RN settings example now uses the idiomatic generated surface (Field slots, Button onClick); typecheck:example:react-native compiles clean'
+created_at: '2026-09-04T23:11:40.706Z'
+updated_at: '2026-11-05T23:03:27.962Z'
+created_by_session: 'sess_b5ccec4e-abee-4004-b791-90b54bfe3547'
+blast_radius:
+  modules:
+    - 'react-native example consumer'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/settings/react-native'
+  out: []
+invariants:
+  - 'The example consumer compiles against the generated @full-stack-ds/react-native surface exactly as committed — no local type patches, declaration overrides, or tsconfig exclusions'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the hand-authored RN settings example; when pnpm run typecheck:example:react-native runs; then tsc exits 0 with no errors and the example passes only props the generated RN components actually declare'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the example was updated; when reviewed; then the consumer demonstrates the idiomatic generated surface (Button onClick handler, Field slots projection) instead of a suppressed or hand-tightened type'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run typecheck:example:react-native — tsc exits 0 inside worktree rn-example-fix against the generated workspace package"
+    recorded_at: "2026-09-04T23:14:32.382Z"
+    command: "pnpm run typecheck:example:react-native"
+    exit_code: 0
+    commit_sha: "532f0904"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Diff review: consumer passes Field name/required/slots and Button onClick — every prop is contract-declared on the generated surface; no type patches or tsconfig exclusions"
+    recorded_at: "2026-09-04T23:14:33.196Z"
+    command: git show 532f0904 -- examples/settings/react-native/src/App.tsx
+    exit_code: 0
+    commit_sha: "532f0904"

@@ -1,0 +1,48 @@
+id: FALLBACK-DIVERGENCE-01
+title: 'Fallback-divergence advisory gate + stale-palette repair'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Advisory divergence gate (canonicalized) + 17 stale-palette repairs. 28->25 divergent tokens; the 3 repaired color tokens no longer appear. A1-A3 evidence recorded (seq 1516-1518). governed:rail pass, root 1965/1965, framework 70/70.'
+created_at: '2026-07-28T19:27:56.215Z'
+updated_at: '2026-11-05T22:59:19.106Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/validation/fallback-completeness.ts: new [FALLBACK_DIVERGENT] advisory check (canonicalized) alongside the existing [FALLBACK_MISSING] hard error.'
+    - 'packages/ds-contracts/components/Button/{Button.tokens.json,Button.styles.json}: base-block fallback literals repaired to remove stale red-palette residue divergent from the --primary variant.'
+    - 'packages/ds-contracts/components/{Checkbox,ToggleSwitch,Walkthrough}: base-block fallback repairs where they carry the same stale-palette divergence as Button for semantic.color.action.background.primary.* / semantic.focus.ring.color.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/validation/fallback-completeness.ts'
+    - 'packages/ds-codegen/src/validation/fallback-completeness.test.ts'
+    - 'packages/ds-contracts/components/Button'
+    - 'packages/ds-contracts/components/Checkbox'
+    - 'packages/ds-contracts/components/ToggleSwitch'
+    - 'packages/ds-contracts/components/Walkthrough'
+  out: []
+invariants:
+  - 'The [FALLBACK_DIVERGENT] check is ADVISORY: it emits ValidationIssue entries with a [FALLBACK_DIVERGENT] code so they surface in the DRIFT report, but it MUST NOT cause generate:check to fail (the existing [FALLBACK_MISSING] remains the only hard error in this file). This mirrors the posture of the dead-slot audit (advisory this slice) because the ~25 Class-3 semantic-inconsistency divergences require per-token adjudication before they can be promoted to hard errors.'
+  - 'Fallback literals are compared AFTER CANONICALIZATION: 16px and 1rem (at default 16px root) are equal; hex is lowercased; whitespace is collapsed. This prevents unit-equivalent false positives (2 of the 30 measured divergences) from firing.'
+  - 'The Class-2 stale-palette repair (Button base block + focus.ring.color red residue) changes the committed fallback literals in *.tokens.json / *.styles.json so a bare component rendered WITHOUT tokens.css no longer confidently renders the wrong brand color. Before this repair the universal-fallback gate made standalone rendering strictly WORSE for Button (primary gained #0566fe; base kept stale #d9292b); after, both blocks agree.'
+  - 'The ~25 Class-3 semantic-inconsistency divergences (e.g. core.spacing.size.05 = 12px vs 16px across 13 components) are NOT repaired in this slice — they are surfaced by the advisory and require a per-token decision about whether the divergence is intentional.'
+acceptance:
+  - id: A1
+    given: 'two slots that reference the same token but carry different fallback literals'
+    when: 'generate:check runs'
+    then: 'a [FALLBACK_DIVERGENT] advisory is emitted for that token, and the check does NOT fail (advisory posture)'
+  - id: A2
+    given: 'unit-equivalent fallbacks like 16px and 1rem'
+    when: 'the divergence check runs'
+    then: 'NO advisory is emitted (canonicalization treats them as equal)'
+  - id: A3
+    given: 'the repaired Button base block'
+    when: 'a bare .button renders without tokens.css'
+    then: 'the base block fallbacks no longer carry stale red-palette literals divergent from the --primary variant for the same token'
+non_functional: {}
+contracts:
+  - name: 'fallback-divergence-check'
+    type: schema
+    path: 'packages/ds-codegen/src/validation/fallback-completeness.ts'

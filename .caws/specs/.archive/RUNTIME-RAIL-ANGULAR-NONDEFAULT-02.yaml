@@ -1,0 +1,65 @@
+id: RUNTIME-RAIL-ANGULAR-NONDEFAULT-02
+title: 'Angular non-default prop facts in runtime rail via pre-compiled startup fixtures (option b)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge angular-nondefault at 013789d7d31eeff1d2e64286a360fd3762329075'
+created_at: '2026-06-04T15:30:44.489Z'
+updated_at: '2026-11-05T23:07:41.900Z'
+blast_radius:
+  modules:
+    - src/runtime/angular-compiler (non-default fixture registry + additive startup synthesis + serve route) + e2e (runtime rail Angular non-default facts)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - src/runtime/angular-compiler/nondefault-fixtures.ts
+    - src/runtime/angular-compiler/host.ts
+    - src/runtime/angular-compiler/vite-plugin.ts
+    - e2e/runtime-rail.spec.ts
+  out:
+    - src/runtime/shells/angular.ts
+    - src/runtime/demos.ts
+    - src/runtime/preview-props.ts
+    - src/runtime/react-preview
+    - src/runtime/vue-preview
+    - src/runtime/svelte-preview
+    - src/runtime/lit-preview
+    - packages
+invariants:
+  - 'Mechanism is OPTION (b) — pre-compiled startup fixtures, NOT a per-prop-set / on-demand / incremental compile. A small fixed registry (src/runtime/angular-compiler/nondefault-fixtures.ts) names the handful of non-default rail cases as {key, component, props}. Each fixture host is synthesized and baked into the EXISTING single startup compile (synthesizeNonDefaultFixtures feeds runCompile extraFiles alongside the default hosts). A throwaway probe measured oldProgram reuse still rewriting 140/140 files for a one-host change, so incremental buys nothing here; the full compile is ~1s and already paid once at startup. No per-request compile, no per-prop-set cache dir, no oldProgram/incremental machinery.'
+  - 'The navigable route reuses the EXISTING serve path with NO matcher change. Fixture keys are bare PascalCase (e.g. ShowMoreMaxLines7), so the strict /^([A-Z][A-Za-z0-9]*)\/?$/ page matcher already admits them and the existing "<segment>.host.component.js" lookup serves the pre-compiled fixture host. The shell (src/runtime/shells/angular.ts, scope.out) flows the key through unchanged: it uses componentName only to build the host-module import URL and always bootstraps the fixed HostComponent. Only the route CSS lookup maps fixture key -> real component (CSS is optional fidelity). An unknown fixture key 404s exactly like an unknown component — it does NOT trigger a compile.'
+  - 'Arbitrary request-carried prop-set compilation is OUT OF SCOPE. The route serves only the pre-compiled fixtures named in the registry; it never compiles props that arrive on a request. The R/V/S/L query-param->overrideProps seam (preview-props.ts + the four framework plugins, all scope.out) is NOT extended to Angular. demos.ts is scope.out and consumed UNCHANGED — renderAngularInputs already emits [prop]="value" property bindings for non-string inputs (landed in RUNTIME-RAIL-ANGULAR-01), which is exactly what the fixtures need.'
+  - 'Default Angular previews are byte-unchanged. synthesizeAllHosts keeps producing one default host per component; synthesizeNonDefaultFixtures is purely additive. The 9 default-props Angular rail facts established by RUNTIME-RAIL-ANGULAR-01 must stay green, and the default /preview/angular/<Name> route behavior is unchanged.'
+  - 'The shared-cache rm-rf race in compileAngularPackage (packages/ds-angular, scope.out — the ENOTEMPTY the session logs caught) is a pre-existing WATCHER-recompile concern. This slice bakes fixtures at startup and adds no new per-request compile, so it neither needs nor worsens that fix. It is deliberately left to a separate boring-hygiene follow-up, not folded in here.'
+acceptance:
+  - id: A1
+    given: 'the Angular preview pipeline with default-props rail facts (RUNTIME-RAIL-ANGULAR-01) and a fixed non-default fixture registry naming ShowMore/Progress/Truncate cases'
+    when: 'a navigable route /preview/angular/<FixtureKey> is requested for a registered fixture (e.g. ShowMoreMaxLines7)'
+    then: 'it returns an HTML page that bootstraps the PRE-COMPILED non-default host (baked at startup) and mounts the component with the override props applied — reachable by Playwright page.goto like the default Angular route, with no matcher change'
+  - id: A2
+    given: 'the fixture hosts, synthesized and compiled during the EXISTING single startup compile (synthesizeNonDefaultFixtures -> runCompile extraFiles)'
+    when: 'a request hits the fixture route'
+    then: 'the route serves a pre-existing compiled <FixtureKey>.host.component.js — it does NOT compile on demand; an unregistered fixture key returns 404 without triggering any compile, and no per-prop-set cache dir / per-request rm-rf is introduced'
+  - id: A3
+    given: 'the three registered fixtures (ShowMore maxLines=7, Progress value=50, Truncate lines=5)'
+    when: 'the rail navigates to each fixture route and reads the runtime DOM via the existing light-DOM document.querySelector path'
+    then: 'the CHANGED Angular fact is asserted: --fsds-show-more-content-max-lines = "7" (not the default "3"); --fsds-progress-fill-width carries a value derived from 50 AND [role=progressbar] aria-valuenow = "50"; --fsds-truncate-content-lines = "5"'
+  - id: A4
+    given: 'the additive fixture synthesis'
+    when: 'the full runtime rail runs'
+    then: 'the 9 default-props Angular facts from RUNTIME-RAIL-ANGULAR-01 stay green and R/V/S/L stay green — no regression; synthesizeAllHosts default-host output is unchanged'
+  - id: A5
+    given: 'the slice as committed'
+    when: 'git diff is taken'
+    then: 'only src/runtime/angular-compiler/nondefault-fixtures.ts (new), src/runtime/angular-compiler/host.ts, src/runtime/angular-compiler/vite-plugin.ts, and e2e/runtime-rail.spec.ts changed; no shells/angular.ts, demos.ts, preview-props.ts, R/V/S/L plugin, or packages file appears; no oldProgram/incremental/on-demand/per-prop-set-cache code is added'
+  - id: A6
+    given: 'the non-default Angular fixture rail cases from A3'
+    when: 'a probe neutralizes the override (serves the default host for a fixture key)'
+    then: 'the A3 assertions FAIL (observe the default "3"/absent/"undefined" instead of the override) — proving the assertions pin a CHANGED fact vs default, not mere presence'
+non_functional: {}
+contracts:
+  - name: 'angular-nondefault-rail'
+    type: behavior
+    path: 'e2e/runtime-rail.spec.ts'

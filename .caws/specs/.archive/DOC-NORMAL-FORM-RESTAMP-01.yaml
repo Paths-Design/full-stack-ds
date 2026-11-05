@@ -1,0 +1,41 @@
+id: DOC-NORMAL-FORM-RESTAMP-01
+title: 'Restamp docs/normal-form.md verified_at_commit after the StyleProfile schema-description change'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Restamped docs/normal-form.md to 8f3e4fbc after verifying the governs-surface delta was one description-string word; docs:check-claims green.'
+created_at: '2026-09-07T05:15:42.074Z'
+updated_at: '2026-11-05T22:58:15.183Z'
+created_by_session: 'f46106db-10cf-4869-b035-5bb63e5a1fc2'
+blast_radius:
+  modules:
+    - 'docs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'docs/normal-form.md prose is restamped only after the governed-surface delta since the prior stamp is read and shown to invalidate no claim in the doc; the stamp is never bumped to silence the gate.'
+  - 'The freshness ledger (doc-freshness-baseline.json) is reserved for genuine known-stale debt and is not used to admit this doc.'
+acceptance:
+  - id: A1
+    given: >-
+      docs/normal-form.md stamps verified_at_commit cdaa1cb1 while its governs globs
+      last changed at fa780c0d
+    when: >-
+      the governed-surface delta is re-verified against the doc's prose and the
+      stamp is advanced to a commit at or after fa780c0d
+    then: 'node scripts/docs-claims-check.mjs exits 0 and reports no stale claims/stamps'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run docs:check-claims exit 0 in worktree normal-form-restamp @ d62abea9 — 'OK — 69 marked claim(s) match derived values; 11 verified stamp(s) fresh or ledgered (4 ledgered stale)'; freshness selftest 9 passed, 0 failed"
+    recorded_at: "2026-09-07T05:18:38.097Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    commit_sha: d62abea9

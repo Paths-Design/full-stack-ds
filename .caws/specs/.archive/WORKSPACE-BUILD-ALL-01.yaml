@@ -1,0 +1,51 @@
+id: WORKSPACE-BUILD-ALL-01
+title: 'Build all pnpm workspace packages before the showcase'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Add and document dependency-ordered workspace build:all with showcase last; verified by a successful cold worktree build and repository gates.'
+created_at: '2026-09-28T20:05:31.658Z'
+updated_at: '2026-11-05T23:10:01.396Z'
+created_by_session: '01a0e989-e319-7363-9f6b-df741e560457'
+blast_radius:
+  modules:
+    - 'Root workspace build orchestration'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'package.json'
+    - 'README.md'
+    - 'AGENTS.md'
+  out: []
+invariants:
+  - 'Existing pnpm build remains the showcase-only command'
+acceptance:
+  - id: A1
+    given: 'a freshly installed worktree without package dist outputs'
+    when: 'pnpm run build:all executes'
+    then: 'workspace build scripts succeed in dependency order and the root showcase builds last'
+  - id: A2
+    given: 'root build commands'
+    when: 'a contributor reads the command guidance'
+    then: 'build and build:all scope and source-only workspace exclusions are explicit'
+non_functional: {}
+contracts:
+  - name: 'workspace-build-order'
+    type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Fresh CAWS worktree with isolated frozen install and no reused dist outputs: pnpm run build:all exited 0. Log test-results/workspace-build-all/fsds-build-all.log records tokens/iconography/codegen, then frameworks, then examples/plugin, then root Vite build. Governed rail, 4601 root tests and all framework suites also passed; generated logs remain ignored."
+    recorded_at: "2026-09-28T20:12:01.543Z"
+    command: "pnpm run build:all"
+    exit_code: 0
+    artifact_path: package.json
+    commit_sha: "902a67b8"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "README Commands and AGENTS guidance distinguish showcase-only build, dependency-sorted workspace build:all, source-only skipped packages, and separate generation/native lanes. docs:check-claims and docs:check-links passed; source reviewed against actual build log."
+    recorded_at: "2026-09-28T20:12:02.275Z"
+    artifact_path: README.md
+    commit_sha: "902a67b8"

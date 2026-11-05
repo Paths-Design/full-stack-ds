@@ -1,0 +1,79 @@
+id: FEAT-COMPOSE-TYPOGRAPHY-CONTENT-01
+title: 'Compose typography lowering + element semantics for content-role roots'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Compose content-role roots now lower typography slots to a TextStyle provided via ProvideFsdsTextStyle (M3 LocalTextStyle bridge) and element-tag unions to heading semantics; parity gate gained the typography role, falsified both ways'
+created_at: '2026-08-30T23:55:31.568Z'
+updated_at: '2026-11-05T23:00:19.400Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/tokens/FsdsTheme.kt (LocalFsdsTextStyle)'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components (regenerated trees)'
+    - 'scripts/compose-parity-diff.mjs (typography usage ratchet)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose'
+    - 'packages/ds-jetpack-compose'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'package.json'
+    - 'docs/current-implementation-snapshot.md'
+    - 'README.md'
+  out: []
+invariants:
+  - 'Typography lowering keys off IR facts (root details.role of content plus slot-name classification for text.size.* / text.typography.*), never per-component names.'
+  - 'The typography role joins the claimed chrome-role set ONLY for content-role static roots (slot-evidence-gated), so the usage ratchet stays honest.'
+  - 'Foundation-only: LocalFsdsTextStyle in the tokens runtime; generated code carries zero androidx.compose.material imports.'
+  - 'Heading semantics derive from the union values of an element-tag designed prop (h1-h6), never from component identity.'
+  - 'The parity gate stays two-directional and falsifiable; every added check is proven to fail on injection before it passes on regeneration.'
+acceptance:
+  - id: A1
+    given: 'a content-role static root whose variant scopes carry typography slots'
+    when: 'the composable emits'
+    then: 'a TextStyle is assembled from the layered slots (fontSize from text.size.*, fontWeight from text.typography.fontWeight.*, lineHeight, letterSpacing) and provided to the content lambda through a foundation-only LocalFsdsTextStyle — the variant axes drive the type scale instead of being dead parameters.'
+  - id: A2
+    given: 'the parity gate'
+    when: 'a content-role static component emits'
+    then: 'the typography-role slots the RN <Name>.styles.ts consumes (text.size.*, text.typography.fontWeight.*, lineHeight, letterSpacing) are consumed by the Compose emission — usage parity extended from chrome to typography (Text 100%).'
+  - id: A3
+    given: 'an element-tag union designed prop (p/span/div/h1-h6)'
+    when: 'a content-role root emits'
+    then: 'h1-h6 lower to Modifier.semantics heading levels, general over the union values with no per-component names.'
+  - id: A4
+    given: 'the whole slice'
+    when: 'gated'
+    then: 'pnpm run governed:rail, pnpm test, pnpm run test:frameworks, node scripts/compose-parity-diff.mjs, docs:check-claims, and the gradle library plus settings example lane all pass and the generated trees are committed.'
+  - id: A5
+    given: 'the realization'
+    when: 'documented'
+    then: 'named non-claims record the limits — text-align/text-transform inheritance through a content-lambda TextStyle, font-family token absence (RN hardcodes its code font), and RN-only surface differences.'
+non_functional: {}
+contracts:
+  - name: 'content-typography'
+    type: behavior
+    path: 'packages/ds-contracts/components/Text/Text.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Text.kt emits: val fsdsFontSize = layeredSlot(\"text.size.md\")?.toFsdsSp(); the fontWeight when-expression (Normal->regular, Semibold->medium vocabulary); val fsdsTextStyle = TextStyle(...); ProvideFsdsTextStyle(fsdsTextStyle) wrap; variant axes now drive the type scale — verified in generated Text.kt + emitter unit test"
+    recorded_at: "2026-08-31T00:13:18.384Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "parity gate typography role: RN Text styles consume text.size.md + text.typography.fontWeight.* and the Compose emission consumes them (when-arm literals + dynamic prefixes counted); falsified by deleting the fontSize lookup — gate exited 1 naming text.size.md — restored by regeneration; 16/16 PASS"
+    recorded_at: "2026-08-31T00:13:18.779Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Text emits enum class TextElement { P..H6 }, backtick-quoted `as` param, and all six h1-h6 values lower to Modifier.semantics { heading() } — general over the union values, zero per-component names; Heading.Level absent from the CMP 1.8.0 desktop semantics artifact (verified by jar scan) so the level distinction is a named non-claim"
+    recorded_at: "2026-08-31T00:13:19.185Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "pnpm run governed:rail PASS; pnpm test 178 files / 2205 tests; pnpm run test:frameworks 74 tests; node scripts/compose-parity-diff.mjs PASS 16/16; docs:check-claims 26/26; lint 0 errors; ./gradlew :library:compileKotlin + settings lane compileKotlin exit 0; generated trees committed"
+    recorded_at: "2026-08-31T00:13:26.161Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "named non-claims recorded in docs/current-implementation-snapshot.md row 58: Heading.Level absent on CMP 1.8.0 desktop (level-less heading() marker only), text-align/text-transform do not inherit through a content-lambda TextStyle, font-family has no token (RN hardcodes its code font)"
+    recorded_at: "2026-08-31T00:13:26.569Z"

@@ -1,0 +1,62 @@
+id: CODEGEN-RN-EMITTER-IR-AUTHORITY-01
+title: 'Lower React Native emitter component lore into the IR'
+risk_tier: 3
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge codegen-textoverflow at 9ccb50b87698bf585463c05348c641d612852b3f'
+created_at: '2026-06-28T23:20:33.786Z'
+updated_at: '2026-11-05T22:57:23.868Z'
+blast_radius:
+  modules:
+    - ds-codegen
+    - ds-contracts
+    - ds-react
+    - ds-vue
+    - ds-svelte
+    - ds-angular
+    - ds-lit
+    - ds-react-native
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/component-source.ts'
+    - 'packages/ds-contracts/components/Field/Field.contract.json'
+    - 'packages/ds-contracts/components/ShowMore/ShowMore.contract.json'
+    - 'packages/ds-contracts/components/Truncate/Truncate.contract.json'
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - packages/ds-codegen/src/contract.ts
+    - packages/ds-codegen/src/contract.test.ts
+    - packages/ds-codegen/src/validation/semantic.ts
+    - packages/ds-codegen/src/ir.test.ts
+    - packages/ds-codegen/src/validation/semantic.test.ts
+  out:
+    - 'packages/ds-contracts/components/Checkbox/Checkbox.contract.json'
+invariants:
+  - 'Scoped slice. This spec lands the cleanly-portable subset of the codegen-IR-authority work (preserved on archive/codex-9751-codegen-ir) onto current main. The native-style IR-authority (NativeStyleDeclarationIR + the RN nativeStyleForKey rewrite) and DomGuardIR are DEFERRED to follow-up specs because they conflict with main evolution this slice must not regress (see invariants 5 and 6).'
+  - 'Field: the label part renders its text via a content binding (not a nested children slot); the control slot is a sibling under the field root, never nested inside the label. This fixes the consumer-control-dropping bug present on main.'
+  - 'Checkbox indeterminate/aria-checked=mixed is OUT OF SCOPE for this spec (DEFERRED, see invariant 7) — not implemented here under any acceptance id.'
+  - 'textOverflow is a target-neutral intent block (kind line-clamp, lines) carried by TextOverflowIR and validated by validateTextOverflow; DOM targets additionally lower line-clamp through the existing cssVariableBindings (both coexist — textOverflow is intent, the css var is the DOM realization). ControlSemanticsIR carries role/value/disabled/change facts walked from the DOM, consumed by emitters rather than re-derived per target.'
+  - 'Guards remain modeled on DomNodeIR (main inline ifProp/ifNegated). DomGuardIR is NOT introduced in this slice: it conflicts with main ComponentInstanceIR/ResolvedRef recursive-composition model that the archive predates.'
+  - 'Native-style IR-authority is DEFERRED. This slice must NOT port the archive literal contract.styles reader, because it would discard main definedStyle/theme-dropping, rootText text-variant layering, and predicate token resolution. The existing isCheckboxRootPattern/isFieldLayoutPattern lore in the RN emitter is tolerated in this slice and removed under a follow-up spec.'
+  - 'Checkbox indeterminate->aria-checked=mixed is DEFERRED to a follow-up spec (DOM-PROPERTY-REFLECTION-IR-CHECKBOX-INDETERMINATE-01), not amended into this one. Investigation (2026-06-30) found this is not a local RN-emitter fix: web checked/unchecked aria-checked already works for free from native <input type=checkbox> browser semantics with zero IR involvement, but indeterminate is a JS-only DOM PROPERTY (never an HTML attribute, never attribute-bindable in JSX/templates) with no existing IR binding-kind or emitter mechanism for imperative DOM-property-only reflection in any of the five web frameworks. RN already lowers it correctly via accessibilityState (a plain prop, not an attribute/property distinction), so RN''s technique does not transfer to web. This is a new cross-cutting IR capability (DOM-property reflection, five web lowerings, new tests), not a refactor-tier local fix, so it does not belong under this spec''s risk_tier:3 refactor scope.'
+acceptance:
+  - id: A1
+    given: 'the Field contract change'
+    when: 'pnpm run generate -- --target=all Field runs'
+    then: 'generated React/Vue/Svelte/Angular/Lit output renders the label text from the content binding and the control as a sibling slot (no nested dropped children), and pnpm run generate:check passes.'
+  - id: A3
+    given: 'the textOverflow schema plus IR plus ShowMore/Truncate contract changes'
+    when: 'a direct unit/fixture test builds the IR for the ShowMore and Truncate contracts (in ir.test.ts or contract.test.ts, not inferred from generate:check or governed:rail alone, since both can stay green on byte-identical output if textOverflow is schema-valid but never read into the IR)'
+    then: 'the test asserts a TextOverflowIR fact is actually present on the built ComponentIR with kind "line-clamp" and the correct line-count source (the same prop the existing css-var binding already reads — prop:maxLines for ShowMore, prop:lines for Truncate, not a duplicate/divergent source), validateTextOverflow in validation/semantic.ts rejects a malformed textOverflow fixture, and the existing generated --fsds-show-more-content-max-lines / --fsds-truncate-content-lines css-var bindings are unchanged in generated output (generate:check and governed:rail also pass, but are not sufficient proof on their own).'
+  - id: A4
+    given: 'the full slice (A1 + A3 only; A2/Checkbox is deferred, see invariant 7)'
+    when: 'pnpm run governed:rail runs'
+    then: 'it passes (generated bytes match contract+codegen+env), and no DomGuardIR or NativeStyleDeclarationIR types are introduced.'
+non_functional: {}
+contracts:
+  - name: 'field-anatomy'
+    type: behavior
+    description: 'Field renders label text via content plus a sibling control slot (consumer-control-dropping bug fixed). Verified via framework generation output plus generate:check plus governed:rail. Checkbox indeterminate/aria-checked=mixed is deferred to DOM-PROPERTY-REFLECTION-IR-CHECKBOX-INDETERMINATE-01 and is not covered by this contract.'

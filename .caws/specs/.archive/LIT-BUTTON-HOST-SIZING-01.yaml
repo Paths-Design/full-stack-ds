@@ -1,0 +1,57 @@
+id: LIT-BUTTON-HOST-SIZING-01
+title: 'Preserve native button sizing in Lit compound control hosts'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Preserve Lit disclosure button sizing and suppress disabled activation with measured Chromium geometry and five interaction cases plus passing repository gates.'
+created_at: '2026-10-30T17:12:10.856Z'
+updated_at: '2026-11-05T23:05:09.091Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Lit compound interactive host geometry'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/lit/component-source.ts'
+    - 'packages/ds-lit/src/components/Accordion/'
+    - 'e2e/lit-compound-sizing.spec.ts'
+    - 'docs/codegen-authority.md'
+  out: []
+invariants:
+  - 'Realization follows normalized control capabilities without component-name emitter branches'
+  - 'Contract glyph dimensions and pointer keyboard disabled semantics remain intact'
+acceptance:
+  - id: A1
+    given: 'a composed Lit Accordion with its declared chevron and trigger padding'
+    when: 'it renders at ordinary and constrained widths'
+    then: 'the complete glyph stays inside the item and trigger without horizontal overflow'
+  - id: A2
+    given: 'a mounted composed Accordion with controlled and disabled states'
+    when: 'pointer Enter and Space activate its trigger'
+    then: 'state requests focus and ARIA follow the existing contract without duplicate or disabled activations'
+observability:
+  - 'Retain browser computed boxes screenshots and interaction checks under canonical ignored CAWS state'
+rollback:
+  - 'Revert the owned Lit emitter and regenerated Accordion source together'
+non_functional: {}
+contracts:
+  - name: 'native-button-host'
+    type: behavior
+    path: 'packages/ds-contracts/components/Accordion/Accordion.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Chromium e2e/lit-compound-sizing.spec.ts native-sizing cases at 320px and 160px; retained .caws/state/lit-host-width-before and .caws/state/lit-host-after computed-boxes.json/screenshots plus lit-host-after.log. Trigger content width158 at160px, icon16 fully inside item; library bytes identical at merged3bde0ba4."
+    recorded_at: "2026-10-30T17:50:11.970Z"
+    command: "FSDS_E2E_PORT=5202 /Users/darianrosebrook/.nvm/versions/node/v22.19.0/bin/node node_modules/@playwright/test/cli.js test e2e/lit-compound-sizing.spec.ts --workers=1 --output=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-host-after"
+    exit_code: 0
+    commit_sha: "20818dc64144e820b639949aba6766fc8e153dfc"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Chromium lit-compound-sizing controlled-refusal/uncontrolled pointer Enter Space cases assert exact callbacks focus aria-expanded; disabled case asserts tab exclusion, no requests and re-enable. Raw lit-host-after.log five passed; lit-host-root.log5337pass, lit-host-frameworks.log all5scripts pass, rail/typecheck/lint/docs/policy/generated pass. Does not establish controlled acknowledgement or whole-component AT qualification."
+    recorded_at: "2026-10-30T17:50:12.836Z"
+    command: "FSDS_E2E_PORT=5202 /Users/darianrosebrook/.nvm/versions/node/v22.19.0/bin/node node_modules/@playwright/test/cli.js test e2e/lit-compound-sizing.spec.ts --workers=1 --output=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-host-after"
+    exit_code: 0
+    commit_sha: "20818dc64144e820b639949aba6766fc8e153dfc"

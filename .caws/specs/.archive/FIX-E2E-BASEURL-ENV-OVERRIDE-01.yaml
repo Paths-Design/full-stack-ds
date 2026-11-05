@@ -1,0 +1,27 @@
+id: FIX-E2E-BASEURL-ENV-OVERRIDE-01
+title: 'Env-overridable e2e base URL/port (5173 collision with unrelated dev servers)'
+risk_tier: 3
+mode: chore
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge e2e-base-env at ae38ef52a6a7968776b3b8fe6126cee41b31a87d'
+created_at: '2026-07-22T10:27:37.436Z'
+updated_at: '2026-11-05T23:02:40.077Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'playwright.config.ts'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'another projects dev server occupies port 5173 so reuseExistingServer silently reuses a foreign SPA and every rail test times out at data-fsds-ready'
+    when: 'FSDS_E2E_PORT or FSDS_E2E_BASE is set'
+    then: 'playwright baseURL and the webServer command/url follow the override, and the default behavior with no env set is byte-for-byte todays behavior.'
+non_functional: {}
+contracts: []

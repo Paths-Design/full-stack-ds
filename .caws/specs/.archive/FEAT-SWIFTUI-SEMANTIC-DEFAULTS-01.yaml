@@ -1,0 +1,42 @@
+id: FEAT-SWIFTUI-SEMANTIC-DEFAULTS-01
+title: 'Swift semantic-defaults table lights up the ref arm at runtime'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: '168-entry graph-derived defaults table (74 real adaptive pairs) ships and is exhaustively pinned to the committed graph; example installs it'
+created_at: '2026-08-18T02:35:48.441Z'
+updated_at: '2026-11-05T23:01:08.299Z'
+blast_radius:
+  modules:
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift (defaults table)'
+    - 'packages/ds-swiftui/Tests/DsSwiftUITests (full-coverage graph-equality + reach-through tests)'
+    - 'examples/settings/swift (install the defaults theme at the root)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-swiftui/Sources'
+    - packages/ds-swiftui/Tests
+    - examples/settings/swift
+    - docs/current-implementation-snapshot.md
+  out: []
+invariants:
+  - 'Every entry of the defaults table equals its committed resolved.tokens.json $value — asserted exhaustively, not sampled.'
+  - 'Light-half only, mirroring the Compose table; the dark half is reserved for the mode-axis slice.'
+  - 'The table covers exactly the graph-resolvable refs the swift corpus emits; non-graph refs keep the literal/fallback path unchanged.'
+acceptance:
+  - id: A1
+    given: 'the ref arm in FsdsComponentTokenDefinition and 168 graph-resolvable semantic refs emitted across the swift corpus'
+    when: 'FsdsTheme gains a graph-derived semantic-defaults table installed by the settings example'
+    then: 'every table entry equals its resolved.tokens.json value (full-coverage XCTest against the committed graph), a component slot resolves through slot-ref → defaults to the graph value, and swift build + suite stay green'
+non_functional: {}
+contracts:
+  - name: 'FsdsTheme semantic defaults'
+    type: behavior
+    path: 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "swift test: FsdsSemanticDefaultsTests 3/3 — testEveryDefaultsEntryEqualsItsGraphValue pins all 168 entries to committed resolved.tokens.json (74 adaptive light+dark pairs, 94 scalars), testComponentSlotReachesGraphValueThroughRefArm resolves card.color.background.default through slot-ref → defaults to the graph value, testDefaultsThemeStillYieldsToSlotNameOverride preserves precedence; full swift suite 40 tests 0 failures; swift build + settings-example swift build both exit 0 with .environment(\\.fsdsTheme, FsdsTheme(tokens: FsdsSemanticDefaults.light)) wired; governed:rail exit 0 after composed-graph build; pnpm test 2163/2163; audit 212/212 PASS"
+    recorded_at: "2026-08-18T02:49:38.301Z"

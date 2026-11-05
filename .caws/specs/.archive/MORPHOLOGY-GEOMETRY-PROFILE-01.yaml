@@ -1,0 +1,128 @@
+id: MORPHOLOGY-GEOMETRY-PROFILE-01
+title: 'Morphology geometry profile: classifier-driven box-model defaults + strip category-seeded sidecar residue (broken families)'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge morphology-geometry at 26d8da7d45e7b099f77a218d9b9cd1f321fc440b'
+created_at: '2026-06-05T08:21:06.290Z'
+updated_at: '2026-11-05T23:05:12.999Z'
+blast_radius:
+  modules:
+    - packages/ds-codegen (morphology StyleProfileIR + three-way box-model merge + profile structural CSS) + packages/ds-contracts (morphology schema + seven broken-family contracts) + regenerated web/figma artifacts for the seven + scripts/seed retirement + geometry audit
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-contracts/component.contract.schema.json
+    - packages/ds-codegen/src/ir.ts
+    - packages/ds-codegen/src/box-model.ts
+    - packages/ds-codegen/src/cli.ts
+    - scripts/seed-box-model-defaults.mjs
+    - packages/ds-codegen/test/morphology-profile.test.ts
+    - docs/component-audit/component-audit.csv
+    - packages/ds-contracts/components/Badge
+    - packages/ds-figma-plugin/src/generated/components/Badge
+    - packages/ds-react/src/components/Badge
+    - packages/ds-vue/src/components/Badge
+    - packages/ds-svelte/src/components/Badge
+    - packages/ds-angular/src/components/Badge
+    - packages/ds-lit/src/components/Badge
+    - packages/ds-contracts/components/ProfileFlag
+    - packages/ds-figma-plugin/src/generated/components/ProfileFlag
+    - packages/ds-react/src/components/ProfileFlag
+    - packages/ds-vue/src/components/ProfileFlag
+    - packages/ds-svelte/src/components/ProfileFlag
+    - packages/ds-angular/src/components/ProfileFlag
+    - packages/ds-lit/src/components/ProfileFlag
+    - packages/ds-contracts/components/Progress
+    - packages/ds-figma-plugin/src/generated/components/Progress
+    - packages/ds-react/src/components/Progress
+    - packages/ds-vue/src/components/Progress
+    - packages/ds-svelte/src/components/Progress
+    - packages/ds-angular/src/components/Progress
+    - packages/ds-lit/src/components/Progress
+    - packages/ds-contracts/components/Skeleton
+    - packages/ds-figma-plugin/src/generated/components/Skeleton
+    - packages/ds-react/src/components/Skeleton
+    - packages/ds-vue/src/components/Skeleton
+    - packages/ds-svelte/src/components/Skeleton
+    - packages/ds-angular/src/components/Skeleton
+    - packages/ds-lit/src/components/Skeleton
+    - packages/ds-contracts/components/Image
+    - packages/ds-figma-plugin/src/generated/components/Image
+    - packages/ds-react/src/components/Image
+    - packages/ds-vue/src/components/Image
+    - packages/ds-svelte/src/components/Image
+    - packages/ds-angular/src/components/Image
+    - packages/ds-lit/src/components/Image
+    - packages/ds-contracts/components/Icon
+    - packages/ds-figma-plugin/src/generated/components/Icon
+    - packages/ds-react/src/components/Icon
+    - packages/ds-vue/src/components/Icon
+    - packages/ds-svelte/src/components/Icon
+    - packages/ds-angular/src/components/Icon
+    - packages/ds-lit/src/components/Icon
+    - packages/ds-contracts/components/Avatar
+    - packages/ds-figma-plugin/src/generated/components/Avatar
+    - packages/ds-react/src/components/Avatar
+    - packages/ds-vue/src/components/Avatar
+    - packages/ds-svelte/src/components/Avatar
+    - packages/ds-angular/src/components/Avatar
+    - packages/ds-lit/src/components/Avatar
+    - packages/ds-codegen/src/contract.ts
+    - packages/ds-codegen/src/morphology-profile.test.ts
+  out:
+    - packages/ds-codegen/src/frameworks
+    - packages/ds-tokens
+    - src/runtime
+invariants:
+  - 'AXES: category remains the BEHAVIORAL family axis; morphology becomes the GEOMETRY / default-affordance axis. This realizes the split anticipated by docs/contract-group-axes.md (ARCH-CONTRACT-GROUP-AXES-001), which says category may later split into a functional axis plus a morphology axis. category keeps its enum and meaning; its schema description is corrected to stop implying geometry. Codegen begins consuming morphology — it still does NOT consume category (the schema already states this).'
+  - 'NO COMPONENT-NAME LORE: durable codegen behavior may branch on contract.morphology / StyleProfileIR.kind, on element tag, ARIA role, or target-family facts — NEVER on component name. This is the codegen-authority rule (docs/codegen-authority.md): a missing semantic fact belongs upstream in contract/IR, not as an emitter component-name branch. The existing no-component-name-lore guard is extended to cover the new profile resolver and profile CSS code.'
+  - 'CLOSED VOCABULARY (six values this slice): fixed-square, content-inline, identity-inline, linear-meter, loading-block, replaced-media. surface-container / structure-container and any fuller taxonomy are DEFERRED — admitting them turns a geometry-bug fix into a 47-component corpus migration. morphology is OPTIONAL: a contract with no morphology resolves to the current two-way (primitive < sidecar) merge, so the ~40 non-migrated components stay byte-unchanged.'
+  - 'PRECEDENCE: box-model slot precedence becomes BoxModel primitive defaults < morphology profile defaults < component tokens sidecar < styles.root structural override. The component sidecar STILL WINS over profile defaults — the new layer is an intermediate default source, not a stronger authority than authored tokens. This preserves the one-directional merge invariant in docs/box-model-primitive.md (authors override defaults, never the reverse). Profiles may set values only for the closed 14-slot box-model pool; they introduce no new slot names.'
+  - 'CORRECTED MECHANISM (load-bearing): the broken geometry is NOT computed live from category — it was frozen into committed sidecars by scripts/seed-box-model-defaults.mjs (CATEGORY_DEFAULTS: glyph -> 16px square, feedback -> 16px padding). Because the sidecar outranks profile defaults, a profile layer alone is INERT for the broken components until their category-seeded box-model.* sidecar entries are stripped. So this slice both (a) adds morphology as the durable default source AND (b) strips the stale seed residue from the seven migrated contracts. Genuinely-authored per-component box-model entries (evidence of intentional override, not seed residue) are kept.'
+  - 'CSS SPLIT: the profile contributes two distinct outputs. profile.boxModelDefaults feeds the box-model merge (14-slot values) consumed at the single root consumer site. profile.structure feeds LITERAL structural CSS (display, box-sizing, align-items, flex-direction, overflow) into the .css file, NOT .tokens.css — matching the component-layering doctrine (.css owns structure + consumer sites; .tokens.css owns scoped value resolution). The single-consumer-site rule is doctrine/convention, not validator-enforced, so profile output is OVERRIDABLE defaults; styles.root still wins.'
+  - 'SEED RETIREMENT: scripts/seed-box-model-defaults.mjs is retired in this slice — deleted, or converted to a guarded one-time repair that refuses to run without an explicit migration flag. Leaving it runnable as-is re-introduces the bug on the next invocation.'
+  - 'ADMISSION + BACK-COMPAT CONTROL: the morphology profile resolver is a new material emitter source and is declared in SHARED_EMITTER_SOURCES (cli.ts) so the admission manifest does not under-claim coverage (docs/admission-rail.md). The Figma descriptor carries ir.cssBlocks, so the seven components regenerate there too. Back-compat is mechanically proven: governed:rail regenerates all targets and the git-diff over the five ds-*/src trees plus the figma descriptors must show changes ONLY in the seven migrated components.'
+acceptance:
+  - id: A1
+    given: 'the contract schema, where morphology does not exist and category is documented as a geometry-seeding proxy'
+    when: 'the schema is updated'
+    then: 'morphology is added as an OPTIONAL closed enum of exactly the six values (fixed-square, content-inline, identity-inline, linear-meter, loading-block, replaced-media); category keeps its enum but its description is corrected to drop the geometry implication; a contract with no morphology validates and resolves to current behavior'
+  - id: A2
+    given: 'the box-model merge (mergeBoxModelDefaults), currently a two-way primitive-under-sidecar merge'
+    when: 'a unit test exercises the merge with and without a morphology profile'
+    then: 'with a profile: precedence is primitive < profile < sidecar (sidecar wins over profile, profile wins over primitive); without a profile: the result is byte-identical to the current two-way merge'
+  - id: A3
+    given: 'the IR/codegen pipeline, where classification is not visible at the box-model merge (cli.ts) nor at computeCssBlocks/renderBoxModelConsumers (ir.ts) today'
+    when: 'StyleProfileIR is resolved from contract.morphology and threaded into both sites'
+    then: 'profile.boxModelDefaults feed the merge as 14-slot values, and profile.structure is emitted as LITERAL CSS in the generated .css (display/box-sizing/align/flex-direction/overflow), not in .tokens.css; renderBoxModelConsumers becomes profile-aware without branching on component name'
+  - id: A4
+    given: 'the seven broken-family contracts and their category-seeded box-model.* sidecar residue'
+    when: 'each is migrated to its morphology value AND its seed residue is stripped (Badge->content-inline, ProfileFlag->identity-inline, Progress->linear-meter, Skeleton->loading-block, Image->replaced-media, Icon->fixed-square, Avatar->fixed-square)'
+    then: 'per-profile CSS-IR fixtures pass: content-inline emits no fixed 16px width/height and gives content-appropriate structure (auto size, inline-flex, min-height, padding); linear-meter emits stretch width, explicit thickness, zero padding, and a track/fill with nonzero root geometry; fixed-square retains square behavior; replaced-media preserves native replaced-element behavior'
+  - id: A5
+    given: 'the original runtime defect (Badge text overflows a 16px square: scrollWidth 47 in a 16px box; ProfileFlag scrollWidth 93 in 48px; Progress collapses to 32x32)'
+    when: 'the migrated components are rendered and the geometry audit is re-run with morphology-aware expectations'
+    then: 'Badge/ProfileFlag content no longer overflows (the box grows to content or scrollWidth <= clientWidth); Progress renders a wide linear bar with nonzero track geometry, not a padded square; the audit evaluates each row against its morphology profile rather than a global is-16x16-ok check'
+  - id: A6
+    given: 'morphology as an optional, back-compatible axis'
+    when: 'governed:rail regenerates ALL targets and git diff is taken over the five ds-*/src trees plus packages/ds-figma-plugin/src/generated'
+    then: 'the diff is limited to the seven migrated components (web + figma descriptors); the other ~40 components are byte-unchanged — proving the new merge layer is inert when morphology is absent'
+  - id: A7
+    given: 'the new profile resolver, profile CSS code, and the now-obsolete seed script'
+    when: 'the guards run'
+    then: 'the no-component-name-lore guard (extended) confirms profile code branches only on morphology/tag/role/target-family and never on a component name; scripts/seed-box-model-defaults.mjs is retired or refuses to run without an explicit one-time flag; the profile resolver is declared in SHARED_EMITTER_SOURCES so the admission manifest attribution is honest'
+  - id: A8
+    given: 'the slice as committed'
+    when: 'the admission definition-of-done runs'
+    then: 'generate --target=all then governed:rail passes in required mode, the regenerated ds-*/src trees and figma descriptors are committed, CI git-diff-exit-code over those trees is clean, and typecheck/tests (incl. the new morphology profile suite) pass'
+non_functional: {}
+contracts:
+  - name: 'morphology-schema'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
+  - name: 'morphology-profile-css-ir'
+    type: contract-test
+    path: 'packages/ds-codegen/test/morphology-profile.test.ts'

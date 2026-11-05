@@ -1,0 +1,87 @@
+id: NPM-BREADCRUMBS-COMPOSITION-01
+title: 'Realize Breadcrumbs child separators and list composition'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Landed authored child separators and native list composition with directly inspected packed browser types native and regression evidence; whole eight-package release remains open.'
+created_at: '2026-11-02T01:01:56.489Z'
+updated_at: '2026-11-05T23:05:22.045Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Breadcrumbs contract normalized projected collection decoration six realizations and installed consumers'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts'
+    - 'packages/ds-codegen'
+    - 'packages/ds-react'
+    - 'packages/ds-vue'
+    - 'packages/ds-svelte'
+    - 'packages/ds-angular'
+    - 'packages/ds-lit'
+    - 'packages/ds-react-native'
+    - 'packages/ds-figma-plugin'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'packages/ds-gpui'
+    - 'scripts/release-package-check'
+    - 'scripts/public-types-consumer'
+    - 'scripts/custom-region-audit/known-authored-regions.json'
+    - 'src/consumption'
+    - 'docs/codegen-authority.md'
+    - 'docs/architecture'
+  out: []
+invariants:
+  - 'Preserve authored children identity links attributes and localized landmark naming; separators are decorative and never focusable'
+  - 'No component-name emitter dispatch or hand edits to generated regions; native and engine omissions remain explicit'
+acceptance:
+  - id: A1
+    given: 'authored raw and compound breadcrumb children'
+    when: 'the separator changes and items are inserted removed or reordered'
+    then: 'all five web realizations show separators only between items and preserve content current-page attributes and links'
+  - id: A2
+    given: 'Angular BreadcrumbsItem consumers'
+    when: 'using the existing element selector or the additive native list-item selector'
+    then: 'each item has listitem semantics and the native selector preserves ol greater-than li ancestry'
+  - id: A3
+    given: 'translated narrow RTL trails and literal hostile separator strings'
+    when: 'actual installed web consumers are exercised'
+    then: 'labels and separators update without injection keyboard regressions unwanted accessibility text or horizontal overflow'
+  - id: A4
+    given: 'native authored children and the eight package tarballs'
+    when: 'native child rendering public types packed consumers and required regression gates execute'
+    then: 'native separators are accessibility-hidden advertised string props remain typed and checks pass with explicit proof boundaries'
+observability:
+  - 'Retain before and after DOM AX screenshots reactive consumer traces type diagnostics and check exits in canonical ignored release evidence'
+rollback:
+  - 'Revert this slice and regenerate affected targets'
+non_functional: {}
+contracts:
+  - name: 'projected-collection'
+    type: behavior
+    path: 'packages/ds-contracts/components/Breadcrumbs/Breadcrumbs.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "8ad5c26d packed HVQKiy: all five installed Chromium consumers passed ten reactive trail stages, hidden-item cases, authored-node/input identity, native link activation, current-page DOM and AX observations; package source and fixture bytes match landed bfd5d1ee6. Raw logs and browser artifacts under canonical .caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01 were directly inspected and remain ignored; --verify re-derives commit identity only."
+    recorded_at: "2026-11-02T04:24:03.758Z"
+    commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "HVQKiy browser-angular.json: native li[fsdsBreadcrumbsItem] remains a direct ol child; both retained fsds-breadcrumbs-item hosts appear as AX listitems with destination-bearing links and authored current-page state. Renamed synthetic producer test checks generic additive selector and role. Raw logs and browser artifacts under canonical .caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01 were directly inspected and remain ignored; --verify re-derives commit identity only."
+    recorded_at: "2026-11-02T04:24:05.509Z"
+    commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "HVQKiy five installed browsers: Arabic/Japanese labels update; 240px RTL trails wrap without overflow; hostile literal separator is escaped; AX omits decorations; empty creates no pseudo box; Tab and Enter retain native link navigation. Ten stages each, retained DOM/AX/geometry/PNGs. Chromium only, no OS AT claim. Raw logs and browser artifacts under canonical .caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01 were directly inspected and remain ignored; --verify re-derives commit identity only."
+    recorded_at: "2026-11-02T04:24:07.239Z"
+    commit_sha: "8ad5c26d16b60b89d64d308bf3237c9568d2bc27"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Packed8ad HVQKiy: eight payloads, strict public positive/negative types, isolated ESM/CJS entries, five Chromium consumers, Metro iOS619/android621 modules passed. Native actual Breadcrumbs plus helper 29 tests pass with hidden noninteractive separators and preserved authored identity. Full check neHOBY: rail/frameworks/types/lint/build/token/icon/all realization/engine audits passed; root RPC timeout resolved by both unchanged shards --maxWorkers=1 (2685+3076 pass); docs and generated final logs pass at bfd5d1ee6. No OS AT/device/minimum-peer or mixed-format co-load claim; co-load remains the next release blocker. Raw logs and browser artifacts under canonical .caws/state/release-evidence/NPM-BREADCRUMBS-COMPOSITION-01 were directly inspected and remain ignored; --verify re-derives commit identity only."
+    recorded_at: "2026-11-02T04:24:08.763Z"
+    commit_sha: bfd5d1ee656816070a984fc758d74f951acb38d7

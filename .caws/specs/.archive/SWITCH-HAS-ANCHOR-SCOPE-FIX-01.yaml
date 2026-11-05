@@ -1,0 +1,43 @@
+id: SWITCH-HAS-ANCHOR-SCOPE-FIX-01
+title: 'Anchor Switch :has(:checked) selectors to .switch root so one switch''s checked state doesn''t re-skin sibling switches'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge switch-has-anchor at 8f7667fc9c79cfa6b6dbef8a4c1ad00ba8013229'
+created_at: '2026-06-06T06:47:33.070Z'
+updated_at: '2026-11-05T23:08:22.959Z'
+blast_radius:
+  modules:
+    - Switch component (contract styles sidecar + regenerated CSS across react/vue/svelte/lit/angular)
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-contracts/components/Switch/
+    - packages/ds-react/src/components/Switch/
+    - packages/ds-vue/src/components/Switch/
+    - packages/ds-lit/src/components/Switch/
+    - packages/ds-svelte/src/components/Switch/
+    - packages/ds-angular/src/components/Switch/
+    - packages/ds-figma-plugin/src/generated/components/Switch/
+  out: []
+invariants:
+  - 'Every `:has(.switch__input:checked)` / `:has(.switch__input:disabled)` selector in Switch.styles.json is anchored to the `.switch` root (`.switch:has(...)`), so the state selector matches only the individual switch instance that contains the checked/disabled input — not any shared ancestor. The default (`md`) state rule is anchored the same way the existing `.switch--sm`/`.switch--lg` state rules already are.'
+  - 'The fix lives entirely in the contract sidecar; codegen (ir.ts / css.ts) is byte-unchanged — `expandComplexSelector` already emits a leading `.switch` segment verbatim, so the anchored key round-trips to anchored CSS in all five framework packages.'
+  - 'Regenerated Switch CSS across react/vue/svelte/lit/angular is committed and matches the contract (governed rail / git-diff clean); no other component is touched.'
+acceptance:
+  - id: A1
+    given: 'two Switch instances inside a shared container, only the first checked'
+    when: 'the generated stylesheet is applied and :has() is evaluated'
+    then: 'only the first switch''s thumb/track adopt the checked styling; the second (unchecked) switch keeps its off styling (proven by an in-browser computed-style + Element.matches assertion contrasting the un-anchored vs anchored selector).'
+  - id: A2
+    given: 'the anchored Switch.styles.json'
+    when: 'pnpm run generate -- --target=all Switch runs'
+    then: 'the emitted Switch.css in each framework package contains `.switch:has(.switch__input:checked) ...` (anchored) and no bare `:has(.switch__input:checked)` / `:has(.switch__input:disabled)` at the start of a selector.'
+  - id: A3
+    given: 'the regenerated artifacts'
+    when: 'pnpm run governed:rail and the Switch unit tests run'
+    then: 'the rail passes (artifact↔contract↔codegen binding holds) and existing Switch behavioral tests still pass (the JS-driven checked behavior is unchanged; only CSS scoping is corrected).'
+non_functional: {}
+contracts: []

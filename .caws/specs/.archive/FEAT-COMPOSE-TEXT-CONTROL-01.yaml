@@ -1,0 +1,53 @@
+id: FEAT-COMPOSE-TEXT-CONTROL-01
+title: 'Compose string value-channel control: Input admission on the shared control-class machinery'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'verified green on main; native-target admission slice landed'
+created_at: '2026-09-13T01:37:39.935Z'
+updated_at: '2026-11-05T23:00:14.911Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Input is the corpus string value-channel control on the shared isValueChannelControl predicate; when the compose emitter gains the text-control class lowering the string channel onto a foundation-only BasicTextField with input-part chrome from token scopes; then Input.kt compiles via gradle with zero component-name checks'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Input joins the jetpack-compose allowlist 29 to 30; when gates run; then parity:compose-tokens passes with the text-control path chrome roles claimed and RN shared identities agreeing, docs:check-claims passes with updated counts, and swift regeneration stays byte-identical'
+non_functional: {}
+contracts:
+  - name: 'text-control-lowering'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "gradlew :library:compileKotlin BUILD SUCCESSFUL (30 groups incl. Input.kt on BasicTextField); zero component-name checks — dispatch is isValueChannelControl + string channel on the shared substrate predicate; zero androidx.compose.material imports asserted by unit test"
+    recorded_at: "2026-09-13T01:50:56.851Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "compose-parity-diff.mjs 30/30 0 failures (textControl path+role added, self-test 8/8); docs:check-claims 74/74 after 29-to-30 markers; swiftui regeneration byte-identical (52 groups, zero diff); governed:rail PASS; pnpm test 291/291 files 3882/3882; frameworks 87/87; settings example exit 0"
+    recorded_at: "2026-09-13T01:50:57.677Z"

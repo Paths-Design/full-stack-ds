@@ -1,0 +1,66 @@
+id: EXAMPLES-OPERATIONS-DASHBOARD-REACT-LANE-01
+title: 'Operations-dashboard React example app lane'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge ops-dash-react at 614eac2cae453996919ee48718b233f8320212d2'
+created_at: '2026-06-27T06:18:05.118Z'
+updated_at: '2026-11-05T22:59:09.238Z'
+blast_radius:
+  modules:
+    - examples-operations-dashboard-react-lane
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - examples/operations-dashboard/react
+    - examples/operations-dashboard/README.md
+    - examples/operations-dashboard/spec.md
+    - .caws/specs/EXAMPLES-OPERATIONS-DASHBOARD-REACT-LANE-01.yaml
+  out: []
+  support:
+    - pnpm-lock.yaml
+invariants:
+  - Design-system components and styles are imported ONLY from public
+    `@full-stack-ds/react` exports (`@full-stack-ds/react`,
+    `@full-stack-ds/react/styles.css`) — never from dist/, generated internals,
+    packages/ds-react/src, or any non-exported path.
+  - The dashboard consumes domain data ONLY through the app-local API boundary
+    (`../../src/api`); it never imports fixtures or `../../src/data/adapter`.
+  - The data/API seam (`examples/operations-dashboard/src/{types,data,api}`) is
+    not modified by this slice — only consumed.
+  - Local CSS covers unclaimed page-frame layout only (shell/columns/grid/sticky/
+    responsive); any place it would have to substitute for package-owned
+    behavior, state indication, density, focus, overlay, or styling is recorded
+    as a finding instead.
+acceptance:
+  - id: A1
+    given: the new React example package under examples/operations-dashboard/react
+    when: 'its build script runs (pnpm --filter <pkg> run build)'
+    then: Vite builds the app with no errors and no casts past the public types.
+  - id: A2
+    given: the package declares a typecheck script (tsc --noEmit)
+    when: 'pnpm --filter <pkg> run typecheck runs'
+    then: it passes with zero type errors against the public @full-stack-ds/react
+      types and the app-local API types.
+  - id: A3
+    given: the React lane consumes the already-landed data/API seam
+    when: 'pnpm run test:examples:data-api runs after this slice'
+    then: it still reports 47 passing tests — the seam is unchanged.
+  - id: A4
+    given: the lane source under examples/operations-dashboard/react/src
+    when: grepped for forbidden import substrings (dist, packages/ds-react/src,
+      generated, fixtures, src/data/adapter)
+    then: none are present — components come from public exports and data comes
+      from the app-local API boundary only.
+  - id: A5
+    given: the operations-dashboard spec required regions and state behaviors
+    when: the React app is rendered
+    then: it implements the header summary band, filter rail, incident queue,
+      selected-detail pane, timeline region, assign workflow, resolve confirm
+      dialog, and toast/alert feedback, with loading / list / selected /
+      filtered / empty / load-failure+retry / assign-pending / resolve-pending
+      states driven off the promise-returning API.
+non_functional: {}
+contracts: []

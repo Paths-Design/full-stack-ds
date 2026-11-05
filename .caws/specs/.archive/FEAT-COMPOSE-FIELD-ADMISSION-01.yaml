@@ -1,0 +1,49 @@
+id: FEAT-COMPOSE-FIELD-ADMISSION-01
+title: 'Shared named-slot composer predicate; Compose Field admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The last target-local composer predicate moved to the shared substrate (SwiftUI byte-identical) and Field is admitted as the 47th compose component with every declared slot lowered to a content region'
+created_at: '2026-09-13T05:40:28.074Z'
+updated_at: '2026-11-05T22:59:54.397Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts (isNamedSlotComposer + its two dom atoms)'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (named-slot composer path)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'scripts/compose-parity-diff.test.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'The predicate move is behaviour-preserving: SwiftUI regeneration after it is byte-identical.'
+  - 'Every layeredSlot read in the emitted Field has a definition in the emitted tokens file, and every definition is read.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Field''s dom is a passive container whose every leaf is a named slot (label, control, help, error, validatingIndicator); when the named-slot composer predicate and its atoms move into the shared native substrate and Compose lowers the class to a region composable; then SwiftUI regeneration stays byte-identical, Field compiles through gradle, the compose allowlist grows 46 to 47, and the parity and doc gates stay green'
+non_functional: {}
+contracts:
+  - name: 'named-slot-composer'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge a8cedf02: node packages/ds-codegen/dist/cli.js --target=swiftui -> packages/ds-swiftui byte-identical after the predicate+atoms moved to native-emission-class.ts; gradlew :library:compileKotlin -> BUILD SUCCESSFUL for the generated Field; pnpm run parity:compose-tokens -> 20/20 self-tests, 47 allowlisted, 0 failures; pnpm run generate:check -> 52/52; pnpm run docs:check-claims -> 75 marked claims (remainder 6 -> 5); emitter suite 55/55; pnpm test -> 3909/3910 with only the known intermittent 5s analytical sweep timing out under load; pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree; fsds.targets.json jetpack-compose allowlist 46 -> 47"
+    recorded_at: "2026-09-13T05:51:24.936Z"

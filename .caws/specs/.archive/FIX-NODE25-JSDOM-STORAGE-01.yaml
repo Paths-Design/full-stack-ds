@@ -1,0 +1,78 @@
+id: FIX-NODE25-JSDOM-STORAGE-01
+title: 'Rebind jsdom Web Storage over Node 25''s own storage globals in the shared test setup'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Shared test setup rebinds jsdom Web Storage over Node 25 globals (merge c4f679696, docs merge 743ef0a52); root suite and the full pre-push hook pass under Node 25.9.0 and 22.19.0'
+created_at: '2026-10-28T08:57:56.873Z'
+updated_at: '2026-11-05T23:03:10.831Z'
+created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
+blast_radius:
+  modules:
+    - 'src/test-setup.ts'
+    - 'src/test-support'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/test-setup.ts'
+    - 'src/test-support/document-storage.ts'
+    - 'src/test-support/document-storage.test.ts'
+    - README.md
+    - AGENTS.md
+  out: []
+invariants:
+  - 'No application or package source changes; only shared test setup and its helper'
+  - 'On Node 22 the storage globals keep their existing identity: the jsdom document''s Storage instances'
+  - 'Node''s experimental Web Storage getters are never invoked by the setup (no --localstorage-file warning)'
+acceptance:
+  - id: A1
+    given: 'a target whose localStorage and sessionStorage are Node-style configurable accessors'
+    when: 'adoptDocumentStorage runs against a jsdom window'
+    then: 'both globals are that window''s Storage instances and the Node getters were never called'
+  - id: A2
+    given: 'Node 25.9.0 with its Web Storage globals defined'
+    when: 'pnpm test runs'
+    then: 'every root test passes, including the seven showcase tests that failed with localStorage.clear is not a function'
+  - id: A3
+    given: 'Node 22.19.0 (the CI major)'
+    when: 'pnpm test runs'
+    then: 'every root test passes'
+  - id: A4
+    given: 'the landed revision'
+    when: '.githooks/pre-push runs against origin/main under the default Node 25.9.0'
+    then: 'every selected gate passes and the hook reports it is proceeding with push'
+non_functional: {}
+contracts:
+  - name: 'test-environment-storage'
+    type: contract-test
+    path: 'src/test-support/document-storage.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "src/test-support/document-storage.test.ts 'replaces Node-defined storage accessors with the document window's Storage' builds a target whose localStorage/sessionStorage are configurable getters returning {} (Node 25's shape), calls adoptDocumentStorage with the JSDOM window, asserts both keys are toBe the window's Storage and that the getter-read log is []. Passed at dc0586ca3 under Node 25.9.0 and 22.19.0, and inside the pre-push hook at 981c327f7 under Node 25.9.0. Its sibling env-canary test failed under Node 25 before src/test-setup.ts was wired ('expected {} to be Storage{}') and passed after"
+    recorded_at: "2026-10-28T09:26:40.984Z"
+    command: pnpm exec vitest run src/test-support/document-storage.test.ts
+    exit_code: 0
+    commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Under Node 25.9.0, pnpm test: Test Files 355 passed (355), Tests 5191 passed (5191) at dc0586ca3 (slice worktree) and again inside .githooks/pre-push at 981c327f7. Header.test.tsx (1), ChromeT2.surfaces.test.tsx (5) and shell-sections.smoke.test.tsx (6), which failed before with 'localStorage.clear/getItem is not a function', all pass. Node's '--localstorage-file was provided without a valid path' warning no longer appears"
+    recorded_at: "2026-10-28T09:27:00.502Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Under Node 22.19.0 (CI's major), pnpm test: Test Files 355 passed (355), Tests 5191 passed (5191) at dc0586ca3. The candidate 981c327f7 differs from dc0586ca3 only in README.md, AGENTS.md and .caws lifecycle files. vitest -c vitest.showcase.config.ts --coverage (shares src/test-setup.ts) also passed 58 files / 488 tests with no threshold failure under Node 25 at dc0586ca3"
+    recorded_at: "2026-10-28T09:27:01.206Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: dc0586ca3622c54a68f07fe9dd5718946838ed38
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "echo 'refs/heads/main 981c327f7 refs/heads/main 34ba918d5' | .githooks/pre-push origin <url> under Node 25.9.0 ran all 17 scoped groups over 34ba918d5..981c327f7 and printed 'all selected checks passed; proceeding with push' (exit 0, 273s): lint, typecheck, token gates, generate:check, docs:check-claims/links, root 5191/5191 + vue 853/853, governed:rail with 'committed-tree-check: packages/ matches 981c327f7', and the ten audits. An earlier run at ca2609047 failed docs:check-claims (src-top-level-dir-count 12 vs 13), repaired by 2cf4b1c10"
+    recorded_at: "2026-10-28T09:27:01.898Z"
+    command: ".githooks/pre-push (stdin ref line, Node 25.9.0)"
+    exit_code: 0
+    commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"

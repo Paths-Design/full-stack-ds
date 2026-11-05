@@ -1,0 +1,84 @@
+id: FEAT-COMPOSE-ADMISSION-SUBSTRATE-01
+title: 'Native emission-class substrate; Compose Checkbox/Divider admission; admissibility criteria'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Shared native emission-class substrate landed; Compose Checkbox+Divider admitted 23-to-25 on foundation-only substrates; C1-C7 admission criteria doc committed'
+created_at: '2026-09-13T00:04:49.085Z'
+updated_at: '2026-11-05T22:59:36.577Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/native (new shared emission-class substrate)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (predicate stewardship moves to the substrate)'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (+tests; boolean-control and bare-rule-leaf classes)'
+    - 'packages/ds-jetpack-compose/library (committed FsdsCheckbox substrate + regenerated Checkbox/Divider trees)'
+    - 'fsds.targets.json + scripts/compose-parity-diff.mjs (+test) + AGENTS.md/CLAUDE.md count markers'
+    - 'docs/architecture/native-target-admission.md + snapshot native row + emitter README status paragraphs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'scripts/compose-parity-diff.test.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'packages/ds-codegen/src/frameworks/swift/README.md'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/README.md'
+    - 'AGENTS.md'
+    - 'CLAUDE.md'
+    - packages/ds-codegen/src/frameworks/native-emission-class.ts
+    - docs/normal-form.md
+    - README.md
+  out: []
+invariants:
+  - 'Emission classes dispatch on structural IR predicates owned by the shared frameworks/native substrate — never on component names (grep-verifiable in both native emitters).'
+  - 'The substrate move is behavior-preserving: every previously admitted SwiftUI and Compose component regenerates byte-identically; the native drift gates prove it.'
+  - 'Compose substrates stay foundation-only: zero androidx.compose.material imports in committed substrate files and generated component bodies (FEAT-COMPOSE-CUSTOM-PAINTED-001 precedent).'
+  - 'The fsds.targets.json allowlist scopes default generation only; unimplemented shapes keep their fail-loud not-implemented throws — admission never silences an emitter gap.'
+  - 'Admission criteria are mechanical per codegen output (predicate dispatch + allowlist + drift gate + native compile + token parity) and every criteria doc claim carries its compile-only non-claim.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the framework-neutral emission-class predicates duplicated across the swift and jetpack emitters; when they move into a shared frameworks/native substrate consumed by both targets; then swiftui and compose regeneration stay byte-identical for every previously admitted component and the codegen suite passes'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the Checkbox contract (boolean checked channel) and the Divider contract (hr bare-rule leaf); when the compose emitter gains boolean-control and bare-rule-leaf classes dispatching on shared structural predicates with a foundation-only checkbox substrate; then --target=all emits Checkbox and Divider trees that compile via gradle :library:compileKotlin with zero component-name checks in the new paths'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Checkbox and Divider join the jetpack-compose allowlist 23 to 25; when parity and doc gates run; then parity:compose-tokens passes with the new emitter paths chrome roles claimed and RN shared identities agreeing, docs:check-claims passes with updated target counts, and generate:check stays green'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given each codegen output needs a named admissibility bar; when docs/architecture/native-target-admission.md lands; then it states the mechanical per-target admission criteria, the shared substrate doctrine, the supported-class matrix, and compile-only non-claims, and the snapshot row cites it'
+non_functional: {}
+contracts:
+  - name: 'native-emission-class'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native/emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "swiftui regeneration after the substrate move is byte-identical: generate --target=swiftui produced 52 groups with zero git diff over packages/ds-swiftui (drift-gated); codegen suite green — jetpack component-source.test.ts 23/23, full root vitest 3877/3878 (the one failure is the unrelated analytical erasure-plan population sweep timing out at its 5s budget under full-suite load; passes 55/55 in isolation); typecheck clean"
+    recorded_at: "2026-09-13T00:42:57.068Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "gradlew -p packages/ds-jetpack-compose :library:compileKotlin BUILD SUCCESSFUL (25 file groups incl. Checkbox.kt/CheckboxTokens.kt on FsdsCheckbox, Divider.kt/DividerTokens.kt on FsdsRule); zero material imports (unit test asserts no androidx.compose.material in generated Checkbox); dispatch on shared predicates — rename test proves Checkbox still routes as RenamedControl; Input throws the explicit string-control not-implemented"
+    recorded_at: "2026-09-13T00:43:12.677Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "compose-parity-diff.mjs: '25 allowlisted components; 0 failures' (checkbox+rule paths added to emitterPath/chromeRoleForPath with self-test 8/8); docs:check-claims OK 71/71 after marker fix (23->25 in AGENTS.md/README.md/normal-form/snapshot); generate:check 52/52; governed:rail Overall PASS exit 0"
+    recorded_at: "2026-09-13T00:43:13.784Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs/architecture/native-target-admission.md committed (merge b6318beb): C1-C7 mechanical ladder, substrate doctrine with identical-once/divergent-local rules, per-target state table with governed markers, ledgered compose divergences, compile-only non-claims; snapshot native row cites it; docs:check-links 107/107"
+    recorded_at: "2026-09-13T00:43:15.141Z"

@@ -1,0 +1,55 @@
+id: REL-GRAPH-PROJECTION-CONSUME-01
+title: 'Let the projection layer consume the graph-valued result, and close M1''s evidence gaps'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'The projection layer consumes the graph-valued result through a path that never receives a binding, with an explicitly stated domain restriction and topology implemented for the graph path; the missing-versus-empty and metadata-preserving-mutant gaps are closed, and the necessity accounting for the new coordinates is recorded as the remaining M1 item.'
+created_at: '2026-09-18T17:39:59.866Z'
+updated_at: '2026-11-05T23:06:35.160Z'
+created_by_session: 'session-69475cd2-20cf-4633-9893-09967382f4d8'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (enumerateGraph: the graph-valued result consumed by the enumerator)'
+    - 'packages/ds-codegen/src/analytical/graph-projection.test.ts (consumption, empty-vs-missing, the metadata-preserving binding mutant)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+  out: []
+invariants:
+  - 'THE PROJECTION LAYER CONSUMES THE RESULT, NOT THE BINDING. enumerateGraph receives a denoted GraphResult and never a GraphBinding, so it cannot re-resolve a relation name or re-select a population. If it could, M1''s exit would be nominal.'
+  - 'MILESTONE 1 EXIT, scoped honestly: the graph path reaches the enumerator for the task a graph serves (topology), judged from the graph-valued result and the target inventory. It does NOT claim a complete topology algebra, a layout, or that every topology candidate is enumerated.'
+  - 'Missing versus explicitly empty population must be DISTINGUISHED AND TESTED: empty nodes with empty edges denotes an empty graph; empty nodes with non-empty edges is refused. Only the missing case has been tested so far.'
+  - 'The binding mutant must leave DESCRIPTIVE METADATA UNCHANGED: force the node-row read to ignore the binding so the result is wrong while the reported selection still names the declared relation. Outcome-only checks are not sufficient.'
+  - 'Necessity/accounting for the graph-view coordinates is NOT discharged here and must be recorded as the remaining M1 item rather than implied by schema acceptance.'
+  - 'Stage-2 ratification is untouched: no census coordinate is adjudicated, the subtraction keeps its existing unresolved count, and no existing ledger is re-recorded.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a graph-valued result denoted from a canonical graph-view declaration; when the projection layer enumerates candidates for the task a graph serves; then the candidates are judged from the graph result and the target inventory without the enumerator re-resolving a source relation or consulting a second declaration, and the empty-versus-missing and metadata-preserving-mutant controls separate success from the plausible false pass'
+  - id: A2
+    given: 'A graph-valued result has been denoted.'
+    when: 'The enumerator is asked for candidates serving the task a graph serves.'
+    then: >-
+      Candidates are judged from the graph result and the target inventory alone,
+      the domain restriction that excludes positional coordinates is stated rather
+      than reported as no lawful projection, and the relation path still admits
+      nothing for that task.
+non_functional: {}
+contracts:
+  - name: 'graph-projection-consume'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/graph-projection.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "MILESTONE 1 EXIT CRITERION, met and scoped. The graph path now reaches the enumerator: enumerateGraph takes {graph, task, inventory} where `graph` is a denoted GraphResult and NOT a GraphBinding, so the projection layer cannot re-resolve a source relation, re-select a population, or consult a second declaration - the exit criterion is structural rather than promised, and a test asserts the input surface is exactly those three keys and that no retained program carries `operation` or `binding`. GraphProgram assigns channels to the NODE population and the INCIDENCE and makes no magnitude claim, so it is a distinct program shape rather than a relation-shaped object wearing a graph name. topology moves from notEnumerated to implemented FOR THIS PATH: inducedGraphClaims yields incidence-recoverable from a connection channel and partition-membership from the node channel, the task requires the former, and the retained set is non-empty with every retained program at coordinate non-metric. The RELATION path still admits nothing for topology, now asserted directly (a relation-shaped operation induces no incidence claim) rather than by the not-implemented count, which moved 8 -> 7. THE DOMAIN RESTRICTION IS EXPLICIT: a coordinate other than non-metric is EXCLUDED rather than refused, because a topology projection must not make a positional claim, and the population counters (considered/excluded/disposed) keep outside-the-declared-domain distinct from illegal - an exhausted or restricted search must not read as no lawful projection. Both graph universes pass through the SAME enumerator and differ only in the graph they display. Verification: pnpm exec vitest run packages/ds-codegen/src/analytical (22 files / 957 tests), pnpm test (303 files / 4178 tests), typecheck, lint, docs:check-claims, governed:rail, test:frameworks, analytical:check-schemas, analytical:check-baseline (conserved) and analytical:freeze:check (160 erasures / 126 verdicts) all green on merge 1ac770bf, with NO ledger re-record. NON-CLAIMS: this is not a complete topology algebra, implements no layout, and does not establish that every topology candidate is enumerated; the graph-valued result now reaches the projection layer but projection enumeration for graphs is not claimed complete."
+    recorded_at: "2026-09-18T17:47:17.614Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "TWO M1 EVIDENCE GAPS CLOSED, and one left open explicitly. MISSING VERSUS EXPLICITLY EMPTY: empty node and edge arrays together DENOTE AN EMPTY GRAPH (nodes [], edges [], isolates []), while an explicitly empty node population beside a non-empty edge relation is a CONTRADICTION and is REFUSED under \"does not contain\" rather than carried - the two are asserted to be different kinds and only the missing case had a test before. THE METADATA-PRESERVING BINDING MUTANT: for each parsed view the result is compared against the population the binding NAMES, read independently from the authored rows, and against the reported `selected` relation - so an implementation that always read one relation while descriptive metadata still named the declared one is detectable, which an outcome-only check would pass. The two populations are asserted to genuinely differ (three nodes against two) so the check has teeth. STILL OPEN AND NOT IMPLIED BY THIS SLICE: necessity/accounting for the graph-view coordinates (nodes.relation, nodes.keyField, edges.fromField, edges.toField, the view id) - the family has an identity and a drift-gated schema, but no necessity witness and no disposition, and schema acceptance is not necessity. That is the remaining M1 item and it is recorded as such rather than implied satisfied."
+    recorded_at: "2026-09-18T17:47:18.100Z"

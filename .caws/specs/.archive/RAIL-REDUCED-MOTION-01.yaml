@@ -1,0 +1,90 @@
+id: RAIL-REDUCED-MOTION-01
+title: 'Emit prefers-reduced-motion from the contract and rail declared motion against realization'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Reduced motion is now derived from an IR fact and reaches 17 components across all five web families; Popover''s region retired, taking custom-region source occupancy to zero; motion rail ledgers the 17 dangling token refs and 32 unrealized properties.'
+created_at: '2026-09-01T19:54:15.037Z'
+updated_at: '2026-11-05T23:05:50.093Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src (contract.ts, ir.ts, css.ts)'
+    - 'packages/ds-contracts/components (the 12 motion-declaring contracts)'
+    - 'scripts/motion-realization-audit'
+    - 'generated web component trees (ds-react, ds-vue, ds-svelte, ds-lit, ds-angular)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-contracts'
+    - 'scripts/motion-realization-audit'
+    - 'scripts/prepush-scope.mjs'
+    - 'scripts/prepush-scope.test.mjs'
+    - '.githooks/pre-push'
+    - '.github/workflows/ci.yml'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-angular/src'
+    - scripts/custom-region-audit
+    - packages/ds-figma-plugin/src/generated
+  out: []
+  support:
+    - package.json
+invariants:
+  - 'A contract declaring motion.reducedMotion respect or disable emits a prefers-reduced-motion block neutralising its own animated declarations, in every admitted web family, derived from a governed IR fact rather than per-emitter lore.'
+  - 'Every motion.transitions duration and easing reference either resolves in the token graph or is a ledger entry naming its owning spec; a dangling reference never renders a silent fallback unnoticed.'
+  - 'The reduced-motion lowering is derived from the declarations actually emitted, so it cannot drift from the CSS it is meant to neutralise.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the 12 contracts declaring motion.transitions; when pnpm run audit:motion-realization runs; then every declared duration and easing reference is resolved against the token graph, and each of the 18 that currently dangle is either repaired in its contract or carried as a ledger entry naming its owning spec'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract declaring motion.reducedMotion respect or disable whose emitted CSS animates; when pnpm run generate -- --target=all runs; then all five web families emit a @media (prefers-reduced-motion: reduce) block neutralising exactly those animated declarations, derived from a MotionIR fact in ir.ts and lowered once in css.ts rather than per emitter'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the corpus today carries exactly one prefers-reduced-motion block and it lives in a hand-authored @custom region; when the audit runs after the lowering lands; then every component whose contract declares respect and whose CSS animates has a derived block, and any that does not is ledgered rather than silently unhonoured'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a contract mutated to carry a dangling easing reference, and a component whose derived reduced-motion block is suppressed; when node scripts/motion-realization-audit/selfcheck.mjs runs; then the rail fails naming each case, proving it can fail for the right reason'
+non_functional: {}
+contracts:
+  - name: 'motion-ir'
+    type: behavior
+    path: 'packages/ds-codegen/src/ir.ts'
+  - name: 'motion-realization-ledger'
+    type: contract-test
+    path: 'scripts/motion-realization-audit/selfcheck.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "The rail resolves every declared duration/easing reference through codegen's own tokenSlug against the names tokens.css declares. Of 19 initially dangling, 2 were repaired in-contract (Select's emphasizedDecelerate/emphasizedAccelerate named tokens existing under no spelling; now emphasizedOut/emphasizedIn) and 17 are ledgered as MOTION_TOKEN_UNRESOLVABLE. The 17 are deliberately NOT repaired: they are component-local slots (accordion.motion.duration, dialog.motion.duration.enter, tabs.motion.indicator, ...) and declaring them while nothing consumes them would immediately register as dead slots in RAIL-STYLING-REALIZATION-LEDGERS-01 — trading one ledger entry for another. Each entry's note records that. Final: findings=49 (ledgered=49) unledgered=0 stale=0, exit 0."
+    recorded_at: "2026-09-01T20:12:48.951Z"
+    command: "pnpm run audit:motion-realization"
+    exit_code: 0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "contract.motion is typed as ContractMotion (was unknown), projected by buildMotion into MotionIR on ComponentIR, and lowered once in css.ts#reducedMotionBlock. All five web families share emitCss, so one seam reaches every target: 17 components per target now carry a derived @media (prefers-reduced-motion: reduce) block (react/vue/svelte/lit/angular all 17; react also shows Popover before its region was retired). The selector list is derived from the emitted declarations, and declarations that name an animating property while switching it off (animation: none on Skeleton --wipe/--none) are excluded, so the block names 4 selectors for Skeleton rather than 6. Honouring is opt-out (honorsReducedMotion = reducedMotion !== 'ignore'), which is why Button/Details/Skeleton/Spinner are covered despite declaring no motion block at all. governed:rail overall pass; typecheck:all 0 errors."
+    recorded_at: "2026-09-01T20:12:59.093Z"
+    command: pnpm run generate -- --target=all
+    exit_code: 0
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "REDUCED_MOTION_UNHONOURED is 0 across the corpus: every component whose emitted CSS animates and whose contract does not say ignore now carries a derived block. Popover's hand-authored region is retired — its min/max-width, contain, and enter animation come from Popover.styles.json plus a new contract keyframes block, with the hardcoded 200ms and cubic-bezier(0.34,1.56,0.64,1) replaced by core.motion.duration.short and core.motion.easing.emphasizedOut, the two tokens its own contract declared. Verified per target: popover-enter keyframes present and custom region empty in all five (react/vue/svelte/lit/angular). audit:custom-regions source occupancy 1 -> 0, findings=78 (ledgered=78) unledgered=0 stale=0. Stated visual change: the token easing has no overshoot, so the entrance no longer bounces."
+    recorded_at: "2026-09-01T20:13:09.723Z"
+    command: "pnpm run audit:motion-realization && pnpm run audit:custom-regions"
+    exit_code: 0
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Live falsification on the real tree: deleting the derived @generated:start reduced-motion region from packages/ds-react/src/components/Skeleton/Skeleton.css produced 'REDUCED_MOTION_UNHONOURED: 1 - Skeleton: css animates with no prefers-reduced-motion block', findings=50 unledgered=1, exit 1; restoring returned 49/49/0/0 exit 0. The dangling-easing half was exercised for real rather than synthetically: Select's two refs WERE dangling and the rail named them before repair. selfcheck 16/16, four pinning the self-answering-question trap — the neutralising block sets animation-duration, so without stripReducedMotion every honouring component would read as animating AND have the block, making REDUCED_MOTION_UNHONOURED unreachable; one check asserts the block alone does not read as animation, one that stripping removes the whole media block rather than its first rule, one that keyframe-declared properties count as realized, one that properties inside the block do not."
+    recorded_at: "2026-09-01T20:13:20.692Z"
+    command: node scripts/motion-realization-audit/selfcheck.mjs
+    exit_code: 0

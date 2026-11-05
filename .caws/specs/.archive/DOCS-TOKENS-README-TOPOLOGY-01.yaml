@@ -1,0 +1,53 @@
+id: DOCS-TOKENS-README-TOPOLOGY-01
+title: 'Truth ds-tokens README to per-framework token CSS emission'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Truth ds-tokens README to per-framework sibling token CSS emission; drop never-used components/ placeholder; fix .gitignore header'
+created_at: '2026-09-14T03:46:13.972Z'
+updated_at: '2026-11-05T22:58:48.058Z'
+created_by_session: 'session-bf2f88f8-c1ec-4df7-8e1f-f78ddf354df5'
+blast_radius:
+  modules:
+    - 'ds-tokens'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/README.md'
+    - 'packages/ds-tokens/.gitignore'
+    - 'packages/ds-tokens/components/.gitkeep'
+  out: []
+invariants:
+  - 'No emitted artifact path changes: the five web framework packages keep their committed <Component>.tokens.css siblings byte-identical; this slice only rewrites documentation and removes an unused placeholder directory.'
+  - 'Every path, artifact name, and layer order stated in packages/ds-tokens/README.md is verifiable against the repo tree and generated/tokens.css at merge HEAD.'
+  - 'packages/ds-tokens/.gitignore header names only files git actually tracks under generated/.'
+acceptance:
+  - id: A1
+    given: 'the ds-tokens README claims component tokens CSS is emitted into packages/ds-tokens/components/ by a codegen tokens emitter target'
+    when: 'the README is rewritten'
+    then: 'it describes per-framework sibling .tokens.css emission inside each web framework package and contract-tokens byte-identity validation, with no reference to a ds-tokens components/ destination'
+  - id: A2
+    given: 'the README lists generated/ artifacts and the cascade layer order'
+    when: 'rewritten'
+    then: 'the artifact list is tokens.css and resolved.tokens.json with composed.tokens.json as gitignored scratch and no token-types.ts claim, and the layer order matches generated/tokens.css'
+  - id: A3
+    given: 'packages/ds-tokens/components/ holds only a .gitkeep'
+    when: 'the placeholder is removed'
+    then: 'the directory is absent from the tracked tree and the .gitignore header names only artifacts that are actually tracked'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "grep -c 'ds-tokens/components|tokens emitter target|step 6a' packages/ds-tokens/README.md => 0; sibling topology sentence present (README:42); docs:check-links OK (107 links); docs:check-claims OK (75 claims)"
+    recorded_at: "2026-09-14T03:58:29.753Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "grep '@layer core, semantic, components, theme, brand, density' matches README.md:28 and generated/tokens.css:6 byte-for-byte; grep -c 'token-types|per-brand CSS' README => 0; governed:rail PASS (6 frameworks, 312 groups)"
+    recorded_at: "2026-09-14T03:58:30.215Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "test ! -d packages/ds-tokens/components => absent on merged main 3c89043c; git ls-files packages/ds-tokens/generated/ => exactly tokens.css + resolved.tokens.json, matching the corrected .gitignore header"
+    recorded_at: "2026-09-14T03:58:30.671Z"

@@ -1,0 +1,50 @@
+id: SHOWCASE-CONSUMPTION-01
+title: 'Showcase consumes DS via faithful patterns (smoke test + dedup)'
+risk_tier: 3
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge showcase-consumption at 962e6293bb8aa85f4c32b65b07fbf8bcd9839cf7'
+created_at: '2026-06-05T00:03:53.929Z'
+updated_at: '2026-11-05T23:07:55.561Z'
+blast_radius:
+  modules:
+    - 'src/ (React showcase app: views, layout, styles)'
+    - '@full-stack-ds/react published consumption contract (exports map, dist, styles.css) — verified, not modified'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+  out:
+    - 'packages/'
+invariants:
+  - 'The showcase does not hand-reimplement a component the DS already exports: no app-local CSS class or markup that shadows or duplicates a DS component (e.g. no app .card colliding with Card.css, no parallel tab strip alongside DS Tabs, no raw filter <input> where DS Input is the established pattern).'
+  - 'The @full-stack-ds/react published package contract (exports map -> built dist entrypoints + aggregate styles.css) is exercised by an automated test, not only by the dev-time source alias the showcase uses.'
+acceptance:
+  - id: A1
+    given: 'the freshly built @full-stack-ds/react package'
+    when: 'a test resolves every file path declared in its package.json exports map (plus main/module/types)'
+    then: 'each path resolves to a file that exists on disk'
+  - id: A2
+    given: 'the built dist entrypoint (dist/index.js)'
+    when: 'it is dynamically imported in the test'
+    then: 'it exports the documented component surface (Button, Card, Input, Tabs, Badge, Stack, ...)'
+  - id: A3
+    given: 'the aggregate stylesheet dist/index.css served via the ./styles.css export'
+    when: 'it is read'
+    then: 'it contains the component selectors a consumer relies on (.button, .card, .input, .tabs, ...)'
+  - id: A4
+    given: 'the Tokens view'
+    when: 'it renders its name/value/description filter control'
+    then: 'the control is the DS Input component, not a raw <input className="tokens-filter-input">'
+  - id: A5
+    given: 'src/styles/app.css'
+    when: 'it is inspected for the .card rule'
+    then: 'app.css does not redefine the DS .card class (no global collision with Card.css)'
+  - id: A6
+    given: 'the Developer and Design views'
+    when: 'they render their tab strips'
+    then: 'tabs use the DS Tabs/TabsList/TabsTab components, not a parallel app-local .tab implementation'
+non_functional: {}
+contracts: []

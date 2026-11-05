@@ -1,0 +1,62 @@
+id: EXAMPLES-SPATIAL-CONSOLE-01
+title: 'Spatial console: generated web components as diegetic 3D-scene controls via HTML-in-Canvas'
+risk_tier: 3
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Spatial console lane: React/Vue/Lit DS panels drive a three.js scene via HTML-in-Canvas; runtime-verified in flagged Chrome and DevTools MCP'
+created_at: '2026-09-22T21:04:51.360Z'
+updated_at: '2026-11-05T22:59:15.391Z'
+created_by_session: '40ac09ec-5e89-4d7a-a01d-85b6bee26253'
+blast_radius:
+  modules:
+    - 'examples/spatial-console'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/spatial-console'
+    - 'examples/README.md'
+    - 'pnpm-lock.yaml'
+    - 'package.json'
+  out: []
+invariants:
+  - 'Panels import only public package exports (@full-stack-ds/react, /vue, /lit); no generated-file or renderer-internal imports'
+  - 'Scene state is framework-neutral: panels and the 3D scene communicate through one lane-local store, never through each other'
+  - 'No change to contracts, codegen, or generated packages'
+acceptance:
+  - id: A1
+    given: 'Chrome launched with CanvasDrawElement enabled'
+    when: 'the spatial console loads'
+    then: 'React, Vue and Lit DS component panels render as textures on 3D panel meshes (pixel readback non-background)'
+  - id: A2
+    given: 'a panel mesh viewed at an oblique angle'
+    when: 'a real pointer click lands on the projected screen position of a DS control'
+    then: 'the control''s DOM handler fires and the bound scene property changes'
+  - id: A3
+    given: 'a scene-side change (object picked by raycast or animation tick)'
+    when: 'the store updates'
+    then: 'the readout panel''s DS components reflect the new value in their re-painted texture'
+  - id: A4
+    given: 'a browser without HTML-in-Canvas'
+    when: 'the page loads'
+    then: 'it shows an explicit unsupported notice naming the required flags rather than a blank scene'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "examples/spatial-console/web/e2e/verify-runtime.mjs checks 'A1 panel-{lighting,motion,telemetry} drawn as a texture' (panel px 255,255,255 vs background 13,15,20; 15/15 over 7 runs); DevTools MCP screenshot of flagged Chrome at DPR 2"
+    recorded_at: "2026-09-22T21:55:49.197Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "verify-runtime.mjs: after oblique orbit drag, trusted clicks at mesh-projected points drive React Switch/RadioGroup, Vue RadioGroup/ToggleSwitch, Lit Button (lampIntensity 0, lampColor #cfe3ff, sceneShape box, rotation halted, selection null); negative control at unprojected layout point does not toggle; DevTools MCP content-quad clicks set speed=medium and shape=box"
+    recorded_at: "2026-09-22T21:56:06.934Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "verify-runtime.mjs: raycast pick of 3D object sets selected=Cube, Lit Stat reads Cube and telemetry uploads increase (e.g. 32->43); clicking the 3D lamp bulb sets lampOn=false and React Switch input.checked=false; DevTools MCP screenshot shows Lit Status 'Lamp off' + Selected 'Lamp'"
+    recorded_at: "2026-09-22T21:56:15.975Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "verify-runtime.mjs 'A4 unflagged Chrome shows the unsupported notice naming the flags' (visible, canvas hidden, detail lists requestPaint + texElement*); independently confirmed by unflagged DevTools MCP browser screenshot"
+    recorded_at: "2026-09-22T21:56:24.881Z"

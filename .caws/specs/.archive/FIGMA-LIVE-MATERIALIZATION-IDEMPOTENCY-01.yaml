@@ -1,0 +1,75 @@
+id: FIGMA-LIVE-MATERIALIZATION-IDEMPOTENCY-01
+title: 'Live Figma materialization + idempotency: real figma.* adapter consuming the plan; idempotent reruns; plan-vs-live audit digest'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge live-mat at f3b9b95e60ca0c59b3ea83cbf88e047151c7f3e8'
+created_at: '2026-06-06T01:39:10.525Z'
+updated_at: '2026-11-05T23:01:31.584Z'
+blast_radius:
+  modules:
+    - '@full-stack-ds/figma-plugin (live adapter, audit projector, live-run bundle)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-figma-plugin/src/live-materialize.ts
+    - packages/ds-figma-plugin/src/live-materialize.test.ts
+    - packages/ds-figma-plugin/src/live-audit.ts
+    - packages/ds-figma-plugin/src/live-run.ts
+    - packages/ds-figma-plugin/src/figma.d.ts
+    - packages/ds-figma-plugin/scripts/**
+  out:
+    - packages/ds-figma-plugin/src/planner.ts
+    - packages/ds-figma-plugin/src/materialize-state.ts
+    - packages/ds-tokens/
+    - packages/ds-codegen/
+invariants:
+  - "The live path consumes the FigmaStatePlan (planFigmaStateSurface output) and never classifies descriptor state directly or branches on component/state-value names."
+  - "Materialization is idempotent: a second run against the same target creates no duplicate pages/components/sets/component-properties/variants/plugin-data — create-or-update by stable key."
+  - "Live file state is projected into a deterministic audit shape and compared to the plan; re-running yields the same audit digest. No token-style resolution, paint binding, or visual-parity claim."
+acceptance:
+  - id: A1
+    given: "the live materialization path"
+    when: "it runs"
+    then: "it uses the planFigmaStateSurface -> materialize boundary; no classification of descriptor state and no branching on component/state-value names"
+  - id: A2
+    given: "a live Figma document"
+    when: "the live path runs for Button/Checkbox/Switch/Dialog/Sheet/Tabs"
+    then: "it creates the component-property state surface (variant/boolean properties + plugin data) via the real figma.* API"
+  - id: A3
+    given: "a second run against the same target"
+    when: "it runs"
+    then: "it is idempotent — no duplicate pages, components, sets, component-properties, variants, or plugin-data records"
+  - id: A4
+    given: "the live file state"
+    when: "projected into an audit shape and compared to the plan"
+    then: "it asserts at least: State/availability variant on Button; State/selection variant on Checkbox/Switch/Tabs; State/openness boolean on Sheet; Dialog openness omitted (channel-bound); suppression metadata preserved; residual metadata preserved"
+  - id: A5
+    given: "existing mocked tests"
+    when: "run"
+    then: "they still pass; live behavior adds an evidence layer, it does not replace unit tests"
+  - id: A6
+    given: "this slice"
+    when: "reviewed"
+    then: "no token-style resolution, paint binding, or final visual-parity claim lands — component properties and metadata only"
+  - id: A7
+    given: "a live Figma API mismatch with the plan lowering"
+    when: "encountered"
+    then: "it is residualized in the audit, not smuggled as new semantics into live code; no schema/contract/planner change unless a real adapter gap is exposed"
+  - id: A8
+    given: "two live runs"
+    when: "their audits are digested"
+    then: "run-1 and run-2 produce the same audit digest; a changed digest means the slice is not complete"
+  - id: A9
+    given: "the live execution"
+    when: "recorded"
+    then: "exact evidence is captured: target file/page id, run-1 audit JSON, run-2 audit JSON, digest equality, and any unsupported-Figma-API residuals"
+non_functional: {}
+contracts:
+  - name: 'live-state-adapter'
+    type: behavior
+    path: 'packages/ds-figma-plugin/src/live-materialize.ts'
+  - name: 'plan-vs-live-audit'
+    type: contract-test

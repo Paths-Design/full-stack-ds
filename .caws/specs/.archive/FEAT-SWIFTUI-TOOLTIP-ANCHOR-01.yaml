@@ -1,0 +1,76 @@
+id: FEAT-SWIFTUI-TOOLTIP-ANCHOR-01
+title: 'SwiftUI anchored-surface branch; Tooltip closes the settings screen'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Tooltip lands through the anchored-surface branch; the settings screen is fully FSDS-composed; popovers remain fail-loud'
+created_at: '2026-08-15T03:04:42.762Z'
+updated_at: '2026-11-05T23:01:13.841Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.ts (anchored tooltip branch + surface tests)'
+    - 'packages/ds-swiftui (generated Tooltip + barrel)'
+    - 'examples/settings/swift (Tooltip wraps the Email-notifications label)'
+    - 'docs/current-implementation-snapshot.md + examples/README.md (claims)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'examples/settings/swift'
+    - 'examples/README.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The anchored branch routes by kind (tooltip emits; popover remains fail-loud until its slice); dismissal flags (closeOnEscape/closeOnBlur) are omitted-and-documented (native popover behavior), never accepted-and-ignored.'
+  - 'Hover is the declared trigger modality on this target (macOS); the open channel drives presentation exactly like Dialog''s openness channel — same projection, no component identity.'
+  - 'Placement mapping and member naming are grammar tables; chrome is presence-driven through FsdsTheme; prior outputs byte-stable.'
+acceptance:
+  - id: A1
+    given: 'Tooltip (anchored kind, open boolean channel, trigger/content compound parts)'
+    when: 'generate -- --target=swiftui Tooltip runs'
+    then: 'surface-emit.ts anchored branch emits a compiling Tooltip and swift build exits 0 with prior outputs byte-stable'
+  - id: A2
+    given: 'the open channel'
+    when: 'the consumer hovers the trigger region'
+    then: 'onHover drives setOpen through the carried-over controllable-state projection (controlled Binding takes precedence), presenting the content region in a popover with presence-driven chrome via FsdsTheme'
+  - id: A3
+    given: 'the placement prop'
+    when: 'emitted'
+    then: 'the popover arrowEdge derives from the placement union through a grammar-level mapping table (top/bottom/left/right → top/bottom/leading/trailing), never per-component lore'
+  - id: A4
+    given: 'the settings swift lane Email-notifications row'
+    when: 'rebuilt'
+    then: 'the caption-text stand-in is replaced by Tooltip(trigger: content:) wrapping the label and the lane compiles — the settings screen is fully composed from DsSwiftUI exports'
+  - id: A5
+    given: 'the full worktree gate'
+    when: 'governed:rail, pnpm test, test:frameworks run'
+    then: 'all pass with drift confined to packages/ds-swiftui and the swiftui emitter'
+non_functional: {}
+contracts:
+  - name: 'swiftui-tooltip-anchor'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: generate -- --target=swiftui ... Tooltip emits 8 components; swift build exit 0; prior outputs byte-stable (26/26 swift tests)
+    recorded_at: "2026-08-15T03:10:11.100Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Tooltip.swift: onHover { if !disabled { setOpen(hovering) } } with controllable-state projection; .popover(isPresented: Binding(get:{isOpen}, set:{setOpen($0)}), arrowEdge:)"
+    recorded_at: "2026-08-15T03:10:11.924Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "PLACEMENT_EDGE grammar table: auto→.bottom (platform default, commented), top/bottom/left/right + corners mapped; unknown value auto failed loudly at emit time before the mapping was added; test pins case .auto: return .bottom"
+    recorded_at: "2026-08-15T03:10:12.759Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "SettingsExampleApp: Tooltip(placement:.bottom) wraps the Email-notifications label; example swift build exit 0; zero NOT FSDS markers remain for settings-spec components"
+    recorded_at: "2026-08-15T03:10:13.627Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gates: typecheck 0; governed:rail exit 0; pnpm test 2060/2060; test:frameworks 573+492+532+70"
+    recorded_at: "2026-08-15T03:10:14.479Z"

@@ -1,0 +1,90 @@
+id: RAIL-ADMISSION-DESCRIPTOR-INTERFACE-01
+title: 'Extract rail admission-descriptor interface: six TS plans become descriptor consumers, no behavior change'
+risk_tier: 2
+mode: refactor
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge rail-descriptor at ba5b641bf2d827c5d49a01d1d70624065133518a'
+created_at: '2026-06-27T00:35:05.063Z'
+updated_at: '2026-11-05T23:05:34.547Z'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/validation (rail orchestration + per-framework plans)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-codegen/src/validation/admission-descriptor.ts
+    - packages/ds-codegen/src/validation/types.ts
+    - packages/ds-codegen/src/validation/validate-cli.ts
+    - packages/ds-codegen/src/validation/required-mode.ts
+    - packages/ds-codegen/src/validation/git-range-scope.ts
+    - packages/ds-codegen/src/validation/markdown-report.ts
+    - packages/ds-codegen/src/validation/frameworks/react.ts
+    - packages/ds-codegen/src/validation/frameworks/vue.ts
+    - packages/ds-codegen/src/validation/frameworks/svelte.ts
+    - packages/ds-codegen/src/validation/frameworks/lit.ts
+    - packages/ds-codegen/src/validation/frameworks/angular.ts
+    - packages/ds-codegen/src/validation/frameworks/react-native.ts
+    - packages/ds-codegen/src/validation/frameworks/figma.ts
+    - packages/ds-codegen/src/validation/admission-descriptor.test.ts
+  out:
+    # This is a pure rail-internal refactor. It does NOT touch any emitter, the
+    # target registry, the IR, contracts, generated packages, CI workflow, or
+    # the recon artifacts. It does NOT register a native target or add a
+    # toolchain. It prepares the socket; it plugs in no new toolchain.
+    - 'packages/ds-codegen/src/frameworks'
+    - 'packages/ds-codegen/src/target-packs'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/emitter.ts'
+    - 'packages/ds-codegen/src/registry.ts'
+    - 'packages/ds-codegen/src/cli.ts'
+    - 'packages/ds-contracts'
+    - '.github/workflows'
+    - 'fsds.targets.json'
+    - 'docs/successor-work-rail-native-toolchain-recon.md'
+    - 'scripts/rail-toolchain-coupling-audit.mjs'
+invariants:
+  - 'NO BEHAVIOR CHANGE: pnpm run governed:rail and governed:rail:changed produce the same framework set, the same plan commands, the same admission coverage, the same knownGaps, and the same pass/fail behavior as before the refactor. Only non-semantic fields (timestamps, durationMs) may differ; structural output is equivalent.'
+  - 'POLICY DATA CONTRACT, NOT PLUGIN HOOK: a target descriptor supplies DECLARED FACTS only — id, output-tree relPath, source extensions, the plan (compile/test command argv + checks + knownGaps), provenance source set reference, and report-ordering rank. A descriptor declares WHAT is admissible; it does NOT carry executable policy, and it cannot bypass any central rail invariant.'
+  - 'CENTRAL INVARIANTS STAY CENTRAL: manifest reading, digest/hash checks, untracked-generated detection, contract<->artifact provenance binding, emitter-source provenance, environment provenance, and report semantics remain owned by the rail core (validate-cli / required-mode / git-range-scope / markdown-report). None of these moves into a target descriptor. The rail evaluates descriptor declarations against the same evidence ladder.'
+  - 'COUPLING ACTUALLY REDUCES: the parallel hardcoded FrameworkId-keyed lists that descriptor data subsumes (PLANS_BY_ID, DEFAULT_FRAMEWORKS, COMPONENT_TREES, GENERATED_TREE_PREFIXES, FRAMEWORK_RANK) are derived from the descriptor registry rather than re-listed per module. scripts/rail-toolchain-coupling-audit.mjs --check still passes AND the TS-TOOLCHAIN-COUPLED count drops below the pre-slice baseline of 12 (some former TS-coupled sites become descriptor-driven). If the count does not improve, the refactor only renamed the hardcoding and has failed its purpose.'
+  - 'NO NATIVE ADMISSION CLAIM: jetpack-compose, swiftui, and figma remain exactly where they are. figma stays generate-admitted-but-rail-excluded; no native target is added to the descriptor registry. The FrameworkId set the rail admits is unchanged (react, vue, svelte, lit, angular, react-native).'
+  # Non-claims (scope fences):
+  - 'NON-CLAIM: does not add Compose/SwiftUI/Gradle/Xcode, any CI native-build job, or any non-pnpm plan command.'
+  - 'NON-CLAIM: does not change emitted bytes, the generated packages, or the emission manifest schema.'
+  - 'NON-CLAIM: does not widen the admitted-target set; the descriptor registry holds exactly the six existing TS targets.'
+acceptance:
+  - id: A1
+    given: 'the rail before and after the descriptor extraction, run identically (same args, same tree)'
+    when: 'pnpm run governed:rail and pnpm run governed:rail:changed are executed'
+    then: 'the framework set, per-framework plan command argv, admission coverage attribution, knownGaps text, and overall pass/fail disposition are structurally equivalent to the pre-refactor run; only timestamps/durations differ. Evidence: a captured before/after rail run (or a descriptor-equivalence test that reconstructs the legacy PLANS_BY_ID/COMPONENT_TREES/GENERATED_TREE_PREFIXES/FRAMEWORK_RANK values from the descriptor registry and asserts byte-equality with the prior literals).'
+  - id: A2
+    given: 'the need for a typed seam that expresses plan facts without every rail module knowing each framework by name'
+    when: 'admission-descriptor.ts is authored'
+    then: 'it exports a typed AdmissionDescriptor shape carrying { id, outputTreeRelPath, sourceExtensions, plan (the existing FrameworkValidationPlan facts: compile/test command argv, checks, knownGaps), provenanceSourceSet reference, reportRank } and a registry of the six existing descriptors; the FrameworkId surface is keyed off the descriptor registry rather than a separately-maintained closed literal union where descriptor data suffices'
+  - id: A3
+    given: 'the four rail consumer modules (validate-cli, required-mode, git-range-scope, markdown-report) and the six frameworks/*.ts plan files'
+    when: 'each is adapted to the descriptor'
+    then: 'PLANS_BY_ID, DEFAULT_FRAMEWORKS, COMPONENT_TREES, GENERATED_TREE_PREFIXES, and FRAMEWORK_RANK are derived from the descriptor registry (not re-listed); validate-cli/required-mode/git-range-scope/markdown-report no longer carry parallel hardcoded per-framework lists where descriptor data is the source of truth; the six plan files export or adapt through descriptors'
+  - id: A4
+    given: 'the central rail invariants'
+    when: 'the diff is reviewed'
+    then: 'manifest reading, digest checks, untracked-generated detection, contract provenance, emitter provenance, environment provenance, and report semantics remain in the rail core and are NOT relocated into any target descriptor; a descriptor carries declared facts only'
+  - id: A5
+    given: 'the pre-slice coupling-audit baseline (12 TS-coupled / 4 language-agnostic / 1 already-polymorphic)'
+    when: 'scripts/rail-toolchain-coupling-audit.mjs is re-run after the refactor'
+    then: '--check still passes (six rail-admitted FrameworkIds, figma rail-excluded, no native target admitted, all sites classified) AND the TS-TOOLCHAIN-COUPLED count is strictly below 12, with the reduced sites now reported as descriptor-driven/agnostic; the before/after counts are recorded in the closure notes'
+  - id: A6
+    given: 'the slice as committed'
+    when: 'git diff is taken over the whole change set and the native targets are inspected'
+    then: 'no emitter, target-registry, IR, contract, generated-package, CI-workflow, or fsds.targets.json file appears in the diff; jetpack-compose / swiftui / figma admission state is byte-unchanged; the admitted FrameworkId set is still exactly react, vue, svelte, lit, angular, react-native'
+non_functional:
+  performance:
+    - 'The descriptor extraction adds no measurable rail runtime cost: it reorganizes static registration, not per-artifact work.'
+contracts:
+  - name: 'rail-output-equivalence'
+    type: behavior
+  - name: 'admission-descriptor'
+    type: schema
+    path: 'packages/ds-codegen/src/validation/admission-descriptor.ts'

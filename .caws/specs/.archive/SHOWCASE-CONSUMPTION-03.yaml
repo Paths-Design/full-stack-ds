@@ -1,0 +1,65 @@
+id: SHOWCASE-CONSUMPTION-03
+title: 'DS Table API gaps + selector collision cleanup'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge showcase-consumption-3 at a9eaf5577cde8368a2061bc95b066c6971c9cc2f'
+created_at: '2026-06-05T02:15:14.240Z'
+updated_at: '2026-11-05T23:07:56.935Z'
+blast_radius:
+  modules:
+    - 'DS Table component family: contract -> codegen IR/emitters -> generated Table across 5 frameworks (colSpan/rowSpan/scope/style on cells & headers)'
+    - 'Generated-artifact admission rail: regenerate-all + governed:rail for the Table component must stay green'
+    - 'src/ showcase: TokensView token explorer migration; app.css .chip selector collision; consumption guard tests'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/'
+    - 'packages/ds-codegen/'
+    - 'packages/ds-contracts/components/Table/'
+    - 'packages/ds-react/src/components/Table/'
+    - 'packages/ds-vue/src/components/Table/'
+    - 'packages/ds-svelte/src/components/Table/'
+    - 'packages/ds-lit/src/components/Table/'
+    - packages/ds-angular/src/components/Table/
+  # NOTE: ds-angular emits Table under a different path (seen under dist/); the
+  # implementer confirms the angular generated-source path and `caws specs
+  # amend-scope`s it when regenerating, per the governed-widening flow.
+  out:
+    - '.claude/hooks/'
+invariants:
+  - 'The DS Table cell/header components forward the HTML attributes real data tables need (colSpan, rowSpan, scope, style) so a consumer is never forced back to raw <table> markup — and the single contract still drives all five framework emitters (no per-framework lore in an emitter).'
+  - 'Showcase CSS cannot unintentionally style a DS component: app.css declares no selector that collides with a DS component class. .chip joins .card and .tabs as renamed/namespaced.'
+acceptance:
+  - id: A1
+    given: 'the DS Table contract + codegen'
+    when: 'the Table component is regenerated for all five frameworks'
+    then: 'TableCell/TableHeaderCell (and TableRow where relevant) accept and forward the cell/header attributes (colSpan, rowSpan, scope, style) needed to express the TokensView token table, with governed:rail green across all targets'
+  - id: A2
+    given: 'the TokensView token explorer (the one remaining raw <table>)'
+    when: 'it renders'
+    then: 'it is built from the DS Table compound (no raw <table>/<thead>/<tr>/<th>/<td>), proven by cell-count conservation or equivalent DOM assertions, with the :target row anchoring and the section-header colSpan rows preserved'
+  - id: A3
+    given: 'src/styles/app.css'
+    when: 'it is inspected'
+    then: 'it declares no `.chip` rule that collides with DS Chip.css (removed or namespaced, e.g. .tag/.pill or DS Badge), and the affected badges still render correctly'
+  - id: A4
+    given: 'the consumption guard test'
+    when: 'it runs'
+    then: 'it fails if a raw data <table> is reintroduced where a DS Table belongs, or if a known DS class collision (.card/.tabs/.chip) reappears in app.css — with a negative control proving the checks bite'
+  - id: A5
+    given: 'the inherited dirty .claude/hooks/* files'
+    when: 'this spec is implemented'
+    then: 'they remain untouched and out of scope (enforced via scope.out + protected-paths) unless their owner resets the latch or explicitly authorizes cleanup'
+  # RESIDUAL BACKLOG (explicitly NOT acceptance criteria for this spec — DS-component
+  # work that is not required to close the table/collision pass; track separately):
+  #   - DS RadioGroup component (Header + TokensView brand selectors hand-roll role=radio)
+  #   - Lightweight DS Surface/Panel primitive (app .panel exists because DS Card is too heavy)
+  #   - DS Chip swallows the `title` prop (Chip.tsx destructures title but never applies it)
+non_functional: {}
+contracts:
+  - name: 'table-cell-attributes'
+    type: behavior
+    path: 'packages/ds-react/src/components/Table/__tests__/Table.test.tsx'

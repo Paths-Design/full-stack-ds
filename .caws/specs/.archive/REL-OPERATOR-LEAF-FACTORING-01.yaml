@@ -1,0 +1,44 @@
+id: REL-OPERATOR-LEAF-FACTORING-01
+title: 'Adjudicate the operator and cardinality enum leaves as required derived vocabulary'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Invariant 17''s factoring measured and recorded for relation.derivedBy.kind and relation.derivedBy.join.cardinality as required-derived-vocabulary, answering the operator discriminator''s open question and moving the closure gate to 23 unsettled dependencies.'
+created_at: '2026-09-15T06:03:09.866Z'
+updated_at: '2026-11-05T23:06:53.142Z'
+created_by_session: 'session-272d1906-0cae-4fae-ba00-e86a4ac9d030'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/analytical-fixtures/subtraction-stage2.json (two required-derived-vocabulary verdicts)'
+    - 'packages/ds-codegen/src/analytical/necessity.test.ts (the retained-class pins)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'packages/ds-codegen/src/analytical'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A bare enum leaf carries no independent degree of freedom when its footprint is exactly itself plus its member pairs and every pair''s footprint is itself: its necessity is implied by any single pair, so it is retained as derived vocabulary and deliberately NOT ratified.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given invariant 17 fixes the enum-leaf factoring and the doctrine left relation.derivedBy.kind as its open question; when the footprint relation is measured for relation.derivedBy.kind and relation.derivedBy.join.cardinality; then each leaf''s footprint is exactly itself plus its member pairs and each pair''s footprint is exactly itself, both record required-derived-vocabulary naming what they are derivable from and what requires the name, the unadjudicated count falls by two, and no member pair''s standing moves'
+non_functional: {}
+contracts:
+  - name: 'enum-leaf'
+    type: contract-test
+    path: 'packages/ds-contracts/analytical-fixtures/subtraction-stage2.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Measured the footprint relation for both enum leaves among the unresolved candidates. relation.derivedBy.kind: footprint(leaf) is exactly the leaf plus its 21 member pairs and nothing else (size 22); relation.derivedBy.join.cardinality: exactly the leaf plus its 6 member pairs (size 7); every member pair's footprint is exactly itself in both. So each leaf is its enum's coarsest coordinate and its necessity is implied by any single member pair -- invariant 17's factoring -- and both are recorded required-derived-vocabulary with derivableFrom and requiredBy, after the validator refused them until a reason was also supplied. That answers the doctrine's kindInterpretation.openQuestion for the operator discriminator. Side effect on the critical path: relation.derivedBy.join.cardinality is one of the 22 closures' footprint dependencies, so the closure gate now reports 23 unsettled dependencies instead of 24; 22 carriers remain provisional and no member pair's standing moved. Unadjudicated 81 -> 79. Also recorded, not amended: the round-11 enum-leaf record carries no reason and nothing complained, because the field requirement is enforced only for the spec being gated and that basis belongs to a closed spec. Non-claim: a required-derived-vocabulary verdict is NOT a ratification -- neither leaf gains primitive standing, and the 21 operator pairs and 6 cardinality pairs are untouched."
+    recorded_at: "2026-09-15T06:07:21.189Z"
+    test_nodeid: "packages/ds-codegen/src/analytical/closure.test.ts > adopting the closure form confers no standing > no coordinate gains standing by appearing in a closure: standing tracks the subtraction's verdicts and nothing else"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical
+    exit_code: 0
+    artifact_path: packages/ds-contracts/analytical-fixtures/subtraction-stage2.json
+    commit_sha: "80fef036"

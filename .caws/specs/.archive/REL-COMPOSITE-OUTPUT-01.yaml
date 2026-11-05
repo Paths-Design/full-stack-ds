@@ -1,0 +1,174 @@
+id: REL-COMPOSITE-OUTPUT-01
+title: 'Lawful stable analytical composites through selected readback and browser output'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Boundary repairs and ledger freshness landed with eleven executed acceptance receipts; selected carrier and browser follow-through closed in their own specs; stage2 and broader M4-M6 claims remain open.'
+created_at: '2026-10-01T00:54:44.587Z'
+updated_at: '2026-11-05T23:06:07.188Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Analytical qualification, composition, immutable selected carrier and bounded output realizations'
+    - 'Analytical scratch consumer and browser conformance witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'src/views/AnalyticalFixturesScratchView.tsx'
+    - 'src/components/analytical'
+    - 'src/data/analytical-fixtures'
+    - 'e2e/analytical-composite.spec.ts'
+    - 'README.md'
+  out: []
+invariants:
+  - 'Meaning precedes realization; no form name or fixture identity selects an analysis or output.'
+  - 'Composition preserves every operand-relevant transformation, task requirement and unresolved standing; reordering set-valued inputs cannot change analytical admission.'
+  - 'Qualification owns complete unique typed source-grain identity and immutable carried field facts; output mutation cannot mutate analytical authority.'
+  - 'Only selected supported lawful composites produce outputs, and lowerers consume the carried composite rather than source rows or mutable declarations.'
+  - 'Stage-2 ratification remains open; the bounded output witness does not establish M5 or M6 completeness, endpoint roles, temporal traversal or broader aggregation.'
+acceptance:
+  - id: A1
+    given: 'a magnitude comparison and a truncated cell'
+    when: 'direct and nested compositions are judged'
+    then: 'each refuses the same unmet ratio-comparability obligation'
+  - id: A2
+    given: 'mixed transformations sharing a channel and set-valued grain declarations'
+    when: 'operands and grain fields are permuted'
+    then: 'complete normalized semantics and admission remain equivalent'
+  - id: A3
+    given: 'missing, empty, duplicate and incomplete source populations'
+    when: 'qualification runs'
+    then: 'missing evidence stays distinct and unresolved while duplicate grain is contradicted and no missing value is manufactured as identity'
+  - id: A4
+    given: 'qualified field views and declared target capacities'
+    when: 'composition runs with invalid channels or absent capabilities'
+    then: 'invalid assignments refuse and unavailable target support cannot retain'
+  - id: A5
+    given: 'qualified authority and produced artifacts'
+    when: 'source declarations or artifact values are mutated'
+    then: 'established authority stays unchanged and downstream interpretation uses carried facts'
+  - id: A6
+    given: 'multiple faulted operands and constructed unselected lowering requests'
+    when: 'composition and lowering run'
+    then: 'contradictions dominate unresolved summary standing with all origins retained and unselected requests cannot produce output'
+  - id: A7
+    given: 'a qualified result consumed with changed declarations'
+    when: 'composition reads its fields'
+    then: >-
+      transformation units and relationship facts are taken from the immutable
+      carried result rather than reinterpreted from the changed declaration
+  - id: A8
+    given: 'set-valued source-grain declarations and structured keys'
+    when: 'grain fields are permuted or numeric and string key values are compared'
+    then: 'co-registration ignores grain declaration order while distinct scalar key types remain distinct'
+  - id: A9
+    given: 'a qualified ratio view and nominal view sharing one text channel'
+    when: 'their operand order changes and a length-only embed budget is judged'
+    then: >-
+      all presented transformations survive normalization and the nominal
+      requirement refuses in either order
+  - id: A10
+    given: 'an absent population and an explicitly empty population'
+    when: 'the qualified-result selection and readback orchestration runs'
+    then: >-
+      the missing population remains unproven while the explicitly empty result
+      remains distinct as nothing-to-realize
+  - id: A11
+    given: 'the bounded boundary repairs'
+    when: 'analytical tests types lint and required repository gates run'
+    then: >-
+      the corrected cases and conservation checks pass and stage-2 unratified
+      subtraction remains explicitly separate
+non_functional: {}
+contracts:
+  - name: 'analytical-composite'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'analytical-output'
+    type: contract-test
+    path: 'e2e/analytical-composite.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: direct and nested magnitude tasks both refuse REL_EMBED_TASK_EXCEEDS_CHANNEL_BUDGET and name ratio-comparability at a truncated position baseline."
+    recorded_at: "2026-10-01T01:30:49.110Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: mixed nominal/ratio text readings are deeply equal under operand reversal, retain both transformation requirements, and refuse a length-only embed; reversed grain fields co-register."
+    recorded_at: "2026-10-01T01:30:56.062Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: omitted population is unproven, explicit empty is qualified/nothing-to-realize, incomplete keys contain no manufactured site binding, and duplicated complete keys are contradicted/refused."
+    recorded_at: "2026-10-01T01:31:03.359Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Qualified ratio-on-hue refuses; an empty target channel inventory is unsupported; absent cyclic licence and bare proportion stay unproven."
+    recorded_at: "2026-10-01T01:31:40.530Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Changing source grain, transformation, units and bound endpoints leaves qualified facts and the retained carried interpretation unchanged; changing detached readback value to 999 leaves authority value 10 frozen."
+    recorded_at: "2026-10-01T01:31:50.951Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Both operand orders surface refusal ahead of unproven standing and retain both part origins; a cast unselected lowering request throws before producing output."
+    recorded_at: "2026-10-01T01:32:04.854Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: After declaration mutation, the retained view still carries ratio, original unit u, and original lo/hi bounds from the qualified snapshot."
+    recorded_at: "2026-10-01T01:32:18.226Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Reversing grain field declarations retains co-registration; numeric site 1 and string site 1 refuse co-registration despite equal cardinality."
+    recorded_at: "2026-10-01T01:33:29.676Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: A nominal label and ratio value sharing text retain both requirements under reversal, have no representative transformation, and both refuse a length-only cell."
+    recorded_at: "2026-10-01T01:33:50.891Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A10
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Omitted population selection returns unproven while explicit empty selection returns nothing-to-realize."
+    recorded_at: "2026-10-01T01:34:05.610Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A11
+    status: pass
+    evidence_ref: "Current main source check: 3 files/38 tests pass; root final 315 files/4633 tests pass; required governed:rail/framework suites, production build/lint/docs checks pass; production Chromium 8 tests pass including five mutations and output absence. Current main freeze 166 erasures/130 verdicts and quotient 34/34 held. Codegen and target typing pass; root typecheck retains only three pre-existing focus-trap.ts Array.at errors. Stage-2 subtraction remains unratified. Browser contract landed at 204711aa66ba6fa51e733dc38e2713ca0f5ac6b0. Local execution receipts inspected; CAWS verifies the commit citation without rerunning Vitest or Playwright."
+    recorded_at: "2026-10-01T03:04:33.060Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts --maxWorkers=2
+    exit_code: 0
+    commit_sha: "7b94b4e26"

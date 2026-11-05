@@ -1,0 +1,69 @@
+id: WORKTREE-INSTALL-WORKSPACE-ISOLATION-01
+title: 'worktree-install derives node_modules importers from pnpm-workspace and refuses write-through'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'worktree-install derives importers from pnpm-workspace.yaml, refuses write-through installs, and --check guards canonical in pre-push'
+created_at: '2026-09-23T03:55:20.743Z'
+updated_at: '2026-11-05T23:10:02.099Z'
+created_by_session: '06123efd-fe17-4416-ace9-a7cc530e56a8'
+blast_radius:
+  modules:
+    - 'scripts/worktree-install.mjs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/worktree-install.mjs'
+    - 'scripts/worktree-install.test.mjs'
+    - 'package.json'
+    - '.githooks/pre-push'
+    - '.github/workflows/ci.yml'
+  out: []
+invariants:
+  - 'Every pnpm importer''s node_modules (root plus each pnpm-workspace.yaml glob match, minus negations) is unlinked when it is a symlink; no hardcoded package-directory list'
+  - 'pnpm install never runs while any importer node_modules path is a symlink or realpaths outside the worktree'
+  - 'Unlink removes only the link, never recurses into the target'
+  - '--check fails when any importer node_modules is a symlink or any direct dependency link realpaths outside the checked tree (or, in canonical, into .caws/worktrees)'
+acceptance:
+  - id: A1
+    given: 'a worktree fixture whose examples/*/* importer node_modules is a symlink to canonical'
+    when: 'importer discovery runs'
+    then: 'that path is listed and packages/* negations are excluded'
+  - id: A2
+    given: 'a fixture importer node_modules symlink'
+    when: 'the install preflight runs after unlinking is skipped'
+    then: 'it refuses before pnpm runs and names the path'
+  - id: A3
+    given: 'a canonical fixture whose importer node_modules entry links into .caws/worktrees/<name>'
+    when: '--check runs from canonical'
+    then: 'it fails naming the entry'
+  - id: A4
+    given: 'a clean worktree and a clean canonical checkout'
+    when: 'worktree:check runs'
+    then: 'it exits 0 against the real repo'
+rollback:
+  - 'git revert the fix commit; script falls back to the packages/* list'
+non_functional: {}
+contracts:
+  - name: 'worktree-install-isolation'
+    type: contract-test
+    path: 'scripts/worktree-install.test.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "node --test scripts/worktree-install.test.mjs @ b8eb5fa1 (12/12): 'an examples/*/* importer's symlinked node_modules is found' + 'importers come from pnpm-workspace.yaml ... minus negations'; live: --check listed all 16 symlinked node_modules incl. 5 examples/*/* in fresh worktree worktree-install-isolation"
+    recorded_at: "2026-09-23T04:07:44.580Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node --test scripts/worktree-install.test.mjs @ b8eb5fa1 (12/12): 'preflight refuses while an importer node_modules is still a symlink, naming it' + 'install never spawns pnpm when an importer directory itself realpaths outside the worktree'; mutation probe (preflight emptied / install skips preflight) killed both"
+    recorded_at: "2026-09-23T04:07:46.139Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node --test scripts/worktree-install.test.mjs @ b8eb5fa1 (12/12): 'canonical check flags a dependency link repointed into a worktree, and passes a local one'; mutation 'no nested-worktree rule' killed"
+    recorded_at: "2026-09-23T04:07:47.485Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "live: node scripts/worktree-install.mjs (unlinked 16, frozen install 14.4s) then --check exit 0 in worktree; canonical isolationViolations=0 with link digest 8a8037ce89289529 (163 links) identical before/after the worktree install; pnpm test in worktree 305 files/4367 tests passed"
+    recorded_at: "2026-09-23T04:07:49.091Z"

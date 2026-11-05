@@ -1,0 +1,112 @@
+id: SHOWCASE-COMPONENT-ADOPTION-03
+title: 'Complete showcase adoption through shared input, choice and code contracts'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Replaced all eight remaining showcase control sites with shared components, completed upstream input/selection/radio/source semantics, and verified full local pre-push, framework tests, Chromium interactions and scoped visual evidence.'
+created_at: '2026-09-11T05:11:02.966Z'
+updated_at: '2026-11-05T23:07:53.941Z'
+created_by_session: '01a074e8-6c81-7f93-8d64-5c64eca9cfa6'
+blast_radius:
+  modules:
+    - 'Input, Select, RadioGroup and CodeBlock contracts and their generated realizations'
+    - 'Showcase token editors, brand selection and annotated source viewer'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/contract.ts'
+    - 'packages/ds-codegen/src/frameworks'
+    - 'packages/ds-codegen/src/selection-label.test.ts'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'src/components'
+    - 'src/layout/Header.tsx'
+    - 'src/views/TokensView.tsx'
+    - 'src/styles/app.css'
+    - 'src/consumption'
+    - 'e2e/showcase-adoption.spec.ts'
+    - 'e2e/showcase-controls.spec.ts'
+    - 'docs/architecture/design/showcase-component-adoption.md'
+    - packages/ds-figma-plugin/src/generated
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/CodeBlock
+    - src/runtime/demos.ts
+    - src/runtime/demos.test.ts
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/CodeBlock
+    - packages/ds-codegen/src/roving-keyboard-ir.test.ts
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/RadioGroup
+    - packages/ds-swiftui/Tests/DsSwiftUITests/ComponentSmokeTests.swift
+    - packages/ds-swiftui/Sources/DsSwiftUI/Components/Components.generated.swift
+    - scripts/a11y-realization-audit/audit.mjs
+    - scripts/a11y-realization-audit/selfcheck.mjs
+  out: []
+  support:
+    - docs/current-implementation-snapshot.md
+    - AGENTS.md
+    - README.md
+    - docs/architecture/contract-group-axes.md
+    - docs/normal-form.md
+    - docs/research-program.md
+    - packages/ds-swiftui/README.md
+    - docs/architecture/design/box-model-primitive.md
+    - docs/architecture/design/component-design-bindings.md
+    - docs/architecture/tokens-architecture.md
+    - fsds.targets.json
+invariants:
+  - 'Durable component semantics stay in contracts and neutral IR; no component-name emitter branches or compatibility aliases.'
+  - 'All eight remaining raw control sites are removed through generated component consumption while preserving their interactions.'
+acceptance:
+  - id: A1
+    given: 'native typed inputs'
+    when: 'number and color editors use generated Input'
+    then: 'intrinsic semantics and value updates remain correct without forced textbox roles'
+  - id: A2
+    given: 'option selections and brand choices'
+    when: 'generated Select and RadioGroup are used'
+    then: 'selected labels, controlled updates and keyboard selection work through shared contracts'
+  - id: A3
+    given: 'source with trace annotations'
+    when: 'CodeViewer consumes CodeBlock and Button'
+    then: 'source text, line structure, copy and trace navigation remain usable'
+  - id: A4
+    given: 'the showcase source and generated targets'
+    when: 'guards, framework gates and browser checks run'
+    then: 'zero raw control allowances remain and the affected interactions render and function correctly'
+non_functional: {}
+contracts:
+  - name: 'component-semantics'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "e2e/showcase-controls.spec.ts: native number/color semantics across five web targets; integrated inspector color update. Logs: showcase-controls-browser-5.log, showcase-controls-color-final.log, showcase-controls-lit-browser-final.log."
+    recorded_at: "2026-09-11T18:25:07.719Z"
+    artifact_path: tmp/showcase-controls/showcase-controls-color-final.log
+    commit_sha: cb06ec65c7ce67c09368886725282d0745cecb36
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "e2e/showcase-controls.spec.ts: RadioGroup native keyboard and disabled options; Select labels, controlled updates and dismissal across five web targets. Logs: showcase-controls-browser-5.log and showcase-controls-lit-browser-final.log."
+    recorded_at: "2026-09-11T18:25:16.093Z"
+    artifact_path: tmp/showcase-controls/showcase-controls-lit-browser-final.log
+    commit_sha: cb06ec65c7ce67c09368886725282d0745cecb36
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "src/components/shared-controls.test.tsx and e2e/showcase-controls.spec.ts: annotated source, line geometry, copy and trace navigation. e2e/codeblock-whitespace.spec.ts: five-target literal rendering. Lit standalone slot regression passes."
+    recorded_at: "2026-09-11T18:25:24.502Z"
+    artifact_path: tmp/showcase-controls/showcase-controls-browser-5.log
+    commit_sha: cb06ec65c7ce67c09368886725282d0745cecb36
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Zero raw production control and surrogate allowances enforced by src/consumption/dogfooding-guard.test.ts. Full PREPUSH_FULL=1 passed at cb06ec65 in 274 seconds; framework suites, 38 Chromium checks, final Lit 24 checks and visual inspection recorded in tmp/showcase-controls/verification.md."
+    recorded_at: "2026-09-11T18:25:33.049Z"
+    artifact_path: tmp/showcase-controls/showcase-controls-prepush-final.log
+    commit_sha: cb06ec65c7ce67c09368886725282d0745cecb36

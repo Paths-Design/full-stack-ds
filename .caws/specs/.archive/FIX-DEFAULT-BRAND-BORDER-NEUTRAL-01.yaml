@@ -1,0 +1,31 @@
+id: FIX-DEFAULT-BRAND-BORDER-NEUTRAL-01
+title: 'Default brand: retint neutral/structural border roles off red ramp to neutral'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge border-neutral at 81cff9101dc370f1c00a739bbfe2cd93946b5939'
+created_at: '2026-06-24T22:24:16.386Z'
+updated_at: '2026-11-05T23:02:33.964Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'TODO: list the file(s) or directories this spec authorizes.'
+    - packages/ds-tokens/src/brands/default.tokens.json
+    - packages/ds-tokens/generated/
+    - packages/ds-codegen/.emission-manifest.json
+    - tmp/
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts: []

@@ -1,0 +1,82 @@
+id: FEAT-COMPOSE-GLYPH-ADMISSION-01
+title: 'Compose glyph pipeline: Icon glyph-host + icon-decorated Alert/AlertNotice/Badge admission'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Compose glyph pipeline landed: Icon via glyph-host, Alert/AlertNotice/Badge via icon-decorated content on shared substrate predicates; 25-to-29 admitted; NavTree divergence ledgered'
+created_at: '2026-09-13T00:49:57.103Z'
+updated_at: '2026-11-05T22:59:55.465Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts (isGlyphHost/domGlyph/isIconDecoratedContent move here)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts (imports the substrate)'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/{component-source.ts,icon-glyph.ts,factory.ts} (+tests; glyph-host and icon-decorated classes; catalog emission)'
+    - 'packages/ds-jetpack-compose/library (committed FsdsSvgPath runtime + generated FsdsGlyphCatalog + regenerated Icon/Alert/AlertNotice/Badge trees)'
+    - 'fsds.targets.json + scripts/compose-parity-diff.mjs (+test) + count-marker docs'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/icon-glyph.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/factory.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'scripts/compose-parity-diff.test.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Emission classes dispatch on structural IR predicates owned by the shared substrate — never component names (grep-verifiable).'
+  - 'The substrate move is behavior-preserving: every previously admitted SwiftUI and Compose component regenerates byte-identically.'
+  - 'Compose glyph substrates stay foundation-only (zero androidx.compose.material imports); substrate dirs are family-named and never case-collide with component names.'
+  - 'The allowlist is the admission decision, not the dispatch: NavTree matches isGlyphHost but stays unadmitted on compose until its list class lands (ledgered divergence).'
+  - 'Arc conversion uses the standard SVG endpoint parameterization proven by the swift spike — no silent geometry drift between native targets.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given isGlyphHost and isIconDecoratedContent are target-neutral structural facts swift currently keeps local; when they move into the shared native-emission-class substrate consumed by both emitters; then swiftui regeneration stays byte-identical for all 52 admitted components and the codegen suite passes'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the iconography corpus drives a generated glyph catalog and a committed foundation-only FsdsSvgPath runtime with the proven arc-to-cubic conversion; when the compose emitter gains the glyph-host class (Icon) dispatching on the substrate predicate; then Icon.kt compiles via gradle with size hints from the IR iconGlyph fact and decorative-by-default semantics from catalog flags'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Alert, AlertNotice, and Badge are icon-decorated content (ReactNode icon region plus one content region with variant-layered chrome); when the compose emitter gains the icon-decorated class on the substrate predicate; then all three generate, compile via gradle, and satisfy the parity gate with their chrome roles claimed and RN shared identities agreeing'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given NavTree also matches isGlyphHost as a degraded route swift tolerates; when the compose allowlist grows to 29; then NavTree stays deliberately unadmitted with the decision ledgered in the admission criteria doc divergence section'
+non_functional: {}
+contracts:
+  - name: 'glyph-host-predicate'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isGlyphHost/domGlyph/isIconDecoratedContent moved to native-emission-class.ts; swift regeneration after the move is byte-identical (52 groups, zero git diff over packages/ds-swiftui, re-verified post-merge); the move caught and fixed a real transcription defect (inverted ir.surface == null check rejected every component); codegen suite green 291/291 files, 3882/3882 tests"
+    recorded_at: "2026-09-13T01:35:35.607Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "gradlew :library:compileKotlin BUILD SUCCESSFUL over 29 groups; Icon.kt lowers iconGlyph sizeHints to a synthesized IconSize enum with token-scoped icon.size.* dims preferred and hint fallback; decorative-by-default via FsdsGlyphCatalog.decorativeDefaults + clearAndSetSemantics; generated FsdsGlyphCatalog.kt + committed FsdsSvgPath.kt (arc-to-cubic port, zero material imports)"
+    recorded_at: "2026-09-13T01:35:36.125Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "compose-parity-diff.mjs: 29 allowlisted components, 0 failures (glyphHost + iconDecorated paths added with self-test 8/8); member-named variant slots incl. error-to-danger sole-family closure — AlertNotice when(status) reads every RN-consumed role key; reads-backed-by-definitions asserted in unit tests 27/27"
+    recorded_at: "2026-09-13T01:35:47.760Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "fsds.targets.json jetpack-compose allowlist 25 to 29 (Icon, Alert, AlertNotice, Badge); NavTree absent despite matching isGlyphHost — decision ledgered in docs/architecture/native-target-admission.md divergence section (admission is the allowlist's decision, not the dispatch's); docs:check-claims OK 74/74, links 107/107"
+    recorded_at: "2026-09-13T01:35:48.223Z"

@@ -1,0 +1,126 @@
+id: REL-EMBED-COMPOSITE-BUDGET-01
+title: 'M3 embed composition: a composed analytical object is typed against a cell budget from its complete outward reading'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Embed now types a composed object from its complete outward reading: every presented channel must be hostable by the budget, unhostable channels refuse naming the channel, uncarried licences stay unproven, the derived structure travels through the verdict, and the descendant-picking mutant is refuted.'
+created_at: '2026-09-22T17:19:36.799Z'
+updated_at: '2026-11-05T23:06:18.432Z'
+created_by_session: 'session-bd42da68-ec3b-4aed-b4b4-701f8fc1b865'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/analytical/projection.ts (judgeEmbed''s composite branch: budget hostability over the complete reading, claim induction from carried transformations, structure preservation)'
+    - 'packages/ds-codegen/src/analytical/projection.test.ts (composite embed controls, descendant-picking mutant, OHLC second witness)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+  out: []
+invariants:
+  - 'COMPLETE READING, NEVER A DESCENDANT: the composite branch types every channel the retained reading presents; selecting one atomic descendant''s probe is the false pass this slice exists to refute.'
+  - 'CARRIED FACTS ONLY: claim induction reads the transformations the reading carries, through the same channelClaims authority the atomic path uses; nothing is re-read from rows, declarations or fixture identity, and a fact the reading does not carry (e.g. scale cyclicity) is an unproven premise rather than an invented default.'
+  - 'STRUCTURE IS PRESERVED: the retained embed verdict carries the inner composite''s population, ranges, panels, claims and provenance unreconstructed.'
+  - 'STANDING AND ATTRIBUTION PRECEDE THE BUDGET: a faulted inner composite propagates its own cause or obligation attributed to the part; a bad host is attributed to the host; only a genuine budget incompatibility is the combinator''s.'
+  - 'SUPPORTED NEGATIVE IS COMPLETION: if a structured composite''s support requirements cannot be expressed by the scalar Channel[] budget, the slice records that codomain mismatch instead of extending budget opportunistically.'
+acceptance:
+  - id: A1
+    given: 'a retained sub-composite (layer or facet over qualified views) as the embedded part with a sufficient budget'
+    when: 'embed judges'
+    then: 'the verdict is retained with combinator embed, reached through the composite branch rather than the atomic-only early return'
+  - id: A2
+    given: 'the retained embed verdict'
+    when: 'its content is compared with the inner composite''s'
+    then: 'population, range groups, panels, claims and provenance are preserved unreconstructed'
+  - id: A3
+    given: 'the same composite and a minimally changed budget that cannot host one presented channel''s transformation'
+    when: 'embed judges'
+    then: 'it refuses REL_EMBED_TASK_EXCEEDS_CHANNEL_BUDGET naming that presented channel, and a merely-nonempty budget is not what passes'
+  - id: A4
+    given: 'an inner composite whose first atomic descendant''s channel the budget hosts while another presented channel it does not'
+    when: 'embed judges'
+    then: 'the complete-reading rule refuses while the precommitted first-descendant mutant would retain, so descendant-picking is refuted'
+  - id: A5
+    given: 'an inner composite that is contradicted or unproven'
+    when: 'embed judges'
+    then: 'the composite inherits the part''s own cause or obligation attributed to part, before and instead of any budget disposition'
+  - id: A6
+    given: 'a bad host, a bad embedded composite, and a genuine budget incompatibility'
+    when: 'each is judged'
+    then: 'attribution is host, part and combinator respectively'
+  - id: A7
+    given: 'the same input observations reordered before composition'
+    when: 'embed judges'
+    then: 'the normalized embed judgment is equivalent'
+  - id: A8
+    given: 'a consistent rename of relation, grain fields, range fields, references and rows'
+    when: 'judged and compared by normalized fields'
+    then: 'the embed judgment is equivalent'
+  - id: A9
+    given: 'the neutral composite green'
+    when: 'the OHLC-derived bounded-range composition is embedded under the same implementation'
+    then: 'it is typed without adaptation and without form vocabulary'
+  - id: A10
+    given: 'a presented channel whose hostability would need a fact the reading does not carry (a cyclic-or-whole channel with no carried cyclicity)'
+    when: 'embed judges'
+    then: 'the verdict is unproven with the named missing premise, never a refusal and never an invented default'
+  - id: A11
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: >-
+      given the retained embed verdict over a composite; when its population and
+      identity fields are read; then the population equals the inner composite
+      reading's carried population and no operand identity is present, because the
+      rule consumed the normalized merged reading rather than reopening rows or
+      declarations
+non_functional: {}
+contracts:
+  - name: 'embed-composite-budget'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection.test.ts RESTART piece 9 'A1: a composed object reaches the embed rule and is typed from the complete reading' — the layer and the nested facet composites both return retained with combinator embed; the cell's induced claims include aggregate-magnitude and ratio-comparability through the same channelClaims authority the atomic path uses. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:29:11.835Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "projection.test.ts 'A2: the retained verdict preserves the inner composite's structure unreconstructed' — outer verdict panels, population, channels and transformations deep-equal the inner facet judgment's; nothing is flattened. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:29:12.333Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection.test.ts 'A3: a minimally changed budget that cannot host a presented channel refuses, naming it' — full budget [length, hue] retains; [hue] refuses REL_EMBED_TASK_EXCEEDS_CHANNEL_BUDGET from combinator, detail names 'length:ratio', and the control asserts the budget is nonempty so nonemptiness is not the rule. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:29:12.788Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection.test.ts 'A4: the first-descendant mutant is refuted' — inner layer whose first view presents ratio on length and second presents NOMINAL on hue; budget [length] hosts the first descendant (mutant predicate returns true) while the real rule refuses naming 'hue:nominal'. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:29:13.249Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection.test.ts 'A5: a faulted inner composite keeps its own cause' — contradicted layer: verdict refused with [REL_FIELD_BOUNDS_VIOLATED] from part; unproven layer composed against an ADDITIONALLY insufficient budget still reports from part, so the budget disposition never replaces the part's standing. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:29:13.711Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection.test.ts 'A6: host, part and combinator stay distinct repair loci' — unimplemented-task host gives unsupported from host; contradicted composite gives refused from part; insufficient budget gives refused from combinator. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:29:23.726Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "projection.test.ts 'A8: reordering source observations leaves the embed judgment equivalent' — reordered input yields byte-equal serialized panels on the embedded facet composite. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:30:03.707Z"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "projection.test.ts 'A9: alpha invariance' — consistent rename of relation/grain/fields/partition/rows: embed retained with panels S1/S2 and renamed range {base, cap, [first_value, second_value]}. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:30:04.168Z"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "projection.test.ts 'A10: second witness' — the OHLC-derived faceted bounded-range composition embeds through the same implementation: retained, panels AAA/BBB, each carrying {low, high, [close, open]}, no form vocabulary. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:30:04.622Z"
+  - criterion_id: A10
+    status: pass
+    evidence_ref: "projection.test.ts 'A11: a presented channel whose only host needs an uncarried fact leaves the premise unproven' — budget [angle] for a composite presenting ratio: angle carries ratio but requiresCyclicOrWhole and the reading carries no cyclicity, so the verdict is unproven with obligation budget:channel-licence from combinator, neither a refusal nor an invented default. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:30:05.077Z"
+  - criterion_id: A11
+    status: pass
+    evidence_ref: "projection.test.ts 'A7: the embed rule reads the normalized reading only' — the embed verdict's population deep-equals the inner layer reading's population and its identity is undefined, proving the merged reading (not an operand identity) was consumed rather than rows reopened; panels equal too. Run on landed main@5754a432: vitest analytical 1106/1106."
+    recorded_at: "2026-09-22T17:30:05.529Z"

@@ -1,0 +1,88 @@
+id: FIGMA-COMPONENT-PROPERTY-MATERIALIZER-01
+title: 'Figma component-property materializer: plan-driven state surface (component properties/variants/metadata) via mocked Figma; no semantic reinterpretation, no token resolution, no live mutation'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge figma-materializer at d5c2d6e437a5862b256e595f01de8632884c8e37'
+created_at: '2026-06-05T23:40:58.291Z'
+updated_at: '2026-11-05T23:01:25.825Z'
+blast_radius:
+  modules:
+    - '@full-stack-ds/figma-plugin (materializer wiring, component-property mock surface, state-surface helpers)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - packages/ds-figma-plugin/src/plugin.ts
+    - packages/ds-figma-plugin/src/figma.d.ts
+    - packages/ds-figma-plugin/src/materialize-state.ts
+    - packages/ds-figma-plugin/src/materialize-state.test.ts
+    - packages/ds-figma-plugin/src/plugin.test.ts
+  out:
+    - packages/ds-figma-plugin/src/planner.ts
+    - packages/ds-tokens/
+    - packages/ds-codegen/
+invariants:
+  - "The materializer CONSUMES the FigmaStatePlan and never re-derives state semantics. No branching on state-value names (checked/disabled/open/selected) anywhere in the materializer. Direct descriptor reads are allowed only for non-state scaffold (name/anatomy/props/css)."
+  - "Every DimensionLowering.kind has an explicit materialization behavior or an explicit omission record: variant-axis and boolean-property create component-property structure; interaction-axis creates interaction-state structure (never a public boolean property); channel-bound and metadata-only are omitted from controls and recorded as plugin data."
+  - "Suppression relations and residuals are surfaced as plugin data, never silently dropped. Suppression masks interaction affordances only — it never deletes or suppresses semantic axes (selection/openness/loading/validation)."
+  - "No token resolution, no Figma paint/text/effect styling, no live-Figma mutation. All evidence is via the mocked Figma API."
+acceptance:
+  - id: A1
+    given: "a descriptor with dimensional states"
+    when: "the plugin materializes it"
+    then: "plugin.ts calls planFigmaStateSurface(descriptor) and passes the FigmaStatePlan into a materialization helper; no materializer code classifies state dimensions from raw descriptor values"
+  - id: A2
+    given: "a plan containing each DimensionLowering.kind"
+    when: "the materializer runs"
+    then: "interaction-axis, variant-axis, boolean-property, channel-bound, and metadata-only each have an explicit behavior or explicit omission record (support != visible control)"
+  - id: A3
+    given: "variant-axis dimensions (Button availability=disabled, Checkbox/Switch selection=checked, Tabs selection=selected)"
+    when: "materialized"
+    then: "they create variant/property structure for the planner's active values — NOT boolean properties (the planner already residualized them as restyle-unsafe)"
+  - id: A4
+    given: "a planner-approved boolean-property dimension (Sheet openness=open)"
+    when: "materialized"
+    then: "a Figma boolean component property is created, and the mixed-channel-and-visual residual is preserved (not hidden)"
+  - id: A5
+    given: "interaction-axis dimensions (pointer, focus)"
+    when: "materialized"
+    then: "they become interaction-state structure / variant metadata, never public boolean properties; pointer and focus stay separate (hover+focus representable, hover/active scoped within pointer)"
+  - id: A6
+    given: "channel-bound dimensions (Dialog openness)"
+    when: "materialized"
+    then: "they do not become user-facing controls; the omission is recorded as plugin data"
+  - id: A7
+    given: "a suppression relation (availability=disabled)"
+    when: "materialized"
+    then: "it is preserved as plugin data pointing at pointer/focus; the materializer does not delete or suppress selection/openness/loading/validation"
+  - id: A8
+    given: "a plan with residuals"
+    when: "materialized"
+    then: "residuals are written to stable plugin data and asserted in tests — a residual is recorded evidence, never a silent downgrade to a lower-fidelity primitive"
+  - id: A9
+    given: "the mocked Figma API"
+    when: "the materializer runs in tests"
+    then: "tests assert the actual component-property / setPluginData calls; no live Figma or MCP is required"
+  - id: A10
+    given: "the existing placeholder/scaffold plugin behavior"
+    when: "this slice lands"
+    then: "non-state scaffold behavior remains intact (or is intentionally replaced); existing plugin tests still pass or are intentionally updated"
+  - id: A11
+    given: "this slice's diff"
+    when: "reviewed"
+    then: "no token resolution lands — the materializer names properties/axes/variants/plugin data but does not bind Figma paint/text/effect styles or resolve semantic tokens"
+  - id: A12
+    given: "this slice's diff"
+    when: "reviewed"
+    then: "no live-Figma mutation claim lands; all tests are mocked"
+non_functional: {}
+contracts:
+  - name: 'plan-driven-materializer'
+    type: behavior
+    path: 'packages/ds-figma-plugin/src/materialize-state.ts'
+    description: "Plan-driven state-surface materializer: consumes a FigmaStatePlan and materializes component properties / variant structure / interaction-state metadata / suppression + residual plugin data via the (mocked) Figma API. Never re-derives state semantics."
+  - name: 'mocked-figma-materialization-evidence'
+    type: contract-test
+    description: "Per-component mocked-Figma materialization evidence for Button/Checkbox/Switch/Dialog/Sheet/Tabs + an additive-boolean fixture + a residual/metadata-only fixture, asserting the actual addComponentProperty/setPluginData calls."

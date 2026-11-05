@@ -1,0 +1,45 @@
+id: FIX-PORTAL-CONTRACT-ADJUDICATION-01
+title: 'Portal contract adjudication: Command surface block, Calendar overclaim removal, Select/Walkthrough disposition'
+risk_tier: 3
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge portal-adjudication at d0d4d7e96ffd7b8fbe3fd45de98c603e2f11022c'
+created_at: '2026-07-22T09:32:09.059Z'
+updated_at: '2026-11-05T23:03:23.615Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Command/'
+    - 'packages/ds-contracts/components/Calendar/'
+    - 'packages/ds-contracts/components/Select/'
+    - 'packages/ds-contracts/components/Walkthrough/'
+    - 'packages/ds-react/src/components/'
+    - packages/ds-vue/src/components/Command/
+    - packages/ds-svelte/src/components/Command/
+    - packages/ds-angular/src/components/Command/
+    - packages/ds-lit/src/components/Command/
+    - packages/ds-react-native/src/components/Command/
+    - packages/ds-figma-plugin/src/generated/
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'Command is a genuine modal with no surface block so no IR fact names its portal subtree'
+    when: 'the contract gains a centered surface block'
+    then: 'React regeneration portals Command root-to-body through the existing portalsRootToBody gate with a DOM-parent test.'
+  - id: A2
+    given: 'Calendar declares portal.enabled over a static inline grid with no popover mode in its DOM anatomy'
+    when: 'the overclaim is removed from the contract'
+    then: 'the contract no longer promises portaling it never realizes.'
+  - id: A3
+    given: 'Select and Walkthrough are anchored surfaces where a naive body portal breaks positioning'
+    when: 'each is adjudicated'
+    then: 'portal.enabled is either removed or explicitly deferred to the cross-framework portal mechanism feature, recorded in the contract or spec notes.'
+non_functional: {}
+contracts: []

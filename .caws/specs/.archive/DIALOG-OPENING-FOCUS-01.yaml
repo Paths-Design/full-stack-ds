@@ -1,0 +1,101 @@
+id: DIALOG-OPENING-FOCUS-01
+title: 'Preserve surface focus through portal mounting and realize selector focus props'
+risk_tier: 2
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Merged contract-owned focus props and web lifecycle fixes; connected portal focus, projected controls, wrapping, return focus, and non-modal behavior verified with 44 browser cases and required package gates.'
+created_at: '2026-09-30T22:39:11.168Z'
+updated_at: '2026-11-05T22:57:50.245Z'
+created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
+blast_radius:
+  modules:
+    - 'Web focus-trap and portal primitives'
+    - 'Contract focus policy IR and web emitter wiring'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-figma-plugin'
+    - 'e2e/dialog-focus.spec.ts'
+    - 'docs/architecture/presence-surfaces.md'
+    - 'docs/internal/input-visual-audit'
+    - 'scripts/custom-region-audit/known-authored-regions.json'
+    - docs/architecture/design/box-model-primitive.md
+    - docs/architecture/design/component-design-bindings.md
+    - docs/normal-form.md
+  out: []
+invariants:
+  - 'Focus policy remains contract-owned and emitter rules do not branch on component identity'
+  - 'Non-modal surfaces do not trap focus or steal initial focus'
+  - 'Portal destinations respect composition boundaries and SSR safety'
+acceptance:
+  - id: A1
+    given: 'Dialog opens from a real launcher and is mounted through a portal'
+    when: 'portal children settle'
+    then: 'focus remains on a connected element inside the dialog and Tab wraps in both directions'
+  - id: A2
+    given: 'a dialog selector or element ID initialFocus prop names an enabled child'
+    when: 'the dialog opens'
+    then: 'that child receives focus across all five web frameworks with safe fallback for absent targets'
+  - id: A3
+    given: 'a modal dialog was opened by a launcher'
+    when: 'it closes or unmounts'
+    then: 'focus returns to the connected launcher and non-modal dialogs preserve outside focus'
+  - id: A4
+    given: 'governed contracts and shared primitive lifecycle'
+    when: 'generated packages and existing framework suites are validated'
+    then: 'the required admission rail and root plus framework tests pass without hand-edited generated code'
+non_functional: {}
+contracts:
+  - name: 'dialog-focus'
+    type: behavior
+    path: 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged-main real showcase launcher executed in Chromium: connected close button inside Edit profile after portal settlement, Shift+Tab inside, Escape restores launcher. Raw main-runtime.json and main-final-probe.log under ignored docs/internal/input-visual-audit/dialog-focus/. 44-case focus/modality browser run additionally passed both Tab directions across all five web targets. Artifact/commit custody checked by --verify; runtime execution was manually inspected."
+    recorded_at: "2026-10-01T00:06:31.492Z"
+    command: node docs/internal/input-visual-audit/dialog-focus/main-probe.mjs
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: d774a76e36acbeb71e4cef9bac122c32cef8deb7
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "44 Chromium cases passed on final source (slots-final-browser.log): all five targets honor selector focus and missing-target fallback; React lifecycle tests cover selector/bare ID and malformed targets. Identical helper SHA256 f1d1b5d3b905325dc2968302a2d693c1632e5cd01660d5f277d88379b502b006 in five packages. Lit native projected input selector/ID and fresh nested package Input pass; three cases rechecked on merged main (main-final-slots.log). New projected-input regression failed at initial focus against pre-fix main (slots-baseline-browser.log)."
+    recorded_at: "2026-10-01T00:06:43.048Z"
+    command: FSDS_E2E_PORT=5175 pnpm exec playwright test e2e/dialog-focus.spec.ts e2e/modality-rail.spec.ts --project=chromium --workers=2
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: "371d5221e"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Final 44-case browser suite verifies launcher restoration and non-modal outside-focus preservation across five web targets; React public-Dialog lifecycle suite (10 passing cases within 4618 root tests) verifies close, conditional unmount, StrictMode portal replacement, explicit return selectors, and changing portal destinations. Merged-main showcase and fresh Lit consumer Escape/unmount restore their launchers. Raw logs retained in docs/internal/input-visual-audit/dialog-focus/."
+    recorded_at: "2026-10-01T00:06:52.732Z"
+    command: FSDS_E2E_PORT=5175 pnpm exec playwright test e2e/dialog-focus.spec.ts e2e/modality-rail.spec.ts --project=chromium --workers=2
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: "371d5221e"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Final fail-fast run on exact committed source: required six-target admission rail PASS; root 4618 tests/313 files PASS; Vue 773, Lit 544 (2 existing Table skips), Svelte 676, Angular 508, React Native 187 PASS; lint and doc claims PASS. slots-final-* raw logs retained in docs/internal/input-visual-audit/dialog-focus/. Generated projections originate from contracts/IR/emitters; final slot lane changes only mirrored primitives and browser test. Seven separate pre-existing broader design-binding browser failures remain documented; this is not a full-e2e claim."
+    recorded_at: "2026-10-01T00:07:02.957Z"
+    command: "set -e
+pnpm run governed:rail
+pnpm test
+pnpm run test:frameworks
+pnpm run lint
+pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: "371d5221e"

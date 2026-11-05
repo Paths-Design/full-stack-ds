@@ -1,0 +1,40 @@
+id: CHIP-DISMISS-COMPOSITION-01
+title: 'Chip dismiss via owned fsds.Button child: container root + action/dismiss Buttons, slot-token overrides'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+created_at: '2026-06-13T12:04:12.904Z'
+updated_at: '2026-11-05T22:57:04.152Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'TODO: list the file(s) or directories this spec authorizes.'
+    - packages/ds-contracts/components/Chip/**
+    - packages/ds-react/src/components/Chip/**
+    - packages/ds-vue/src/components/Chip/**
+    - packages/ds-svelte/src/components/Chip/**
+    - packages/ds-angular/src/components/Chip/**
+    - packages/ds-lit/src/components/Chip/**
+    - packages/ds-react-native/src/components/Chip/**
+    - packages/ds-figma-plugin/src/generated/components/Chip/**
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'TODO'
+    when: 'TODO'
+    then: 'TODO'
+non_functional: {}
+contracts:
+  - name: 'chip-dismiss-behavior'
+    type: behavior
+    path: 'packages/ds-react/src/components/Chip/__tests__/Chip.test.tsx'
+  - name: 'chip-anatomy'
+    type: schema
+    path: 'packages/ds-contracts/components/Chip/Chip.contract.json'

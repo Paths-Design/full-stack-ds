@@ -1,0 +1,49 @@
+id: FEAT-COMPOSE-ANCHORED-SURFACES-01
+title: 'Anchored surface class: Compose Popover and Tooltip admission on the surface scaffold'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Popover and Tooltip admitted on the anchored-surface class; surface emitter implemented and two validator/tokens infrastructure gaps fixed; compose 41-to-43'
+created_at: '2026-09-13T04:22:14.874Z'
+updated_at: '2026-11-05T22:59:38.510Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/normal-form.md'
+    - packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts
+    - packages/ds-codegen/src/frameworks/jetpack-compose/factory.ts
+    - packages/ds-codegen/src/validation/component-token-consumption.ts
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the surface IR exposes anchored positioning with an anchor part, an openTriggers list and a placement enum; when the anchored-surface predicate lands in the shared substrate and the compose surface scaffold emits Popover (click trigger) and Tooltip (hover/focus trigger) with measured anchor offsets and a foundation Popup; then both compile via gradle, compose grows 41 to 43, parity/doc gates stay green, and Walkthrough remains unadmitted with its selector-anchor reason recorded'
+non_functional: {}
+contracts:
+  - name: 'anchored-surface'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "isAnchoredSurface added to the shared substrate (anchored strategy + anchor part, selector-anchored surfaces excluded so Walkthrough stays unadmitted); the compose surface scaffold became a real emitter: measured anchor via onGloballyPositioned, foundation Popup offset by anchor extent along the placement enum, click trigger for Popover and hover/focus interaction-state trigger for Tooltip; two real infrastructure gaps found and fixed this round — (1) surface components emitted no token-scope file at all (parity requires one), now generated from the surface's own source via a sourceOverride parameter on generateJetpackComposeTokensFile, and (2) the token-consumption validator assumed every allowlisted component flows through component-source and therefore threw on surface components, now routed through the surface emitter; compose 41-to-43: gradlew :library:compileKotlin BUILD SUCCESSFUL; compose-parity-diff 43/43 0 failures (anchoredSurface path+role); generate:check 52/52; typecheck clean; docs:check-claims 74/74; emitter tests 42/42"
+    recorded_at: "2026-09-13T04:27:29.088Z"

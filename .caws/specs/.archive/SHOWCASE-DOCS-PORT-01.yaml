@@ -1,0 +1,82 @@
+id: SHOWCASE-DOCS-PORT-01
+title: 'Showcase docs port: derived corpus site with dependency-graph landing'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Derived docs corpus site: git-tracked projection (reader + link-derived dependency graph landing) merged as 072b9d47'
+created_at: '2026-09-14T04:44:34.718Z'
+updated_at: '2026-11-05T23:08:00.059Z'
+created_by_session: 'session-670775d8-8388-4f26-b6cd-14dc1b73c8fd'
+blast_radius:
+  modules:
+    - 'showcase docs projection and rendering'
+    - 'showcase app shell routing and navigation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/docs'
+    - 'src/views'
+    - 'src/router.tsx'
+    - 'src/app.tsx'
+    - 'src/layout'
+    - 'vite.config.ts'
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'AGENTS.md'
+    - README.md
+  out: []
+invariants:
+  - 'Graph nodes and edges derive mechanically from the tracked corpus (git ls-files + frontmatter + relative md links); no hand-maintained graph file exists'
+  - 'The docs corpus boundary is git-tracked files only (README.md + docs/**/*.md); untracked machine-local state can never appear in site payloads'
+  - 'One projection module serves both dev middleware and build asset emission; no duplicated renderer or projection copies'
+  - 'The markdown renderer escapes all raw HTML before constructing tags and strips HTML comments so claims markers never render as visible text'
+  - 'No new runtime dependencies beyond d3-force'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the tracked markdown corpus; when the projection runs; then index/pages/graph payloads are derived from git ls-files, frontmatter, and parsed relative links, with no hand-maintained graph input'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the vite dev server; when /docs-data/* is requested; then payloads are computed from the working tree on that request, and a production build emits byte-identical payload shapes from the same module'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a doc reader route; when the page renders; then markdown renders with claims markers invisible, hostile HTML escaped, and relative md links rewritten to in-app routes'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the bare #/docs route; when the graph mounts; then nodes are sized by link degree, colored by frontmatter authority, hover highlights adjacency, and caption/selection affordances navigate to the reader'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the completed slice; when gates run; then root tests, lint, typecheck, docs:check-claims with rewritten markers, and the showcase coverage floor all pass'
+non_functional: {}
+contracts:
+  - name: 'docs-site-projection'
+    type: schema
+    path: 'src/docs/projection.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "vitest run src/docs/projection.test.ts src/docs/projection.corpus.test.ts (15 tests): routes/edges/degrees derived from git ls-files + frontmatter + parsed links; real-corpus ratchet: 43 nodes / 66 edges / 3 dropped, no docs/internal/ leakage, edge-endpoint closure; no hand-maintained graph input exists in the repo"
+    recorded_at: "2026-09-14T05:19:42.445Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "dev middleware curl /docs-data/* -> totals {nodes:43,edges:66,droppedLinks:3}, 404 JSON for unknown page/route; tracked-only boundary witnessed live (zz-smoke.md absent until git add -N, then served at /docs/zz-smoke); pnpm run build emits dist/docs-data with 43 page JSONs from the same module src/docs/vite-plugin.ts"
+    recorded_at: "2026-09-14T05:19:42.910Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "vitest run src/docs/markdown.test.ts src/views/DocsView.test.tsx (20 tests): mid-sentence <!-- marker --> stripped, <script> and raw HTML escaped, relative md link rewritten to /docs/readme, reader pills/pager render, not-found and fetch-error states"
+    recorded_at: "2026-09-14T05:19:43.375Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "vitest run src/docs/graph (20 tests: degree-sqrt sizing, deterministic authority categories, adjacency, hit-testing, popover Open->route + Escape/outside dismiss) plus browser witness node tmp/docs-graph-smoke.mjs via Playwright: canvas painted (6465 sampled non-transparent px), 7 legend categories, totals line '43 docs · 66 links · 3 out-of-scope links dropped', reader h1 + 15 routed body links"
+    recorded_at: "2026-09-14T05:19:52.701Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "worktree gate run at b5d7a177/15a81896: pnpm test 300 files / 3977 tests green; pnpm run lint + typecheck clean; docs:check-claims OK 75 claims after :fix rewrote 8 markers (route-count 13, view-list +DocsView, src-dir-count 12); test:coverage:showcase above floors (88.86 lines / 78.1 branches / 71.61 funcs vs 80/70/62); governed:rail verify OK; test:frameworks all five suites green; docs:check-links OK 107 links"
+    recorded_at: "2026-09-14T05:19:53.209Z"

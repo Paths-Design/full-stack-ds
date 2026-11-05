@@ -1,0 +1,27 @@
+id: DOC-SNAPSHOT-CHANNEL-OPS-TAX-01
+title: 'Ledger tax: channel-update ops landed, portal adjudication executed, lit asymmetry closed'
+risk_tier: 3
+mode: doc
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge doc-channel-ops at 1b09cc3cf475b9d338b790c19971562a0cbc7009'
+created_at: '2026-07-22T19:11:06.902Z'
+updated_at: '2026-11-05T22:58:25.417Z'
+blast_radius:
+  modules:
+    - 'TODO: list one or more modules this spec touches.'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'TODO: describe one invariant this spec guarantees.'
+acceptance:
+  - id: A1
+    given: 'the three post-push merges (portal adjudication, lit primary-attr defaulting, channel-update operations)'
+    when: 'the ledger is read'
+    then: 'no row still records OTP entry as deferred, the lit primary-attr residual as open, or Calendar/Select/Walkthrough portal flags as pending adjudication.'
+non_functional: {}
+contracts: []

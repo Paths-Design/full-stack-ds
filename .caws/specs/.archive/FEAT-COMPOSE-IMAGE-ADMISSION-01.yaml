@@ -1,0 +1,45 @@
+id: FEAT-COMPOSE-IMAGE-ADMISSION-01
+title: 'Painter-supplied media leaf; Compose Image admission with the loader decision recorded'
+risk_tier: 2
+mode: feature
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Image admitted as the 50th compose component through a media-leaf class that takes the image as a consumer painter, with the foundation-only loader decision recorded in the criteria'
+created_at: '2026-09-13T07:05:55.782Z'
+updated_at: '2026-11-05T22:59:56.273Z'
+created_by_session: 'session-a57bcf71-039b-4b33-98c5-60665c7bccd2'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts (media leaf class)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin'
+    - 'fsds.targets.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'The emitter fetches and decodes nothing: the painter is the consumer-s supplied value, and the decision is recorded rather than implied.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Image declares a media leaf with no channel and no reference; when the media-leaf class lowers the declared chrome and takes the image itself from the consumer as a painter, with URL loading recorded as out of scope for a foundation-only target; then the generated Image compiles, the allowlist grows 49 to 50, React Native''s consumed image chrome is claimed by the path role, the loader decision is recorded in the criteria, and SwiftUI regeneration is unchanged'
+non_functional: {}
+contracts:
+  - name: 'media-leaf'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/native-emission-class.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "merge bf4b7629: the generated Image takes a consumer Painter, renders foundation Image with contentDescription from the alt prop, and falls back to the alt text as the placeholder; gradlew :library:compileKotlin -> BUILD SUCCESSFUL; node scripts/compose-parity-diff.mjs -> 50 allowlisted, 0 failures with the mediaLeaf role claiming the image colour and radius slots and excluding image.size.* for the recorded reason; emitter suite 55/55; parity self-tests 20/20; pnpm run generate:check -> 52/52; swiftui regeneration byte-identical; pnpm test -> 3910/3910; pnpm run test:frameworks -> exit 0; pnpm run governed:rail -> exit 0, clean tree; docs:check-claims -> 75 claims with markers at 50, loader decision recorded in the criteria"
+    recorded_at: "2026-09-13T07:14:40.440Z"

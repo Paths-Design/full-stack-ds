@@ -1,0 +1,161 @@
+id: LINKS-DISABLED-ACTIVATION-01
+title: 'Make disabled links non-operable and keyboard discoverable across published targets'
+mode: fix
+lifecycle_state: archived
+resolution: completed
+closure_notes: 'Landed governed Links availability and cancellation across six npm component targets; five installed browser consumers and native host/type/Metro proofs inspected, A1-A4 recorded, peer counterexamples repaired; all eight package readiness obligations and unchanged53 Unity variant release-gate findings remain open.'
+created_at: '2026-11-01T16:17:38.248Z'
+updated_at: '2026-11-05T23:05:08.272Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Contract-owned anchor availability, generic activation lowering, native disabled paint and focused state suppression'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Links'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/disabled-activation.test.ts'
+    - 'packages/ds-codegen/src/states-to-css.test.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/react/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/disabled-anchor.test.ts'
+    - 'packages/ds-codegen/src/frameworks/rn-guarded-state-block.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react-native/disabled-state-styles.test.ts'
+    - 'packages/ds-react/src/components/Links'
+    - 'packages/ds-react/src/index.ts'
+    - 'packages/ds-vue/src/components/Links'
+    - 'packages/ds-vue/src/index.ts'
+    - 'packages/ds-svelte/src/components/Links'
+    - 'packages/ds-svelte/src/index.ts'
+    - 'packages/ds-angular/src/components/Links'
+    - 'packages/ds-angular/src/index.ts'
+    - 'packages/ds-lit/src/components/Links'
+    - 'packages/ds-lit/src/index.ts'
+    - 'packages/ds-react-native/src/components/Links'
+    - 'packages/ds-react-native/src/index.ts'
+    - 'packages/ds-react/src/primitives/interaction.ts'
+    - 'packages/ds-vue/src/primitives/interaction.ts'
+    - 'packages/ds-svelte/src/primitives/interaction.ts'
+    - 'packages/ds-angular/src/primitives/interaction.ts'
+    - 'packages/ds-lit/src/primitives/interaction.ts'
+    - 'packages/ds-figma-plugin/src/planner.ts'
+    - 'packages/ds-figma-plugin/src/planner.test.ts'
+    - 'scripts/state-suppression-audit'
+    - 'scripts/pseudo-state-audit'
+    - 'e2e/links-disabled.spec.ts'
+    - 'e2e/fixtures/links-disabled'
+    - 'scripts/release-package-check'
+    - 'docs/codegen-authority.md'
+    - 'docs/architecture/design/box-model-primitive.md'
+    - 'packages/ds-figma-plugin/generated/components/Links'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Links'
+    - 'packages/ds-jetpack-compose/src/main/kotlin/com/fullstackds/components/Links'
+    - 'packages/ds-unity/Runtime/Generated/Links'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS'
+    - 'packages/ds-godot/addons/full_stack_ds/components/Links'
+    - 'packages/ds-godot/verification/capability-inventory.json'
+    - 'packages/ds-gpui/src/components/Links'
+    - scripts/public-types-consumer/fixtures.mjs
+    - packages/ds-figma-plugin/src/generated/components/Links
+    - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Links
+    - packages/ds-unity/Runtime/Components/Links.cs
+    - docs/architecture/unity-target.md
+    - packages/ds-codegen/src/frameworks/unity/support-boundary.json
+    - packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/unity/factory.test.ts
+    - packages/ds-codegen/src/frameworks/godot/support-boundary.json
+    - packages/ds-codegen/src/frameworks/godot/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    - packages/ds-codegen/src/frameworks/gpui/support-boundary.json
+    - packages/ds-codegen/src/frameworks/gpui/boundary.test.ts
+    - packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    - packages/ds-codegen/src/frameworks/gpui/anatomy.ts
+    - packages/ds-codegen/src/frameworks/gpui/anatomy.test.ts
+    - packages/ds-react/src/components/index.ts
+    - packages/ds-vue/src/components/index.ts
+    - packages/ds-svelte/src/components/index.ts
+    - packages/ds-angular/src/components/index.ts
+    - packages/ds-lit/src/components/index.ts
+    - packages/ds-react-native/src/components/index.ts
+    - packages/ds-codegen/src/frameworks/godot/boundary.ts
+    - packages/ds-codegen/src/frameworks/gpui/boundary.ts
+    - packages/ds-codegen/src/frameworks/unity/boundary.ts
+    - packages/ds-react-native/src/components/Button
+    - docs/architecture/godot-target.md
+    - docs/architecture/gpui-target.md
+    - scripts/gpui-web-consistency-audit.mjs
+    - docs/architecture/design/component-design-bindings.md
+    - packages/ds-codegen/src/disabled-static-href.test.ts
+    - scripts/custom-region-audit/known-authored-regions.json
+  out: []
+invariants:
+  - 'Enabled web links preserve native navigation, target/rel and modified activation; no component-name special cases or audit allowances'
+  - 'All eight package readiness obligations remain open beyond this bounded Links slice; no npm publication'
+acceptance:
+  - id: A1
+    given: 'enabled and disabled Links in five web consumers'
+    when: 'pointer Enter and consumer cancellation run through enabled disabled and reenabled states'
+    then: 'disabled anchors omit href expose link and disabled semantics remain tabbable with visible focus and suppress navigation and callbacks while enabled links navigate and notify once with target and rel preserved'
+  - id: A2
+    given: 'React Native Links and portable public callback types'
+    when: 'activation cancellation and disabled state transition run'
+    then: 'enabled activation opens the URL once disabled and cancelled activation never open it and disabled accessibility state and resolved text styling restore on reenabling with explicit native-runtime proof limits'
+  - id: A3
+    given: 'named pointer suppression and existing category suppression'
+    when: 'CSS design selectors Figma metadata and audits are produced'
+    then: 'pointer hover and visited are suppressed while focus remains visible named referents are checked and unrelated or partially guarded rules cannot hide actual leaks'
+  - id: A4
+    given: 'generated Links and freshly packed published libraries'
+    when: 'required scoped full and browser consumer checks run'
+    then: 'public positive and negative types resolve generated artifacts match and relevant regressions pass with remaining parent publication blockers explicitly retained'
+observability:
+  - 'Keep raw browser navigation/focus/callback observations native layer tests type diagnostics and gate receipts under canonical ignored release evidence'
+rollback:
+  - 'Revert the isolated Links contract and generic lowering changes and regenerate'
+non_functional: {}
+contracts:
+  - name: 'disabled-navigation'
+    type: behavior
+    path: 'packages/ds-contracts/components/Links/Links.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected 2d742ff53 fresh installed consumers at .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01/final-runs/fsds-release-packages-PEe0Nq/browser-{react,vue,svelte,angular,lit}.json and disabled-focus screenshots: pointer/Enter cancellation, disabled href absence, real Tab and 2px focus, AX disabled/focused, same-anchor reenabling, callback/native navigation once, omitted target same-page and explicit _blank popup. Final 8ee024b94 changes only the authored-test inventory; package trees are identical."
+    recorded_at: "2026-11-01T18:58:02.991Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected real generated RN Links mounted tests in final checks/2d742ff53-iHsWjo/frameworks.log under .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01: disabled and prior-cancelled events suppress callbacks/Linking, consumer cancellation stops navigation, callback precedes one URL open, absent callback navigates once, disabled accessibility/text tokens restore on update. Final fresh package run PEe0Nq passes public portable-event types and production iOS/Android Metro. Linking is mocked at the host boundary; OS dispatch and assistive technology are not qualified."
+    recorded_at: "2026-11-01T18:58:23.066Z"
+    command: "pnpm run test:react-native"
+    exit_code: 0
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected contract named pointer suppression, shared IR/CSS/design/Figma projections and tests at 2d742ff53. Final root5642 and state-suppression gate pass: named/category unions and unknown referents, hover/visited guards with focus preserved, selector-subject/native-carrier checks and conditional/layer/importance/order reset falsifiers. Original false-media reset was independently reproduced as red disabled hover in Chrome; repaired audit reports its reachable leak. Raw checks and conditional-reset artifacts are under .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01. Static audit assumes valid CSS values; it is not a general cascade or Figma visual proof."
+    recorded_at: "2026-11-01T18:58:31.001Z"
+    command: "pnpm run audit:state-suppression"
+    exit_code: 0
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01/checks/2d742ff53-iHsWjo/receipt.json and raw logs: rail, root5642, all framework suites, types, lint, tokens/icons, relevant audits, generated drift and fresh eight-package types/browser/Metro pass. The run exited1 for authored-test inventory plus53 Unity variants. Inventory is repaired by final8ee024b94 and final-custom-regions.log passes88/88 with zero source customizations. Package trees match tested2d742ff53. All53 variant IDs exactly match pre-Links Unity128c9b68c evidence and remain an OPEN parent release-gate blocker; no waiver or allowance added. Peer findings were reproduced/repaired and committed follow-ups inspected. This bounded Links acceptance does not qualify all components, native OS/AT, minimum peers or publication."
+    recorded_at: "2026-11-01T18:58:53.869Z"
+    command: node .caws/state/release-evidence/LINKS-DISABLED-ACTIVATION-01/verify-integrated.mjs
+    exit_code: 1
+    commit_sha: "8ee024b941dbe6e3a6230a0e8a8a7dd670d9bc75"
