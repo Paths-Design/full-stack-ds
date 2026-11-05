@@ -74,6 +74,15 @@ acceptance:
     given: 'the integrated committed candidate'
     when: 'governed generation root tests and framework suites run'
     then: 'required checks pass and generated output is reproducible with remaining proof boundaries stated'
+  - id: A6
+    given: 'shared pause-menu popover and text alignment requirements'
+    when: >-
+      all three engines use the shared inner layout and copy through native
+      regression tests and fresh macOS captures
+    then: >-
+      popover fields and action rectangles agree across engines, selected-icon
+      titles are data derived, and the strengthened checker validates fresh captures
+      with text alignment and visual limits explicitly bounded
 observability:
   - 'Recurring generator, root parity and documentation checks retain concrete failures for unsupported claims and wrong capture states'
 rollback:
