@@ -46,7 +46,7 @@
     "validate:generated": "pnpm exec turbo run build --filter=@full-stack-ds/codegen && node packages/ds-codegen/dist/validation/validate-cli.js",
     "validate:generated:react-native": "echo \"React Native is part of the default rail: use pnpm run governed:rail (all targets) or governed:rail:react-native (targeted) so validation runs against a fresh emission manifest.\" && exit 1",
     "docs:check-claims": "node scripts/docs-claims-freshness.selftest.mjs && node scripts/docs-claims-remainder.selftest.mjs && node scripts/docs-claims-check.mjs",
-    "docs:check-links": "node scripts/docs-link-check.mjs",
+    "docs:check-links": "node --test scripts/docs-metadata-check.test.mjs && node scripts/docs-metadata-check.mjs && node scripts/docs-link-check.mjs",
     "docs:check-claims:fix": "node scripts/docs-claims-check.mjs --fix",
     "iconography:build": "pnpm --filter @full-stack-ds/iconography run build",
     "iconography:build:check": "pnpm --filter @full-stack-ds/iconography run build:check",

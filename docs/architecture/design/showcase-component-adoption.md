@@ -1,3 +1,12 @@
+---
+doc_id: REF-SHOWCASE-COMPONENT-ADOPTION-001
+authority: reference
+status: active
+title: Showcase component adoption
+owner: "@darianrosebrook"
+updated: 2026-11-05
+---
+
 # Showcase component adoption
 
 The original production JSX census found 25 raw control/source sites. Both

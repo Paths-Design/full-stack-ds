@@ -1,3 +1,12 @@
+---
+doc_id: REF-BRAND-EXPRESSION-001
+authority: reference
+status: active
+title: Brand expression
+owner: "@darianrosebrook"
+updated: 2026-11-05
+---
+
 # Brand expression
 
 Brand files under `packages/ds-tokens/src/brands/` contain two kinds of decisions:

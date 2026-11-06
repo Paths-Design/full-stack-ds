@@ -2,9 +2,9 @@
 doc_id: ARCH-RESEARCH-PROGRAM-001
 authority: architecture
 status: active
-title: The Research Program: Normal Form Across Domains
+title: "The Research Program: Normal Form Across Domains"
 owner: "@darianrosebrook"
-updated: 2026-09-19
+updated: 2026-11-05
 governs:
   - src/views/Home.tsx
   - src/views/ArchitectureView.tsx

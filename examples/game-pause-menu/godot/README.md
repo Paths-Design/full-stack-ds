@@ -64,8 +64,8 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 "$GODOT" --path "$PWD"
 
 # Headless interaction + geometry tests (I1..I15, parity rects, switch icons,
-# fixture failure paths). Exit 0 = all pass; prints TEST_PASS/TEST_FAIL lines.
-"$GODOT" --headless --path "$PWD" res://tests/test_main.tscn
+# fixture failure paths). The external guard also catches script/parse errors.
+GODOT="$GODOT" node scripts/verify-godot.mjs
 
 # Parity capture states (non-headless; reads the rendered viewport texture).
 # Writes all eight `captures` states from the JSON and mirrors them into the
@@ -77,6 +77,11 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 # Cross-engine probe/montage (shared, run by the slice):
 node ../parity-check.mjs --root /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu
 ```
+
+The headless verifier requires nonzero consistent `TEST_PASS`/`TESTS_*` counters
+and `TESTS_OK`, and bounds its spawned process to 150 seconds. Override that
+limit with `FSDS_PAUSE_GODOT_TIMEOUT_MS`; intentional generic fixture-error logs
+are permitted.
 
 Measured on this machine: headless suite 209 checks / 209 passed, 4.1 s,
 `input_dispatch=viewport_push_input`; capture 4.8 s for eight 1280×800 PNGs.

@@ -1,3 +1,12 @@
+---
+doc_id: REF-INTERACTION-SUBSTRATE-001
+authority: reference
+status: active
+title: Interaction substrate
+owner: "@darianrosebrook"
+updated: 2026-11-05
+---
+
 # Interaction substrate
 
 The `interaction` capability links a value channel, invoking parts and content

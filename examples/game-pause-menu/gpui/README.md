@@ -7,10 +7,11 @@ indistinguishable from the Unity and Godot lanes: same 1280 × 800 grid, same
 panel/row/card rectangles, same copy, same palette, same canonical switch.
 
 The lane consumes ONLY the public API of the bounded GPUI package
-(`packages/ds-gpui`, path dependency `full-stack-ds-gpui`): the target's
-7-component allowlist — **Switch, ToggleSwitch, Checkbox, Text, Badge, Divider,
-Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
-marked `// NOT FSDS: <reason>`.
+(`packages/ds-gpui`, path dependency `full-stack-ds-gpui`): Switch, Text, Badge,
+Divider and Stat, plus a lane-local data/domain seam and hand-authored plain-gpui
+regions marked `// NOT FSDS: <reason>`. The current registry admits
+<!-- target-component-count:gpui -->55 components; expanded admission does not
+establish adoption by this consumer.
 
 > Status: **`cargo build` clean (0 warnings), 70 tests pass (default) / 73 with
 > `--features capture`; all I1–I15 interactions are real code paths; the eight
@@ -24,7 +25,7 @@ The framework-neutral pause-menu spec — four tabs (MAP / PROGRESS / ABILITIES 
 SETTINGS), interactions I1–I15 over one fixture corpus, and the parity layout
 authority — can be realized in a native GPUI app from the generated package's
 public exports alone, at the **same absolute geometry and colours** as the other
-engine lanes, with every region the 7-component allowlist does not admit
+engine lanes, with every region this consumer does not realize through generated exports
 ledgered as a hand-authored fallback rather than silently counted as
 design-system realization.
 
@@ -193,8 +194,7 @@ the shared app-authority art, not a package change.
 | Subtitle background swatches + live preview | hand-authored swatches; FSDS `Text` preview; foreground picked from the palette | NOT FSDS — no ColorPicker |
 | Rules / separators | FSDS `Divider` (margin zeroed via tokens) at JSON rects | **FSDS** |
 
-Five of the seven admitted components are used (Switch, Text, Badge, Divider,
-Stat); ToggleSwitch and Checkbox have no spec region requiring their semantics.
+The lane uses Switch, Text, Badge, Divider and Stat; ToggleSwitch and Checkbox have no spec region requiring their semantics. Expanded target admission does not establish migration of the other lane-owned surfaces.
 No layout number, colour or type size is re-typed in `src/app/`: geometry/colour
 come from the parsed JSON; the handful of parity-document-pinned type/chrome
 values live in `src/app/style.rs` with their source named.
@@ -298,8 +298,7 @@ window level; the domain rules are covered by the 49 seam tests.
   cross-engine pixel-parity claim is made here.
 - **Not accessibility proof.** Focus keys and hover paths exist; no a11y
   standard is claimed. Gamepad navigation is not simulated.
-- **Partial realization.** Every NOT-FSDS row above is a fallback forced by the
-  7-component allowlist, not a claim that the hand-authored surface equals a
+- **Partial realization.** Every NOT-FSDS row above is a retained consumer fallback, not a claim that the hand-authored surface equals a
   package component.
 - **Theme delivery is explicit overrides, not brand-graph loading.** GPUI has no
   automatic brand/dark loader; the lane applies the JSON palette through

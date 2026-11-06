@@ -122,10 +122,15 @@ const PATTERNS = {
   typed: /^(packages|src)\/.*\.(ts|tsx|vue|svelte)$/,
   // vitest only discovers tests under packages|src
   testable: /^(packages|src)\/.*\.(ts|tsx|js|jsx|mjs|vue|svelte)$/,
-  // The docs family covers the claims gate's own inputs too: the checker,
-  // its selftest, and the freshness ledger only feed docs:check-claims, so
-  // a change to any of them must re-run the gate it changes.
-  docs: /\.(md|mdx)$|^(scripts\/docs-claims-check\.mjs|scripts\/docs-claims-freshness\.selftest\.mjs|doc-freshness-baseline\.json)$/,
+  // These example helpers/verifiers and fixture copies feed standard root
+  // regressions. Include the pixel checker's production caller conservatively;
+  // this flag runs neither the pixel CLI nor SDK-dependent native checks.
+  gamePauseRootTests:
+    /^examples\/game-pause-menu\/(?:parity-(?:state|check)\.mjs$|(?:fixtures|(?:gpui|godot)\/fixtures|unity\/Assets\/PauseMenu\/Resources\/Fixtures)\/|unity\/scripts\/verify-unity\.sh$|godot\/scripts\/verify-godot\.mjs$)/,
+  // Both docs gates consume the docs-prefixed checkers and their tests.
+  // Source-only changes must re-run the gate they can change, including
+  // metadata/location checks, link validation and claim-freshness fixtures.
+  docs: /\.(md|mdx)$|^(scripts\/docs-[^/]+\.mjs|doc-freshness-baseline\.json)$/,
 };
 
 export function classify(files, opts = {}) {
@@ -169,7 +174,7 @@ export function classify(files, opts = {}) {
     RUN_LINT: lintable,
     RUN_TYPECHECK: typed,
     // a contract/codegen JSON change (no .ts) still exercises codegen tests
-    RUN_TESTS: testable || codegen || generated,
+    RUN_TESTS: testable || codegen || generated || has("gamePauseRootTests"),
     RUN_RAIL: genGroup,
     // iconography ledger gate: separate emission model from the codegen rail,
     // so it has its own flag rather than riding genGroup.

@@ -1,3 +1,12 @@
+---
+doc_id: REF-SHOWCASE-USABILITY-001
+authority: reference
+status: active
+title: Showcase component usability
+owner: "@darianrosebrook"
+updated: 2026-11-05
+---
+
 # Showcase component usability
 
 `SHOWCASE-COMPONENT-USABILITY-01` follows the browser findings on Card, the

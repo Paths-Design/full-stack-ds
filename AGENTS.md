@@ -35,8 +35,8 @@ pnpm run build:all
 # Codegen (default target = react)
 pnpm run generate                              # React only
 pnpm run generate -- --target=all              # Every registered target in fsds.targets.json
-                                               #   (<!-- web-framework-count -->5 web + react-native + figma + swiftui + jetpack-compose + unity + godot;
-                                               #    swiftui/compose/unity/godot emit only their allowlisted components)
+                                               #   (<!-- web-framework-count -->5 web + react-native + figma + swiftui + jetpack-compose + unity + godot + gpui;
+                                               #    swiftui/compose/unity/godot/gpui emit only their allowlisted components)
 pnpm run generate -- --target=vue,svelte       # Subset
 pnpm run generate -- Switch                    # Single component
 pnpm run generate -- --target=all Switch Dialog
@@ -119,7 +119,7 @@ pnpm run audit:variant-realization             # Declared variant styling vs. re
 # Doc gates
 pnpm run docs:check-claims                     # Marked doc values match their derived authority
 pnpm run docs:check-claims:fix                 # Rewrites stale marked counts in place
-pnpm run docs:check-links                      # Every relative .md link in a tracked doc resolves
+pnpm run docs:check-links                      # Tracked doc metadata/location + relative .md links
 ```
 
 `build:all` derives package order from workspace dependencies, runs existing
@@ -192,17 +192,17 @@ Non-trivial work is governed by a CAWS spec so its provenance is recorded. The f
 
 Separate from the git pre-push hook above, CAWS guards gate your work on every session — some **block** tool calls. Two tiers serve them, and which one runs depends on the agent surface:
 
-- **codex runs from the machine runtime.** The launcher at `~/.caws/bin/caws-hook` is registered in the *user-level* `~/.codex/hooks.json` (six events: `session_start` / `pre_tool_use` / `post_tool_use` / `stop` / `pre_compact` / `session_end`, each `--system`). This repo's `.codex/hooks.json` carries **no** CAWS hook block — the project-level registrations are retired; the wiring lives at the user level.
-- **Project-wired surfaces still execute `.caws/hooks/dispatch/*.sh` directly** — the DSH bridge is the live example. The executable pack lives under `.caws/hooks/`; `.codex/hooks/` retains the vendored copies. An installed machine runtime does not make the project pack inert — do not let it rot.
+- **codex runs from the machine runtime.** The launcher at `~/.caws/bin/caws-hook` is registered in the *user-level* `~/.codex/hooks.json` (six events: `session_start` / `pre_tool_use` / `post_tool_use` / `stop` / `pre_compact` / `session_end`, each `--system`). Project-local `.codex/hooks.json`, when present, is gitignored machine-local configuration; it is not a portable registration surface. Inspect the user-level registration for the effective wiring.
+- **Project-wired surfaces still execute `.caws/hooks/dispatch/*.sh` directly** — the DSH bridge is the live example. The executable pack lives under `.caws/hooks/`. Optional vendored copies under gitignored `.codex/hooks/` are machine-local and may be absent from a fresh clone. An installed machine runtime does not make the project pack inert — do not let it rot.
 
 Run `caws hooks list` to see the effective chain per event — it shells the launcher, so what it prints is what executes. `caws doctor` reports residual project wiring and pack staleness. The guards most likely to stop you:
 
 - **block-dangerous.sh** (`Bash`) — denies catastrophic commands and arms a sticky per-session **danger latch** on `ask:confirm`; once latched, all mutating commands block until the user runs `reset-danger-latch.sh`.
 - **scope-guard.sh** (`Write`/`Edit`) — out-of-scope edits escalate by **strike** (advise → ask → block); fix with `caws specs amend-scope`, clear stale strikes with `reset-strikes.sh`.
 - **worktree-guard.sh** / **worktree-write-guard.sh** / **bash-write-guard.sh** — block history-rewriting git and cross-worktree / claimed-path writes via the shared claim oracle.
-- **protected-paths.sh** — hard-blocks `Write`/`Edit` under the hook-pack directories and to strike-state files (`*.md` there is admitted).
+- **protected-paths.sh** — hard-blocks direct `Write`/`Edit` and Bash mutations of protected hook artifacts and strike-state files; Markdown documentation under hook directories is admitted.
 
-**Full reference (every active hook, the dormant ones, escape hatches, state-file locations): [`.codex/hooks/README.md`](.codex/hooks/README.md).** Hook scripts are CAWS-managed (`do_not_edit_directly`) — change them via `caws init`, never by editing in place, and never weaken a guard to get past it.
+The tracked [hook-pack inventory](.claude/hooks/README.md) describes handlers and recovery paths; it is not an activation certificate. Inspect `caws hooks list` and the effective native registration for the running chain. Executable hook artifacts are protected against direct agent edits: use CAWS CLI-managed installation and update paths, and never weaken a guard to get past it. Repository ownership and editable-template headers do not override this agent boundary.
 
 ## Architecture
 
@@ -255,6 +255,7 @@ packages/
         react/  vue/  svelte/  angular/  lit/  figma/
         react-native/                             # rail-admitted (6th target), NOT experimental
         swift/  jetpack-compose/                  # explicit-only builtin targets, outside the rail
+        unity/  godot/  gpui/                     # bounded engine/native backends, outside the rail
       validation/       # Admission rail (required-mode, manifest, per-framework checks)
   ds-react/  ds-vue/  ds-svelte/  ds-angular/  ds-lit/       # Generated framework packages
   ds-react-native/      # Generated RN package — rail-admitted, in the CI drift diff
