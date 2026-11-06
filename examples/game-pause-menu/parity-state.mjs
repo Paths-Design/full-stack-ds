@@ -156,3 +156,78 @@ export function subtitlePreviewColorProbes(layout, settings, state) {
   const rect = layout.settings.preview;
   return [[rect.x + 3, rect.y + 3, resolved.background, 'subtitle preview selected background']];
 }
+
+/**
+ * Measure sparse opaque text on a uniform background in an RGB crop.
+ * The foreground is contract input; the modal RGB background is an observation,
+ * with numeric RGB order breaking ties. It does not establish intended paint.
+ * Fuzz bounds orthogonal color residual relative to each pixel's projected
+ * foreground contrast. A fixed 50% coverage contour bounds the result; ink integrates
+ * accepted coverage inside that contour's box. Coordinates are crop-local.
+ */
+export function measureTextCoverage({ rgb, width, height, foreground, colorFuzz = 0.30 }) {
+  if (!Number.isSafeInteger(width) || !Number.isSafeInteger(height)
+    || width <= 0 || height <= 0 || width > Number.MAX_SAFE_INTEGER / height / 3) {
+    throw new RangeError('text crop dimensions must be positive, safely representable integers');
+  }
+  if (!(rgb instanceof Uint8Array) || rgb.length !== width * height * 3) {
+    throw new TypeError('text crop must contain exactly width * height * 3 RGB bytes');
+  }
+  if ((!Array.isArray(foreground) && !(foreground instanceof Uint8Array))
+    || foreground.length !== 3
+    || !Array.from(foreground).every((value) => Number.isInteger(value) && value >= 0 && value <= 255)) {
+    throw new TypeError('text foreground must contain three RGB bytes');
+  }
+  if (!Number.isFinite(colorFuzz) || colorFuzz < 0 || colorFuzz > 1) {
+    throw new RangeError('text color fuzz must be a finite fraction between zero and one');
+  }
+
+  const frequencies = new Map();
+  let modal = 0;
+  let modalCount = 0;
+  for (let offset = 0; offset < rgb.length; offset += 3) {
+    const key = rgb[offset] * 65536 + rgb[offset + 1] * 256 + rgb[offset + 2];
+    const count = (frequencies.get(key) ?? 0) + 1;
+    frequencies.set(key, count);
+    if (count > modalCount || (count === modalCount && key < modal)) {
+      modal = key;
+      modalCount = count;
+    }
+  }
+  const background = [modal >>> 16, (modal >>> 8) & 255, modal & 255];
+  const vector = Array.from(foreground, (channel, index) => channel - background[index]);
+  const contrastSquared = vector.reduce((sum, channel) => sum + channel * channel, 0);
+  if (contrastSquared === 0) return null;
+
+  const residualLimitSquared = colorFuzz * colorFuzz * contrastSquared;
+  const coverages = new Float64Array(width * height);
+  let left = width;
+  let top = height;
+  let right = -1;
+  let bottom = -1;
+  for (let index = 0; index < coverages.length; index++) {
+    const offset = index * 3;
+    const delta = [rgb[offset] - background[0], rgb[offset + 1] - background[1], rgb[offset + 2] - background[2]];
+    const projection = delta.reduce((sum, channel, axis) => sum + channel * vector[axis], 0) / contrastSquared;
+    const residualSquared = delta.reduce((sum, channel, axis) => sum + (channel - projection * vector[axis]) ** 2, 0);
+    // A cone preserves hue rejection when an unrelated color is antialiased.
+    if (projection <= 0 || residualSquared > residualLimitSquared * projection * projection + 1e-9) continue;
+    const coverage = Math.min(1, Math.max(0, projection));
+    coverages[index] = coverage;
+    if (coverage < 0.5) continue;
+    const x = index % width;
+    const y = Math.floor(index / width);
+    left = Math.min(left, x);
+    top = Math.min(top, y);
+    right = Math.max(right, x);
+    bottom = Math.max(bottom, y);
+  }
+  if (right < left) return null;
+  let ink = 0;
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= right; x++) ink += coverages[y * width + x];
+  }
+  const w = right - left + 1;
+  const h = bottom - top + 1;
+  return { x: left, y: top, w, h, ink: ink / (w * h), background };
+}

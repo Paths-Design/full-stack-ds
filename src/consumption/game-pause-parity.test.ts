@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import layout from "../../examples/game-pause-menu/fixtures/parity-layout.json";
 import fixture from "../../examples/game-pause-menu/fixtures/map-icons.json";
 import settings from "../../examples/game-pause-menu/fixtures/settings.json";
-import { captureIconVisibility, compareColorProbe, mapSwitchProbes, mapPopoverParts, mapPopoverColorProbes, mapPopoverTypographyProbes, subtitlePreview, subtitlePreviewTypographyProbes, subtitlePreviewColorProbes } from "../../examples/game-pause-menu/parity-state.mjs";
+import { captureIconVisibility, compareColorProbe, mapSwitchProbes, mapPopoverParts, mapPopoverColorProbes, mapPopoverTypographyProbes, subtitlePreview, subtitlePreviewTypographyProbes, subtitlePreviewColorProbes, measureTextCoverage } from "../../examples/game-pause-menu/parity-state.mjs";
 
 const rgb = (hex: string) => [1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16));
 
@@ -113,5 +113,119 @@ describe("pause-menu capture state ratchet", () => {
     expect(subtitlePreview(spanish, source, "settings-subtitle").parts[1].text).toBe("ESPAÑOL · WARM SIGNAL");
     spanish.settings.preview.content.meta.template = "{language}";
     expect(() => subtitlePreview(spanish, source, "settings-subtitle")).toThrow("must bind language and background");
+  });
+});
+
+describe("pause-menu contrast-relative typography measurement", () => {
+  const raster = (coverage: number[][], background = [0, 0, 0], foreground = [200, 200, 200]) => ({
+    width: coverage[0].length,
+    height: coverage.length,
+    foreground,
+    rgb: Uint8Array.from(coverage.flatMap((row) => row.flatMap((alpha) =>
+      foreground.map((channel, index) => Math.round(background[index] + alpha * (channel - background[index])))))),
+  });
+  const antialias = [
+    [0.25, 0, 0, 0, 0],
+    [0, 0.5, 0.25, 0.5, 0],
+    [0, 0.75, 1, 0.75, 0],
+    [0, 0.5, 0.25, 0.5, 0],
+    [0, 0, 0, 0, 0],
+  ];
+
+  it("returns no text for a blank low-contrast crop, including foreground-colored crops", () => {
+    // The old absolute foreground fuzz included this entire dark background.
+    const blank = raster(Array.from({ length: 4 }, () => Array(8).fill(0)), [25, 25, 23], [75, 74, 68]);
+    expect(measureTextCoverage(blank)).toBeNull();
+    expect(measureTextCoverage(raster([[1, 1], [1, 1]]))).toBeNull();
+  });
+
+  it("infers the background and preserves bounds and coverage through contrast inversion", () => {
+    const light = measureTextCoverage(raster(antialias));
+    const dark = measureTextCoverage(raster(antialias, [200, 200, 200], [0, 0, 0]));
+    expect(light).toEqual({ x: 1, y: 1, w: 3, h: 3, ink: 5 / 9, background: [0, 0, 0] });
+    expect(dark).toEqual({ ...light, background: [200, 200, 200] });
+    const typedForeground = raster(antialias, [200, 200, 200], [0, 0, 0]);
+    expect(measureTextCoverage({ ...typedForeground, foreground: Uint8Array.from(typedForeground.foreground) })).toEqual(dark);
+  });
+
+  it("integrates antialias coverage inside the fixed 50-percent contour", () => {
+    const measured = measureTextCoverage(raster(antialias));
+    // The 25% fringe at (0,0) cannot enlarge the contour; the two 25% cells
+    // inside the box contribute their coverage rather than becoming full ink.
+    expect(measured).toMatchObject({ x: 1, y: 1, w: 3, h: 3 });
+    expect(measured!.ink).toBeCloseTo(5 / 9, 12);
+    expect(measureTextCoverage(raster([[0, 0, 0], [0, 0.25, 0], [0, 0, 0]]))).toBeNull();
+  });
+
+  it("distinguishes thin and heavy glyphs with identical bounds across the existing 25-percent limit", () => {
+    const thin = raster([
+      [0, 0, 0, 0, 0], [0, 1, 0, 1, 0], [0, 0, 0.5, 0, 0],
+      [0, 1, 0, 1, 0], [0, 0, 0, 0, 0],
+    ]);
+    const heavy = raster([
+      [0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0],
+      [0, 1, 1, 1, 0], [0, 0, 0, 0, 0],
+    ]);
+    const a = measureTextCoverage(thin)!;
+    const b = measureTextCoverage(heavy)!;
+    expect([a.x, a.y, a.w, a.h]).toEqual([b.x, b.y, b.w, b.h]);
+    expect(a.ink).toBe(0.5);
+    expect(b.ink).toBe(1);
+    expect(Math.abs(a.ink - b.ink) / Math.max(a.ink, b.ink)).toBeGreaterThan(0.25);
+  });
+
+  it("excludes off-axis colors both outside and inside the glyph bounds", () => {
+    const clean = raster([
+      [0, 0, 0, 0, 0], [0, 1, 0, 1, 0], [0, 0, 0, 0, 0],
+      [0, 1, 0, 1, 0], [0, 0, 0, 0, 0],
+    ]);
+    const noisy = { ...clean, rgb: clean.rgb.slice() };
+    noisy.rgb.set([255, 255, 0], 0);
+    noisy.rgb.set([255, 255, 0], (2 * clean.width + 2) * 3);
+    expect(measureTextCoverage(noisy)).toEqual(measureTextCoverage(clean));
+    expect(measureTextCoverage({ ...noisy, colorFuzz: 1 })).toMatchObject({ x: 0, y: 0, w: 4, h: 4 });
+  });
+
+  it("rejects unrelated antialiased colors by angular deviation", () => {
+    const clean = raster(antialias, [200, 200, 200], [0, 0, 0]);
+    const noisy = { ...clean, rgb: clean.rgb.slice() };
+    // This unrelated edge has projection .6 and residual^2 7200. A fixed
+    // radius admits it (10800), while the projected radius excludes it (3888).
+    noisy.rgb.set([140, 20, 80], 4 * 3);
+    const expected = { x: 1, y: 1, w: 3, h: 3, ink: 5 / 9, background: [200, 200, 200] };
+    expect(measureTextCoverage(clean)).toEqual(expected);
+    expect(measureTextCoverage(noisy)).toEqual(expected);
+    expect(measureTextCoverage({ ...noisy, colorFuzz: 0.4 })).toEqual(expected);
+    expect(measureTextCoverage({ ...noisy, colorFuzz: 0.5 })).toMatchObject({ x: 1, y: 0, w: 4, h: 4 });
+  });
+
+  it("clamps collinear samples to the foreground/background coverage interval", () => {
+    const crop = raster([[0, 0, 0], [0, 1, 0], [0, 0, 0]], [100, 100, 100]);
+    crop.rgb.set([255, 255, 255], 12);
+    crop.rgb.set([0, 0, 0], 0);
+    expect(measureTextCoverage(crop)).toEqual({ x: 1, y: 1, w: 1, h: 1, ink: 1, background: [100, 100, 100] });
+  });
+
+  it("breaks modal RGB ties independently of pixel order", () => {
+    expect(measureTextCoverage(raster([[0, 0, 1, 1]]))).toEqual({ x: 2, y: 0, w: 2, h: 1, ink: 1, background: [0, 0, 0] });
+    expect(measureTextCoverage(raster([[1, 1, 0, 0]]))).toEqual({ x: 0, y: 0, w: 2, h: 1, ink: 1, background: [0, 0, 0] });
+  });
+
+  it("rejects malformed dimensions, byte buffers, foregrounds and fuzz", () => {
+    const crop = raster([[0, 0, 0], [0, 1, 0], [0, 0, 0]]);
+    for (const size of [0, -1, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+      expect(() => measureTextCoverage({ ...crop, width: size })).toThrow("dimensions");
+      expect(() => measureTextCoverage({ ...crop, height: size })).toThrow("dimensions");
+    }
+    expect(() => measureTextCoverage({ ...crop, width: Number.MAX_SAFE_INTEGER, height: 2 })).toThrow("dimensions");
+    for (const bytes of [[], new Uint16Array(crop.rgb), crop.rgb.slice(1)]) {
+      expect(() => measureTextCoverage({ ...crop, rgb: bytes })).toThrow("RGB bytes");
+    }
+    for (const foreground of [[], [1, 2], [0, 0, 256], [-1, 0, 0], [0, NaN, 0], [0, 0.5, 0]]) {
+      expect(() => measureTextCoverage({ ...crop, foreground })).toThrow("foreground");
+    }
+    for (const colorFuzz of [-0.1, 1.1, NaN, Infinity]) {
+      expect(() => measureTextCoverage({ ...crop, colorFuzz })).toThrow("fuzz");
+    }
   });
 });

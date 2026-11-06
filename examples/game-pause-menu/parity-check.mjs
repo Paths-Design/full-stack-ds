@@ -20,14 +20,14 @@
  *
  * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe matches
  * and every pairwise RMSE is below --max-rmse (default 0.14); 1 otherwise. Font
- * rasterisation is excluded from parity, so RMSE is a coarse structural signal,
- * not a pass/fail on glyphs.
+ * rasterisation may differ within the declared typography limits; RMSE is a
+ * coarse structural signal rather than a proof of exact glyph identity.
  */
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { compareColorProbe, mapSwitchProbes, mapPopoverColorProbes, mapPopoverTypographyProbes,
+import { compareColorProbe, measureTextCoverage, mapSwitchProbes, mapPopoverColorProbes, mapPopoverTypographyProbes,
   subtitlePreviewColorProbes, subtitlePreviewTypographyProbes } from './parity-state.mjs';
 
 const LANES = ['gpui', 'unity', 'godot'];
@@ -43,7 +43,7 @@ const PROBED_STATES = new Set(['map', 'map-popover', 'progress', 'abilities', 's
 // The bounded claim this report supports. Do not widen this without widening
 // the evidence matrix in examples/game-pause-menu/evidence/visual-review.md.
 const CLAIM =
-  'Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; '
+  'Bounded comparison of declared image probes and lane-pair RMSE across the eight captured 1280x800 states on the pinned macOS host; '
   + 'not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -55,7 +55,7 @@ function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
   return i === -1 ? fallback : process.argv[i + 1];
 }
-const root = resolve(arg('root', join(here, '../../../tmp/game-pause-menu')));
+const root = resolve(arg('root', join(here, '../../tmp/game-pause-menu')));
 const out = resolve(arg('out', join(root, 'parity')));
 const maxRmse = Number(arg('max-rmse', '0.14'));
 const tolerance = Number(arg('tolerance', '18'));
@@ -194,33 +194,25 @@ function rmse(a, b) {
   return Number(match[1]);
 }
 
-/** Trimmed pixel bounding box of one pinned text string, or null when absent. */
+/** Coverage box in a declared text region; this does not recognize strings. */
 function textBBox(file, probe) {
   const hex = color(probe.color);
-  const result = run([
+  // Native captures are opaque. Read their RGB crop without an absolute-color
+  // mask: that mask can mistake a low-contrast blank background for full ink.
+  const result = spawnSync('magick', [
     file,
     '-crop', `${probe.w}x${probe.h}+${probe.x}+${probe.y}`, '+repage',
-    '-fuzz', `${typographyFuzz}%`,
-    '-transparent', hex,
-    '-alpha', 'extract', '-negate',
-    '-bordercolor', 'black', '-border', '1',
-    '-trim', '-format', '%wx%h%O|%[fx:mean]', 'info:',
-  ]);
-  const match = /^(\d+)x(\d+)\+(-?\d+)\+(-?\d+)\|([\d.]+)$/.exec(result.stdout.trim());
-  if (!match) return null;
-  const w = parseInt(match[1], 10);
-  const h = parseInt(match[2], 10);
-  if (w <= 1 && h <= 1) return null;
-  // -border 1 shifts the reported page offset by 1; undo it to stay in image space.
-  // The trimmed mask's mean is the ink-coverage fraction inside the bbox: glyph
-  // weight, not just geometry.
-  return {
-    x: probe.x + parseInt(match[3], 10) - 1,
-    y: probe.y + parseInt(match[4], 10) - 1,
-    w,
-    h,
-    ink: Number(match[5]),
-  };
+    '-depth', '8', 'rgb:-',
+  ], { maxBuffer: probe.w * probe.h * 3 + 1024 });
+  if (result.status !== 0) {
+    throw new Error(`Cannot read typography crop ${probe.id}: ${result.error?.message ?? result.stderr.toString()}`);
+  }
+  const measured = measureTextCoverage({
+    rgb: result.stdout, width: probe.w, height: probe.h,
+    foreground: [1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16)),
+    colorFuzz: typographyFuzz / 100,
+  });
+  return measured ? { ...measured, x: probe.x + measured.x, y: probe.y + measured.y } : null;
 }
 
 function bboxDelta(a, b) {
@@ -361,7 +353,9 @@ for (const state of STATES) {
   }
 }
 
-writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ claim: CLAIM, root, out, states: STATES, goldens: goldens || null, maxRmse, goldenRmse, tolerance, results, failures }, null, 2));
+writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ claim: CLAIM, root, out, states: STATES, goldens: goldens || null, maxRmse, goldenRmse, tolerance,
+  typographyMeasurement: { method: 'contrast-relative coverage', background: 'observed modal RGB', contourCoverage: 0.5, colorResidual: 'projected-contrast cone', colorFuzz: typographyFuzz / 100, inkTolerance },
+  results, failures }, null, 2));
 const probeCount = results.filter((r) => 'description' in r).length;
 const typeCount = results.filter((r) => r.kind === 'typography').length;
 const rmseCount = results.filter((r) => 'rmse' in r && r.kind !== 'golden').length;

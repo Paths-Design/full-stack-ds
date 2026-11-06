@@ -432,24 +432,33 @@ heights. Fonts are vendored at [`fonts/`](fonts/README.md):
 - **No synthetic styling**: no faux bold, no faux italic, no tracking offset,
   no text shadows. Fallbacks are disabled where the engine allows it; Inter
   covers every glyph in the fixture copy.
-- **Verification**: `parity-check.mjs` measures the pixel bounding box **and
-  ink coverage** of 39 pinned text strings (wordmark, stat values, tab labels,
-  panel titles, row labels/secondaries, field note, footer hints, nav target,
-  drawer copy, chips, card/detail copy, settings labels/values) in each
-  engine's captures — 117 bbox+weight measurements per run — and fails when a
+- **Verification**: `parity-check.mjs` measures bounding boxes and integrated
+  foreground coverage in the fixture's text regions, including shared popup
+  and subtitle-preview regions. It fails when a
   pairwise bbox delta exceeds ±4 px in x/y or ±6/±5 px in w/h, or when pairwise
   ink coverage differs by more than 25 % (body-copy probes on paper may relax
-  to 45 % because rasteriser AA dominates there). The mask is a 30 %
-  colour-distance transparency, so antialiased glyph edges are included
-  consistently. This is a metric probe, not raster-equality proof.
-- **GPUI stroke weight.** The pinned `gpui_macos` renderer thickens glyphs via
-  CoreGraphics-style dilation when macOS font smoothing is enabled
-  (`glyph_dilation_for_color`), which made GPUI's Inter Bold read heavier than
-  Unity/Godot (row-label ink coverage 0.479 vs 0.332/0.342). The GPUI lane now
-  writes `AppleFontSmoothing = 0` into its own application preferences domain
-  before GPUI's text system initialises; the same probe measures 0.343 and the
-  ink-coverage check guards the regression. No global user preference is
-  touched.
+  to 45 % because rasteriser AA dominates there). For sparse opaque text on a
+  uniform background, the measurement infers modal background RGB and projects
+  pixels onto its contrast with the declared foreground. The 50 % coverage
+  contour defines the box; accepted antialias coverage inside it defines ink.
+  `--type-fuzz` bounds orthogonal colour residual as a percentage of each
+  pixel's positive projected contrast (30 % by default). A blank crop has no
+  box, even when its background
+  resembles the foreground. The observed background does not establish the
+  intended paint; separate colour probes check that. These measurements compare
+  geometry and coverage, without recognizing strings or proving raster equality.
+  The progress capture opens the Ares drawer, so its text probes sample visible
+  drawer labels and roster header metadata rather than the occluded roster copy.
+  The interaction contract specifies shop requirements for locked drawers but
+  does not prescribe an unlocked shop caption. The consumers supply different
+  optional content at `drawer.shopCaptionY`; the text-probe claim excludes that
+  field rather than treating it as identical copy or typography.
+- **GPUI stroke weight.** The pinned `gpui_macos` renderer applies additional
+  glyph dilation when macOS font smoothing is enabled
+  (`glyph_dilation_for_color`). The GPUI lane writes `AppleFontSmoothing = 0`
+  into its own application preferences domain before the text system
+  initialises. The coverage probes bound resulting density differences; the
+  setting leaves the global user preference unchanged.
 
 ## Design-token provenance
 
