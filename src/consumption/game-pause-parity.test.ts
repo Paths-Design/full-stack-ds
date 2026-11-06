@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import layout from "../../examples/game-pause-menu/fixtures/parity-layout.json";
 import fixture from "../../examples/game-pause-menu/fixtures/map-icons.json";
 import settings from "../../examples/game-pause-menu/fixtures/settings.json";
-import { captureIconVisibility, compareColorProbe, mapSwitchProbes, mapPopoverParts, mapPopoverColorProbes, mapPopoverTypographyProbes, subtitlePreview, subtitlePreviewTypographyProbes, subtitlePreviewColorProbes, measureTextCoverage } from "../../examples/game-pause-menu/parity-state.mjs";
+import { captureIconVisibility, compareColorProbe, mapSwitchProbes, mapPopoverParts, mapPopoverColorProbes, mapPopoverTypographyProbes, subtitlePreview, subtitlePreviewTypographyProbes, subtitlePreviewColorProbes, measureTextCoverage, typographyPairComparisons } from "../../examples/game-pause-menu/parity-state.mjs";
 
 const rgb = (hex: string) => [1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16));
 
@@ -117,6 +117,19 @@ describe("pause-menu capture state ratchet", () => {
 });
 
 describe("pause-menu contrast-relative typography measurement", () => {
+  it("rejects opposite deviations that each agree with an anchor but not with each other", () => {
+    const boxes = [["gpui", 49], ["unity", 45], ["godot", 53]].map(([lane, x]) => ({
+      lane, bbox: { x, y: 10, w: 20, h: 8, ink: 0.5 },
+    }));
+    const comparisons = typographyPairComparisons(boxes, { x: 4, y: 4, w: 6, h: 5, ink: 0.25 });
+    expect(comparisons.map(({ first, other, bad }: { first: { lane: string }; other: { lane: string }; bad: [string, number][] }) =>
+      [first.lane, other.lane, bad])).toEqual([
+      ["gpui", "unity", []], ["gpui", "godot", []], ["unity", "godot", [["x", 8]]],
+    ]);
+    const reordered = typographyPairComparisons([boxes[1], boxes[0], boxes[2]], { x: 4, y: 4, w: 6, h: 5, ink: 0.25 });
+    expect(reordered.filter(({ bad }: { bad: unknown[] }) => bad.length)).toHaveLength(1);
+  });
+
   const raster = (coverage: number[][], background = [0, 0, 0], foreground = [200, 200, 200]) => ({
     width: coverage[0].length,
     height: coverage.length,

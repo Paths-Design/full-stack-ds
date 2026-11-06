@@ -157,6 +157,27 @@ export function subtitlePreviewColorProbes(layout, settings, state) {
   return [[rect.x + 3, rect.y + 3, resolved.background, 'subtitle preview selected background']];
 }
 
+/** Compare every lane pair: agreement with one anchor is not transitive. */
+export function typographyPairComparisons(boxes, limits) {
+  const comparisons = [];
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      const first = boxes[i];
+      const other = boxes[j];
+      const a = first.bbox;
+      const b = other.bbox;
+      const delta = {
+        x: Math.abs(a.x - b.x), y: Math.abs(a.y - b.y),
+        w: Math.abs(a.w - b.w), h: Math.abs(a.h - b.h),
+        ink: Math.abs(a.ink - b.ink) / Math.max(a.ink, b.ink, 0.001),
+      };
+      comparisons.push({ first, other, delta,
+        bad: Object.entries(delta).filter(([axis, value]) => value > limits[axis]) });
+    }
+  }
+  return comparisons;
+}
+
 /**
  * Measure sparse opaque text on a uniform background in an RGB crop.
  * The foreground is contract input; the modal RGB background is an observation,

@@ -27,7 +27,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { compareColorProbe, measureTextCoverage, mapSwitchProbes, mapPopoverColorProbes, mapPopoverTypographyProbes,
+import { compareColorProbe, measureTextCoverage, typographyPairComparisons, mapSwitchProbes, mapPopoverColorProbes, mapPopoverTypographyProbes,
   subtitlePreviewColorProbes, subtitlePreviewTypographyProbes } from './parity-state.mjs';
 
 const LANES = ['gpui', 'unity', 'godot'];
@@ -215,17 +215,6 @@ function textBBox(file, probe) {
   return measured ? { ...measured, x: probe.x + measured.x, y: probe.y + measured.y } : null;
 }
 
-function bboxDelta(a, b) {
-  const inkBase = Math.max(a.ink, b.ink, 0.001);
-  return {
-    x: Math.abs(a.x - b.x),
-    y: Math.abs(a.y - b.y),
-    w: Math.abs(a.w - b.w),
-    h: Math.abs(a.h - b.h),
-    ink: Math.abs(a.ink - b.ink) / inkBase,
-  };
-}
-
 const failures = [];
 const results = [];
 mkdirSync(out, { recursive: true });
@@ -284,10 +273,7 @@ for (const state of STATES) {
   for (const probe of stateTypeProbes) {
     const boxes = boxesByProbe.get(probe.id) ?? [];
     if (boxes.length !== LANES.length) continue;
-    const [first, ...rest] = boxes;
-    for (const other of rest) {
-      const delta = bboxDelta(first.bbox, other.bbox);
-      const limits = {
+    const limits = {
         x: typeTolerance.x ?? 3,
         y: typeTolerance.y ?? 3,
         w: typeTolerance.w ?? 4,
@@ -296,8 +282,8 @@ for (const state of STATES) {
         // probes may relax ink coverage in the authority. Weight anchors keep
         // the default tolerance.
         ink: probe.inkTolerance ?? inkTolerance,
-      };
-      const bad = Object.entries(delta).filter(([axis, value]) => value > limits[axis]);
+    };
+    for (const { first, other, bad } of typographyPairComparisons(boxes, limits)) {
       if (bad.length) {
         failures.push(
           `${state}/typography/${probe.id}: ${first.lane} ${JSON.stringify(first.bbox)} vs ${other.lane} ${JSON.stringify(other.bbox)} ` +
