@@ -11,6 +11,7 @@ blast_radius:
     - 'Generated web callback test emission and committed React tests'
     - 'Three engine pause-menu capture states and parity probes'
     - 'Portable agent instructions and documentation governance checks'
+    - 'Native boundary prerequisite classification used by the required corpus ratchet'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -103,6 +104,12 @@ acceptance:
       it accepts only a successful nonzero consistent test run with the completion
       marker and rejects parse errors missing markers contradictory counters process
       failure and timeout without leaving its child running
+  - id: A9
+    given: 'a stable component leaf set and ordered native boundary rules with prerequisites'
+    when: 'classification repeats within one call and across changed contracts prerequisites or rule order'
+    then: >-
+      outcomes preserve first-match and current-input semantics while prerequisite
+      scans run once per rule and classification rather than once per leaf
 observability:
   - 'Recurring generator, root parity and documentation checks retain concrete failures for unsupported claims and wrong capture states'
 rollback:
