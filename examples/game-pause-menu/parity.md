@@ -43,8 +43,12 @@ matrix and the conditions for a stronger claim are in
 ## Evidence binding the claim
 
 - [`parity-check.mjs`](parity-check.mjs) requires all eight captures per lane,
-  measures 195 colour/geometry probes and 117 typography bbox/ink values across
-  the four base states, and compares 24 lane-pair RMSE images.
+  probes every map switch in both map states, measures fixture-directed colour,
+  geometry and typography regions, and compares the lane-pair RMSE images.
+  Marker-popover probes include every required text part and the shared
+  status/action/cancel arrangement.
+  Subtitle-preview probes cover the selected background, verbatim preview line
+  and language/background metadata in the unobscured settings captures.
 - [`evidence/goldens/`](evidence/goldens/) commits 24 lossless-WebP image
   goldens plus a manifest binding them to the authority, resolved token graph
   and Orion brand; `pnpm parity:goldens:check` verifies the manifest, and the
@@ -125,6 +129,11 @@ documented scrim-dominated exception. See See
   lane: `map`, `progress`, `abilities`, `settings`; extra states:
   `map-popover`, `abilities-hover`, `settings-remap-modal`,
   `settings-subtitle`.
+  `hiddenIcons` is the complete capture filter: listed icons are hidden and every
+  other icon is visible; an absent or empty list makes every icon visible,
+  independently of fixture defaults and prior captures. Ordinary startup uses
+  the fixture's `visible` values. Map count copy resolves the fixture's
+  `{visible}` and `{total}` placeholders from the live filter.
 
 ## Switch parity (the "pinched oval" defect)
 
@@ -239,6 +248,12 @@ front; the drawer/popover/modal are overlays on top of their tab content.
    canonical switch at `switchX`/`switchY`. Panel note at `map.iconPanelNote`.
 5. No commander stat block inside the tab — the header carries rank, earnings
    and followers on every tab.
+6. Marker popovers consume `map.popover.content`: relative rectangles and type,
+   weight and colour references for title, status, sector/distance metadata,
+   body, reward and both actions. The selected icon supplies the title and data;
+   the metadata template formats distance to one decimal place. The fixture owns
+   the frame, accent and status-badge colours and widths. Ordinary marker
+   activation and the pinned capture use the same content composition.
 
 ### PROGRESS
 
@@ -277,6 +292,12 @@ language dropdowns, six subtitle-background swatches, live preview strip).
 Remap modal at `settings.remapModal` centred with `PRESS ANY KEY OR BUTTON`,
 the action name and a cancel affordance.
 Settings is fully visible without scrolling at 1280 × 800 in this layout.
+The preview strip consumes `settings.preview.content`: the line remains the
+fixture's `audio.previewLine`, and the right-aligned metadata template combines
+the selected subtitle language and background option label in uppercase.
+Both runs use the declared micro type and weight, line-height 1.0, vertical
+centering and clipping inside their fixed part rectangles. Foreground contrast
+continues to follow the selected background.
 
 ## Header, tab bar, footer
 

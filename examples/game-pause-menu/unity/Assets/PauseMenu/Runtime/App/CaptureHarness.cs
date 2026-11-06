@@ -166,8 +166,8 @@ namespace GamePauseMenu
             var app = host.App;
             app.CloseAllOverlays();
             if (!string.IsNullOrEmpty(capture.ActiveTab)) app.SelectTab(capture.ActiveTab);
+            app.ApplyCaptureIconVisibility(capture);
             if (!string.IsNullOrEmpty(capture.NavTarget)) app.SetNavTarget(capture.NavTarget);
-            foreach (var icon in capture.HiddenIcons) app.SetIconVisible(icon, false);
             if (!string.IsNullOrEmpty(capture.Drawer)) app.OpenFactionDrawer(capture.Drawer);
             if (!string.IsNullOrEmpty(capture.PendingAbility)) app.SelectAbility(capture.PendingAbility);
             if (!string.IsNullOrEmpty(capture.Popover)) app.Map.OpenPopover(capture.Popover);

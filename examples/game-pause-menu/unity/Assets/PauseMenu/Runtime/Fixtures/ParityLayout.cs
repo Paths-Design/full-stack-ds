@@ -104,10 +104,25 @@ namespace GamePauseMenu
         public double X, FirstY, RowH, Width, IconSize, NameX, NameY, SubY, SwitchX, SwitchY;
     }
 
+    public sealed class PopoverPartLayout
+    {
+        public LayoutRect Rect;
+        public string TypeKey, Color, Background, Border, Template;
+        public double Weight;
+    }
+
+    public sealed class PopoverContentLayout
+    {
+        public PopoverPartLayout Title, Status, Meta, Body, Reward, Action, Cancel;
+        public string Background, Border, Accent;
+        public double BorderWidth, AccentWidth;
+    }
+
     public sealed class MapPopoverLayout
     {
         public LayoutRect Rect;
         public string Title, Action, Cancel;
+        public PopoverContentLayout Content;
     }
 
     public sealed class MapLayout
@@ -217,6 +232,18 @@ namespace GamePauseMenu
         public string Prompt;
     }
 
+    public sealed class SubtitlePreviewPartLayout
+    {
+        public LayoutRect Rect;
+        public string TypeKey, Template, LetterCase, Align;
+        public double Weight;
+    }
+
+    public sealed class SubtitlePreviewContentLayout
+    {
+        public SubtitlePreviewPartLayout Line, Meta;
+    }
+
     public sealed class SettingsLayout
     {
         public readonly List<SettingsPanelLayout> Panels = new List<SettingsPanelLayout>();
@@ -224,6 +251,7 @@ namespace GamePauseMenu
         public SliderLayout Slider;
         public SizeLayout BindingButton, Dropdown, Swatch, Preview;
         public LayoutRect PreviewRect;
+        public SubtitlePreviewContentLayout PreviewContent;
         public RemapModalLayout RemapModal;
         public double LanguageLabelY, DropdownY, DropdownH, SwatchLabelY, SwatchY, SwatchH;
     }
@@ -342,12 +370,68 @@ namespace GamePauseMenu
             RequireInViewport("map.mapPanel", Map.MapPanel);
             RequireInViewport("map.field", Map.Field);
             RequireInViewport("map.iconPanel", Map.IconPanel);
+            RequireInViewport("map.popover", Map.Popover.Rect);
+            var content = Map.Popover.Content;
+            Hex(content.Background); Hex(content.Border); Hex(content.Accent);
+            Require(content.BorderWidth >= 0 && content.AccentWidth >= 0,
+                "map.popover.content border widths must be non-negative");
+            foreach (var entry in new[] {
+                new KeyValuePair<string, PopoverPartLayout>("title", content.Title),
+                new KeyValuePair<string, PopoverPartLayout>("status", content.Status),
+                new KeyValuePair<string, PopoverPartLayout>("meta", content.Meta),
+                new KeyValuePair<string, PopoverPartLayout>("body", content.Body),
+                new KeyValuePair<string, PopoverPartLayout>("reward", content.Reward),
+                new KeyValuePair<string, PopoverPartLayout>("action", content.Action),
+                new KeyValuePair<string, PopoverPartLayout>("cancel", content.Cancel),
+            })
+            {
+                var path = "map.popover.content." + entry.Key;
+                var part = entry.Value;
+                var rect = part.Rect;
+                Require(rect.X >= 0 && rect.Y >= 0 && rect.W > 0 && rect.H > 0 &&
+                        rect.Right <= Map.Popover.Rect.W && rect.Bottom <= Map.Popover.Rect.H,
+                    path + ".rect must fit the popover");
+                Require(part.Weight == 400 || part.Weight == 700, path + ".weight must be 400 or 700");
+                Require(Size(part.TypeKey) > 0, path + ".type must reference a positive font size");
+                Hex(part.Color);
+                if (part.Background != null) Hex(part.Background);
+                if (part.Border != null) Hex(part.Border);
+            }
+            Hex(content.Status.Background); Hex(content.Status.Border);
+            var template = content.Meta.Template;
+            Require(template != null && template.Contains("{sector}") && template.Contains("{distanceKm}"),
+                "map.popover.content.meta.template must include {sector} and {distanceKm}");
+            var remainder = template.Replace("{sector}", string.Empty).Replace("{distanceKm}", string.Empty);
+            Require(!remainder.Contains("{") && !remainder.Contains("}"),
+                "map.popover.content.meta.template contains an unsupported placeholder");
             RequireInViewport("progress.listPanel", Progress.ListPanel);
             RequireInViewport("progress.drawer", Progress.Drawer.Rect);
             RequireInViewport("abilities.gridPanel", Abilities.GridPanel);
             RequireInViewport("abilities.detailPanel", Abilities.DetailPanel);
             foreach (var panel in Settings.Panels) RequireInViewport("settings.panel." + panel.Id, panel.Rect);
             RequireInViewport("settings.remapModal", Settings.RemapModal.Rect);
+            foreach (var entry in new[] {
+                new KeyValuePair<string, SubtitlePreviewPartLayout>("line", Settings.PreviewContent.Line),
+                new KeyValuePair<string, SubtitlePreviewPartLayout>("meta", Settings.PreviewContent.Meta),
+            })
+            {
+                var path = "settings.preview.content." + entry.Key;
+                var part = entry.Value;
+                var rect = part.Rect;
+                Require(rect.X >= 0 && rect.Y >= 0 && rect.W > 0 && rect.H > 0 &&
+                        rect.Right <= Settings.PreviewRect.W && rect.Bottom <= Settings.PreviewRect.H,
+                    path + ".rect must fit the preview");
+                Require(Size(part.TypeKey) > 0, path + ".type must reference a positive font size");
+                Require(part.Weight == 400 || part.Weight == 700, path + ".weight must be 400 or 700");
+            }
+            var meta = Settings.PreviewContent.Meta;
+            Require(meta.LetterCase == "upper", "settings.preview.content.meta.case must be upper");
+            Require(meta.Align == "right", "settings.preview.content.meta.align must be right");
+            Require(meta.Template != null && meta.Template.Contains("{language}") && meta.Template.Contains("{background}"),
+                "settings.preview.content.meta.template must include {language} and {background}");
+            var metaRemainder = meta.Template.Replace("{language}", string.Empty).Replace("{background}", string.Empty);
+            Require(!metaRemainder.Contains("{") && !metaRemainder.Contains("}"),
+                "settings.preview.content.meta.template contains an unsupported placeholder");
         }
 
         private static void Require(bool condition, string problem)
@@ -664,8 +748,45 @@ namespace GamePauseMenu
                 Title = read.Str(popover, "title", "map.popover.title"),
                 Action = read.Str(popover, "action", "map.popover.action"),
                 Cancel = read.Str(popover, "cancel", "map.popover.cancel"),
+                Content = ParsePopoverContent(read, read.ObjectField(popover, "content", "map.popover.content")),
             };
             return map;
+        }
+
+        private static PopoverContentLayout ParsePopoverContent(Reader read, JsonObject root)
+        {
+            const string path = "map.popover.content";
+            return new PopoverContentLayout
+            {
+                Background = read.Str(root, "background", path + ".background"),
+                Border = read.Str(root, "border", path + ".border"),
+                BorderWidth = read.NumberField(root, "borderWidth", path + ".borderWidth"),
+                Accent = read.Str(root, "accent", path + ".accent"),
+                AccentWidth = read.NumberField(root, "accentWidth", path + ".accentWidth"),
+                Title = ParsePopoverPart(read, root, "title"),
+                Status = ParsePopoverPart(read, root, "status"),
+                Meta = ParsePopoverPart(read, root, "meta"),
+                Body = ParsePopoverPart(read, root, "body"),
+                Reward = ParsePopoverPart(read, root, "reward"),
+                Action = ParsePopoverPart(read, root, "action"),
+                Cancel = ParsePopoverPart(read, root, "cancel"),
+            };
+        }
+
+        private static PopoverPartLayout ParsePopoverPart(Reader read, JsonObject root, string name)
+        {
+            var path = "map.popover.content." + name;
+            var part = read.ObjectField(root, name, path);
+            return new PopoverPartLayout
+            {
+                Rect = read.RectField(part, "rect", path + ".rect"),
+                TypeKey = read.Str(part, "type", path + ".type"),
+                Weight = read.NumberField(part, "weight", path + ".weight"),
+                Color = read.Str(part, "color", path + ".color"),
+                Background = read.OptStr(part, "background", path + ".background", null),
+                Border = read.OptStr(part, "border", path + ".border", null),
+                Template = read.OptStr(part, "template", path + ".template", null),
+            };
         }
 
         private static ProgressLayout ParseProgress(Reader read, JsonObject root)
@@ -850,6 +971,13 @@ namespace GamePauseMenu
             if (swatch.TryGet("gap", out var gap) && gap is JsonNumber gapNumber) settings.Swatch.Gap = gapNumber.Value;
             settings.Preview = ParseSize(read, root, "preview");
             settings.PreviewRect = read.RectField(root, "preview", "settings.preview");
+            var preview = read.ObjectField(root, "preview", "settings.preview");
+            var previewContent = read.ObjectField(preview, "content", "settings.preview.content");
+            settings.PreviewContent = new SubtitlePreviewContentLayout
+            {
+                Line = ParseSubtitlePreviewPart(read, previewContent, "line"),
+                Meta = ParseSubtitlePreviewPart(read, previewContent, "meta"),
+            };
             var modal = read.ObjectField(root, "remapModal", "settings.remapModal");
             settings.RemapModal = new RemapModalLayout
             {
@@ -863,6 +991,21 @@ namespace GamePauseMenu
             settings.SwatchY = read.NumberField(root, "swatchY", "settings.swatchY");
             settings.SwatchH = read.NumberField(root, "swatchH", "settings.swatchH");
             return settings;
+        }
+
+        private static SubtitlePreviewPartLayout ParseSubtitlePreviewPart(Reader read, JsonObject root, string name)
+        {
+            var path = "settings.preview.content." + name;
+            var part = read.ObjectField(root, name, path);
+            return new SubtitlePreviewPartLayout
+            {
+                Rect = read.RectField(part, "rect", path + ".rect"),
+                TypeKey = read.Str(part, "type", path + ".type"),
+                Weight = read.NumberField(part, "weight", path + ".weight"),
+                Template = read.OptStr(part, "template", path + ".template", null),
+                LetterCase = read.OptStr(part, "case", path + ".case", null),
+                Align = read.OptStr(part, "align", path + ".align", null),
+            };
         }
 
         private static SizeLayout ParseSize(Reader read, JsonObject root, string name)

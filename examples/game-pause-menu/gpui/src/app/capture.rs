@@ -179,11 +179,7 @@ fn apply_capture(menu: &mut Menu, spec: &CaptureSpec) {
     if let Some(tab) = Tab::from_key(&spec.active_tab) {
         menu.state.select_tab(tab);
     }
-    for icon_id in &spec.hidden_icons {
-        if menu.state.icon_visible(icon_id) {
-            menu.state.toggle_icon(icon_id);
-        }
-    }
+    menu.state.apply_capture_icon_visibility(&spec.hidden_icons);
     if let Some(target) = &spec.nav_target {
         menu.state.set_nav_target(target);
     }

@@ -44,6 +44,7 @@ func _ready() -> void:
 	await test_geometry()
 	await test_parity_pins()
 	await test_i2()
+	await test_capture_visibility()
 	await test_i3_i4()
 	await test_i5()
 	await test_i6()
@@ -55,6 +56,7 @@ func _ready() -> void:
 	await test_i12()
 	await test_i13()
 	await test_i14()
+	await test_preview_contract()
 	await test_i15()
 	_report()
 
@@ -330,6 +332,18 @@ func test_geometry() -> void:
 # --- Pinned corrections from the first parity review round ---------------------
 
 func test_parity_pins() -> void:
+	# Alignment is checked on the real projected labels after container layout.
+	var paused_badge = null
+	for node in all_nodes(app.header, []):
+		if node is DSBadge and node.content == str(app.parity.header["pausedChip"]["text"]):
+			paused_badge = node
+			break
+	check(paused_badge != null, "PAUSED generated badge exists")
+	if paused_badge != null:
+		var paused_label: Label = paused_badge.content_label
+		check_rect(paused_badge, app.parity.header["pausedChip"], "PAUSED chip")
+		check(paused_label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER and paused_label.vertical_alignment == VERTICAL_ALIGNMENT_CENTER, "PAUSED text aligns to both centres")
+		check(paused_label.get_global_rect().get_center().is_equal_approx(paused_badge.get_global_rect().get_center()), "PAUSED label box shares the chip centre", "label %s chip %s" % [paused_label.get_global_rect(), paused_badge.get_global_rect()])
 	# OFF switch paints graphite track + boneBright thumb (checked mirror already
 	# asserted in test_geometry).
 	var probe_switch = app.map_tab.switch_for("rover-07")
@@ -350,6 +364,9 @@ func test_parity_pins() -> void:
 				row_label = node
 				break
 		check(row_label != null and row_label.text == "IN", "map row icon code is IN for Info", str(row_label.text if row_label else "no label"))
+		if row_label != null:
+			check(row_label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER and row_label.vertical_alignment == VERTICAL_ALIGNMENT_CENTER, "map row code aligns to both centres")
+			check(row_label.get_global_rect().get_center().is_equal_approx(row_tile.get_global_rect().get_center()), "map row label box shares the tile centre", "label %s tile %s font %s minimum %s" % [row_label.get_global_rect(), row_tile.get_global_rect(), row_label.get_theme_font_size("font_size"), row_label.get_minimum_size()])
 		var row_cell: PanelFrame = row_tile as PanelFrame
 		check(row_cell != null and row_cell.bg_color.is_equal_approx(app.orion.color("graphite")) and row_cell.border_color.is_equal_approx(app.orion.color("ruleStrong")), "map row icon tile uses graphite/ruleStrong")
 	app.select_tab("abilities")
@@ -466,6 +483,61 @@ func test_i2() -> void:
 
 # --- I3 + I4: marker popover + nav target -----------------------------------
 
+func test_capture_visibility() -> void:
+	var original: Dictionary = app.icon_visible.duplicate(true)
+	for state_name in ["map", "map-popover", "progress", "map-popover", "map"]:
+		app.set_icon_visibility("relay-01", false)
+		app.apply_capture_state(state_name)
+		await wait_frames(2)
+		var hidden: Array = app.parity.captures[state_name].get("hiddenIcons", [])
+		for icon in app.fixtures.map_icons["icons"]:
+			var icon_id := str(icon["id"])
+			var expected := not hidden.has(icon_id)
+			check(bool(app.icon_visible[icon_id]) == expected, "capture %s state %s" % [state_name, icon_id])
+			check((str(app.map_tab.switch_for(icon_id).value) == "true") == expected, "capture %s switch %s" % [state_name, icon_id])
+			check(app.map_tab.marker_node(icon_id).visible == expected, "capture %s marker %s" % [state_name, icon_id])
+		var count := 8 if state_name == "progress" else 7
+		check(app.map_tab.meta_label.text == "%d/8 PLOTTED" % count, "capture %s panel count" % state_name)
+		check(app.map_tab.field._note.text.begins_with("MARKERS %d/8 VISIBLE" % count), "capture %s field count" % state_name)
+	app.parity.captures["test-all-visible"] = {"activeTab": "map"}
+	app.apply_capture_state("test-all-visible")
+	for icon in app.fixtures.map_icons["icons"]:
+		check(bool(app.icon_visible[icon["id"]]), "absent capture filter restores %s" % icon["id"])
+	app.parity.captures.erase("test-all-visible")
+	app.set_icon_visibility("relay-01", false)
+	check(app.map_tab.meta_label.text == "7/8 PLOTTED", "I2 panel count follows live filter")
+	check(app.map_tab.field._note.text.begins_with("MARKERS 7/8 VISIBLE"), "I2 field count follows live filter")
+	check(not bool(app.fixtures.icon_by_id("rover-07")["visible"]), "capture leaves fixture defaults intact")
+	for icon_id in original:
+		app.set_icon_visibility(str(icon_id), bool(original[icon_id]))
+	app.close_marker_popover()
+
+
+func test_preview_contract() -> void:
+	var previous_background := str(app.subtitle_background)
+	var previous_language := str(app.subtitle_language)
+	app.select_tab("settings")
+	app.set_subtitle_background("signal")
+	app.set_subtitle_language(app.subtitle_language_options().find("Español"))
+	await wait_frames(3)
+	check(app.settings_tab.preview_label.text == str(app.fixtures.settings["audio"]["previewLine"]), "preview body stays verbatim after language selection")
+	check(app.settings_tab.preview_tag.text == "ESPAÑOL · SIGNAL", "preview metadata reports language and authored background label")
+	var preview: Dictionary = app.parity.settings["preview"]
+	var outer: Rect2 = app.settings_tab.preview_panel.get_global_rect()
+	for key in ["line", "meta"]:
+		var part: Dictionary = preview["content"][key]
+		var node: Label = app.settings_tab.preview_label if key == "line" else app.settings_tab.preview_tag
+		var expected := UI.rect(part["rect"])
+		expected.position += outer.position
+		check(node.get_global_rect().position.is_equal_approx(expected.position) and node.get_global_rect().size.is_equal_approx(expected.size), "preview %s uses outer-relative shared rect" % key, "actual %s expected %s" % [node.get_global_rect(), expected])
+		var font_size: int = app.parity.type_size(str(part["type"]))
+		check(node.get_theme_font_size("font_size") == font_size and node.get_theme_font("font") == app.orion.font(font_size, int(part["weight"])), "preview %s uses declared typography" % key)
+		check(node.clip_text, "preview %s clips to its part rectangle" % key)
+	check(app.settings_tab.preview_tag.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT, "preview metadata aligns right")
+	check(app.settings_tab.preview_tag.vertical_alignment == VERTICAL_ALIGNMENT_CENTER and app.settings_tab.preview_label.vertical_alignment == VERTICAL_ALIGNMENT_CENTER, "preview text centres inside the part boxes")
+	app.set_subtitle_background(previous_background)
+	app.set_subtitle_language(app.subtitle_language_options().find(previous_language))
+
 func test_i3_i4() -> void:
 	app.select_tab("map")
 	app.set_nav_target("")
@@ -473,6 +545,18 @@ func test_i3_i4() -> void:
 	app.open_marker_popover("beacon-05")
 	await wait_frames(6)
 	check(app.marker_popover.value == "true", "I3 marker popover open")
+	var popover_data: Dictionary = app.parity.map["popover"]
+	var icon: Dictionary = app.fixtures.icon_by_id("beacon-05")
+	var expected_text := {"title": str(icon["label"]), "status": str(icon["status"]), "meta": "HECATE FLATS · 11.2 KM", "body": str(icon["detail"]), "reward": str(icon["reward"]), "action": str(popover_data["action"]), "cancel": str(popover_data["cancel"])}
+	for key in ["title", "status", "meta", "body", "reward", "action", "cancel"]:
+		var part: Dictionary = popover_data["content"][key]
+		var node: Control = app.marker_popover.content.get_node("PopoverCanvas/Popover_" + key)
+		var expected_rect := UI.rect(part["rect"])
+		expected_rect.position += app.marker_popover.surface.get_global_rect().position
+		var actual_rect := node.get_global_rect()
+		check(actual_rect.position.is_equal_approx(expected_rect.position) and actual_rect.size.is_equal_approx(expected_rect.size), "popover %s consumes shared rect" % key, "actual %s expected %s" % [actual_rect, expected_rect])
+		var text := str(node.get_node("Text").text) if node.has_node("Text") else str(node.content)
+		check(text == expected_text[key], "popover %s preserves required copy" % key, text)
 	check(app.marker_popover.surface != null, "I3 popover surface attached")
 	if app.marker_popover.surface != null:
 		var rect: Rect2 = app.marker_popover.surface.get_global_rect()

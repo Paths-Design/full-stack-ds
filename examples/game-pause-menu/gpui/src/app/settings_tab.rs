@@ -372,29 +372,56 @@ impl Menu {
             children.push(block.into_any_element());
         }
         // Live subtitle preview strip.
-        let preview = layout.settings.preview;
+        let preview = &layout.settings.preview;
         let background = self.state.subtitle_background().value.clone();
         let foreground = self.state.subtitle_preview_text_color().to_string();
+        let line = &preview.content.line;
+        let meta = &preview.content.meta;
+        let line_size = layout.type_scale.size(&line.type_key).expect("validated preview line type");
+        let meta_size = layout.type_scale.size(&meta.type_key).expect("validated preview metadata type");
+        let caption = preview.content.metadata(
+            self.state.subtitle_language(),
+            &self.state.subtitle_background().label,
+        );
         let preview_text = self.text(
             cx,
-            "audio:preview",
-            style::copy(&layout.type_scale),
+            "audio:preview:line",
+            style::TextStyleSpec::new(line_size, style::Weight::from_numeric(line.weight), 1.0),
             &foreground,
-            format!(
-                "{}   [{}]",
-                self.state.subtitle_preview_line(),
-                self.state.subtitle_language()
-            ),
+            self.state.subtitle_preview_line().to_string(),
+        );
+        let preview_metadata = self.text(
+            cx,
+            "audio:preview:meta",
+            style::TextStyleSpec::new(meta_size, style::Weight::from_numeric(meta.weight), 1.0),
+            &foreground,
+            caption,
         );
         children.push(
-            widgets::rect_box(preview)
+            widgets::rect_box(preview.rect())
                 .bg(colors::paint(&background))
-                .px(px(12.))
-                .flex()
-                .items_center()
+                .overflow_hidden()
                 .border_1()
                 .border_color(colors::paint(&layout.colors.rule_strong))
+                .into_any_element(),
+        );
+        // Part boxes share the strip's outer origin, independent of its border
+        // inset. Each validated part lies inside the strip and clips its text.
+        children.push(
+            widgets::at(preview.x + line.rect.x, preview.y + line.rect.y, line.rect.w, line.rect.h)
+                .overflow_hidden()
+                .flex()
+                .items_center()
                 .child(preview_text)
+                .into_any_element(),
+        );
+        children.push(
+            widgets::at(preview.x + meta.rect.x, preview.y + meta.rect.y, meta.rect.w, meta.rect.h)
+                .overflow_hidden()
+                .flex()
+                .items_center()
+                .justify_end()
+                .child(preview_metadata)
                 .into_any_element(),
         );
         children

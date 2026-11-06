@@ -359,11 +359,18 @@ namespace GamePauseMenu
 
             preview = Ui.MakeBox("subtitle-preview");
             Ui.At(preview, layout.Settings.PreviewRect);
-            previewText = Ui.MakeText(layout, fixtures.Settings.Audio.PreviewLine, "micro", "ink", true,
-                new LayoutRect(8, 6, 390, 14));
+            preview.style.overflow = Overflow.Hidden;
+            var lineSpec = layout.Settings.PreviewContent.Line;
+            var metaSpec = layout.Settings.PreviewContent.Meta;
+            previewText = Ui.MakeText(layout, fixtures.Settings.Audio.PreviewLine, lineSpec.TypeKey, "ink",
+                lineSpec.Weight == 700, lineSpec.Rect);
+            previewText.name = "subtitle-preview-line";
+            previewText.style.overflow = Overflow.Hidden;
             preview.Add(previewText);
-            previewMeta = Ui.MakeText(layout, string.Empty, "micro", "ink", true,
-                new LayoutRect(400, 6, 168, 14), align: TextAnchor.MiddleRight);
+            previewMeta = Ui.MakeText(layout, string.Empty, metaSpec.TypeKey, "ink", metaSpec.Weight == 700,
+                metaSpec.Rect, align: TextAnchor.MiddleRight);
+            previewMeta.name = "subtitle-preview-meta";
+            previewMeta.style.overflow = Overflow.Hidden;
             preview.Add(previewMeta);
             Root.Add(preview);
         }
@@ -475,7 +482,10 @@ namespace GamePauseMenu
             var textColor = PaletteContrast(color);
             SubtitlePreviewText.style.color = textColor;
             SubtitlePreviewMeta.style.color = textColor;
-            SubtitlePreviewMeta.text = app.State.SubtitleLanguage.ToUpperInvariant() + "  ·  " + option.Label;
+            SubtitlePreviewMeta.text = layout.Settings.PreviewContent.Meta.Template
+                .Replace("{language}", app.State.SubtitleLanguage)
+                .Replace("{background}", option.Label)
+                .ToUpperInvariant();
             foreach (var pair in swatches)
             {
                 var selected = pair.Key == app.State.SubtitleBackgroundId;

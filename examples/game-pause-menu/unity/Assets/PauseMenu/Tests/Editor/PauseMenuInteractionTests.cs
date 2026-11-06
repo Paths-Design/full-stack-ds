@@ -338,6 +338,9 @@ namespace GamePauseMenu.Tests
         public void I14_AudioSliderLanguagesAndSubtitleSwatchUpdateLivePreview()
         {
             using var host = new TestHost();
+            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Is.EqualTo("ENGLISH · CHARCOAL"));
+            Assert.That(host.App.Settings.SubtitlePreviewText.text,
+                Is.EqualTo(host.App.State.Fixtures.Settings.Audio.PreviewLine));
             var slider = host.App.Settings.AudioSlider("music");
             slider.value = 40f;
             Assert.That(host.App.State.AudioValue("music"), Is.EqualTo(40));
@@ -348,16 +351,18 @@ namespace GamePauseMenu.Tests
 
             Assert.That(host.App.State.AudioLanguage, Is.EqualTo("日本語"));
             Assert.That(host.App.State.SubtitleLanguage, Is.EqualTo("Français"));
-            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Does.Contain("FRANÇAIS"));
+            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Is.EqualTo("FRANÇAIS · CHARCOAL"));
 
             host.Submit(host.App.Settings.Swatch("signal"));
 
             Assert.That(host.App.State.SubtitleBackgroundId, Is.EqualTo("signal"));
             Assert.That(host.App.Settings.SubtitlePreview.style.backgroundColor.value,
                 Is.EqualTo(host.App.Layout.Color("signal")));
-            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Does.Contain("SIGNAL"));
-            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Does.Contain("FRANÇAIS"));
-            Assert.That(host.App.Settings.SubtitlePreviewText.text, Does.Contain("DUST FRONT"));
+            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Is.EqualTo("FRANÇAIS · SIGNAL"));
+            host.App.Settings.SubtitleLanguageDropdown.value = "Español";
+            Assert.That(host.App.Settings.SubtitlePreviewMeta.text, Is.EqualTo("ESPAÑOL · SIGNAL"));
+            Assert.That(host.App.Settings.SubtitlePreviewText.text,
+                Is.EqualTo(host.App.State.Fixtures.Settings.Audio.PreviewLine));
             Assert.That(host.App.Settings.Swatch("signal").ClassListContains("is-selected"), Is.True);
             Assert.That(host.App.Settings.Swatch("charcoal").ClassListContains("is-selected"), Is.False);
         }

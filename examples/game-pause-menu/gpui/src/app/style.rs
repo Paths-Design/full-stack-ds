@@ -143,11 +143,6 @@ pub(crate) fn stat_label(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.stat_label, Weight::Bold, 1.0)
 }
 
-/// Header stat value: 20 px / 800 / boneBright.
-pub(crate) fn stat_value(type_scale: &TypeScale) -> TextStyleSpec {
-    TextStyleSpec::new(type_scale.stat_value, Weight::Heavy, 1.0)
-}
-
 /// Header stat subline: 11 px / 400 / muted.
 pub(crate) fn stat_sub(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.stat_sub, Weight::Regular, 1.0)

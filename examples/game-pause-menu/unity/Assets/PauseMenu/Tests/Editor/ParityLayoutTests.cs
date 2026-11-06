@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using FullStackDS;
 using NUnit.Framework;
@@ -55,6 +56,37 @@ namespace GamePauseMenu.Tests
             Assert.That(layout.Captures["settings-subtitle"].SubtitleBackground, Is.EqualTo("signal"));
             Assert.That(layout.MarkerColors["beacon"], Is.EqualTo("alert"));
             Assert.That(layout.RarityColors["epic"], Is.EqualTo("alert"));
+        }
+
+        [Test]
+        public void CaptureVisibilityReplacesFixtureDefaultsAndPreviousFilters()
+        {
+            using var host = new TestHost();
+            var app = host.App;
+            Assert.That(app.State.IsIconVisible("rover-07"), Is.False, "ordinary startup uses the fixture");
+            foreach (var name in new[] { "map", "map-popover", "progress", "map-popover", "map" })
+            {
+                app.SetIconVisible("relay-01", false);
+                var capture = app.Layout.Captures[name];
+                app.ApplyCaptureIconVisibility(capture);
+                foreach (var icon in app.State.Fixtures.Map.Icons)
+                {
+                    var visible = !capture.HiddenIcons.Contains(icon.Id);
+                    Assert.That(app.State.IsIconVisible(icon.Id), Is.EqualTo(visible), name + " state " + icon.Id);
+                    Assert.That(app.Map.VisibilitySwitch(icon.Id).value, Is.EqualTo(visible), name + " switch " + icon.Id);
+                    Assert.That(app.Map.IsMarkerPlotted(icon.Id), Is.EqualTo(visible), name + " marker " + icon.Id);
+                }
+                var count = name == "progress" ? 8 : 7;
+                Assert.That(app.Map.IconPanelMeta.text, Is.EqualTo(count + "/8 PLOTTED"));
+                Assert.That(app.Map.FieldNote.text, Does.StartWith("MARKERS " + count + "/8 VISIBLE"));
+            }
+            app.ApplyCaptureIconVisibility(new CaptureLayout());
+            Assert.That(app.State.Fixtures.Map.Icons.All(icon => app.State.IsIconVisible(icon.Id)), Is.True,
+                "an absent hiddenIcons list restores every icon");
+            app.SetIconVisible("relay-01", false);
+            Assert.That(app.Map.IconPanelMeta.text, Is.EqualTo("7/8 PLOTTED"));
+            Assert.That(app.Map.FieldNote.text, Does.StartWith("MARKERS 7/8 VISIBLE"));
+            Assert.That(app.State.Fixtures.Map.Icons.Single(icon => icon.Id == "rover-07").Visible, Is.False);
         }
 
         [Test]
@@ -145,6 +177,165 @@ namespace GamePauseMenu.Tests
             Assert.That(off.Thumb.resolvedStyle.backgroundColor,
                 Is.EqualTo(layout.Color(layout.Switch.OffThumb)));
         }
+        [UnityTest]
+        public IEnumerator MapPopoverUsesSharedInnerGeometryAndPreservesEveryIconsCopy()
+        {
+            using var host = new TestHost();
+            var app = host.App;
+            var layout = app.Layout;
+            var parts = layout.Map.Popover.Content;
+            app.Map.OpenPopover("beacon-05");
+            yield return null;
+            yield return null;
+            app.Map.MarkerPopover.Surface.Reposition();
+            yield return null;
+            yield return null;
+            var content = app.Map.MarkerPopover.Content;
+            AssertActualPartRect(content, layout.Map.Popover.Rect, app.Root);
+            Assert.That(app.Map.MarkerPopover.Trigger.worldBound.width, Is.EqualTo(0f).Within(0.01f));
+            Assert.That(app.Map.MarkerPopover.Trigger.worldBound.height, Is.EqualTo(0f).Within(0.01f));
+            AssertActualPartRect(app.Map.Field, layout.Map.Field, app.Root);
+            Assert.That(app.Map.Field.resolvedStyle.borderTopLeftRadius, Is.EqualTo(0f));
+            Assert.That(app.Map.Field.resolvedStyle.borderTopRightRadius, Is.EqualTo(0f));
+            Assert.That(app.Map.Field.resolvedStyle.borderBottomLeftRadius, Is.EqualTo(0f));
+            Assert.That(app.Map.Field.resolvedStyle.borderBottomRightRadius, Is.EqualTo(0f));
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-title"), parts.Title, layout);
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-status"), parts.Status, layout);
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-meta"), parts.Meta, layout);
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-body"), parts.Body, layout);
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-reward"), parts.Reward, layout);
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-action"), parts.Action, layout);
+            AssertPopoverPart(content.Q<VisualElement>("map-popover-cancel"), parts.Cancel, layout);
+            Assert.That(content.style.backgroundColor.value, Is.EqualTo(layout.Color(parts.Background)));
+            Assert.That(content.style.borderLeftWidth.value, Is.EqualTo((float)parts.BorderWidth));
+            Assert.That(content.style.borderLeftColor.value, Is.EqualTo(layout.Color(parts.Border)));
+            Assert.That(content.style.borderTopWidth.value, Is.EqualTo((float)parts.AccentWidth));
+            Assert.That(content.style.borderTopColor.value, Is.EqualTo(layout.Color(parts.Accent)));
+            var status = content.Q<Badge>("map-popover-status");
+            Assert.That(status, Is.Not.Null, "status uses the generated Badge component");
+            Assert.That(status.style.backgroundColor.value, Is.EqualTo(layout.Color(parts.Status.Background)));
+            Assert.That(status.style.borderTopColor.value, Is.EqualTo(layout.Color(parts.Status.Border)));
+            Assert.That(content.Q<Text>("map-popover-body").style.whiteSpace.value, Is.EqualTo(WhiteSpace.Normal));
+            foreach (var icon in app.State.Fixtures.Map.Icons)
+            {
+                app.Map.OpenPopover(icon.Id);
+                Assert.That(content.Q<Text>("map-popover-title").text, Is.EqualTo(icon.Label), icon.Id + " title");
+                Assert.That(status.Q<Text>().text, Is.EqualTo(icon.Status), icon.Id + " status");
+                Assert.That(content.Q<Text>("map-popover-meta").text,
+                    Is.EqualTo(icon.Sector + " · " + icon.DistanceKm.ToString("0.0", CultureInfo.InvariantCulture) + " KM"),
+                    icon.Id + " sector and distance");
+                Assert.That(content.Q<Text>("map-popover-body").text, Is.EqualTo(icon.Detail), icon.Id + " detail");
+                Assert.That(content.Q<Text>("map-popover-reward").text, Is.EqualTo(icon.Reward), icon.Id + " reward");
+            }
+            Assert.That(content.Q<FullStackDS.Button>("map-popover-action").text, Is.EqualTo(layout.Map.Popover.Action));
+            Assert.That(content.Q<FullStackDS.Button>("map-popover-cancel").text, Is.EqualTo(layout.Map.Popover.Cancel));
+        }
+
+        private static void AssertPopoverPart(VisualElement element, PopoverPartLayout part, ParityLayoutData layout)
+        {
+            Assert.That(element, Is.Not.Null);
+            var surface = element.GetFirstAncestorOfType<PopoverContent>();
+            Assert.That(surface, Is.Not.Null, element.name + " surface");
+            AssertActualPartRect(element, part.Rect, surface);
+            var text = element as TextElement ?? element.Q<Text>();
+            Assert.That(text, Is.Not.Null, element.name + " text");
+            Assert.That(text.style.fontSize.value.value, Is.EqualTo((float)layout.Size(part.TypeKey)), element.name + " type");
+            Assert.That(text.style.color.value, Is.EqualTo(layout.Color(part.Color)), element.name + " color");
+            var font = Resources.Load<Font>(part.Weight == 700 ? "Fonts/Inter-Bold" : "Fonts/Inter-Regular");
+            Assert.That(text.style.unityFontDefinition.value.font, Is.EqualTo(font), element.name + " font weight");
+        }
+
+        private static void AssertActualPartRect(VisualElement element, LayoutRect expected, VisualElement surface)
+        {
+            var actual = element.worldBound;
+            var origin = surface.worldBound;
+            Assert.That(actual.x - origin.x, Is.EqualTo((float)expected.X).Within(0.1f), element.name + " rendered x");
+            Assert.That(actual.y - origin.y, Is.EqualTo((float)expected.Y).Within(0.1f), element.name + " rendered y");
+            Assert.That(actual.width, Is.EqualTo((float)expected.W).Within(0.1f), element.name + " rendered width");
+            Assert.That(actual.height, Is.EqualTo((float)expected.H).Within(0.1f), element.name + " rendered height");
+        }
+
+        [UnityTest]
+        public IEnumerator SubtitlePreviewRendersSharedTextRectsAndAdaptiveColors()
+        {
+            using var host = new TestHost();
+            var app = host.App;
+            app.Tabs.Value = PauseMenuState.SettingsTab;
+            yield return null;
+            yield return null;
+            var settings = app.Settings;
+            var content = app.Layout.Settings.PreviewContent;
+            AssertActualPartRect(settings.SubtitlePreviewText, content.Line.Rect, settings.SubtitlePreview);
+            AssertActualPartRect(settings.SubtitlePreviewMeta, content.Meta.Rect, settings.SubtitlePreview);
+            Assert.That(settings.SubtitlePreviewText.style.fontSize.value.value,
+                Is.EqualTo((float)app.Layout.Size(content.Line.TypeKey)));
+            Assert.That(settings.SubtitlePreviewMeta.style.fontSize.value.value,
+                Is.EqualTo((float)app.Layout.Size(content.Meta.TypeKey)));
+            Assert.That(settings.SubtitlePreviewText.style.unityFontDefinition.value.font,
+                Is.EqualTo(Resources.Load<Font>("Fonts/Inter-Regular")));
+            Assert.That(settings.SubtitlePreviewMeta.style.unityFontDefinition.value.font,
+                Is.EqualTo(Resources.Load<Font>("Fonts/Inter-Bold")));
+            Assert.That(settings.SubtitlePreviewMeta.style.unityTextAlign.value, Is.EqualTo(TextAnchor.MiddleRight));
+            Assert.That(settings.SubtitlePreviewText.style.overflow.value, Is.EqualTo(Overflow.Hidden));
+            Assert.That(settings.SubtitlePreviewMeta.style.overflow.value, Is.EqualTo(Overflow.Hidden));
+            Assert.That(settings.SubtitlePreviewText.style.whiteSpace.value, Is.EqualTo(WhiteSpace.NoWrap));
+            Assert.That(settings.SubtitlePreviewMeta.style.whiteSpace.value, Is.EqualTo(WhiteSpace.NoWrap));
+            foreach (var background in new[] { "charcoal", "signal", "bone" })
+            {
+                app.SetSubtitleBackground(background);
+                var expected = app.Layout.Color(background == "charcoal" ? "boneBright" : "ink");
+                Assert.That(settings.SubtitlePreviewText.style.color.value, Is.EqualTo(expected), background + " line contrast");
+                Assert.That(settings.SubtitlePreviewMeta.style.color.value, Is.EqualTo(expected), background + " metadata contrast");
+            }
+        }
+
+        [Test]
+        public void MapPopoverRejectsUnsupportedContentBeforeBuildingTheApp()
+        {
+            var layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Map.Popover.Content.Body.Rect.W = layout.Map.Popover.Rect.W + 1;
+            var error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("map.popover.content.body.rect must fit the popover"));
+
+            layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Map.Popover.Content.Status.Weight = 500;
+            error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("map.popover.content.status.weight must be 400 or 700"));
+
+            layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Map.Popover.Content.Title.TypeKey = "missing-popover-type";
+            error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("type size 'missing-popover-type' is not declared"));
+
+            layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Type[layout.Map.Popover.Content.Title.TypeKey] = 0;
+            error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("map.popover.content.title.type must reference a positive font size"));
+
+            var raw = Raw();
+            raw[FixtureRepository.ParityLayoutFile] = raw[FixtureRepository.ParityLayoutFile]
+                .Replace("{distanceKm}", "{distanceKm} {unknown}");
+            error = Assert.Throws<FixtureFormatException>(() => FixtureRepository.Parse(raw));
+            Assert.That(error.Message, Does.Contain("map.popover.content.meta.template contains an unsupported placeholder"));
+        }
+
+        [Test]
+        public void SubtitlePreviewRejectsInvalidRectsAndUnsupportedMetadata()
+        {
+            var layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Settings.PreviewContent.Line.Rect.H = layout.Settings.PreviewRect.H + 1;
+            var error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("settings.preview.content.line.rect must fit the preview"));
+            layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Settings.PreviewContent.Meta.Template = "{language} · {background} {unknown}";
+            error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("settings.preview.content.meta.template contains an unsupported placeholder"));
+            layout = FixtureRepository.LoadFromResources().Parity;
+            layout.Settings.PreviewContent.Meta.LetterCase = "lower";
+            error = Assert.Throws<FixtureFormatException>(() => layout.Validate());
+            Assert.That(error.Message, Does.Contain("settings.preview.content.meta.case must be upper"));
+        }
+
         [Test]
         public void PinnedIconArtRendersPortableTwoLetterTiles()
         {

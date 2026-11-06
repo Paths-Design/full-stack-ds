@@ -380,7 +380,7 @@ func open_marker_popover(icon_id: String, forced_rect := Rect2()) -> void:
 		if marker != null:
 			anchor = marker.get_global_rect().get_center()
 		rect = _anchored_popover_rect(anchor, UI.rect(parity.map["popover"]).size)
-	DSFactory.style_popover_surface(marker_popover, rect)
+	DSFactory.style_popover_surface(marker_popover, rect, parity.map["popover"]["content"])
 
 
 func _anchored_popover_rect(anchor: Vector2, popover_size: Vector2) -> Rect2:
@@ -396,59 +396,70 @@ func _anchored_popover_rect(anchor: Vector2, popover_size: Vector2) -> Rect2:
 	return Rect2(Vector2(x, y), popover_size)
 
 
+func _popover_label(part_key: String, text: String) -> Label:
+	var part: Dictionary = parity.map["popover"]["content"][part_key]
+	var label := UI.label(text, orion.type_size(str(part["type"])), int(part["weight"]), str(part["color"]), 0.0)
+	if part_key == "body":
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.name = "Text"
+	var rect := UI.rect(part["rect"])
+	var box := Control.new()
+	box.name = "Popover_" + part_key
+	box.clip_contents = true
+	UI.place_rect(box, rect)
+	UI.place(label, 0, 0, rect.size.x, rect.size.y)
+	marker_popover.content.get_node("PopoverCanvas").add_child(box)
+	box.add_child(label)
+	return label
+
+
 func _populate_marker_popover(icon: Dictionary) -> void:
 	_clear_popover_content(marker_popover)
-	var popover_rect := UI.rect(parity.map["popover"])
-	var padding := 16.0
-	var width := popover_rect.size.x - padding * 2.0
-	# Dark attached content: generated Text's fixed foreground cannot reach it, so
-	# copy is projected with native labels (ledgered fallback).
-	var header_row := UI.hbox(8)
-	UI.place(header_row, padding, 12, width, 18)
-	marker_popover.content.add_child(header_row)
-	header_row.add_child(UI.micro(str(icon.get("sector", "")), "muted"))
-	header_row.add_child(UI.spacer())
-	var status = DSFactory.chip(
-		str(icon.get("status", "")),
-		orion.color("graphite"),
-		orion.color("boneBright"),
-		orion.color("ruleStrong"),
-		72,
-		18,
-		9
-	)
-	header_row.add_child(status)
+	var popover: Dictionary = parity.map["popover"]
+	var content: Dictionary = popover["content"]
+	var canvas := Control.new()
+	canvas.name = "PopoverCanvas"
+	canvas.clip_contents = true
+	UI.place(canvas, 0, 0, float(popover["w"]), float(popover["h"]))
+	marker_popover.content.add_child(canvas)
+	var frame := UI.frame(str(content["background"]), str(content["border"]))
+	frame.border_width = int(content["borderWidth"])
+	UI.place(frame, 0, 0, float(popover["w"]), float(popover["h"]))
+	canvas.add_child(frame)
+	var accent := UI.rect_node(str(content["accent"]))
+	UI.place(accent, 0, 0, float(popover["w"]), float(content["accentWidth"]))
+	canvas.add_child(accent)
+	_popover_label("title", str(icon["label"]))
+	var status_data: Dictionary = content["status"]
+	var status_rect := UI.rect(status_data["rect"])
+	var status = DSFactory.chip(str(icon["status"]), orion.color(str(status_data["background"])),
+		orion.color(str(status_data["color"])), orion.color(str(status_data["border"])),
+		status_rect.size.x, status_rect.size.y, orion.type_size(str(status_data["type"])), int(content["borderWidth"]))
+	status.name = "Popover_status"
+	UI.place_rect(status, status_rect)
+	canvas.add_child(status)
 	DSFactory.prepare_chip(status)
+	var meta := str(content["meta"]["template"]).replace("{sector}", str(icon["sector"]))
+	meta = meta.replace("{distanceKm}", "%.1f" % float(icon["distanceKm"]))
+	_popover_label("meta", meta)
+	_popover_label("body", str(icon["detail"]))
+	_popover_label("reward", str(icon["reward"]))
+	for key in ["action", "cancel"]:
+		var part: Dictionary = content[key]
+		var rect := UI.rect(part["rect"])
+		var role := "primary" if key == "action" else "outline"
+		var label := str(popover["action"] if key == "action" else popover["cancel"])
+		var button = DSFactory.action(label, role, rect.size.x, rect.size.y, orion.type_size(str(part["type"])))
+		button.name = "Popover_" + key
+		button.token_overrides["button.design.root.typography.weight"] = str(part["weight"])
+		button.token_overrides["button.design.root.foreground.color"] = orion.color(str(part["color"])).to_html(false)
+		UI.place_rect(button, rect)
+		if key == "action":
+			button.activated.connect(set_nav_target.bind(str(icon["id"])))
+		else:
+			button.activated.connect(close_marker_popover)
+		canvas.add_child(button)
 
-	var title := UI.title(str(icon.get("label", "")), orion.type_size("title"), "boneBright")
-	UI.place(title, padding, 34, width, 30)
-	marker_popover.content.add_child(title)
-
-	var meta_row := UI.hbox(12)
-	UI.place(meta_row, padding, 66, width, 14)
-	marker_popover.content.add_child(meta_row)
-	meta_row.add_child(UI.sub("DISTANCE %s KM" % str(icon.get("distanceKm", "")), "muted"))
-	meta_row.add_child(UI.sub("KIND %s" % str(icon.get("kind", "")).to_upper(), "muted"))
-
-	var detail := UI.label(str(icon.get("detail", "")), orion.type_size("body"), 400, "bone", 0.0)
-	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UI.place(detail, padding, 86, width, 54)
-	marker_popover.content.add_child(detail)
-
-	var reward := UI.label(str(icon.get("reward", "")), orion.type_size("rowSub"), 700, "signalHot", 0.0)
-	UI.place(reward, padding, 146, width, 16)
-	marker_popover.content.add_child(reward)
-
-	var actions := UI.hbox(8)
-	UI.place(actions, padding, popover_rect.size.y - 48, width, 32)
-	marker_popover.content.add_child(actions)
-	var nav_action = DSFactory.action("SET AS NAV TARGET", "primary", 170, 32, 11)
-	nav_action.activated.connect(set_nav_target.bind(str(icon.get("id", ""))))
-	actions.add_child(nav_action)
-	var cancel_data: Dictionary = parity.map["popover"]
-	var close_action = DSFactory.action(str(cancel_data.get("cancel", "CLOSE")), "outline", 80, 32, 11)
-	close_action.activated.connect(close_marker_popover)
-	actions.add_child(close_action)
 
 
 func open_ability_popover(ability_id: String, forced_rect := Rect2()) -> void:

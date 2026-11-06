@@ -298,21 +298,39 @@ func _build_background_swatches(parent: Control, config: Dictionary) -> void:
 
 
 func _build_preview(parent: Control, preview_line: String) -> void:
-	var preview_rect := UI.rect(app.parity.settings["preview"])
+	var preview_data: Dictionary = app.parity.settings["preview"]
+	var preview_rect := UI.rect(preview_data)
 	preview_panel = PanelContainer.new()
 	preview_panel.name = "SubtitlePreview"
+	preview_panel.clip_contents = true
 	var audio_panel_rect := UI.rect(_panel_rect_for("audio"))
 	var local_position := preview_rect.position - audio_panel_rect.position
 	UI.place(preview_panel, local_position.x, local_position.y, preview_rect.size.x, preview_rect.size.y)
 	parent.add_child(preview_panel)
-	var row := UI.hbox(12)
-	preview_panel.add_child(row)
-	preview_label = UI.label(preview_line, 11, 400, "bone", 0.0)
-	preview_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	preview_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(preview_label)
-	preview_tag = UI.micro("", "muted")
-	row.add_child(preview_tag)
+	# A plain canvas preserves authored part rectangles; a Container would
+	# redistribute the labels according to their font-dependent minimum sizes.
+	var canvas := Control.new()
+	canvas.name = "SubtitlePreviewCanvas"
+	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	canvas.clip_contents = true
+	preview_panel.add_child(canvas)
+	var content: Dictionary = preview_data["content"]
+	preview_label = _preview_content_label(canvas, preview_line, content["line"])
+	preview_label.name = "SubtitlePreviewLine"
+	preview_tag = _preview_content_label(canvas, "", content["meta"])
+	preview_tag.name = "SubtitlePreviewMeta"
+	preview_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT if str(content["meta"]["align"]) == "right" else HORIZONTAL_ALIGNMENT_LEFT
+
+
+func _preview_content_label(canvas: Control, text: String, part: Dictionary) -> Label:
+	var label := UI.label(text, app.parity.type_size(str(part["type"])), int(part["weight"]), "bone", 0.0)
+	label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	label.clip_text = true
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	canvas.add_child(label)
+	UI.place_rect(label, UI.rect(part["rect"]))
+	return label
 
 
 func _on_audio_slider_changed(value: float, slider_id: String) -> void:
@@ -387,14 +405,18 @@ func _refresh_preview() -> void:
 	if preview_panel == null:
 		return
 	var background := app.orion.color("charcoal")
+	var background_label := str(app.subtitle_background)
 	for option in app.subtitle_background_options():
 		if str(option.get("id", "")) == app.subtitle_background:
 			background = Color(str(option.get("value", "#191917")))
+			background_label = str(option.get("label", ""))
 	var text_color := app.parity.contrast_text(background)
-	preview_panel.add_theme_stylebox_override("panel", app.orion.flat(background, app.orion.color("ruleStrong"), 1, 4.0))
+	preview_panel.add_theme_stylebox_override("panel", app.orion.flat(background, app.orion.color("ruleStrong"), 1, 0.0))
 	preview_label.add_theme_color_override("font_color", text_color)
 	preview_tag.add_theme_color_override("font_color", text_color)
-	preview_tag.text = str(app.subtitle_background).to_upper()
+	var metadata: Dictionary = app.parity.settings["preview"]["content"]["meta"]
+	var caption := str(metadata["template"]).replace("{language}", app.subtitle_language).replace("{background}", background_label)
+	preview_tag.text = caption.to_upper() if str(metadata["case"]) == "upper" else caption
 
 
 # --- node accessors used by the interaction tests ----------------------------

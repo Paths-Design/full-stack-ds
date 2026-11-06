@@ -228,19 +228,24 @@ static func prepare_popover(node) -> void:
 	node.trigger.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
-static func style_popover_surface(node, rect_value: Rect2) -> void:
+static func style_popover_surface(node, rect_value: Rect2, content_style: Dictionary = {}) -> void:
 	if node.surface == null:
 		return
 	# NOT FSDS: generated surface node has no token/theme channel; the lane sets
 	# the parity surface style + size after the surface is attached.
+	var shared_content := not content_style.is_empty()
 	node.surface.add_theme_stylebox_override("panel", orion.flat(
-		orion.color("charcoal"),
-		orion.color("rule"),
-		int(parity.style.get("panelBorder", 1)),
-		16.0
+		orion.color(str(content_style.get("background", "charcoal"))),
+		orion.color(str(content_style.get("border", "rule"))),
+		int(content_style.get("borderWidth", parity.style.get("panelBorder", 1))),
+		0.0 if shared_content else 16.0
 	))
 	node.surface.size = rect_value.size
 	node.surface.position = rect_value.position
+	if shared_content:
+		node.content.custom_minimum_size = rect_value.size
+		node.content.set_deferred("size", rect_value.size)
+		node.surface.set_deferred("size", rect_value.size)
 
 
 # --- actions -----------------------------------------------------------------
@@ -371,6 +376,9 @@ static func prepare_chip(node: Control) -> void:
 	# NOT FSDS: generated Badge exposes no content alignment channel; the lane
 	# centers its projected content label for parity chip geometry.
 	if node == null:
+		return
+	if not node.is_node_ready():
+		node.ready.connect(prepare_chip.bind(node), CONNECT_ONE_SHOT)
 		return
 	# Typography parity: the generated Badge exposes no font-family channel, so
 	# pin the bundled Inter Bold face at the chip's own size and let the content

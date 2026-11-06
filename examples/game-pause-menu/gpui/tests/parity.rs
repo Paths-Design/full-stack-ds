@@ -14,6 +14,68 @@ fn layout() -> ParityLayout {
     try_load_parity_layout().expect("the committed parity layout must validate")
 }
 
+#[test]
+fn popover_inner_contract_keeps_all_content_inside_the_surface() {
+    let layout = layout();
+    let content = &layout.map.popover.content;
+    let rects: Vec<_> = content.parts().into_iter()
+        .map(|(name, part)| (name, [part.rect.x, part.rect.y, part.rect.w, part.rect.h]))
+        .collect();
+    assert_eq!(rects, vec![
+        ("title", [16.0,14.0,328.0,28.0]), ("status", [16.0,48.0,84.0,18.0]),
+        ("meta", [112.0,50.0,232.0,16.0]), ("body", [16.0,78.0,328.0,88.0]),
+        ("reward", [16.0,174.0,328.0,14.0]), ("action", [16.0,194.0,220.0,28.0]),
+        ("cancel", [244.0,194.0,100.0,28.0]),
+    ]);
+    let fixtures = game_pause_menu_gpui::seam::adapter::load_fixtures();
+    let beacon = fixtures.icons().iter().find(|icon| icon.id == "beacon-05").unwrap();
+    assert_eq!(content.metadata(beacon), "HECATE FLATS · 11.2 KM");
+    let relay = fixtures.icons().iter().find(|icon| icon.id == "relay-01").unwrap();
+    assert_eq!(content.metadata(relay), "ARES BASIN · 4.8 KM");
+    assert_eq!(content.status.type_key, "micro");
+    assert_eq!(content.status.background.as_deref(), Some("graphite"));
+    assert_eq!(layout.type_scale.size(&content.title.type_key), Some(24.0));
+}
+
+#[test]
+fn malformed_popover_content_is_rejected() {
+    let mut raw: serde_json::Value = serde_json::from_str(PARITY_LAYOUT_JSON).unwrap();
+    raw["map"]["popover"]["content"]["body"]["rect"]["w"] = 999.into();
+    let error = parse_parity_layout(&raw.to_string()).unwrap_err();
+    assert!(error.to_string().contains("map.popover.content.body.rect extends beyond"));
+    let mut raw: serde_json::Value = serde_json::from_str(PARITY_LAYOUT_JSON).unwrap();
+    raw["map"]["popover"]["content"]["meta"]["template"] = "{sector} {unknown}".into();
+    assert!(parse_parity_layout(&raw.to_string()).unwrap_err().to_string().contains("must bind sector and distanceKm only"));
+    let mut raw: serde_json::Value = serde_json::from_str(PARITY_LAYOUT_JSON).unwrap();
+    raw["map"]["popover"]["content"]["status"]["type"] = "unknown".into();
+    assert!(parse_parity_layout(&raw.to_string()).unwrap_err().to_string().contains("invalid typography"));
+}
+
+#[test]
+fn subtitle_preview_keeps_body_and_metadata_in_separate_declared_boxes() {
+    let layout = layout();
+    let preview = &layout.settings.preview;
+    assert_eq!([preview.x, preview.y, preview.w, preview.h], [664.0, 694.0, 576.0, 26.0]);
+    assert_eq!(preview.content.line.rect, game_pause_menu_gpui::seam::parity::Rect { x: 8.0, y: 6.0, w: 390.0, h: 14.0 });
+    assert_eq!(preview.content.meta.rect, game_pause_menu_gpui::seam::parity::Rect { x: 400.0, y: 6.0, w: 168.0, h: 14.0 });
+    assert_eq!(layout.type_scale.size(&preview.content.line.type_key), Some(10.0));
+    assert_eq!(preview.content.line.weight, 400);
+    assert_eq!(preview.content.meta.weight, 700);
+    assert_eq!(preview.content.metadata("English", "CHARCOAL"), "ENGLISH · CHARCOAL");
+    assert_eq!(preview.content.metadata("Français", "SIGNAL"), "FRANÇAIS · SIGNAL");
+    assert_eq!(preview.content.metadata("Español", "Warm signal"), "ESPAÑOL · WARM SIGNAL");
+}
+
+#[test]
+fn subtitle_preview_rejects_lost_feedback_and_out_of_bounds_parts() {
+    let mut raw: serde_json::Value = serde_json::from_str(PARITY_LAYOUT_JSON).unwrap();
+    raw["settings"]["preview"]["content"]["meta"]["template"] = "{language}".into();
+    assert!(parse_parity_layout(&raw.to_string()).unwrap_err().to_string().contains("must bind language and background"));
+    let mut raw: serde_json::Value = serde_json::from_str(PARITY_LAYOUT_JSON).unwrap();
+    raw["settings"]["preview"]["content"]["line"]["rect"]["h"] = 99.into();
+    assert!(parse_parity_layout(&raw.to_string()).unwrap_err().to_string().contains("settings.preview.content.line.rect extends beyond"));
+}
+
 fn mutated(from: &str, to: &str) -> String {
     assert!(
         PARITY_LAYOUT_JSON.contains(from),

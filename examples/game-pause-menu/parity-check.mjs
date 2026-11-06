@@ -27,16 +27,18 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { compareColorProbe, mapSwitchProbes, mapPopoverColorProbes, mapPopoverTypographyProbes,
+  subtitlePreviewColorProbes, subtitlePreviewTypographyProbes } from './parity-state.mjs';
 
 const LANES = ['gpui', 'unity', 'godot'];
 // All eight committed capture states are compared for pairwise RMSE and
-// regression goldens. The four base states additionally carry the pinned
-// authority probes (colour/geometry and typography).
+// regression goldens. Base states carry the pinned colour/geometry and typography
+// probes; map-popover also carries map geometry and every map switch is probed.
 const STATES = [
   'map', 'map-popover', 'progress', 'abilities',
   'abilities-hover', 'settings', 'settings-remap-modal', 'settings-subtitle',
 ];
-const PROBED_STATES = new Set(['map', 'progress', 'abilities', 'settings']);
+const PROBED_STATES = new Set(['map', 'map-popover', 'progress', 'abilities', 'settings']);
 
 // The bounded claim this report supports. Do not widen this without widening
 // the evidence matrix in examples/game-pause-menu/evidence/visual-review.md.
@@ -46,6 +48,8 @@ const CLAIM =
 
 const here = dirname(fileURLToPath(import.meta.url));
 const layout = JSON.parse(readFileSync(join(here, 'fixtures/parity-layout.json'), 'utf8'));
+const icons = JSON.parse(readFileSync(join(here, 'fixtures/map-icons.json'), 'utf8')).icons;
+const settings = JSON.parse(readFileSync(join(here, 'fixtures/settings.json'), 'utf8'));
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -66,12 +70,8 @@ const goldenTolerances = { 'abilities-hover': 0.06 };
 const typography = layout.typography ?? { probes: [], probeTolerance: {} };
 
 const C = layout.colors;
-const hexToRgb = (hex) => [
-  parseInt(hex.slice(1, 3), 16),
-  parseInt(hex.slice(3, 5), 16),
-  parseInt(hex.slice(5, 7), 16),
-];
 const color = (name) => {
+  if (/^#[\da-f]{6}$/i.test(name)) return name;
   if (!(name in C)) throw new Error(`unknown colour key ${name}`);
   return C[name];
 };
@@ -186,10 +186,6 @@ function samplePixels(file, probes) {
   });
 }
 
-function distance(a, b) {
-  return Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2]));
-}
-
 function rmse(a, b) {
   // `magick compare` exits 1 whenever the images differ; capture stderr regardless.
   const result = run(['compare', '-metric', 'RMSE', a, b, 'null:']);
@@ -248,17 +244,22 @@ for (const state of STATES) {
     failures.push(`${state}: missing capture for one of ${LANES.join(', ')} (${files.filter((f) => !existsSync(f)).join(', ')})`);
     continue;
   }
-  const probes = PROBED_STATES.has(state) ? PROBES[state] : null;
-  if (probes) {
+  const probes = [
+    ...(PROBED_STATES.has(state) ? PROBES[state === 'map-popover' ? 'map' : state] : []),
+    ...mapSwitchProbes(layout, icons, state),
+    ...mapPopoverColorProbes(layout, icons, state),
+    ...subtitlePreviewColorProbes(layout, settings, state),
+  ];
+  if (probes.length) {
     for (let i = 0; i < LANES.length; i++) {
       const lane = LANES[i];
       const pixels = samplePixels(files[i], probes);
       probes.forEach(([x, y, expectedName, description], index) => {
-        const expected = hexToRgb(color(expectedName));
         const actual = pixels[index];
-        const delta = distance(actual, expected);
-        results.push({ state, lane, x, y, expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta, description });
-        if (delta > tolerance) {
+        const { matches, ...comparison } = compareColorProbe(probes[index], actual, C, tolerance);
+        const { delta } = comparison;
+        results.push({ state, lane, ...comparison });
+        if (!matches) {
           failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
         }
       });
@@ -268,7 +269,11 @@ for (const state of STATES) {
   // Typography parity: measure the pixel bbox of every pinned text string in
   // this state and require the three engines to agree on x/y/w/h within the
   // authority tolerance. This is a metric probe; glyph anti-aliasing may differ.
-  const stateTypeProbes = typography.probes.filter((probe) => probe.state === state);
+  const stateTypeProbes = [
+    ...typography.probes.filter((probe) => probe.state === state),
+    ...mapPopoverTypographyProbes(layout, icons, state),
+    ...subtitlePreviewTypographyProbes(layout, settings, state),
+  ];
   const typeTolerance = typography.probeTolerance ?? {};
   const boxesByProbe = new Map();
   for (let i = 0; i < LANES.length; i++) {
