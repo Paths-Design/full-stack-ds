@@ -84,6 +84,13 @@ acceptance:
       popover fields and action rectangles agree across engines, selected-icon
       titles are data derived, and the strengthened checker validates fresh captures
       with text alignment and visual limits explicitly bounded
+  - id: A7
+    given: 'the shared subtitle preview contract and language and background selections'
+    when: 'GPUI Unity and Godot update the preview and fresh settings captures are checked'
+    then: >-
+      all three preserve the authored preview line, render both selected labels
+      through one fixture-owned metadata template and shared geometry, and reject
+      regression through native and recurring root checks
 observability:
   - 'Recurring generator, root parity and documentation checks retain concrete failures for unsupported claims and wrong capture states'
 rollback:
