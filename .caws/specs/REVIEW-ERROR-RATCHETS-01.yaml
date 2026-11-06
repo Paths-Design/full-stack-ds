@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: review-error-ratchets
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-06T00:04:44.049Z'
+updated_at: '2026-11-06T01:02:24.438Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
@@ -49,6 +49,7 @@ scope:
     - scripts/prepush-scope.mjs
     - scripts/prepush-scope.test.mjs
     - src/consumption/game-pause-unity-verifier.test.ts
+    - src/consumption/game-pause-godot-verifier.test.ts
   out: []
 invariants:
   - 'Framework-neutral channel interaction facts remain authoritative and generated files are regenerated rather than hand edited'
