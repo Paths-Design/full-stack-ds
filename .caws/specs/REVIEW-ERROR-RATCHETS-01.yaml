@@ -92,6 +92,13 @@ acceptance:
       all three preserve the authored preview line, render both selected labels
       through one fixture-owned metadata template and shared geometry, and reject
       regression through native and recurring root checks
+  - id: A8
+    given: 'the Godot lane verifier and malformed or stalled engine executions'
+    when: 'the documented verifier runs against real and controlled fake executables'
+    then: >-
+      it accepts only a successful nonzero consistent test run with the completion
+      marker and rejects parse errors missing markers contradictory counters process
+      failure and timeout without leaving its child running
 observability:
   - 'Recurring generator, root parity and documentation checks retain concrete failures for unsupported claims and wrong capture states'
 rollback:
