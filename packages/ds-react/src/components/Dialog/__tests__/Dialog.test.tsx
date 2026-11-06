@@ -64,11 +64,6 @@ describe("Dialog — unit", () => {
     expect(screen.getByTestId("dialog")).toHaveClass("dialog--full");
   });
 
-  it("calls onOpenChange when openness changes", async () => {
-    const onOpenChangeSpy = vi.fn();
-    expect(() => render(<Dialog data-testid="dialog" open={false} onOpenChange={onOpenChangeSpy}><span>content</span></Dialog>)).not.toThrow();
-  });
-
   it("closes on Escape key", () => {
     const onOpenChangeSpy = vi.fn();
     render(<Dialog data-testid="dialog" open={true} onOpenChange={onOpenChangeSpy}><span>content</span></Dialog>);

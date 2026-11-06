@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
-import { allCorpusComponentNames, corpusIR, loadCorpusContract } from "../corpus-fixtures.js";
+import { corpusIR } from "../corpus-fixtures.js";
 import { generateReactTest } from "./tests.js";
 
 describe("generateReactTest", () => {
@@ -61,7 +61,7 @@ function makeContract(): ComponentContract {
 }
 
 describe("generateReactTest — real corpus contracts", () => {
-  it("emits compound-subcomponent imports and a render-only channel test for Tabs", () => {
+  it("omits unreachable channel behavior tests for Tabs", () => {
     const source = generateReactTest(corpusIR("Tabs"));
 
     // CODEGEN-EMIT-LINT-HYGIENE-01: the generated body renders only the
@@ -72,38 +72,53 @@ describe("generateReactTest — real corpus contracts", () => {
     expect(source).not.toContain(
       `import { Tabs, TabsList, TabsTab, TabsPanel } from "../Tabs";`,
     );
-    expect(source).toContain(
-      `it("calls onValueChange when activeTab changes", async () => {`,
-    );
-    // Tabs' string channel is deep-bound: the plan falls back to
-    // render-only prop acceptance instead of firing an event.
-    expect(source).toContain(`value={""} onValueChange={onValueChangeSpy}`);
+    // The root-only fixture cannot exercise a descendant tab activation.
+    expect(source).not.toContain(`calls onValueChange when activeTab changes`);
+    expect(source).not.toContain(`onValueChangeSpy`);
   });
 
-  it("types each render-only channel placeholder by its value type, union arms in any order", () => {
+  it("omits unsupported Calendar callback behavior cases", () => {
     const source = generateReactTest(corpusIR("Calendar"));
-    // Calendar's month channel is a Date and its value channel is nullable.
-    expect(source).toContain(`month={new Date(0)} onMonthChange={onMonthChangeSpy}`);
-    expect(source).toContain(`value={null} onChange={onChangeSpy}`);
-    const corpus = new Map(allCorpusComponentNames().map((name) => [name, loadCorpusContract(name)]));
-    const withValueType = (valueType: string) => {
-      const contract = structuredClone(corpus.get("Calendar")!) as ComponentContract;
-      contract.channels!.value.valueType = valueType;
-      return generateReactTest(buildComponentIR(contract, { allContracts: corpus }));
-    };
-    // The date grid admits a value channel without the null arm, in either order.
-    expect(withValueType("Date | Date[]")).toContain(`value={new Date(0)} onChange={onChangeSpy}`);
-    expect(withValueType("Date[] | Date")).toContain(`value={[]} onChange={onChangeSpy}`);
-    expect(withValueType("Date[] | Date | null")).toContain(`value={null} onChange={onChangeSpy}`);
+    expect(source).not.toContain(`calls onChange when value changes`);
+    expect(source).not.toContain(`calls onMonthChange when month changes`);
+    expect(source).not.toContain(`not.toThrow()`);
+    expect(source).not.toContain(`expect, vi`);
+  });
+
+  it("keeps the spy import required by preserved authored tests", () => {
+    const source = generateReactTest(corpusIR("Accordion"), {
+      preservedCustomTests: `const onChangeSpy = vi.fn();`,
+    });
+
+    expect(source).toContain(`import { describe, it, expect, vi } from "vitest";`);
+  });
+
+  it("respects an authored spy import instead of declaring it twice", () => {
+    const source = generateReactTest(corpusIR("Calendar"), {
+      preservedCustomTests: `import { vi } from "vitest"; const spy = vi.fn();`,
+    });
+
+    expect(source).toContain(`import { describe, it, expect } from "vitest";`);
+    expect(source).not.toContain(`expect, vi`);
+  });
+
+  it("distinguishes local and aliased helper bindings from a missing module helper", () => {
+    const local = generateReactTest(corpusIR("Calendar"), {
+      preservedCustomTests: `function authored(vi: { fn(): unknown }) { return vi.fn(); }`,
+    });
+    const aliased = generateReactTest(corpusIR("Calendar"), {
+      preservedCustomTests: `import { vi as mock } from "vitest"; const first = mock.fn(); const second = vi.fn();`,
+    });
+
+    expect(local).not.toContain(`expect, vi`);
+    expect(aliased).toContain(`import { describe, it, expect, vi } from "vitest";`);
   });
 
   it("emits the open-render prop and dismissal tests for Select", () => {
     const source = generateReactTest(corpusIR("Select"));
 
     expect(source).toContain(`open={true}`);
-    expect(source).toContain(
-      `it("calls onChange when selection changes", async () => {`,
-    );
+    expect(source).not.toContain(`calls onChange when selection changes`);
     expect(source).toContain(`closes on Escape key`);
   });
 
@@ -165,6 +180,9 @@ describe("generateReactTest — real corpus contracts", () => {
 
     expect(files[0]?.contents).toContain(
       `import { Tabs, TabsList, TabsTab, TabsPanel } from "../Tabs";`,
+    );
+    expect(files[0]?.contents).toContain(
+      `import { describe, it, expect, vi } from "vitest";`,
     );
   });
 

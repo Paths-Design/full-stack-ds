@@ -48,11 +48,6 @@ describe("Accordion — unit", () => {
     render(<Accordion data-testid="accordion" type="multiple"><span>content</span></Accordion>);
     expect(screen.getByTestId("accordion")).toHaveClass("accordion--multiple");
   });
-
-  it("calls onValueChange when openness changes", async () => {
-    const onValueChangeSpy = vi.fn();
-    expect(() => render(<Accordion data-testid="accordion" value={""} onValueChange={onValueChangeSpy}><span>content</span></Accordion>)).not.toThrow();
-  });
 });
 
 describe("Accordion — accessibility", () => {

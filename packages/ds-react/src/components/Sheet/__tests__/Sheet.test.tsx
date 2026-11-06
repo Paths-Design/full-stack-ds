@@ -59,11 +59,6 @@ describe("Sheet — unit", () => {
     expect(screen.getByTestId("sheet")).toHaveClass("sheet--left");
   });
 
-  it("calls onOpenChange when openness changes", async () => {
-    const onOpenChangeSpy = vi.fn();
-    expect(() => render(<Sheet data-testid="sheet" open={false} onOpenChange={onOpenChangeSpy}><span>content</span></Sheet>)).not.toThrow();
-  });
-
   it("closes on Escape key", () => {
     const onOpenChangeSpy = vi.fn();
     render(<Sheet data-testid="sheet" open={true} onOpenChange={onOpenChangeSpy}><span>content</span></Sheet>);

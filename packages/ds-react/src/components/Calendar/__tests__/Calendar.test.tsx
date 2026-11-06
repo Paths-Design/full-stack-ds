@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Calendar } from "../Calendar";
@@ -52,16 +52,6 @@ describe("Calendar — unit", () => {
   it("applies mode=range variant class", () => {
     render(<Calendar data-testid="calendar" mode="range" />);
     expect(screen.getByTestId("calendar")).toHaveClass("calendar--range");
-  });
-
-  it("calls onChange when value changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<Calendar data-testid="calendar" value={null} onChange={onChangeSpy} />)).not.toThrow();
-  });
-
-  it("calls onMonthChange when month changes", async () => {
-    const onMonthChangeSpy = vi.fn();
-    expect(() => render(<Calendar data-testid="calendar" month={new Date(0)} onMonthChange={onMonthChangeSpy} />)).not.toThrow();
   });
 });
 

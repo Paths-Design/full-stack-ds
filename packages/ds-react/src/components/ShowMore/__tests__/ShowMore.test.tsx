@@ -38,11 +38,6 @@ describe("ShowMore — unit", () => {
     render(<ShowMore data-testid="show-more" className="custom"><span>content</span></ShowMore>);
     expect(screen.getByTestId("show-more")).toHaveClass("show-more", "custom");
   });
-
-  it("calls onExpandedChange when expanded changes", async () => {
-    const onExpandedChangeSpy = vi.fn();
-    expect(() => render(<ShowMore data-testid="show-more" expanded={false} onExpandedChange={onExpandedChangeSpy}><span>content</span></ShowMore>)).not.toThrow();
-  });
 });
 
 describe("ShowMore — accessibility", () => {

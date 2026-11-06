@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Pagination } from "../Pagination";
@@ -62,11 +62,6 @@ describe("Pagination — unit", () => {
   it("applies progress=elapsed variant class", () => {
     render(<Pagination data-testid="pagination" progress="elapsed" />);
     expect(screen.getByTestId("pagination")).toHaveClass("pagination--elapsed");
-  });
-
-  it("calls onIndexChange when page changes", async () => {
-    const onIndexChangeSpy = vi.fn();
-    expect(() => render(<Pagination data-testid="pagination" index={0} onIndexChange={onIndexChangeSpy} />)).not.toThrow();
   });
 });
 

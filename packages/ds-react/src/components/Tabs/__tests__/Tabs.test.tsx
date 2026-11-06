@@ -68,11 +68,6 @@ describe("Tabs — unit", () => {
     render(<Tabs data-testid="tabs" activationMode="manual"><span>content</span></Tabs>);
     expect(screen.getByTestId("tabs")).toHaveClass("tabs--manual");
   });
-
-  it("calls onValueChange when activeTab changes", async () => {
-    const onValueChangeSpy = vi.fn();
-    expect(() => render(<Tabs data-testid="tabs" value={""} onValueChange={onValueChangeSpy}><span>content</span></Tabs>)).not.toThrow();
-  });
 });
 
 describe("Tabs — accessibility", () => {

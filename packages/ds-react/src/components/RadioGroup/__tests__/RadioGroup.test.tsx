@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { RadioGroup } from "../RadioGroup";
@@ -52,11 +52,6 @@ describe("RadioGroup — unit", () => {
   it("applies orientation=horizontal variant class", () => {
     render(<RadioGroup data-testid="radio-group" name={"placeholder"} orientation="horizontal" />);
     expect(screen.getByTestId("radio-group")).toHaveClass("radio-group--horizontal");
-  });
-
-  it("calls onChange when selection changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<RadioGroup data-testid="radio-group" name={"placeholder"} value={""} onChange={onChangeSpy} />)).not.toThrow();
   });
 });
 

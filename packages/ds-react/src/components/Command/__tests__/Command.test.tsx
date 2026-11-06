@@ -39,16 +39,6 @@ describe("Command — unit", () => {
     expect(screen.getByTestId("command")).toHaveClass("command", "custom");
   });
 
-  it("calls onOpenChange when open changes", async () => {
-    const onOpenChangeSpy = vi.fn();
-    expect(() => render(<Command data-testid="command" open={false} onOpenChange={onOpenChangeSpy} />)).not.toThrow();
-  });
-
-  it("calls onSearchChange when search changes", async () => {
-    const onSearchChangeSpy = vi.fn();
-    expect(() => render(<Command data-testid="command" search={""} onSearchChange={onSearchChangeSpy} open={true} />)).not.toThrow();
-  });
-
   it("closes on Escape key", () => {
     const onOpenChangeSpy = vi.fn();
     render(<Command data-testid="command" open={true} onOpenChange={onOpenChangeSpy} />);
