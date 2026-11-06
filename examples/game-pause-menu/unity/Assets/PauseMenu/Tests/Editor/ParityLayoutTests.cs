@@ -187,6 +187,21 @@ namespace GamePauseMenu.Tests
             app.Map.OpenPopover("beacon-05");
             yield return null;
             yield return null;
+            // The Editor panel also contains native window chrome; the client
+            // mount is the viewport in which this 1280x800 app is exercised.
+            var viewport = host.Mount.contentRect;
+            Assert.That(viewport.width, Is.EqualTo((float)layout.ViewportWidth).Within(0.1f),
+                "native client viewport width; window=" + host.Window.position);
+            Assert.That(viewport.height, Is.EqualTo((float)layout.ViewportHeight).Within(0.1f),
+                "native client viewport height; window=" + host.Window.position);
+            Assert.That(app.Root.worldBound.width, Is.EqualTo((float)layout.ViewportWidth).Within(0.1f));
+            Assert.That(app.Root.worldBound.height, Is.EqualTo((float)layout.ViewportHeight).Within(0.1f));
+            var panelBounds = app.Root.panel.visualTree.worldBound;
+            var clientBounds = host.Mount.worldBound;
+            Assert.That(panelBounds.xMin, Is.LessThanOrEqualTo(clientBounds.xMin));
+            Assert.That(panelBounds.yMin, Is.LessThanOrEqualTo(clientBounds.yMin));
+            Assert.That(panelBounds.xMax, Is.GreaterThanOrEqualTo(clientBounds.xMax));
+            Assert.That(panelBounds.yMax, Is.GreaterThanOrEqualTo(clientBounds.yMax));
             app.Map.MarkerPopover.Surface.Reposition();
             yield return null;
             yield return null;

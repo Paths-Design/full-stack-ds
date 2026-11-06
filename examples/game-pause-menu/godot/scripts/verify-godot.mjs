@@ -15,7 +15,9 @@ function fail(message) {
 
 function validate(output) {
   const lines = output.split(/\r?\n/).map((line) => line.trim());
-  if (/SCRIPT\s+ERROR|parse[\s_-]*error/i.test(output)) {
+  // Engine failures are diagnostic records. The same words inside a fixture
+  // rejection message or TEST_PASS description do not identify a script fault.
+  if (lines.some((line) => /^(?:SCRIPT\s+ERROR\b|parse[\s_-]*error\s*:|ERROR:\s+Failed\s+to\s+load\s+script\b)/i.test(line))) {
     throw new Error("script/parse error output");
   }
   const counts = {};

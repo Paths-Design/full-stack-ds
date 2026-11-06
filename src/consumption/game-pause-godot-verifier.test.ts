@@ -10,12 +10,15 @@ const verifier = fileURLToPath(new URL("../../examples/game-pause-menu/godot/scr
 const lane = dirname(dirname(verifier));
 const passing = "TEST_PASS first\nTEST_PASS second\nTESTS_TOTAL 2\nTESTS_PASSED 2\nTESTS_FAILED 0\nTESTS_OK\n";
 const fixtures: string[] = [];
+// Let the enclosing test report subprocess diagnostics before its own deadline.
+// The explicit timeout behavior case still gives the helper a 50 ms deadline.
+const testTimeoutMs = 40_000;
 
 afterEach(() => {
   for (const fixture of fixtures.splice(0)) rmSync(fixture, { recursive: true, force: true });
 });
 
-function run({ output = passing, stderr = "", status = 0, timeout = "5000", hang = false } = {}) {
+function run({ output = passing, stderr = "", status = 0, timeout = "15000", hang = false } = {}) {
   const fixture = mkdtempSync(join(tmpdir(), "pause-godot-verifier-"));
   fixtures.push(fixture);
   const editor = join(fixture, "fake godot.cjs");
@@ -44,7 +47,7 @@ if (process.env.FAKE_GODOT_HANG === "1") setTimeout(finish, 1500); else finish()
       FAKE_GODOT_HANG: hang ? "1" : "0",
     },
     encoding: "utf8",
-    timeout: 10_000,
+    timeout: 30_000,
     killSignal: "SIGKILL",
   });
   return { result, observation };
@@ -52,12 +55,18 @@ if (process.env.FAKE_GODOT_HANG === "1") setTimeout(finish, 1500); else finish()
 
 describe("Godot pause-menu external test verifier", () => {
   it("accepts real marker shape and intentional generic fixture errors through the executable override", () => {
-    const { result, observation } = run({ stderr: "ERROR: PARITY_FIXTURE missing expected key (intentional fixture negative)\n" });
+    const { result, observation } = run({ stderr: "ERROR: FIXTURE_MALFORMED: map_icons: JSON parse error at line 0: Expected key\n   at: push_error (core/variant/variant_utility.cpp:1023)\n" });
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("Godot verification passed: 2 checks, zero failures.");
-    expect(result.stderr).toContain("ERROR: PARITY_FIXTURE");
+    expect(result.stderr).toContain("ERROR: FIXTURE_MALFORMED: map_icons: JSON parse error");
     expect(JSON.parse(readFileSync(observation, "utf8"))).toEqual(["--headless", "--path", lane, "res://tests/test_main.tscn"]);
-  });
+  }, testTimeoutMs);
+
+  it("does not treat a successful check's description as an engine diagnostic record", () => {
+    const { result } = run({ output: passing.replace("TEST_PASS first", "TEST_PASS JSON parse error rejected") });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("Godot verification passed: 2 checks, zero failures.");
+  }, testTimeoutMs);
 
   it.each([
     ["zero checks", "TESTS_TOTAL 0\nTESTS_PASSED 0\nTESTS_FAILED 0\nTESTS_OK\n", "nonzero, consistent"],
@@ -76,29 +85,36 @@ describe("Godot pause-menu external test verifier", () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain(diagnostic);
     expect(result.stdout).not.toContain("Godot verification passed:");
-  });
+  }, testTimeoutMs);
 
-  it.each(["SCRIPT ERROR: Invalid call\n", "Parse Error: Unexpected token\n", "parse-error: missing expression\n"])("rejects successful process output containing %s", (stderr) => {
+  it.each([
+    "SCRIPT ERROR: Invalid call\n",
+    "Parse Error: Unexpected token\n",
+    "parse-error: missing expression\n",
+    'ERROR: Failed to load script "res://scripts/app.gd" with error "Parse error".\n',
+    "ERROR: FIXTURE_MALFORMED: JSON parse error (intentional)\nSCRIPT ERROR: Parse Error: Unexpected token\n",
+  ])("rejects successful process output containing %s", (stderr) => {
     const { result } = run({ stderr });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("script/parse error output");
-  });
+  }, testTimeoutMs);
 
   it("rejects a failing process even with passing markers", () => {
     const { result } = run({ status: 3 });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("spawned process exited 3");
-  });
+  }, testTimeoutMs);
 
   it.each(["0", "-1", "NaN", "1.5"])("rejects invalid timeout %s before launching the executable", (timeout) => {
     const { result, observation } = run({ timeout });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("must be a positive integer");
     expect(existsSync(observation)).toBe(false);
-  });
+  }, testTimeoutMs);
 
   it("times out and reaps only its own spawned process", () => {
-    const sibling = spawn(process.execPath, ["-e", "setTimeout(() => {}, 10000)"], { stdio: "ignore" });
+    // Its lifetime belongs to finally, not a deadline that can expire on a slow host.
+    const sibling = spawn(process.execPath, ["-e", "setInterval(() => {}, 1000)"], { stdio: "ignore" });
     try {
       expect(sibling.pid).toBeTypeOf("number");
       if (sibling.pid === undefined) throw new Error("fixture sibling did not start");
@@ -115,5 +131,5 @@ describe("Godot pause-menu external test verifier", () => {
     } finally {
       sibling.kill("SIGKILL");
     }
-  });
+  }, testTimeoutMs);
 });
