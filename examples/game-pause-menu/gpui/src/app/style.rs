@@ -208,9 +208,14 @@ pub(crate) fn value(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.value, Weight::Bold, 1.0)
 }
 
-/// Generic micro label: `type.micro` px / 600.
+/// Generic micro copy: `type.micro` px / normal Text variant (resolved 400).
 pub(crate) fn micro(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.micro, Weight::SemiBold, 1.0)
+}
+
+/// Drawer micro-labels: `type.micro` / 700 (`parity.md` → "Drawer").
+pub(crate) fn drawer_label(type_scale: &TypeScale) -> TextStyleSpec {
+    TextStyleSpec::new(type_scale.micro, Weight::Bold, 1.0)
 }
 
 /// Card name: 12 px / 700 (same as row label).
@@ -241,4 +246,61 @@ pub(crate) fn prompt(type_scale: &TypeScale) -> TextStyleSpec {
 /// Section stat label (HEAT/COOLDOWN/DRAW): 10 px / 700 / muted.
 pub(crate) fn stat_block_label(type_scale: &TypeScale) -> TextStyleSpec {
     TextStyleSpec::new(type_scale.micro, Weight::Bold, 1.0)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn resolved_micro_weight(drawer: bool) -> (String, String) {
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../fixtures/parity-layout.json")).unwrap();
+        let scale: TypeScale = serde_json::from_value(fixture["type"].clone()).unwrap();
+        let spec = if drawer {
+            drawer_label(&scale)
+        } else {
+            micro(&scale)
+        };
+        let text = super::super::build_text(spec, "#000000", "BRIEF".into());
+        let resolved = text
+            .resolved_style("root")
+            .expect("generated text root style");
+        assert_eq!(
+            resolved.get("font-size"),
+            Some(format!("{}px", fixture["type"]["micro"]).as_str())
+        );
+        assert_eq!(
+            resolved.get("line-height"),
+            Some(
+                fixture["typography"]["lineHeight"]["label"]
+                    .as_f64()
+                    .unwrap()
+                    .to_string()
+                    .as_str()
+            )
+        );
+        let role = if drawer { "bold" } else { "regular" };
+        (
+            resolved
+                .get("font-weight")
+                .expect("resolved weight")
+                .to_string(),
+            fixture["typography"]["weights"][role]
+                .as_u64()
+                .unwrap()
+                .to_string(),
+        )
+    }
+
+    #[test]
+    fn drawer_micro_labels_resolve_the_fixture_bold_weight() {
+        let (actual, expected) = resolved_micro_weight(true);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn generic_micro_copy_retains_the_fixture_regular_weight() {
+        let (actual, expected) = resolved_micro_weight(false);
+        assert_eq!(actual, expected);
+    }
 }
