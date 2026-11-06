@@ -65,5 +65,15 @@ if counts["passed"] == 0 or counts["total"] != counts["passed"]:
     fail("total must equal a nonzero passed count")
 if any(counts[field] != 0 for field in ("failed", "skipped", "inconclusive")):
     fail(f"failed/skipped/inconclusive counts must be zero: {counts}")
+
+cases = list(run.iter("test-case"))
+if len(cases) != counts["total"]:
+    fail(f"test-case record count {len(cases)} does not match total {counts['total']}")
+for case in cases:
+    if case.get("result") != "Passed":
+        fail(f"test-case result is {case.get('result', 'missing')}")
+for suite in run.iter("test-suite"):
+    if suite.get("result") != "Passed":
+        fail(f"test-suite result is {suite.get('result', 'missing')}")
 print(f"EditMode lane passed: {counts['passed']} tests, 0 failures, 0 skipped, 0 inconclusive.")
 PY

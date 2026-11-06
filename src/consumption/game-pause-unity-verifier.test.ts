@@ -14,9 +14,11 @@ afterEach(() => {
   for (const fixture of fixtures.splice(0)) rmSync(fixture, { recursive: true, force: true });
 });
 
-function receipt(overrides: Record<string, string | undefined> = {}) {
+const passingCases = '<test-case id="1" result="Passed"/><test-case id="2" result="Passed"/>';
+
+function receipt(overrides: Record<string, string | undefined> = {}, cases = passingCases) {
   const attributes = { result: "Passed", total: "2", passed: "2", failed: "0", skipped: "0", inconclusive: "0", ...overrides };
-  return `<test-run ${Object.entries(attributes).filter(([, value]) => value !== undefined).map(([key, value]) => `${key}="${value}"`).join(" ")}></test-run>`;
+  return `<test-run ${Object.entries(attributes).filter(([, value]) => value !== undefined).map(([key, value]) => `${key}="${value}"`).join(" ")}><test-suite result="Passed">${cases}</test-suite></test-run>`;
 }
 
 function run(xml: string | undefined, { editorStatus = 0, staleReceipt = false } = {}) {
@@ -89,6 +91,32 @@ describe("Unity pause-menu EditMode receipt verifier", () => {
     const { result } = run(receipt({ [field]: undefined }));
     expect(result.status).toBe(1);
     expect(result.stderr).toContain(`missing or invalid ${field} counter`);
+  });
+
+  it.each([
+    ["no", ""],
+    ["too few", '<test-case result="Passed"/>'],
+    ["too many", passingCases + '<test-case result="Passed"/>'],
+  ])("rejects %s test-case records despite passing summary counters", (_name, cases) => {
+    const { result } = run(receipt({}, cases));
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("test-case record count");
+    expect(result.stdout).not.toContain("EditMode lane passed:");
+  });
+
+  it.each(["Failed", "Skipped", "Inconclusive", "missing"])("rejects a %s descendant despite passing summary counters", (status) => {
+    const failingCase = status === "missing" ? '<test-case/>' : `<test-case result="${status}"/>`;
+    const { result } = run(receipt({}, '<test-case result="Passed"/>' + failingCase));
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("test-case result");
+    expect(result.stdout).not.toContain("EditMode lane passed:");
+  });
+
+  it("rejects a failed nested suite despite passing case records and summary counters", () => {
+    const { result } = run(receipt().replace('<test-suite result="Passed">', '<test-suite result="Failed">'));
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("test-suite result");
+    expect(result.stdout).not.toContain("EditMode lane passed:");
   });
 
   it.each([
