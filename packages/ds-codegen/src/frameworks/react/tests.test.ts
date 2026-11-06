@@ -114,6 +114,46 @@ describe("generateReactTest — real corpus contracts", () => {
     expect(aliased).toContain(`import { describe, it, expect, vi } from "vitest";`);
   });
 
+  it.each([
+    { name: "direct alias", body: `const helper = vi; helper.fn();` },
+    { name: "destructuring initializer", body: `const { fn } = vi; const authoredSpy = fn();` },
+    { name: "function argument", body: `consume(vi);` },
+    { name: "shorthand property", body: `const helpers = { vi };` },
+    { name: "computed property", body: `const helpers = { [vi]: true };` },
+    { name: "type query", body: `type Spy = typeof vi;` },
+    { name: "qualified type query", body: `type SpyFactory = typeof vi.fn;` },
+    { name: "nested type query", body: `interface Helpers { spy: { factory: typeof vi.fn }; }` },
+    { name: "local value export", body: `export { vi as helper };` },
+    { name: "reference outside a shadowing parameter", body: `function authored(vi: unknown) { return { vi }; } consume(vi);` },
+  ])("imports vi for a free $name value", ({ body }) => {
+    const source = generateReactTest(corpusIR("Calendar"), { preservedCustomTests: body });
+    expect(source).toContain(`import { describe, it, expect, vi } from "vitest";`);
+  });
+
+  it.each([
+    { name: "local variable and shorthand", body: `const vi = {}; consume(vi); const helpers = { vi };` },
+    { name: "parameter and shorthand", body: `function authored(vi: unknown) { return { vi }; }` },
+    { name: "destructured local binding", body: `const { vi } = helpers; consume(vi);` },
+    { name: "renamed binding property", body: `const { vi: helper } = helpers; consume(helper);` },
+    { name: "named import", body: `import { vi } from "vitest"; consume(vi); const helpers = { vi };` },
+    { name: "import aliased to vi", body: `import { helper as vi } from "helpers"; const { fn } = vi;` },
+    { name: "namespace import", body: `import * as vi from "vitest"; consume(vi);` },
+    { name: "scoped type query", body: `function authored(vi: { fn(): unknown }) { type Spy = typeof vi.fn; }` },
+    { name: "imported type query", body: `import { vi } from "vitest"; type Spy = typeof vi;` },
+    { name: "type query member name", body: `type Spy = typeof helpers.vi;` },
+    { name: "exported alias name", body: `const helper = {}; export { helper as vi };` },
+    { name: "external and type-only re-exports", body: `export { vi } from "helpers"; export type { vi as Spy };` },
+    { name: "property keys and member names", body: `const helpers = { vi: factory() }; consume(helpers.vi);` },
+    { name: "method and class member names", body: `const helpers = { vi() {} }; class Helper { vi = 1; }` },
+    { name: "plain type names", body: `type Helper = vi; interface Helpers { vi: unknown; }` },
+    { name: "label", body: `vi: for (;;) { break vi; }` },
+    { name: "intrinsic JSX tag and attribute", body: `const view = <vi vi="label" />;` },
+  ])("does not import vi for $name", ({ body }) => {
+    const source = generateReactTest(corpusIR("Calendar"), { preservedCustomTests: body });
+    expect(source).toContain(`import { describe, it, expect } from "vitest";`);
+    expect(source).not.toContain(`expect, vi`);
+  });
+
   it("emits the open-render prop and dismissal tests for Select", () => {
     const source = generateReactTest(corpusIR("Select"));
 

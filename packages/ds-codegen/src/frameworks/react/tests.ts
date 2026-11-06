@@ -38,16 +38,46 @@ function collectRequiredPropTypeImports(plan: {
 }
 
 // Source fact: framework grammar, including bindings in preserved test code.
-// Applies by: free accesses to the Vitest spy helper in the shared module.
+// Applies by: free value references to the Vitest spy helper in the shared module.
 // Removable when: authored and generated tests no longer share imports.
 function needsSpyImport(sourceText: string): boolean {
   const fileName = "/__fsds_test_imports__.tsx";
   const file = ts.createSourceFile(fileName, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const references: ts.Identifier[] = [];
+  function visitTypeQueries(node: ts.Node): void {
+    // typeof requires a value binding even when it appears in erased syntax.
+    if (ts.isTypeQueryNode(node)) {
+      let name = node.exprName;
+      while (ts.isQualifiedName(name)) name = name.left;
+      if (name.text === "vi") references.push(name);
+    }
+    ts.forEachChild(node, visitTypeQueries);
+  }
   function visit(node: ts.Node): void {
-    if ((ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) &&
-        ts.isIdentifier(node.expression) && node.expression.text === "vi") {
-      references.push(node.expression);
+    // Plain type names need no spy import. Retain value queries nested in
+    // their syntax, and keep class extends expressions on the value path.
+    if ((ts.isTypeNode(node) && (!ts.isExpressionWithTypeArguments(node) || ts.isPartOfTypeNode(node))) ||
+        ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) {
+      visitTypeQueries(node);
+      return;
+    }
+    if (ts.isImportDeclaration(node) || ts.isImportEqualsDeclaration(node)) return;
+    if (ts.isExportDeclaration(node) && (node.isTypeOnly || node.moduleSpecifier)) return;
+    if (ts.isExportSpecifier(node)) {
+      const local = node.propertyName ?? node.name;
+      if (!node.isTypeOnly && ts.isIdentifier(local) && local.text === "vi") references.push(local);
+      return;
+    }
+    if (ts.isIdentifier(node) && node.text === "vi") {
+      const parent = node.parent;
+      const declarationName = (parent as ts.NamedDeclaration).name === node &&
+        !ts.isShorthandPropertyAssignment(parent);
+      const bindingKey = ts.isBindingElement(parent) && parent.propertyName === node;
+      const label = (ts.isLabeledStatement(parent) || ts.isBreakStatement(parent) || ts.isContinueStatement(parent)) &&
+        parent.label === node;
+      const intrinsicTag = (ts.isJsxOpeningElement(parent) || ts.isJsxClosingElement(parent) ||
+        ts.isJsxSelfClosingElement(parent)) && parent.tagName === node;
+      if (!declarationName && !bindingKey && !label && !intrinsicTag) references.push(node);
     }
     ts.forEachChild(node, visit);
   }
@@ -57,7 +87,17 @@ function needsSpyImport(sourceText: string): boolean {
   const host = ts.createCompilerHost(compilerOptions);
   host.getSourceFile = (name) => name === fileName ? file : undefined;
   const checker = ts.createProgram([fileName], compilerOptions, host).getTypeChecker();
-  return references.some((reference) => !checker.getSymbolAtLocation(reference));
+  return references.some((reference) => {
+    const parent = reference.parent;
+    // A shorthand's ordinary symbol is the object property, not its value's
+    // lexical binding. Ask for the value symbol so an unbound { vi } is kept.
+    const symbol = ts.isShorthandPropertyAssignment(parent)
+      ? checker.getShorthandAssignmentValueSymbol(parent)
+      : ts.isExportSpecifier(parent)
+        ? checker.getExportSpecifierLocalTargetSymbol(parent)
+        : checker.getSymbolAtLocation(reference);
+    return !symbol;
+  });
 }
 
 export interface ReactTestEmitOptions {
