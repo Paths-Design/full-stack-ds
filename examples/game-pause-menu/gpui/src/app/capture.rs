@@ -95,7 +95,7 @@ impl Menu {
                 "designViewport": { "width": design_viewport.width, "height": design_viewport.height },
                 "capture": "gpui Window::render_to_image() (pinned zed rev, gpui test-support feature)",
                 "renderer": "gpui_macos runtime_shaders feature (Xcode 26 lacks the standalone metal tool on this machine)",
-                "normalization": "Top-left authored viewport crop at measured integer display scale; rounded box mean of each device-pixel cell; only clear overscan is excluded",
+                "normalization": "Top-left authored viewport crop at measured integer display scale; rounded box mean of each device-pixel cell; excluded overscan must be transparent or opaque black, not proof of drawing provenance",
                 "states": states,
             });
             match std::fs::write(
@@ -334,7 +334,9 @@ fn qualify_geometry(
 /// The pinned Metal capture reads texture origin (0,0) without flipping. The
 /// app's fixed root also starts at (0,0), so its authored viewport defines the
 /// crop independently of any larger native content view. Never stretch that
-/// extra window area into the design or silently discard painted overflow.
+/// extra window area into the design. Overscan must be transparent or opaque
+/// black, matching the observed clear background; this is not proof that no
+/// drawing occurred outside the authored viewport.
 fn normalize_frame(
     raw: &image::RgbaImage,
     design: [f32; 2],
@@ -357,7 +359,7 @@ fn normalize_frame(
             let pixel = raw.get_pixel(x, y).0;
             if pixel[3] != 0 && pixel != [0, 0, 0, 255] {
                 return Err(format!(
-                    "painted pixels outside the declared design viewport at ({x},{y}); refusing crop"
+                    "non-clear pixels outside the declared design viewport at ({x},{y}); refusing crop"
                 ));
             }
         }
@@ -554,13 +556,13 @@ mod tests {
     }
 
     #[test]
-    fn painted_overflow_cannot_be_hidden_by_the_crop() {
+    fn non_clear_overflow_cannot_be_hidden_by_the_crop() {
         let mut raw = image::RgbaImage::from_pixel(2, 3, image::Rgba([0, 0, 0, 255]));
         raw.put_pixel(1, 2, image::Rgba([1, 0, 0, 255]));
         assert!(
             normalize_frame(&raw, [2.0, 2.0], [2.0, 3.0], 1.0)
                 .unwrap_err()
-                .contains("painted pixels outside")
+            .contains("non-clear pixels outside")
         );
     }
 
