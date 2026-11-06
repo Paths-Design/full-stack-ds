@@ -267,9 +267,33 @@ static func action(text: String, role := "primary", width := 0.0, height := 0.0,
 	if width > 0.0:
 		overrides["min-width"] = "%dpx" % int(width)
 	node.token_overrides = overrides
+	node.ready.connect(_prepare_action_font.bind(node), CONNECT_ONE_SHOT)
 	if width > 0.0 or height > 0.0:
 		node.custom_minimum_size = Vector2(width, height)
 	return node
+
+
+## Generated refreshes install their own SystemFont override. Keep the app's
+## bundled face on the actual text control, including later content/state updates.
+static func _prepare_action_font(node) -> void:
+	_pin_inter_font(node.rendered, int(node.rendered.get_theme_font_size("font_size")), int(node.token_overrides["button.design.root.typography.weight"]))
+
+
+static func _pin_inter_font(control: Control, font_size: int, weight: int) -> void:
+	var restore := _restore_inter_font.bind(control, font_size, weight)
+	if not control.theme_changed.is_connected(restore):
+		control.theme_changed.connect(restore)
+	restore.call()
+
+
+static func _restore_inter_font(control: Control, font_size: int, weight: int) -> void:
+	var face := orion.font(font_size, weight)
+	# Adding an override emits theme_changed too; identity checks make the
+	# callback idempotent and stop it from recursively reapplying itself.
+	if control.get_theme_font("font") != face:
+		control.add_theme_font_override("font", face)
+	if control.get_theme_font_size("font_size") != font_size:
+		control.add_theme_font_size_override("font_size", font_size)
 
 
 static func _role_font_size(role: String) -> int:
@@ -391,8 +415,7 @@ static func prepare_chip(node: Control) -> void:
 		node.content_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		node.content_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		node.content_label.custom_minimum_size = Vector2(chip_size.x, 0)
-		node.content_label.add_theme_font_override("font", orion.font(font_size, 700))
-		node.content_label.add_theme_font_size_override("font_size", font_size)
+		_pin_inter_font(node.content_label, font_size, 700)
 
 
 # --- card / icon / passive ---------------------------------------------------

@@ -270,6 +270,30 @@ namespace GamePauseMenu.Tests
             Assert.That(actual.height, Is.EqualTo((float)expected.H).Within(0.1f), element.name + " rendered height");
         }
 
+        private static void AssertResolvedPreviewFont(TextElement text, Font expectedFont, float expectedSize, string phase)
+        {
+            var resolved = text.resolvedStyle;
+            var definition = resolved.unityFontDefinition;
+            var asset = definition.fontAsset;
+            // UI Toolkit gives a FontAsset priority over a legacy Font in the
+            // font definition. Validate its source when that path is selected.
+            var selectedSource = asset != null ? asset.sourceFontFile : definition.font;
+            Assert.That(expectedFont, Is.Not.Null, phase + " expected font resource");
+            Assert.That(selectedSource, Is.EqualTo(expectedFont), phase + " resolved font source");
+            Assert.That(resolved.fontSize, Is.EqualTo(expectedSize).Within(0.001f), phase + " resolved font size");
+            Assert.That(resolved.unityFontStyleAndWeight, Is.EqualTo(FontStyle.Normal), phase + " resolved font style");
+            var shader = asset != null && asset.material != null ? asset.material.shader : null;
+            TestContext.WriteLine("preview-font phase=" + phase
+                + "; definitionFont=" + (definition.font != null ? definition.font.name : "<none>")
+                + "; definitionFontAsset=" + (asset != null ? asset.name : "<none>")
+                + "; selectedSource=" + (selectedSource != null ? selectedSource.name : "<none>")
+                + "; shaderFromDefinitionAsset=" + (shader != null ? shader.name : "<not exposed>")
+                + "; legacyFont=" + (resolved.unityFont != null ? resolved.unityFont.name : "<none>")
+                + "; fontSize=" + resolved.fontSize.ToString(CultureInfo.InvariantCulture)
+                + "; fontStyle=" + resolved.unityFontStyleAndWeight
+                + "; color=" + resolved.color);
+        }
+
         [UnityTest]
         public IEnumerator SubtitlePreviewRendersSharedTextRectsAndAdaptiveColors()
         {
@@ -295,12 +319,22 @@ namespace GamePauseMenu.Tests
             Assert.That(settings.SubtitlePreviewMeta.style.overflow.value, Is.EqualTo(Overflow.Hidden));
             Assert.That(settings.SubtitlePreviewText.style.whiteSpace.value, Is.EqualTo(WhiteSpace.NoWrap));
             Assert.That(settings.SubtitlePreviewMeta.style.whiteSpace.value, Is.EqualTo(WhiteSpace.NoWrap));
+            var regular = Resources.Load<Font>("Fonts/Inter-Regular");
+            var lineSize = (float)app.Layout.Size(content.Line.TypeKey);
+            AssertResolvedPreviewFont(settings.SubtitlePreviewText, regular, lineSize, "initial");
             foreach (var background in new[] { "charcoal", "signal", "bone" })
             {
+                var language = background == "signal" ? "Français" : background == "bone" ? "Español" : "English";
+                settings.SubtitleLanguageDropdown.value = language;
                 app.SetSubtitleBackground(background);
+                yield return null;
+                yield return null;
                 var expected = app.Layout.Color(background == "charcoal" ? "boneBright" : "ink");
                 Assert.That(settings.SubtitlePreviewText.style.color.value, Is.EqualTo(expected), background + " line contrast");
                 Assert.That(settings.SubtitlePreviewMeta.style.color.value, Is.EqualTo(expected), background + " metadata contrast");
+                Assert.That(settings.SubtitlePreviewText.resolvedStyle.color, Is.EqualTo(expected), background + " resolved line contrast");
+                Assert.That(settings.SubtitlePreviewMeta.resolvedStyle.color, Is.EqualTo(expected), background + " resolved metadata contrast");
+                AssertResolvedPreviewFont(settings.SubtitlePreviewText, regular, lineSize, language + "/" + background);
             }
         }
 

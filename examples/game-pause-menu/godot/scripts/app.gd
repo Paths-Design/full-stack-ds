@@ -401,6 +401,13 @@ func _popover_label(part_key: String, text: String) -> Label:
 	var label := UI.label(text, orion.type_size(str(part["type"])), int(part["weight"]), str(part["color"]), 0.0)
 	if part_key == "body":
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# Godot's native font height and inherited line_spacing are additive.
+		# Lower the shared multiplier to an integer baseline step, rather than
+		# retaining the theme's extra spacing on top of Inter's own metrics.
+		var font_size := orion.type_size(str(part["type"]))
+		var baseline_step := roundi(font_size * float(parity.raw["typography"]["lineHeight"]["body"]))
+		var font_height := label.get_theme_font("font").get_height(font_size)
+		label.add_theme_constant_override("line_spacing", baseline_step - roundi(font_height))
 	label.name = "Text"
 	var rect := UI.rect(part["rect"])
 	var box := Control.new()

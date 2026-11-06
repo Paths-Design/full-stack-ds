@@ -557,6 +557,25 @@ func test_i3_i4() -> void:
 		check(actual_rect.position.is_equal_approx(expected_rect.position) and actual_rect.size.is_equal_approx(expected_rect.size), "popover %s consumes shared rect" % key, "actual %s expected %s" % [actual_rect, expected_rect])
 		var text := str(node.get_node("Text").text) if node.has_node("Text") else str(node.content)
 		check(text == expected_text[key], "popover %s preserves required copy" % key, text)
+		var rendered: Control = node.rendered if key in ["action", "cancel"] else (node.content_label if key == "status" else node.get_node("Text"))
+		var font_size: int = app.parity.type_size(str(part["type"]))
+		check(rendered.get_theme_font_size("font_size") == font_size and rendered.get_theme_font("font") == app.orion.font(font_size, int(part["weight"])), "popover %s uses declared Inter face and size after ready" % key)
+		if key == "body":
+			var baseline_step: float = (rendered as Label).get_line_height() + rendered.get_theme_constant("line_spacing")
+			var expected_step := font_size * float(app.parity.raw["typography"]["lineHeight"]["body"])
+			check(absf(baseline_step - expected_step) <= 0.5, "popover body baseline step realizes shared line height", "actual %s expected %s" % [baseline_step, expected_step])
+	var refresh_action = app.marker_popover.content.get_node("PopoverCanvas/Popover_action")
+	var refresh_badge = app.marker_popover.content.get_node("PopoverCanvas/Popover_status")
+	refresh_action.content = str(popover_data["action"]) + " "
+	refresh_action.disabled = true
+	refresh_badge.content = str(icon["status"]) + " "
+	await wait_frames(2)
+	check(refresh_action.rendered.get_theme_font("font") == app.orion.font(app.parity.type_size(str(popover_data["content"]["action"]["type"])), int(popover_data["content"]["action"]["weight"])), "popover action retains Inter after later generated content/state refresh")
+	check(refresh_badge.content_label.get_theme_font("font") == app.orion.font(app.parity.type_size(str(popover_data["content"]["status"]["type"])), int(popover_data["content"]["status"]["weight"])), "popover badge retains Inter after later generated content refresh")
+	refresh_action.disabled = false
+	refresh_action.content = str(popover_data["action"])
+	refresh_badge.content = str(icon["status"])
+	await wait_frames(2)
 	check(app.marker_popover.surface != null, "I3 popover surface attached")
 	if app.marker_popover.surface != null:
 		var rect: Rect2 = app.marker_popover.surface.get_global_rect()
