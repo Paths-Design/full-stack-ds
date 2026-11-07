@@ -3,9 +3,9 @@ title: 'Repair corroborated callback, capture-state and documentation errors wit
 mode: fix
 lifecycle_state: archived
 resolution: completed
-closure_notes: 'A1-A9 verified against executed checks and committed ratchets after merge90966c560; root5966, five framework suites, generation/doc/type/lint and bounded macOS native checks passed. Historical674 closed specs archived for tooling-schema portability; four foreign active specs preserved. Legacy12.1 active-spec compatibility and remote CI remain unverified.'
+closure_notes: 'Corroborated repairs and recurring falsifiers are merged and published; root5969, all framework suites, admission, generated-output and full pre-push ratchets passed on Node22 with explicit case limits and ledger floors preserved. Native visual scope and unverified CI, browser and minimum SDK bounds remain in the evidence. Closed legacy YAML is archived to isolate tooling schema drift while retaining original history.'
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-07T04:31:08.989Z'
+updated_at: '2026-11-07T08:54:40.687Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
@@ -13,6 +13,7 @@ blast_radius:
     - 'Three engine pause-menu capture states and parity probes'
     - 'Portable agent instructions and documentation governance checks'
     - 'Native boundary prerequisite classification used by the required corpus ratchet'
+    - 'Functional test-runner resource policy and controlled process fixture budgets'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -62,13 +63,18 @@ scope:
     - packages/ds-codegen/src/analytical/authority.test.ts
     - src/consumption/ds-package-contract.test.ts
     - packages/ds-codegen/src/frameworks/unity/capabilities.test.ts
+    - vitest.config.ts
+    - packages/ds-codegen/src/analytical/erasure-plan.test.ts
+    - packages/ds-codegen/src/cli.test.ts
   out: []
   support:
     - packages/ds-unity
+    - tmp/rpc-liveness/
 invariants:
   - 'Framework-neutral channel interaction facts remain authoritative and generated files are regenerated rather than hand edited'
   - 'Normal startup fixture visibility is preserved and complete capture overrides are deterministic and order independent'
   - 'Hook protection remains intact and historical verification claims are not promoted by age alone'
+  - 'All corpus plan/fixture pairs and counterfactual execution orders remain; declared behavior, production-build and existing explicit case/hook deadlines are preserved; controlled cleanup fixtures retain real readiness and process-termination witnesses.'
 acceptance:
   - id: A1
     given: 'contract-derived channel plans'
@@ -167,12 +173,12 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A5
     status: pass
-    evidence_ref: "Observed tested9112ed23e: 400 files/5966 root tests, Vue854/Lit622/Svelte754/Angular641/RN319, six admitted generation targets, generated-tree/type/lint/docs checks passed. Node22.19, one worker, CLI default30s; explicit case/hook budgets unchanged. Landed source matches tested source apart from owned CAWS metadata. Tracked artifact is the runnable suite definition; citation verification proves source/commit existence, while the actual execution is in ignored root-dot-final.log. Native proof is bounded; remote CI unrun."
-    recorded_at: "2026-11-07T04:28:39.724Z"
-    command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
+    evidence_ref: "Observed candidate ec8d6e55f pass ordinary root tests400files5969cases, all five framework suites854/622/754/641/319cases, required-mode admission, fresh committed-output checks and all realization/derived-artifact ratchets. Merged source is byte-identical outside CAWS metadata. Ordinary git push origin main at1ee9ad26f completed0 after every selected full-hook gate; independent ls-remote matched1ee9ad26f and workingtree was clean. Node22.19/rootthreads4/min1/frameworkforks1; configured finite30s functional default with explicit case/hook limits preserved. Raw executions remain ignored at tmp/review-errors/push-repair-thread-*.log and push-main-threaded.log; tracked config identifies the tested source. CLI citation verification checks artifact/commit existence, not test execution. No fresh CI/browser/minimum SDK or global visual claim."
+    recorded_at: "2026-11-07T08:50:22.286Z"
+    command: "VITEST_MAX_THREADS=4 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main"
     exit_code: 0
     artifact_path: vitest.config.ts
-    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+    commit_sha: "1ee9ad26f197329b77817470356aa4ee4aa9dcb3"
   - criterion_id: A6
     status: pass
     evidence_ref: "Native regressions and fresh three-engine macOS captures verify shared seven-field popover rectangles and data-derived selected titles. The strengthened checker passed 375 colour probes, 147 typography measurements, 24 lane image pairs and 24 goldens. All unordered typography lane pairs are compared; the non-transitive triplet regression rejects the old anchor-only result. Text coverage is not OCR or global visual parity. Raw: tmp/review-errors/parity-goldens-final.log."
