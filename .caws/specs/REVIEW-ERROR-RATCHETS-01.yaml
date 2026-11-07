@@ -132,3 +132,13 @@ contracts:
   - name: 'documentation-metadata'
     type: schema
     path: 'docs/document_governance.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 9112ed23e the full root run passed all 5966 tests, including four-emitter channel stimulus/spy checks, React free-vi binding regressions and Lit fixture lifecycle checks. Unsupported callback placeholders are omitted. The six-target generation rail passed and regenerated package bytes match the committed tree."
+    recorded_at: "2026-11-07T04:21:32.221Z"
+    test_nodeid: packages/ds-codegen/src/frameworks/channel-tests.test.ts
+    command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
+    exit_code: 0
+    artifact_path: tmp/review-errors/root-dot-final.log
+    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
