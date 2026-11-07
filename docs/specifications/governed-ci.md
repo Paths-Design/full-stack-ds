@@ -5,7 +5,7 @@ status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
 updated: 2026-11-06
-verified_at_commit: 3bc83f1918150f2b40c725619fe07cf170515b40
+verified_at_commit: da97894c647d63ee20f466aed2b49159ac5c3d92
 governs:
   - package.json
   - pnpm-lock.yaml
