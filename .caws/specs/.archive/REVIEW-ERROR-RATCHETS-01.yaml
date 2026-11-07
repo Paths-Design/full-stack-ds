@@ -3,9 +3,9 @@ title: 'Repair corroborated callback, capture-state and documentation errors wit
 mode: fix
 lifecycle_state: archived
 resolution: completed
-closure_notes: 'A1-A9 verified after merge90966c560: 5966 root tests, five framework suites, generation/doc/type/lint checks and bounded macOS native checks passed. Archived 674 historical closed specs for tooling-schema portability; four foreign active specs were preserved. Legacy12.1 active-spec compatibility and remote CI are unverified.'
+closure_notes: 'A1-A9 verified against executed checks and committed ratchets after merge90966c560; root5966, five framework suites, generation/doc/type/lint and bounded macOS native checks passed. Historical674 closed specs archived for tooling-schema portability; four foreign active specs preserved. Legacy12.1 active-spec compatibility and remote CI remain unverified.'
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-07T04:24:40.484Z'
+updated_at: '2026-11-07T04:31:08.989Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
@@ -137,43 +137,41 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "At 9112ed23e the full root run passed all 5966 tests, including four-emitter channel stimulus/spy checks, React free-vi binding regressions and Lit fixture lifecycle checks. Unsupported callback placeholders are omitted. The six-target generation rail passed and regenerated package bytes match the committed tree."
-    recorded_at: "2026-11-07T04:21:32.221Z"
-    test_nodeid: packages/ds-codegen/src/frameworks/channel-tests.test.ts
+    evidence_ref: "Observed full root run: 400 files and 5966 tests passed, including four-emitter channel stimulus/spy checks, free-vi binding regressions and Lit fixture cleanup. Unsupported callback placeholders are omitted; six-target regeneration and committed-tree checks passed. The tracked artifact is the executable regression source; raw execution is retained in ignored tmp/review-errors/root-dot-final.log."
+    recorded_at: "2026-11-07T04:28:26.585Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: packages/ds-codegen/src/frameworks/channel-tests.test.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Inspected native capture/toggle assertions and observed GPUI89 capture-feature cases, Godot402 checks and Unity43 actual Passed case records. Repeated overrides preserve startup defaults and derive live visible counts in all three engines. Raw executions: tmp/review-errors/gpui-capture-tests-final.log; tmp/review-errors/godot-native-final.log; tmp/review-errors/typography-investigation/unity-tests/editmode-results.xml. Native producer inputs are unchanged by later test-harness/doc commits."
-    recorded_at: "2026-11-07T04:23:13.654Z"
-    artifact_path: tmp/review-errors/typography-investigation/unity-tests/editmode-results.xml
+    evidence_ref: "Inspected native repeat-capture/toggle assertions; GPUI89 capture-feature cases, Godot402 checks and Unity43 actual Passed case records were observed. Overrides preserve startup defaults and live visible counts. Raw executions remain in ignored tmp/review-errors/gpui-capture-tests-final.log, godot-native-final.log and typography-investigation/unity-tests/editmode-results.xml. Tracked native tests and producer inputs are unchanged by later harness/doc commits."
+    recorded_at: "2026-11-07T04:28:29.554Z"
+    artifact_path: examples/game-pause-menu/unity/Assets/PauseMenu/Tests/Editor/ParityLayoutTests.cs
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A3
     status: pass
-    evidence_ref: "The full root run at 9112ed23e executed all 19 parity regressions. Every icon switch is checked for map and map-popover; a deliberately wrong Rover switch is rejected. The committed helper and pre-push classifier route fixture/checker changes into this recurring root suite."
-    recorded_at: "2026-11-07T04:21:35.023Z"
-    test_nodeid: src/consumption/game-pause-parity.test.ts
+    evidence_ref: "Observed full root run includes all19 parity regressions: every icon switch in map and map-popover is checked and an intentionally wrong Rover switch fails the oracle. Helper/fixture changes select these root tests through the committed pre-push classifier. The tracked artifact is the recurring falsifier; ignored execution log is tmp/review-errors/root-dot-final.log."
+    recorded_at: "2026-11-07T04:28:32.074Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: src/consumption/game-pause-parity.test.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A4
     status: pass
-    evidence_ref: "docs:check-links passed nine hostile metadata/location fixtures, 62 tracked metadata documents and 279 links. docs:check-claims passed its freshness/remainder falsifiers and 93 derived claims; no freshness allowance was added. Portable instructions reference tracked hook documentation; protected runtime hooks were not edited. Pre-push scope fixtures passed."
-    recorded_at: "2026-11-07T04:21:36.186Z"
+    evidence_ref: "Observed docs:check-links passed nine hostile fixtures, 62 tracked metadata documents and279 links; docs:check-claims and pre-push scope fixtures also passed. Malformed YAML, required-field/location defects fail. No new freshness allowance or hook guard edit was made. Tracked artifact is the metadata falsifier source; raw logs remain ignored under tmp/review-errors."
+    recorded_at: "2026-11-07T04:28:34.567Z"
     command: "pnpm run docs:check-links"
     exit_code: 0
-    artifact_path: tmp/review-errors/docs-links-contained-final.log
+    artifact_path: scripts/docs-metadata-check.test.mjs
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A5
     status: pass
-    evidence_ref: "Tested 9112ed23e: 400 root files and 5966 tests passed with no skips/unhandled errors; Vue854, Lit622, Svelte754, Angular641 and RN319 passed. Six admitted generation targets, generated-tree, typecheck, lint and docs gates passed. All 62 emitter-source hashes remain bound. Local Node22.19, one worker, CLI default30s; explicit case/hook budgets unchanged. Merge90966c560 has identical source except owned CAWS metadata. Native/visual proof remains bounded; CI was not run."
-    recorded_at: "2026-11-07T04:21:37.544Z"
+    evidence_ref: "Observed tested9112ed23e: 400 files/5966 root tests, Vue854/Lit622/Svelte754/Angular641/RN319, six admitted generation targets, generated-tree/type/lint/docs checks passed. Node22.19, one worker, CLI default30s; explicit case/hook budgets unchanged. Landed source matches tested source apart from owned CAWS metadata. Tracked artifact is the runnable suite definition; citation verification proves source/commit existence, while the actual execution is in ignored root-dot-final.log. Native proof is bounded; remote CI unrun."
+    recorded_at: "2026-11-07T04:28:39.724Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: vitest.config.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A6
     status: pass
@@ -189,19 +187,17 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A8
     status: pass
-    evidence_ref: "The full root run includes 24 controlled Godot verifier cases covering zero/missing/contradictory counters, missing completion marker, real parser errors, nonzero exit and timeout with observed child termination. The real Godot wrapper also accepted its completed 402-check zero-failure run. Raw real run: tmp/review-errors/godot-native-final.log. Completion parsing and watchdog implementation are committed."
-    recorded_at: "2026-11-07T04:21:42.970Z"
-    test_nodeid: src/consumption/game-pause-godot-verifier.test.ts
+    evidence_ref: "Observed full root run includes24 controlled Godot verifier cases rejecting zero/missing/contradictory counts, missing marker, parse errors, nonzero exit and timeout with child termination. Real Godot wrapper passed402 checks with zero failures. Tracked artifact is the executable hostile regression suite; ignored raw logs are tmp/review-errors/root-dot-final.log and godot-native-final.log."
+    recorded_at: "2026-11-07T04:28:43.705Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: src/consumption/game-pause-godot-verifier.test.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A9
     status: pass
-    evidence_ref: "The full root run executes native boundary regressions for per-rule/per-classification prerequisite scan counts, first-match order and changed contracts/prerequisites. The memo is local to one classification and retains false results. Full authority/capability rerun also passed all32 cases with original explicit budgets. No stale cross-call classification cache or gate exception was introduced."
-    recorded_at: "2026-11-07T04:21:45.017Z"
-    test_nodeid: packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    evidence_ref: "Observed full root run exercises per-rule/per-classification prerequisite scan counts, first-match ordering and changed contract/prerequisite inputs. Local memo retains false outcomes without stale cross-call state. Full authority/capability rerun passed32 cases under unchanged explicit budgets. Tracked artifact is the executable regression source; ignored raw executions remain under tmp/review-errors."
+    recorded_at: "2026-11-07T04:28:47.249Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: packages/ds-codegen/src/frameworks/unity/boundary.test.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
