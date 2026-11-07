@@ -164,13 +164,13 @@ evidence:
     artifact_path: scripts/docs-metadata-check.test.mjs
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A5
-    status: pass
-    evidence_ref: "Observed tested9112ed23e: 400 files/5966 root tests, Vue854/Lit622/Svelte754/Angular641/RN319, six admitted generation targets, generated-tree/type/lint/docs checks passed. Node22.19, one worker, CLI default30s; explicit case/hook budgets unchanged. Landed source matches tested source apart from owned CAWS metadata. Tracked artifact is the runnable suite definition; citation verification proves source/commit existence, while the actual execution is in ignored root-dot-final.log. Native proof is bounded; remote CI unrun."
-    recorded_at: "2026-11-07T04:28:39.724Z"
-    command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
-    exit_code: 0
-    artifact_path: vitest.config.ts
-    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+    status: unchecked
+    evidence_ref: "Publication remains owed. Ordinary pre-push at298b25fbc, Node22.19 and default four-worker/five-second policy, stopped at root shard1:12 default-timeout failures and5 worker RPC errors. Serial/default5 probe still failed7 corpus cases with2 RPC errors. Earlier CLI30 evidence remains a bounded historical pass, not proof of the normal publication path. Owner01a1addb retains runner/fixture repair and a successful guarded main push; raw logs remain ignored under tmp/review-errors."
+    recorded_at: "2026-11-07T06:02:51.025Z"
+    command: git push origin main
+    exit_code: 1
+    artifact_path: ".githooks/pre-push"
+    commit_sha: "298b25fbc6a4464da99371698ecbbb1ecf60ff68"
   - criterion_id: A6
     status: pass
     evidence_ref: "Native regressions and fresh three-engine macOS captures verify shared seven-field popover rectangles and data-derived selected titles. The strengthened checker passed 375 colour probes, 147 typography measurements, 24 lane image pairs and 24 goldens. All unordered typography lane pairs are compared; the non-transitive triplet regression rejects the old anchor-only result. Text coverage is not OCR or global visual parity. Raw: tmp/review-errors/parity-goldens-final.log."
