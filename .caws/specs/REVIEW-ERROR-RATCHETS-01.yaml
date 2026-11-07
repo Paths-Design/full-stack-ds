@@ -11,6 +11,7 @@ blast_radius:
     - 'Three engine pause-menu capture states and parity probes'
     - 'Portable agent instructions and documentation governance checks'
     - 'Native boundary prerequisite classification used by the required corpus ratchet'
+    - 'Functional test-runner resource policy and controlled process fixture budgets'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -69,6 +70,7 @@ invariants:
   - 'Framework-neutral channel interaction facts remain authoritative and generated files are regenerated rather than hand edited'
   - 'Normal startup fixture visibility is preserved and complete capture overrides are deterministic and order independent'
   - 'Hook protection remains intact and historical verification claims are not promoted by age alone'
+  - 'All corpus plan/fixture pairs and counterfactual execution orders remain; declared behavior, production-build and existing explicit case/hook deadlines are preserved; controlled cleanup fixtures retain real readiness and process-termination witnesses.'
 acceptance:
   - id: A1
     given: 'contract-derived channel plans'
