@@ -16,6 +16,10 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const PATTERNS = {
+  // Scripts/dependencies, the locked toolchain and target registration can
+  // change every consuming verdict without moving package source files.
+  sharedAuthority: /^(package\.json|pnpm-lock\.yaml|fsds\.targets\.json)$/,
+  rootTestInputs: /^(vitest\.config\.ts|vite-plugin-fsds-data\.ts|scripts\/analytical-composite-preview\.ts)$/,
   tokens: /^packages\/ds-tokens\//,
   codegen: /^packages\/ds-(contracts|codegen)\//,
   // every package the generator writes into. The committed-output check
@@ -134,8 +138,10 @@ const PATTERNS = {
 };
 
 export function classify(files, opts = {}) {
-  const full = !!opts.full;
   const has = (key) => files.some((f) => PATTERNS[key].test(f));
+  const sharedAuthority = has("sharedAuthority");
+  const full = !!opts.full || sharedAuthority;
+  const rootTestInputs = has("rootTestInputs");
   const tokens = full || has("tokens");
   const codegen = full || has("codegen");
   const generated = full || has("generated");
@@ -170,11 +176,11 @@ export function classify(files, opts = {}) {
     RUN_TOKEN_BUILD: genGroup || resolvability || motionAudit,
     RUN_TOKEN_GATES: tokens,
     RUN_GENERATE_CHECK: genGroup,
-    RUN_DOCS_CLAIMS: codegen || docs,
+    RUN_DOCS_CLAIMS: codegen || docs || rootTestInputs,
     RUN_LINT: lintable,
     RUN_TYPECHECK: typed,
     // a contract/codegen JSON change (no .ts) still exercises codegen tests
-    RUN_TESTS: testable || codegen || generated || has("gamePauseRootTests"),
+    RUN_TESTS: testable || codegen || generated || rootTestInputs || has("gamePauseRootTests"),
     RUN_RAIL: genGroup,
     // iconography ledger gate: separate emission model from the codegen rail,
     // so it has its own flag rather than riding genGroup.
@@ -226,11 +232,13 @@ export function classify(files, opts = {}) {
   const active = Object.entries(flags)
     .filter(([, v]) => v)
     .map(([k]) => k.replace("RUN_", ""));
-  const reason = full
-    ? "FULL gate (indeterminate range or PREPUSH_FULL=1)"
-    : files.length === 0
-      ? "no file changes in range — skipping all"
-      : `scoped to: ${active.join(", ") || "nothing (no gate-relevant inputs)"}`;
+  const reason = sharedAuthority
+    ? "FULL gate (shared package/lock/target authority changed)"
+    : full
+      ? "FULL gate (indeterminate range or PREPUSH_FULL=1)"
+      : files.length === 0
+        ? "no file changes in range — skipping all"
+        : `scoped to: ${active.join(", ") || "nothing (no gate-relevant inputs)"}`;
   return { ...flags, REASON: reason };
 }
 

@@ -71,6 +71,9 @@ pnpm exec vitest run path/to/file.test.ts
 pnpm exec vitest run -t "test name pattern"
 pnpm --filter @full-stack-ds/vue exec vitest run path/to/file.test.ts
 
+# Shared-host root tests (same cases and assertions, one fork)
+VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 pnpm test
+
 # Type checking (separate per target because tsconfig differs)
 pnpm run typecheck                             # root + codegen
 pnpm run typecheck:vue
@@ -121,6 +124,12 @@ pnpm run docs:check-claims                     # Marked doc values match their d
 pnpm run docs:check-claims:fix                 # Rewrites stale marked counts in place
 pnpm run docs:check-links                      # Tracked doc metadata/location + relative .md links
 ```
+
+The root Vitest runner gives functional tests 30 seconds and uses the dot
+reporter. Explicit case and hook deadlines take precedence, including the
+five-second controlled process-cleanup fixtures. On a shared host, the fork
+limits above also apply to the normal guarded push:
+`VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main`.
 
 `build:all` derives package order from workspace dependencies, runs existing
 workspace `build` scripts, and builds the root showcase last. Packages without

@@ -134,9 +134,9 @@ describe("execution — forgetting may destroy, never create", () => {
       before.has(x) || [...before].some((b) => b.startsWith(x) && (b[x.length] === "." || b[x.length] === "["));
 
     const offenders: string[] = [];
-    for (const p of plans.values()) {
-      for (const f of fixtures) {
-        const before = paths(f);
+    for (const f of fixtures) {
+      const before = paths(f);
+      for (const p of plans.values()) {
         const added = [...paths(executePlan(f, p))].filter((x) => !declaredBefore(before, x));
         if (added.length > 0) offenders.push(`${p.id} added ${added.slice(0, 3).join(", ")} to ${f.id}`);
       }
