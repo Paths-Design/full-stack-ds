@@ -1,9 +1,11 @@
 id: REVIEW-ERROR-RATCHETS-01
 title: 'Repair corroborated callback, capture-state and documentation errors with recurring checks'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'A1-A9 verified against executed checks and committed ratchets after merge90966c560; root5966, five framework suites, generation/doc/type/lint and bounded macOS native checks passed. Historical674 closed specs archived for tooling-schema portability; four foreign active specs preserved. Legacy12.1 active-spec compatibility and remote CI remain unverified.'
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-07T04:27:01.194Z'
+updated_at: '2026-11-07T04:31:06.212Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
