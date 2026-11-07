@@ -149,12 +149,11 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A3
     status: pass
-    evidence_ref: "The full root run at 9112ed23e executed all 19 parity regressions. Every icon switch is checked for map and map-popover; a deliberately wrong Rover switch is rejected. The committed helper and pre-push classifier route fixture/checker changes into this recurring root suite."
-    recorded_at: "2026-11-07T04:21:35.023Z"
-    test_nodeid: src/consumption/game-pause-parity.test.ts
+    evidence_ref: "Observed full root run includes all19 parity regressions: every icon switch in map and map-popover is checked and an intentionally wrong Rover switch fails the oracle. Helper/fixture changes select these root tests through the committed pre-push classifier. The tracked artifact is the recurring falsifier; ignored execution log is tmp/review-errors/root-dot-final.log."
+    recorded_at: "2026-11-07T04:28:32.074Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: src/consumption/game-pause-parity.test.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A4
     status: pass
