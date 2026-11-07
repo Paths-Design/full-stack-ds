@@ -143,9 +143,9 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Inspected native capture/toggle assertions and observed GPUI89 capture-feature cases, Godot402 checks and Unity43 actual Passed case records. Repeated overrides preserve startup defaults and derive live visible counts in all three engines. Raw executions: tmp/review-errors/gpui-capture-tests-final.log; tmp/review-errors/godot-native-final.log; tmp/review-errors/typography-investigation/unity-tests/editmode-results.xml. Native producer inputs are unchanged by later test-harness/doc commits."
-    recorded_at: "2026-11-07T04:23:13.654Z"
-    artifact_path: tmp/review-errors/typography-investigation/unity-tests/editmode-results.xml
+    evidence_ref: "Inspected native repeat-capture/toggle assertions; GPUI89 capture-feature cases, Godot402 checks and Unity43 actual Passed case records were observed. Overrides preserve startup defaults and live visible counts. Raw executions remain in ignored tmp/review-errors/gpui-capture-tests-final.log, godot-native-final.log and typography-investigation/unity-tests/editmode-results.xml. Tracked native tests and producer inputs are unchanged by later harness/doc commits."
+    recorded_at: "2026-11-07T04:28:29.554Z"
+    artifact_path: examples/game-pause-menu/unity/Assets/PauseMenu/Tests/Editor/ParityLayoutTests.cs
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A3
     status: pass
