@@ -142,3 +142,9 @@ evidence:
     exit_code: 0
     artifact_path: tmp/review-errors/root-dot-final.log
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Inspected native capture/toggle assertions and observed GPUI 89 capture-feature cases, Godot 402 checks and Unity 43 actual Passed case records. Repeated overrides preserve startup defaults and derive live visible counts in all three engines. Raw companions: tmp/review-errors/godot-native-final.log and typography-investigation/unity-tests/editmode-results.xml. Native producer inputs are unchanged by later test-harness/doc commits."
+    recorded_at: "2026-11-07T04:21:33.685Z"
+    artifact_path: tmp/review-errors/gpui-capture-tests-final.log
+    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
