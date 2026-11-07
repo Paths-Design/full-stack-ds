@@ -4,13 +4,15 @@ authority: spec
 status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
-updated: 2026-11-01
-verified_at_commit: 549f83a2
+updated: 2026-11-06
+verified_at_commit: 3bc83f1918150f2b40c725619fe07cf170515b40
 governs:
   - package.json
   - .github/workflows/ci.yml
   - .githooks/pre-push
   - scripts/committed-tree-check.mjs
+  - scripts/prepush-scope.mjs
+  - scripts/docs-*.mjs
   - packages/ds-codegen/src/validation/validate-cli.ts
 ---
 
@@ -194,6 +196,12 @@ Validating first, then refusing drift, is the only ordering that catches "contra
 2. **After `governed:rail`**, when the hook's classifier selects the rail group, `committed-tree-check.mjs generated --against <tip>` refuses regenerated output the pushed commit does not carry.
 
 On a working branch, run `pnpm run governed:rail` on its own: a dirty tree is routine there, and the rail's verdict is still meaningful evidence about the bytes on disk.
+
+### Documentation gates
+
+CI runs both `pnpm run docs:check-claims` and `pnpm run docs:check-links`. The claims command exercises its freshness and remainder fixtures before checking marked values and verification stamps. The links command runs the metadata fixtures, validates tracked documentation metadata and location, then checks relative links. The metadata check rejects tracked machine-local notes under `docs/internal/`, requires valid frontmatter outside the documented README/archive exemptions, and enforces authority- and status-dependent fields.
+
+The pre-push classifier selects both documentation commands for Markdown changes, codegen changes, top-level `scripts/docs-*.mjs` checkers and fixtures, and `doc-freshness-baseline.json`. This includes changes to the gates' own inputs. Its pause-menu helper, verifier and fixture patterns separately select root regression tests; that flag does not execute the native SDK lanes or pixel checker. Classifier tests cover these routes and nearby non-matching paths. CI remains the authoritative full gate sequence.
 
 ### Failure modes in CI
 
