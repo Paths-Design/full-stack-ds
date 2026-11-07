@@ -173,3 +173,9 @@ evidence:
     exit_code: 0
     artifact_path: tmp/review-errors/root-dot-final.log
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Native regressions and fresh three-engine macOS captures verify shared seven-field popover rectangles and data-derived selected titles. The strengthened checker passed 375 colour probes, 147 typography measurements, 24 lane image pairs and 24 goldens. All unordered typography lane pairs are compared; the non-transitive triplet regression rejects the old anchor-only result. Text coverage is not OCR or global visual parity. Raw: tmp/review-errors/parity-goldens-final.log."
+    recorded_at: "2026-11-07T04:21:39.850Z"
+    artifact_path: examples/game-pause-menu/evidence/parity-report.json
+    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
