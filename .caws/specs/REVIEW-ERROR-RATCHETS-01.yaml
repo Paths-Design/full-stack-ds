@@ -185,3 +185,12 @@ evidence:
     recorded_at: "2026-11-07T04:21:41.507Z"
     artifact_path: examples/game-pause-menu/evidence/parity-report.json
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "The full root run includes 24 controlled Godot verifier cases covering zero/missing/contradictory counters, missing completion marker, real parser errors, nonzero exit and timeout with observed child termination. The real Godot wrapper also accepted its completed 402-check zero-failure run. Raw real run: tmp/review-errors/godot-native-final.log. Completion parsing and watchdog implementation are committed."
+    recorded_at: "2026-11-07T04:21:42.970Z"
+    test_nodeid: src/consumption/game-pause-godot-verifier.test.ts
+    command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
+    exit_code: 0
+    artifact_path: tmp/review-errors/root-dot-final.log
+    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
