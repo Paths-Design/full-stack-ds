@@ -172,12 +172,12 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A5
     status: unchecked
-    evidence_ref: "Publication remains owed. Ordinary pre-push at298b25fbc, Node22.19 and default four-worker/five-second policy, stopped at root shard1:12 default-timeout failures and5 worker RPC errors. Serial/default5 probe still failed7 corpus cases with2 RPC errors. Earlier CLI30 evidence remains a bounded historical pass, not proof of the normal publication path. Owner01a1addb retains runner/fixture repair and a successful guarded main push; raw logs remain ignored under tmp/review-errors."
-    recorded_at: "2026-11-07T06:02:51.025Z"
-    command: git push origin main
+    evidence_ref: "Publication remains owed. At candidate 7345a2b2a, Node22 one-fork ordinary pnpm test stopped in shard1 after1293.49s:2792passed, one explicit20s CLI guard timeout and one onTaskUpdate RPC error; shard2, fresh rail and framework sequence did not start. Earlier bounded passes remain historical. Owner01a1addb retains CLI import-fixture containment, RPC liveness diagnosis, complete required checks and guarded main push. Raw execution: ignored tmp/review-errors/push-repair-root.log. Current bound lane is review-ratchet-push-repair; no remote update."
+    recorded_at: "2026-11-07T07:31:38.546Z"
+    command: "VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 pnpm test"
     exit_code: 1
-    artifact_path: ".githooks/pre-push"
-    commit_sha: "298b25fbc6a4464da99371698ecbbb1ecf60ff68"
+    artifact_path: vitest.config.ts
+    commit_sha: "7345a2b2ae62a83d008200f0f6036eeb67de30b2"
   - criterion_id: A6
     status: pass
     evidence_ref: "Native regressions and fresh three-engine macOS captures verify shared seven-field popover rectangles and data-derived selected titles. The strengthened checker passed 375 colour probes, 147 typography measurements, 24 lane image pairs and 24 goldens. All unordered typography lane pairs are compared; the non-transitive triplet regression rejects the old anchor-only result. Text coverage is not OCR or global visual parity. Raw: tmp/review-errors/parity-goldens-final.log."
