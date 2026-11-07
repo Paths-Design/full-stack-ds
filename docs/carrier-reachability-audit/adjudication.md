@@ -1,15 +1,17 @@
 ---
 doc_id: AUDIT-WEB-STYLE-CARRIER-ADJUDICATION-001
 authority: reference
-status: implemented
+status: archived
 title: Web style-carrier adjudication
 owner: "@darianrosebrook"
-updated: 2026-09-03
+updated: 2026-11-05
 ---
 
 # Web style-carrier adjudication
 
 Spec: `ADJUDICATE-WEB-STYLE-REALIZATION-DEBT-01`.
+
+This is the historical adjudication record for that slice. Current obligations and measurements come from the live `scripts/carrier-reachability-audit/` and `scripts/variant-style-audit/` ledgers and checks; this record does not certify current realization.
 
 Two rails measure whether authored styling can attach to anything:
 

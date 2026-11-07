@@ -20,7 +20,9 @@
 Human-facing inventory of the v11 Claude Code hook pack. For the **agent
 doctrine** (managed-file rules, spec-authoring traps, v10/v11 state model,
 `settings.json` wiring) see [`CLAUDE.md`](./CLAUDE.md) in this directory —
-that file is authoritative for behavior; this README is the at-a-glance map.
+that machine-local file describes installed doctrine; this tracked README is an inventory. Effective native registration, `caws hooks list`, and the executable guard implementation establish the running behavior; this inventory does not prove activation.
+
+Repository owners can grow these CAWS-managed templates. Executable guards remain protected against direct agent mutation through both file and Bash channels; editable-template headers do not grant an exception. Use supported CAWS CLI installation/update paths. Markdown inventory edits are admitted.
 
 These are CAWS-managed files — a **starting point, not an end state**. CAWS owns
 the WHY/WHAT (why each guard exists, what it enforces); your repo owns the HOW
@@ -74,7 +76,7 @@ Handlers self-filter on `$HOOK_TOOL_NAME`; a non-matching tool is a cheap exit 0
 | `worktree-write-guard.sh` | Write, Edit | Blocks base-branch writes when worktrees are active; refuses `<worktree>/.caws/specs/*` writes (canonical authority); routes `.caws/worktrees/<name>/*` payload writes through `lib/worktree-claim-oracle.cjs` so a foreign session's write hard-blocks. |
 | `bash-write-guard.sh` | Bash | Extracts mutation targets (redirection, `tee`, `sed -i`, `perl -pi`, `truncate`, `touch`, `rm`, `mv`, `cp`, `dd of=`, git path-restore) and routes each through the same `worktree-claim-oracle.cjs` — a Bash mutation of a foreign worktree's payload blocks at the same boundary as a foreign Write/Edit. |
 | `worktree-pin-guard.sh` | Bash | **OPT-IN** (Entry 41): pins a session whose project root is inside `.caws/worktrees/<name>` to that worktree — refuses commands whose working directory resolves outside it, blocks `git -C` / leading-`cd` git redirects to the canonical checkout or another worktree, and RELEASES the pin with an advisory when the pinned directory no longer exists (merge/destroy deleted it), so a session that merges its own worktree is never bricked. `caws worktree merge`/`destroy`/`create`/`ensure` stay reachable as the sanctioned exit/re-point verbs. |
-| `protected-paths.sh` | Write, Edit | Blocks hook **scripts** under `.claude/hooks/` (`*.sh`/`*.py`/`*.cjs`, exit 1) and strike-state `.claude/logs/guard-strikes-*.json` (exit 2). Documentation (`*.md`) under `.claude/hooks/` is admitted; every other extension stays blocked (fail-closed). |
+| `protected-paths.sh` | Write, Edit, Bash | Blocks direct mutation of executable/shared hook artifacts under `.caws/hooks/`, vendor hook directories, protected machine-runtime paths, and strike-state files (exit 2). Markdown documentation under hook directories is admitted; unrecognized extensions remain protected. Repository ownership does not authorize direct agent edits; use supported CAWS CLI update paths. |
 | `scan-secrets.sh` | Write, Edit, Bash | Advisory (exit 0): warns via `additionalContext` when a target path matches common secret-bearing patterns (`.env*`, `*.pem`, `*.key`, SSH/cloud config dirs). Does not block. |
 | `quiet-merge.sh` | Bash | Must run **last** — emits `updatedInput`. Rewrites `caws worktree merge`/`destroy` to `cd <repo-root> && <cmd> 2>/dev/null | tail -3` so the CWD survives the directory being destroyed mid-command, and trims verbose output. |
 

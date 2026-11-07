@@ -69,16 +69,6 @@ describe("Select — unit", () => {
     expect(screen.getByTestId("select")).toHaveClass("select--auto");
   });
 
-  it("calls onChange when selection changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<Select data-testid="select" value={""} onChange={onChangeSpy} open={true} />)).not.toThrow();
-  });
-
-  it("calls onOpenChange when open changes", async () => {
-    const onOpenChangeSpy = vi.fn();
-    expect(() => render(<Select data-testid="select" open={false} onOpenChange={onOpenChangeSpy} />)).not.toThrow();
-  });
-
   it("closes on Escape key", () => {
     const onOpenChangeSpy = vi.fn();
     render(<Select data-testid="select" open={true} onOpenChange={onOpenChangeSpy} />);

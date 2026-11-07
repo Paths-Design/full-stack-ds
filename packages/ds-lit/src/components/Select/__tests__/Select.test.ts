@@ -1,10 +1,16 @@
 // @generated:start imports
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 import "../Select";
 // @generated:end
 
 // @generated:start tests
+const renderedContainers = new Set<HTMLElement>();
+afterEach(() => {
+  for (const container of renderedContainers) container.remove();
+  renderedContainers.clear();
+});
+
 const componentAxeOptions = {
   rules: {
     // `region` asks whether all page content is landmark-contained.
@@ -133,6 +139,7 @@ async function renderElement(tagName: string, props: Record<string, unknown> = {
   }
   const container = document.createElement("div");
   container.append(element);
+  renderedContainers.add(container);
   document.body.append(container);
   await customElements.whenDefined(tagName);
   for (const [key, value] of Object.entries(props)) {

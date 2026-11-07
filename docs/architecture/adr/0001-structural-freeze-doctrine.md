@@ -4,7 +4,7 @@ authority: adr
 status: active
 title: "ADR 0001: structural freeze doctrine — freeze what must remain deliberate, measure what is expected to grow, freeze nothing before a release candidate"
 owner: "@darianrosebrook"
-updated: 2026-09-06
+updated: 2026-11-05
 supersedes: null
 # Declared governance role: this ADR governs the ADMISSIBILITY of freeze-shaped
 # gates — whether a given ledger/ratchet/frozen expectation may be wired as
@@ -16,14 +16,13 @@ governs:
   # Grown, not closed: as new pin-shaped gates appear in new trees, they are
   # added here — and this list must never itself be pinned by a test that
   # enumerates its exact members.
-  modules:
-    - packages/ds-tokens                 # token source, usage baseline, consumption ledgers
-    - packages/ds-contracts              # closed vocabularies that ARE legitimately frozen (schemas)
-    - packages/ds-codegen/src/analytical # frozen answer key, rule digest, necessity census
-    - packages/ds-codegen/src/highlight  # golden token-stream fixtures
-    - packages/ds-codegen/src/markdown   # golden tree fixtures
-    - packages/ds-codegen/src/validation # contrast ledgers + known-gaps files
-    - scripts                            # the derived-obligation audit family
+  - packages/ds-tokens                 # token source, usage baseline, consumption ledgers
+  - packages/ds-contracts              # closed vocabularies that ARE legitimately frozen (schemas)
+  - packages/ds-codegen/src/analytical # frozen answer key, rule digest, necessity census
+  - packages/ds-codegen/src/highlight  # golden token-stream fixtures
+  - packages/ds-codegen/src/markdown   # golden tree fixtures
+  - packages/ds-codegen/src/validation # contrast ledgers + known-gaps files
+  - scripts                            # the derived-obligation audit family
 ---
 # Structural Freeze Doctrine
 

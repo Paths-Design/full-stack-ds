@@ -155,7 +155,7 @@ impl Menu {
             "map:field-note",
             style::micro(&layout.type_scale),
             &layout.colors.ink,
-            layout.map.field_note.text.clone(),
+            self.state.icon_visibility_text(&layout.map.field_note.text),
             layout.map.field_note.x,
             field.bottom() + layout.map.field_note.y_offset_from_field_bottom,
         ));
@@ -177,7 +177,7 @@ impl Menu {
             "map:icon-meta",
             style::panel_meta(&layout.type_scale),
             &layout.colors.text_secondary,
-            layout.map.icon_panel_meta.clone(),
+            self.state.icon_visibility_text(&layout.map.icon_panel_meta),
             Rect {
                 x: icon_panel.right() - padding - 200.0,
                 y: icon_panel.y + (header_h - meta_size) / 2.0,
@@ -331,142 +331,55 @@ impl Menu {
         let icon = self.state.marker_popover()?.clone();
         let layout = self.layout.clone();
         let popover = layout.map.popover.clone();
-        let rect = Rect {
-            x: popover.x,
-            y: popover.y,
-            w: popover.w,
-            h: popover.h,
-        };
-        let border = layout.style.panel_border;
-        let padding = layout.panels.padding;
-        let nav = self.state.is_nav_target(&icon.id);
-        let stat_value = layout.type_scale.stat_value;
-
-        let title = self.text_at(
-            cx,
-            "popover:title",
-            style::stat_value(&layout.type_scale),
-            &layout.colors.bone_bright,
-            popover.title.clone(),
-            padding,
-            padding,
-        );
-        let status = self.badge(
-            cx,
-            "popover:status",
-            style::STATUS_CHIP.font,
-            style::STATUS_CHIP.weight,
-            &layout.colors.bone_bright,
-            icon.status.clone(),
-        );
-        let status_chip = widgets::chip_surface(
-            &layout,
-            Rect {
-                x: padding,
-                y: padding + stat_value + 10.0,
-                w: 76.0,
-                h: style::STATUS_CHIP.height,
-            },
-            Some("graphite"),
-            Some(("ruleStrong", border)),
-        )
-        .child(status);
-        let meta = self.text_at(
-            cx,
-            "popover:meta",
-            style::card_size(&layout.type_scale),
-            &layout.colors.muted,
-            format!("{} · {:.1} KM", icon.sector, icon.distance_km),
-            padding + 88.0,
-            padding + stat_value + 13.0,
-        );
-        let detail = self.text_box(
-            cx,
-            "popover:detail",
-            style::copy(&layout.type_scale),
-            &layout.colors.bone,
-            icon.detail.clone(),
-            Rect {
-                x: padding,
-                y: padding + stat_value + 46.0,
-                w: rect.w - padding * 2.0,
-                h: 62.0,
-            },
-        );
-        let reward = self.text_at(
-            cx,
-            "popover:reward",
-            style::micro(&layout.type_scale),
-            &layout.colors.signal_hot,
-            icon.reward.clone(),
-            padding,
-            rect.h - padding - 32.0 - 26.0,
-        );
-        let action_height = 32.0;
-        let action_label = if nav {
-            self.text(
-                cx,
-                "popover:action:active",
-                style::button_primary(),
-                &layout.colors.muted,
-                "ACTIVE NAV TARGET",
-            )
-        } else {
-            self.text(
-                cx,
-                "popover:action:set",
-                style::button_primary(),
-                &layout.colors.on_signal,
-                popover.action.clone(),
+        let content = &popover.content;
+        let rect = Rect { x: popover.x, y: popover.y, w: popover.w, h: popover.h };
+        let text_style = |part: &game_pause_menu_gpui::seam::parity::PopoverPartLayout| {
+            style::TextStyleSpec::new(
+                layout.type_scale.size(&part.type_key).expect("validated popover type"),
+                style::Weight::from_numeric(part.weight),
+                if part.type_key == "body" { 1.2 } else { 1.0 },
             )
         };
+        let title = self.text_box(cx, "popover:title", text_style(&content.title),
+            layout.color(&content.title.color), icon.label.clone(), content.title.rect);
+        let status = self.badge(cx, "popover:status",
+            layout.type_scale.size(&content.status.type_key).expect("validated status type"),
+            style::Weight::from_numeric(content.status.weight),
+            layout.color(&content.status.color), icon.status.clone());
+        let status_chip = widgets::chip_surface(&layout, content.status.rect,
+            content.status.background.as_deref(),
+            Some((content.status.border.as_deref().expect("validated status border"), content.border_width)))
+            .child(status);
+        let meta = self.text_box(cx, "popover:meta", text_style(&content.meta),
+            layout.color(&content.meta.color), content.metadata(&icon), content.meta.rect);
+        let detail = self.text_box(cx, "popover:detail", text_style(&content.body),
+            layout.color(&content.body.color), icon.detail.clone(), content.body.rect);
+        let reward = self.text_box(cx, "popover:reward", text_style(&content.reward),
+            layout.color(&content.reward.color), icon.reward.clone(), content.reward.rect);
+        let action_label = self.text(cx, "popover:action:set", text_style(&content.action),
+            layout.color(&content.action.color), popover.action.clone());
         let action_id = icon.id.clone();
-        let action = widgets::at(
-            padding,
-            rect.h - padding - action_height,
-            rect.w - padding * 2.0,
-            action_height,
-        )
-        .child(widgets::primary_button(
-            "popover-set-nav",
-            action_label,
-            rect.w - padding * 2.0,
-            action_height,
-            &layout,
-            !nav,
+        let action_rect = content.action.rect;
+        let action = widgets::rect_box(action_rect).child(widgets::primary_button(
+            "popover-set-nav", action_label, action_rect.w, action_rect.h, &layout, true,
             cx.listener(move |this, _, _, cx| this.set_nav_target(&action_id, cx)),
         ));
-        let close_label = self.text(
-            cx,
-            "popover:close",
-            style::button_tiny(),
-            &layout.colors.bone_bright,
-            popover.cancel.clone(),
-        );
-        let close = widgets::at(rect.w - padding - 64.0, padding, 64.0, 26.0).child(
-            widgets::outline_button(
-                "popover-close",
-                close_label,
-                64.0,
-                26.0,
-                &layout,
-                cx.listener(|this, _, _, cx| this.close_marker(cx)),
-            ),
-        );
-        Some(
-            widgets::rect_box(rect)
-                .bg(colors::paint(&layout.colors.charcoal))
-                .border_1()
-                .border_color(colors::paint(&layout.color("ruleStrong")))
-                .child(title)
-                .child(status_chip)
-                .child(meta)
-                .child(detail)
-                .child(reward)
-                .child(action)
-                .child(close)
-                .into_any_element(),
-        )
+        let close_label = self.text(cx, "popover:close", text_style(&content.cancel),
+            layout.color(&content.cancel.color), popover.cancel.clone());
+        let close_rect = content.cancel.rect;
+        let close = widgets::rect_box(close_rect).child(widgets::outline_button(
+            "popover-close", close_label, close_rect.w, close_rect.h, &layout,
+            cx.listener(|this, _, _, cx| this.close_marker(cx)),
+        ));
+        Some(widgets::rect_box(rect)
+            .bg(colors::paint(layout.color(&content.background)))
+            .child(widgets::at(0.0, 0.0, rect.w, rect.h)
+                .border(px(content.border_width))
+                .border_color(colors::paint(layout.color(&content.border))))
+            .child(widgets::at(0.0, 0.0, rect.w, content.accent_width)
+                .bg(colors::paint(layout.color(&content.accent))))
+            .child(title).child(status_chip).child(meta).child(detail).child(reward)
+            .child(action).child(close).into_any_element())
     }
 }
 

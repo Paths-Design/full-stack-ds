@@ -147,7 +147,7 @@ func _refresh_meta() -> void:
 	for icon in icons:
 		if bool(app.icon_visible.get(str(icon.get("id", "")), false)):
 			plotted += 1
-	meta_label.text = ("%d/%d PLOTTED" % [plotted, icons.size()]).to_upper()
+	meta_label.text = str(app.parity.map["iconPanelMeta"]).replace("{visible}", str(plotted)).replace("{total}", str(icons.size()))
 
 
 func apply_state(visibility: Dictionary, nav_target: String) -> void:

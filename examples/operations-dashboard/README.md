@@ -224,7 +224,7 @@ fixed latency, and explicit failure flag as the TypeScript seam above.
 |---|---|---|---|---|
 | `swift/` | `import DsSwiftUI` via `.package(path: "../../../packages/ds-swiftui")` | `swift build --package-path examples/operations-dashboard/swift` | 18 (XCTest) | `swift run --package-path examples/operations-dashboard/swift` |
 | `compose/` | `com.fullstackds.components.*` via `includeBuild("../../../packages/ds-jetpack-compose")` | `./gradlew compileKotlin` (from the lane folder) | 18 (kotlin.test) | `./gradlew run` |
-| `gpui/` | `full_stack_ds_gpui` via Cargo path dep (7-component allowlist; zed renderer pinned to the package's exact rev) | `cargo build --manifest-path examples/operations-dashboard/gpui/Cargo.toml` | 16 (cargo test) | `cargo run --manifest-path examples/operations-dashboard/gpui/Cargo.toml` (macOS) |
+| `gpui/` | `full_stack_ds_gpui` via Cargo path dep (registry allowlist: <!-- target-component-count:gpui -->55 components; consumer uses a bounded subset; zed renderer pinned to the package's exact rev) | `cargo build --manifest-path examples/operations-dashboard/gpui/Cargo.toml` | 16 (cargo test) | `cargo run --manifest-path examples/operations-dashboard/gpui/Cargo.toml` (macOS) |
 
 All three implement the spec's ten interaction requirements as real code paths
 (live filter narrowing with summary recompute, multi-axis intersection,
@@ -258,7 +258,7 @@ runs in CI yet (wiring the three gates into CI is separate follow-up), no
 automated visual or interaction proof exists, `swift run` / `./gradlew run` /
 `cargo run` open windows for manual inspection only, and none of this is parity
 evidence across frameworks: the gpui lane in particular realizes most regions
-hand-authored (its target's allowlist is seven components by design). The
+hand-authored. The target admits <!-- target-component-count:gpui -->55 components; that admission does not establish migration of this consumer's fallbacks. The
 gpui lane is macOS-only, mirroring the target's pinned posture.
 
 ## Intended future use

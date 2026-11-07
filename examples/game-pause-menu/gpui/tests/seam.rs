@@ -137,6 +137,32 @@ fn initial_state_projects_fixture_values() {
 }
 
 #[test]
+fn capture_visibility_replaces_defaults_and_prior_filters() {
+    let layout = game_pause_menu_gpui::seam::parity::load_parity_layout();
+    let mut state = state();
+    assert!(!state.icon_visible("rover-07"), "ordinary startup follows the fixture");
+    for name in ["map", "map-popover", "progress", "map", "map-popover"] {
+        state.toggle_icon("relay-01");
+        let capture = &layout.captures[name];
+        state.apply_capture_icon_visibility(&capture.hidden_icons);
+        for icon in state.fixtures().icons() {
+            assert_eq!(state.icon_visible(&icon.id), !capture.hidden_icons.contains(&icon.id),
+                "capture {name}, icon {}", icon.id);
+        }
+        let count = if name == "progress" { 8 } else { 7 };
+        assert_eq!(state.visible_icons().len(), count);
+        assert_eq!(state.icon_visibility_text(&layout.map.icon_panel_meta), format!("{count}/8 PLOTTED"));
+        assert!(state.icon_visibility_text(&layout.map.field_note.text).starts_with(&format!("MARKERS {count}/8 VISIBLE")));
+    }
+    state.apply_capture_icon_visibility(&[]);
+    assert_eq!(state.visible_icons().len(), 8, "an empty capture filter restores every icon");
+    state.toggle_icon("relay-01");
+    assert_eq!(state.icon_visibility_text(&layout.map.icon_panel_meta), "7/8 PLOTTED");
+    assert!(!state.fixtures().icons().iter().find(|icon| icon.id == "rover-07").unwrap().visible,
+        "capture application never mutates fixture defaults");
+}
+
+#[test]
 fn load_fixtures_hydrates_the_committed_corpus() {
     let fixtures = adapter::load_fixtures();
     assert_eq!(fixtures.commander.mission, "MARS EXPEDITION");

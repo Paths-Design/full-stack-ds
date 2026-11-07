@@ -34,10 +34,11 @@ export function generateSvelteTest(ir: ComponentIR): string {
   // with @click/@change wired via the generated event handlers — interactions
   // are valid. For dom-tree components, handlers are bound inside the shadow;
   // those have exhaustive custom test blocks.
-  const emitChannelInteraction = plan.channels.length > 0 && !ir.dom;
-  // Stack-only components expose their channel prop on the root via @change,
-  // but fireEvent.change with { target: { value } } requires a form element.
-  // Use render-only style for non-boolean channels on stack-only paths.
+  // Omit channel cases whose action this test backend cannot exercise.
+  const channelInteractions = !ir.dom
+    ? plan.channels.filter((entry) => entry.interaction === "click")
+    : [];
+  const emitChannelInteraction = channelInteractions.length > 0;
   // The vitest import set is derived from emitted-body usage (see the
   // testsBody scan below): `vi` is imported only when the generated tests
   // section itself references it. @custom test blocks import their own
@@ -151,26 +152,18 @@ export function generateSvelteTest(ir: ComponentIR): string {
   }
 
   if (emitChannelInteraction) {
-    for (const testCase of plan.channels) {
+    for (const testCase of channelInteractions) {
       const { channel, spyName } = testCase;
       lines.push(``);
       lines.push(
         `  it("calls ${channel.changeHandlerProp} when ${channel.name} changes", async () => {`,
       );
       lines.push(`    const ${spyName} = vi.fn();`);
-      if (testCase.interaction === "click") {
-        lines.push(
-          `    const { container } = ${renderExpression(plan.name, plan, { [channel.changeHandlerProp]: { code: spyName } })};`,
-        );
-        lines.push(`    await fireEvent.click(container.firstElementChild!);`);
-        lines.push(`    expect(${spyName}).toHaveBeenCalled();`);
-      } else {
-        // For non-click channels on stack-only components, verify the prop is
-        // accepted without throwing (change events on non-input roots are unreliable).
-        lines.push(
-          `    expect(() => ${renderExpression(plan.name, plan, { [channel.valueProp]: false, [channel.changeHandlerProp]: { code: spyName } })}).not.toThrow();`,
-        );
-      }
+      lines.push(
+        `    const { container } = ${renderExpression(plan.name, plan, { [channel.changeHandlerProp]: { code: spyName } })};`,
+      );
+      lines.push(`    await fireEvent.click(container.firstElementChild!);`);
+      lines.push(`    expect(${spyName}).toHaveBeenCalled();`);
       lines.push(`  });`);
     }
   }

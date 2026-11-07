@@ -17,10 +17,16 @@ namespace GamePauseMenu.Tests
 
         public TestHost()
         {
+            var fixtures = FixtureRepository.LoadFromResources();
+            var viewport = new Vector2((float)fixtures.Parity.ViewportWidth, (float)fixtures.Parity.ViewportHeight);
             Window = ScriptableObject.CreateInstance<EditorWindow>();
-            Window.position = new Rect(0, 0, 1280, 800);
+            Window.minSize = viewport;
+            Window.maxSize = viewport;
             Window.Show();
-            App = new PauseMenuApp(FixtureRepository.LoadFromResources());
+            // Show creates the native window and can restore its saved dimensions.
+            // Apply the fixture viewport after that native sizing step.
+            Window.position = new Rect(Vector2.zero, viewport);
+            App = new PauseMenuApp(fixtures);
             Mount = Window.rootVisualElement;
             Mount.Add(App.Root);
             App.ApplyParityTypography();

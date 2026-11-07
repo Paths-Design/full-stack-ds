@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Carousel } from "../Carousel";
@@ -52,11 +52,6 @@ describe("Carousel — unit", () => {
   it("applies indicator=both variant class", () => {
     render(<Carousel data-testid="carousel" indicator="both"><span>content</span></Carousel>);
     expect(screen.getByTestId("carousel")).toHaveClass("carousel--both");
-  });
-
-  it("calls onIndexChange when slide changes", async () => {
-    const onIndexChangeSpy = vi.fn();
-    expect(() => render(<Carousel data-testid="carousel" index={0} onIndexChange={onIndexChangeSpy}><span>content</span></Carousel>)).not.toThrow();
   });
 });
 

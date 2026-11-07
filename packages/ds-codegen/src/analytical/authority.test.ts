@@ -278,15 +278,20 @@ describe("evidence earned under one erasure definition is refused under another"
     }
     return { dir, remove: () => fs.rmSync(scratch, { recursive: true, force: true }) };
   };
-  const load = async (dir: string) => ({
-    authority: (await import(/* @vite-ignore */ path.join(dir, "authority.ts"))) as typeof import("./authority.js"),
-    audit: (await import(/* @vite-ignore */ path.join(dir, "erasure-audit.ts"))) as typeof import("./erasure-audit.js"),
-    freeze: (await import(/* @vite-ignore */ path.join(dir, "freeze.ts"))) as typeof import("./freeze.js"),
-    plan: (await import(/* @vite-ignore */ path.join(dir, "erasure-plan.ts"))) as typeof import("./erasure-plan.js"),
-    quotient: (await import(/* @vite-ignore */ path.join(dir, "quotient.ts"))) as typeof import("./quotient.js"),
-    quotientImage: (await import(/* @vite-ignore */ path.join(dir, "quotient-image.ts"))) as typeof import("./quotient-image.js"),
-    closure: (await import(/* @vite-ignore */ path.join(dir, "closure.ts"))) as typeof import("./closure.js"),
-  });
+  const load = async (dir: string) => {
+    const pending = [
+      import(/* @vite-ignore */ path.join(dir, "authority.ts")) as Promise<typeof import("./authority.js")>,
+      import(/* @vite-ignore */ path.join(dir, "erasure-audit.ts")) as Promise<typeof import("./erasure-audit.js")>,
+      import(/* @vite-ignore */ path.join(dir, "freeze.ts")) as Promise<typeof import("./freeze.js")>,
+      import(/* @vite-ignore */ path.join(dir, "erasure-plan.ts")) as Promise<typeof import("./erasure-plan.js")>,
+      import(/* @vite-ignore */ path.join(dir, "quotient.ts")) as Promise<typeof import("./quotient.js")>,
+      import(/* @vite-ignore */ path.join(dir, "quotient-image.ts")) as Promise<typeof import("./quotient-image.js")>,
+      import(/* @vite-ignore */ path.join(dir, "closure.ts")) as Promise<typeof import("./closure.js")>,
+    ] as const;
+    await Promise.allSettled(pending);
+    const [authority, audit, freeze, plan, quotient, quotientImage, closure] = await Promise.all(pending);
+    return { authority, audit, freeze, plan, quotient, quotientImage, closure };
+  };
   /** Arity truncates to ONE whatever the floor. In-slot, idempotent, schema-shaped; wrong. */
   const TRUNCATE_TO_ONE = {
     file: "erasure-plan.ts",

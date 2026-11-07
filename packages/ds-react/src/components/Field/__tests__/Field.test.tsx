@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Field } from "../Field";
@@ -62,11 +62,6 @@ describe("Field — unit", () => {
   it("applies status=invalid variant class", () => {
     render(<Field data-testid="field" name={"placeholder"} status="invalid" />);
     expect(screen.getByTestId("field")).toHaveClass("field--invalid");
-  });
-
-  it("calls onChange when value changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<Field data-testid="field" name={"placeholder"} value={""} onChange={onChangeSpy} />)).not.toThrow();
   });
 });
 

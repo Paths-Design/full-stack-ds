@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Switch } from "../Switch";
@@ -52,11 +52,6 @@ describe("Switch — unit", () => {
   it("applies size=lg variant class", () => {
     render(<Switch data-testid="switch" size="lg"><span>content</span></Switch>);
     expect(screen.getByTestId("switch")).toHaveClass("switch--lg");
-  });
-
-  it("calls onChange when checked changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<Switch data-testid="switch" checked={false} onChange={onChangeSpy}><span>content</span></Switch>)).not.toThrow();
   });
 });
 

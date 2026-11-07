@@ -25,6 +25,70 @@ test("docs-only push: docs-claims only — no token/generate/rail/lint/typecheck
   );
 });
 
+test("docs gate sources and fixture tests reach the docs family without regeneration", () => {
+  for (const path of [
+    "scripts/docs-claims-check.mjs",
+    "scripts/docs-claims-freshness.selftest.mjs",
+    "scripts/docs-claims-remainder.selftest.mjs",
+    "scripts/docs-link-check.mjs",
+    "scripts/docs-metadata-check.mjs",
+    "scripts/docs-metadata-check.test.mjs",
+  ]) {
+    const flags = classify([path]);
+    assert.equal(flags.RUN_DOCS_CLAIMS, true, path);
+    assert.equal(flags.RUN_LINT, true, path);
+    assert.ok(off(flags, "RUN_RAIL", "RUN_GENERATE_CHECK", "RUN_TOKEN_GATES", "RUN_TYPECHECK", "RUN_TESTS"), path);
+  }
+});
+
+test("unrelated scripts and lookalike names do not reach the docs family", () => {
+  for (const path of [
+    "scripts/component-audit/audit.mjs",
+    "scripts/not-docs-metadata-check.mjs",
+    "scripts/nested/docs-metadata-check.mjs",
+    "scripts/docs-metadata-check.mjs.map",
+  ]) {
+    assert.equal(classify([path]).RUN_DOCS_CLAIMS, false, path);
+  }
+});
+
+test("pause-menu root regression inputs reach tests without generation or native tooling", () => {
+  for (const path of [
+    "examples/game-pause-menu/parity-state.mjs",
+    "examples/game-pause-menu/parity-check.mjs",
+    "examples/game-pause-menu/fixtures/parity-layout.json",
+    "examples/game-pause-menu/fixtures/map-icons.json",
+    "examples/game-pause-menu/gpui/fixtures/parity-layout.json",
+    "examples/game-pause-menu/godot/fixtures/parity-layout.json",
+    "examples/game-pause-menu/unity/Assets/PauseMenu/Resources/Fixtures/parity-layout.json",
+    "examples/game-pause-menu/unity/scripts/verify-unity.sh",
+    "examples/game-pause-menu/godot/scripts/verify-godot.mjs",
+  ]) {
+    const flags = classify([path]);
+    assert.equal(flags.RUN_TESTS, true, path);
+    assert.ok(off(flags, "RUN_GENERATE_CHECK", "RUN_RAIL", "RUN_TYPECHECK", "RUN_TOKEN_BUILD", "RUN_TOKEN_GATES"), path);
+  }
+});
+
+test("unrelated examples, lookalikes and native sources do not select pause-menu root tests", () => {
+  for (const path of [
+    "examples/settings/fixtures/parity-layout.json",
+    "examples/game-pause-menu-copy/fixtures/parity-layout.json",
+    "examples/game-pause-menu/fixtures-copy/parity-layout.json",
+    "examples/game-pause-menu/gpui/fixture/parity-layout.json",
+    "examples/game-pause-menu/parity-check.mjs.map",
+    "examples/game-pause-menu/parity-state-other.mjs",
+    "examples/game-pause-menu/unity/scripts/verify-unity.sh.bak",
+    "examples/game-pause-menu/godot/scripts/verify-godot.mjs.bak",
+    "examples/game-pause-menu/unity/scripts/capture-screenshots.sh",
+    "examples/game-pause-menu/unity/Assets/PauseMenu/Runtime/App/SettingsTab.cs",
+    "examples/game-pause-menu/godot/tests/run_tests.gd",
+    "examples/game-pause-menu/gpui/src/app/settings_tab.rs",
+  ]) {
+    assert.equal(classify([path]).RUN_TESTS, false, path);
+  }
+});
+
 test("spec-only (.caws/*.yaml) push: nothing runs", () => {
   const r = classify([".caws/specs/FOO-01.yaml"]);
   assert.ok(

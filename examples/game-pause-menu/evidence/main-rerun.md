@@ -1,4 +1,10 @@
-# Post-merge run receipt — main
+# Historical post-merge run receipt — main
+
+The results and acceptance decisions below describe the pre-repair sources and
+captures retained at `70e5f7b0275bd3f43f570c9f76ea6150485becdb`. They do not
+certify the regression-repair candidate. Its technical capture comparison is
+recorded in [`parity-report.json`](parity-report.json), and its acceptance checks
+are recorded through CAWS spec `REVIEW-ERROR-RATCHETS-01`.
 
 **Status: post-restyle idle-machine rerun complete; all required checks green.**
 This receipt records the run on `main` after the four Orion restyle passes.

@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
-updated: 2026-11-03
-verified_at_commit: 26d55295e09a9df9ebe9ab9296bfc8e39666e2f7
+updated: 2026-11-06
+verified_at_commit: 14634a9e3d1c128bbbdda92e96862784f5a28e16
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -198,6 +198,8 @@ The standalone witness copies the package into a fresh consuming project, create
 At source `63fee12cf`, fresh run `52337abb-74a0-44df-9b09-7bbdbd9f868d` passed all 12 required standalone checks on Unity 6000.5.3f1 and macOS. Its receipt records `editor: false`, `OSXPlayer`, and the package and runner hashes. The screenshot shows a readable light sample; the checks assert opaque sample background and generated Switch track color. The package's declared 6000.0 minimum remains unverified. The minimal manifest declares UIElements plus screenshot/image-conversion modules needed by the witness. The test assembly uses a package-version define constraint so consumers without the Test Framework do not compile the optional Editor tests.
 
 ## Support boundary
+
+Within one `classifyContract` call, each rule's contract-wide prerequisite result is reused over that call's fixed leaf set. Later contract classifications and direct `classifyLeaf` calls evaluate their supplied inputs afresh. `boundary.test.ts` exercises present and absent prerequisite scan counts, changed contract values and conditions, rule order and identity, and direct-call freshness; `capabilities.test.ts` checks corpus and sidecar accounting. This cache changes evaluation cost, not the supported capability dispositions.
 
 `UNITY-SUPPORT-BOUNDARY-01` commits the machine-readable statement of what the Unity target lowers, defers and refuses: [`support-boundary.json`](../../packages/ds-codegen/src/frameworks/unity/support-boundary.json), validated against [`support-boundary.schema.json`](../../packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json) and evaluated by [`boundary.ts`](../../packages/ds-codegen/src/frameworks/unity/boundary.ts). The file is an ordered rule list; the first matching rule wins. Every contract leaf and every token and style sidecar leaf resolves to exactly one rule, and each rule carries one disposition:
 

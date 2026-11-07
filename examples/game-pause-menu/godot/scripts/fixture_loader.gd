@@ -623,6 +623,44 @@ func _validate_parity_layout(data: Dictionary) -> void:
 		_validate_rect(map.get(key, {}), "parity-layout.map." + key)
 	_validate_rect(map.get("iconPanel", {}), "parity-layout.map.iconPanel")
 	_validate_rect(map.get("popover", {}), "parity-layout.map.popover")
+	var popover := _dictionary(map, "popover", "parity-layout.map")
+	var popover_content := _dictionary(popover, "content", "parity-layout.map.popover")
+	for part_key in ["title", "status", "meta", "body", "reward", "action", "cancel"]:
+		var context: String = "parity-layout.map.popover.content." + str(part_key)
+		var part := _dictionary(popover_content, part_key, "parity-layout.map.popover.content")
+		var rect := _dictionary(part, "rect", context)
+		_validate_rect(rect, context + ".rect")
+		if float(rect.get("x", 0)) < 0 or float(rect.get("y", 0)) < 0 or float(rect.get("w", 0)) <= 0 or float(rect.get("h", 0)) <= 0 or float(rect.get("x", 0)) + float(rect.get("w", 0)) > float(popover.get("w", 0)) or float(rect.get("y", 0)) + float(rect.get("h", 0)) > float(popover.get("h", 0)):
+			_fail(context + ".rect: must fit inside the popover")
+		_string(part, "type", context)
+		_string(part, "color", context)
+		_number(part, "weight", context)
+		var type_key := str(part.get("type", ""))
+		var color_key := str(part.get("color", ""))
+		var weight: Variant = part.get("weight", 0)
+		if float(data.get("type", {}).get(type_key, 0)) <= 0 or not data.get("colors", {}).has(color_key) or not (float(weight) == 400.0 or float(weight) == 700.0):
+			_fail(context + ": invalid typography or colour reference (%s, %s, %s)" % [type_key, color_key, weight])
+	for key in ["background", "border", "accent"]:
+		_string(popover_content, key, "parity-layout.map.popover.content")
+		var color_key := str(popover_content.get(key, ""))
+		if not data.get("colors", {}).has(color_key):
+			_fail("parity-layout.map.popover.content." + key + ": unknown colour")
+	for key in ["borderWidth", "accentWidth"]:
+		_number(popover_content, key, "parity-layout.map.popover.content")
+		if float(popover_content.get(key, 0)) < 0:
+			_fail("parity-layout.map.popover.content." + key + ": must be non-negative")
+	var status := _dictionary(popover_content, "status", "parity-layout.map.popover.content")
+	for key in ["background", "border"]:
+		_string(status, key, "parity-layout.map.popover.content.status")
+		var color_key := str(status.get(key, ""))
+		if not data.get("colors", {}).has(color_key):
+			_fail("parity-layout.map.popover.content.status." + key + ": unknown colour")
+	var meta := _dictionary(popover_content, "meta", "parity-layout.map.popover.content")
+	_string(meta, "template", "parity-layout.map.popover.content.meta")
+	var meta_template := str(meta.get("template", ""))
+	var unbound := meta_template.replace("{sector}", "").replace("{distanceKm}", "")
+	if not meta_template.contains("{sector}") or not meta_template.contains("{distanceKm}") or unbound.contains("{") or unbound.contains("}"):
+		_fail("parity-layout.map.popover.content.meta.template: must bind sector and distanceKm only")
 	_number(map, "fieldCornerTicks", "parity-layout.map")
 	_string(map, "iconPanelTitle", "parity-layout.map")
 	_string(map, "iconPanelMeta", "parity-layout.map")
@@ -679,6 +717,27 @@ func _validate_parity_layout(data: Dictionary) -> void:
 		for key in ["w", "h"]:
 			_number(block, key, "parity-layout.settings." + group)
 	_validate_rect(_dictionary(settings, "preview", "parity-layout.settings"), "parity-layout.settings.preview")
+	var preview := _dictionary(settings, "preview", "parity-layout.settings")
+	var preview_content := _dictionary(preview, "content", "parity-layout.settings.preview")
+	for part_key in ["line", "meta"]:
+		var context: String = "parity-layout.settings.preview.content." + str(part_key)
+		var part := _dictionary(preview_content, part_key, "parity-layout.settings.preview.content")
+		var rect := _dictionary(part, "rect", context)
+		_validate_rect(rect, context + ".rect")
+		if float(rect.get("x", 0)) < 0 or float(rect.get("y", 0)) < 0 or float(rect.get("w", 0)) <= 0 or float(rect.get("h", 0)) <= 0 or float(rect.get("x", 0)) + float(rect.get("w", 0)) > float(preview.get("w", 0)) or float(rect.get("y", 0)) + float(rect.get("h", 0)) > float(preview.get("h", 0)):
+			_fail(context + ".rect: must fit inside the preview")
+		_string(part, "type", context)
+		_number(part, "weight", context)
+		var weight := float(part.get("weight", 0))
+		if float(data.get("type", {}).get(str(part.get("type", "")), 0)) <= 0 or not (weight == 400.0 or weight == 700.0):
+			_fail(context + ": invalid typography")
+	var preview_meta := _dictionary(preview_content, "meta", "parity-layout.settings.preview.content")
+	for key in ["template", "case", "align"]:
+		_string(preview_meta, key, "parity-layout.settings.preview.content.meta")
+	var preview_template := str(preview_meta.get("template", ""))
+	var preview_unbound := preview_template.replace("{language}", "").replace("{background}", "")
+	if not preview_template.contains("{language}") or not preview_template.contains("{background}") or preview_unbound.contains("{") or preview_unbound.contains("}") or str(preview_meta.get("case", "")) != "upper" or str(preview_meta.get("align", "")) != "right":
+		_fail("parity-layout.settings.preview.content.meta: must bind language and background with upper case and right alignment")
 	_validate_rect(_dictionary(settings, "remapModal", "parity-layout.settings"), "parity-layout.settings.remapModal")
 	var captures := _dictionary(data, "captures", "parity-layout")
 	for key in ["map", "map-popover", "progress", "abilities", "abilities-hover", "settings",

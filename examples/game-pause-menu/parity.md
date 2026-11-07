@@ -43,8 +43,12 @@ matrix and the conditions for a stronger claim are in
 ## Evidence binding the claim
 
 - [`parity-check.mjs`](parity-check.mjs) requires all eight captures per lane,
-  measures 195 colour/geometry probes and 117 typography bbox/ink values across
-  the four base states, and compares 24 lane-pair RMSE images.
+  probes every map switch in both map states, measures fixture-directed colour,
+  geometry and typography regions, and compares the lane-pair RMSE images.
+  Marker-popover probes include every required text part and the shared
+  status/action/cancel arrangement.
+  Subtitle-preview probes cover the selected background, verbatim preview line
+  and language/background metadata in the unobscured settings captures.
 - [`evidence/goldens/`](evidence/goldens/) commits 24 lossless-WebP image
   goldens plus a manifest binding them to the authority, resolved token graph
   and Orion brand; `pnpm parity:goldens:check` verifies the manifest, and the
@@ -125,6 +129,11 @@ documented scrim-dominated exception. See See
   lane: `map`, `progress`, `abilities`, `settings`; extra states:
   `map-popover`, `abilities-hover`, `settings-remap-modal`,
   `settings-subtitle`.
+  `hiddenIcons` is the complete capture filter: listed icons are hidden and every
+  other icon is visible; an absent or empty list makes every icon visible,
+  independently of fixture defaults and prior captures. Ordinary startup uses
+  the fixture's `visible` values. Map count copy resolves the fixture's
+  `{visible}` and `{total}` placeholders from the live filter.
 
 ## Switch parity (the "pinched oval" defect)
 
@@ -239,6 +248,12 @@ front; the drawer/popover/modal are overlays on top of their tab content.
    canonical switch at `switchX`/`switchY`. Panel note at `map.iconPanelNote`.
 5. No commander stat block inside the tab — the header carries rank, earnings
    and followers on every tab.
+6. Marker popovers consume `map.popover.content`: relative rectangles and type,
+   weight and colour references for title, status, sector/distance metadata,
+   body, reward and both actions. The selected icon supplies the title and data;
+   the metadata template formats distance to one decimal place. The fixture owns
+   the frame, accent and status-badge colours and widths. Ordinary marker
+   activation and the pinned capture use the same content composition.
 
 ### PROGRESS
 
@@ -277,6 +292,12 @@ language dropdowns, six subtitle-background swatches, live preview strip).
 Remap modal at `settings.remapModal` centred with `PRESS ANY KEY OR BUTTON`,
 the action name and a cancel affordance.
 Settings is fully visible without scrolling at 1280 × 800 in this layout.
+The preview strip consumes `settings.preview.content`: the line remains the
+fixture's `audio.previewLine`, and the right-aligned metadata template combines
+the selected subtitle language and background option label in uppercase.
+Both runs use the declared micro type and weight, line-height 1.0, vertical
+centering and clipping inside their fixed part rectangles. Foreground contrast
+continues to follow the selected background.
 
 ## Header, tab bar, footer
 
@@ -411,24 +432,33 @@ heights. Fonts are vendored at [`fonts/`](fonts/README.md):
 - **No synthetic styling**: no faux bold, no faux italic, no tracking offset,
   no text shadows. Fallbacks are disabled where the engine allows it; Inter
   covers every glyph in the fixture copy.
-- **Verification**: `parity-check.mjs` measures the pixel bounding box **and
-  ink coverage** of 39 pinned text strings (wordmark, stat values, tab labels,
-  panel titles, row labels/secondaries, field note, footer hints, nav target,
-  drawer copy, chips, card/detail copy, settings labels/values) in each
-  engine's captures — 117 bbox+weight measurements per run — and fails when a
+- **Verification**: `parity-check.mjs` measures bounding boxes and integrated
+  foreground coverage in the fixture's text regions, including shared popup
+  and subtitle-preview regions. It fails when a
   pairwise bbox delta exceeds ±4 px in x/y or ±6/±5 px in w/h, or when pairwise
   ink coverage differs by more than 25 % (body-copy probes on paper may relax
-  to 45 % because rasteriser AA dominates there). The mask is a 30 %
-  colour-distance transparency, so antialiased glyph edges are included
-  consistently. This is a metric probe, not raster-equality proof.
-- **GPUI stroke weight.** The pinned `gpui_macos` renderer thickens glyphs via
-  CoreGraphics-style dilation when macOS font smoothing is enabled
-  (`glyph_dilation_for_color`), which made GPUI's Inter Bold read heavier than
-  Unity/Godot (row-label ink coverage 0.479 vs 0.332/0.342). The GPUI lane now
-  writes `AppleFontSmoothing = 0` into its own application preferences domain
-  before GPUI's text system initialises; the same probe measures 0.343 and the
-  ink-coverage check guards the regression. No global user preference is
-  touched.
+  to 45 % because rasteriser AA dominates there). For sparse opaque text on a
+  uniform background, the measurement infers modal background RGB and projects
+  pixels onto its contrast with the declared foreground. The 50 % coverage
+  contour defines the box; accepted antialias coverage inside it defines ink.
+  `--type-fuzz` bounds orthogonal colour residual as a percentage of each
+  pixel's positive projected contrast (30 % by default). A blank crop has no
+  box, even when its background
+  resembles the foreground. The observed background does not establish the
+  intended paint; separate colour probes check that. These measurements compare
+  geometry and coverage, without recognizing strings or proving raster equality.
+  The progress capture opens the Ares drawer, so its text probes sample visible
+  drawer labels and roster header metadata rather than the occluded roster copy.
+  The interaction contract specifies shop requirements for locked drawers but
+  does not prescribe an unlocked shop caption. The consumers supply different
+  optional content at `drawer.shopCaptionY`; the text-probe claim excludes that
+  field rather than treating it as identical copy or typography.
+- **GPUI stroke weight.** The pinned `gpui_macos` renderer applies additional
+  glyph dilation when macOS font smoothing is enabled
+  (`glyph_dilation_for_color`). The GPUI lane writes `AppleFontSmoothing = 0`
+  into its own application preferences domain before the text system
+  initialises. The coverage probes bound resulting density differences; the
+  setting leaves the global user preference unchanged.
 
 ## Design-token provenance
 

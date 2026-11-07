@@ -1,7 +1,7 @@
 {
-  "claim": "Bounded visual conformance across the eight captured 1280x800 states on the pinned macOS host; not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.",
-  "root": "/tmp/restyle4-evidence",
-  "out": "/tmp/restyle4-evidence/report",
+  "claim": "Bounded comparison of declared image probes and lane-pair RMSE across the eight captured 1280x800 states on the pinned macOS host; not pixel identity, not an all-states/DPI/OS/accessibility/usability parity claim.",
+  "root": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/review-errors/visual",
+  "out": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/review-errors/visual/parity",
   "states": [
     "map",
     "map-popover",
@@ -12,10 +12,18 @@
     "settings-remap-modal",
     "settings-subtitle"
   ],
-  "goldens": "examples/game-pause-menu/evidence/goldens",
+  "goldens": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens",
   "maxRmse": 0.14,
   "goldenRmse": 0.02,
   "tolerance": 18,
+  "typographyMeasurement": {
+    "method": "contrast-relative coverage",
+    "background": "observed modal RGB",
+    "contourCoverage": 0.5,
+    "colorResidual": "projected-contrast cone",
+    "colorFuzz": 0.3,
+    "inkTolerance": 0.25
+  },
   "results": [
     {
       "state": "map",
@@ -229,6 +237,166 @@
     },
     {
       "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "relay-01 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "relay-01 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 296,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "cache-02 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 296,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "cache-02 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 344,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "pad-03 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 344,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "pad-03 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 392,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "vein-04 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 392,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "vein-04 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 440,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "beacon-05 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 440,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "beacon-05 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "weather-06 OFF switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "weather-06 OFF switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 536,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "rover-07 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 536,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "rover-07 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 584,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "camp-08 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 584,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "camp-08 ON switch thumb"
+    },
+    {
+      "state": "map",
       "lane": "unity",
       "x": 4,
       "y": 4,
@@ -439,6 +607,166 @@
     },
     {
       "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "relay-01 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "relay-01 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 296,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "cache-02 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 296,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "cache-02 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 344,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "pad-03 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 344,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "pad-03 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 392,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "vein-04 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 392,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "vein-04 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 440,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "beacon-05 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 440,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "beacon-05 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "weather-06 OFF switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "weather-06 OFF switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 536,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "rover-07 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 536,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "rover-07 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1208,
+      "y": 584,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "camp-08 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "unity",
+      "x": 1224,
+      "y": 584,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "camp-08 ON switch thumb"
+    },
+    {
+      "state": "map",
       "lane": "godot",
       "x": 4,
       "y": 4,
@@ -646,6 +974,166 @@
       "actual": "rgb(35,35,32)",
       "delta": 0,
       "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "relay-01 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "relay-01 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 296,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "cache-02 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 296,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "cache-02 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 344,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "pad-03 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 344,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "pad-03 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 392,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "vein-04 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 392,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "vein-04 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 440,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "beacon-05 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 440,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "beacon-05 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "weather-06 OFF switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "weather-06 OFF switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 536,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "rover-07 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 536,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "rover-07 ON switch thumb"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1208,
+      "y": 584,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "camp-08 ON switch track"
+    },
+    {
+      "state": "map",
+      "lane": "godot",
+      "x": 1224,
+      "y": 584,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "camp-08 ON switch thumb"
     },
     {
       "state": "map",
@@ -658,7 +1146,12 @@
         "y": 28,
         "w": 125,
         "h": 29,
-        "ink": 0.517241
+        "ink": 0.5230334514885618,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -671,8 +1164,13 @@
         "x": 33,
         "y": 74,
         "w": 220,
-        "h": 8,
-        "ink": 0.250568
+        "h": 9,
+        "ink": 0.2761287698297393,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -686,7 +1184,12 @@
         "y": 27,
         "w": 45,
         "h": 8,
-        "ink": 0.511111
+        "ink": 0.516093888210949,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -700,7 +1203,12 @@
         "y": 45,
         "w": 207,
         "h": 15,
-        "ink": 0.33913
+        "ink": 0.3589106824634913,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -714,7 +1222,12 @@
         "y": 70,
         "w": 217,
         "h": 8,
-        "ink": 0.19182
+        "ink": 0.20917764514138495,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -728,7 +1241,12 @@
         "y": 126,
         "w": 29,
         "h": 10,
-        "ink": 0.527586
+        "ink": 0.5201617109151796,
+        "background": [
+          184,
+          63,
+          22
+        ]
       }
     },
     {
@@ -742,7 +1260,12 @@
         "y": 126,
         "w": 69,
         "h": 10,
-        "ink": 0.534783
+        "ink": 0.49433583286531174,
+        "background": [
+          239,
+          106,
+          60
+        ]
       }
     },
     {
@@ -752,11 +1275,16 @@
       "probe": "panel-title",
       "text": "ARES BASIN // SECTOR 07",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 192,
-        "w": 139,
+        "w": 140,
         "h": 8,
-        "ink": 0.383993
+        "ink": 0.439275739899937,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -770,7 +1298,12 @@
         "y": 192,
         "w": 59,
         "h": 8,
-        "ink": 0.283898
+        "ink": 0.2843013283278403,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -784,7 +1317,12 @@
         "y": 235,
         "w": 100,
         "h": 9,
-        "ink": 0.39
+        "ink": 0.4436848927509713,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -794,11 +1332,16 @@
       "probe": "row-sub",
       "text": "ONLINE · 4.8 KM",
       "bbox": {
-        "x": 952,
+        "x": 953,
         "y": 235,
-        "w": 102,
+        "w": 100,
         "h": 19,
-        "ink": 0.214138
+        "ink": 0.29692939779790023,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -812,7 +1355,12 @@
         "y": 687,
         "w": 381,
         "h": 9,
-        "ink": 0.231554
+        "ink": 0.251793586251354,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -826,7 +1374,12 @@
         "y": 772,
         "w": 306,
         "h": 8,
-        "ink": 0.180964
+        "ink": 0.22505448838583342,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -840,7 +1393,12 @@
         "y": 759,
         "w": 63,
         "h": 7,
-        "ink": 0.410431
+        "ink": 0.45211987856202235,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -850,11 +1408,16 @@
       "probe": "nav-value",
       "text": "SUPPLY CACHE 02",
       "bbox": {
-        "x": 1136,
+        "x": 1137,
         "y": 771,
-        "w": 119,
+        "w": 118,
         "h": 10,
-        "ink": 0.528571
+        "ink": 0.4240920532822807,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -868,7 +1431,12 @@
         "y": 192,
         "w": 86,
         "h": 8,
-        "ink": 0.350291
+        "ink": 0.4414394184571229,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -882,7 +1450,12 @@
         "y": 192,
         "w": 62,
         "h": 6,
-        "ink": 0.268817
+        "ink": 0.275510808817805,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -896,7 +1469,12 @@
         "y": 27,
         "w": 125,
         "h": 30,
-        "ink": 0.474933
+        "ink": 0.49478953519153546,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -910,7 +1488,12 @@
         "y": 75,
         "w": 223,
         "h": 9,
-        "ink": 0.36871
+        "ink": 0.40743513494892075,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -924,7 +1507,12 @@
         "y": 29,
         "w": 45,
         "h": 7,
-        "ink": 0.473016
+        "ink": 0.5050680076654859,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -934,11 +1522,16 @@
       "probe": "stat-value",
       "text": "PATHFINDER III",
       "bbox": {
-        "x": 610,
+        "x": 609,
         "y": 47,
-        "w": 206,
+        "w": 207,
         "h": 15,
-        "ink": 0.355663
+        "ink": 0.35034010683658307,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -952,7 +1545,12 @@
         "y": 71,
         "w": 217,
         "h": 7,
-        "ink": 0.16919
+        "ink": 0.19286174427895098,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -966,7 +1564,12 @@
         "y": 127,
         "w": 29,
         "h": 10,
-        "ink": 0.517241
+        "ink": 0.49221543426993014,
+        "background": [
+          184,
+          63,
+          22
+        ]
       }
     },
     {
@@ -978,9 +1581,14 @@
       "bbox": {
         "x": 355,
         "y": 127,
-        "w": 69,
+        "w": 68,
         "h": 10,
-        "ink": 0.515942
+        "ink": 0.47667971033851475,
+        "background": [
+          239,
+          106,
+          60
+        ]
       }
     },
     {
@@ -994,7 +1602,12 @@
         "y": 194,
         "w": 139,
         "h": 6,
-        "ink": 0.366906
+        "ink": 0.4241709878958888,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1008,7 +1621,12 @@
         "y": 194,
         "w": 60,
         "h": 6,
-        "ink": 0.266667
+        "ink": 0.2570121620522277,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1022,7 +1640,12 @@
         "y": 237,
         "w": 100,
         "h": 9,
-        "ink": 0.387778
+        "ink": 0.4248728908607138,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1036,7 +1659,12 @@
         "y": 237,
         "w": 100,
         "h": 17,
-        "ink": 0.241765
+        "ink": 0.30601230585113287,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1048,9 +1676,14 @@
       "bbox": {
         "x": 49,
         "y": 689,
-        "w": 381,
+        "w": 382,
         "h": 7,
-        "ink": 0.256843
+        "ink": 0.2780159489059219,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1064,7 +1697,12 @@
         "y": 775,
         "w": 306,
         "h": 5,
-        "ink": 0.167974
+        "ink": 0.21770473118451114,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1078,7 +1716,12 @@
         "y": 763,
         "w": 63,
         "h": 3,
-        "ink": 0.386243
+        "ink": 0.4438640193090381,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1092,7 +1735,12 @@
         "y": 771,
         "w": 118,
         "h": 10,
-        "ink": 0.507627
+        "ink": 0.4037024104591064,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1106,7 +1754,12 @@
         "y": 194,
         "w": 86,
         "h": 6,
-        "ink": 0.343023
+        "ink": 0.4198212014801806,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1120,7 +1773,12 @@
         "y": 194,
         "w": 62,
         "h": 4,
-        "ink": 0.28629
+        "ink": 0.2733986762445691,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1134,7 +1792,12 @@
         "y": 28,
         "w": 125,
         "h": 29,
-        "ink": 0.510345
+        "ink": 0.5213727834205985,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1148,7 +1811,12 @@
         "y": 75,
         "w": 220,
         "h": 9,
-        "ink": 0.259091
+        "ink": 0.2772626902413646,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1162,7 +1830,12 @@
         "y": 28,
         "w": 45,
         "h": 8,
-        "ink": 0.438889
+        "ink": 0.5173978732058804,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1176,7 +1849,12 @@
         "y": 48,
         "w": 207,
         "h": 14,
-        "ink": 0.364389
+        "ink": 0.37289653341415907,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1190,7 +1868,12 @@
         "y": 71,
         "w": 217,
         "h": 7,
-        "ink": 0.174457
+        "ink": 0.19800529480385742,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1204,7 +1887,12 @@
         "y": 127,
         "w": 29,
         "h": 9,
-        "ink": 0.521073
+        "ink": 0.5308012846965527,
+        "background": [
+          184,
+          63,
+          22
+        ]
       }
     },
     {
@@ -1218,7 +1906,12 @@
         "y": 127,
         "w": 69,
         "h": 9,
-        "ink": 0.550725
+        "ink": 0.5062411569697332,
+        "background": [
+          239,
+          106,
+          60
+        ]
       }
     },
     {
@@ -1228,11 +1921,16 @@
       "probe": "panel-title",
       "text": "ARES BASIN // SECTOR 07",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 191,
-        "w": 139,
+        "w": 140,
         "h": 9,
-        "ink": 0.318145
+        "ink": 0.3917476681785929,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1246,7 +1944,12 @@
         "y": 190,
         "w": 60,
         "h": 8,
-        "ink": 0.2875
+        "ink": 0.2849720015185619,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1260,7 +1963,12 @@
         "y": 237,
         "w": 100,
         "h": 9,
-        "ink": 0.368889
+        "ink": 0.4462293629958265,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1270,11 +1978,16 @@
       "probe": "row-sub",
       "text": "ONLINE · 4.8 KM",
       "bbox": {
-        "x": 952,
+        "x": 953,
         "y": 237,
-        "w": 102,
+        "w": 101,
         "h": 17,
-        "ink": 0.219146
+        "ink": 0.32378249402326603,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1288,7 +2001,12 @@
         "y": 688,
         "w": 382,
         "h": 8,
-        "ink": 0.27356
+        "ink": 0.28750393478918496,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1302,7 +2020,12 @@
         "y": 773,
         "w": 304,
         "h": 7,
-        "ink": 0.197368
+        "ink": 0.2163454981299498,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1316,7 +2039,12 @@
         "y": 759,
         "w": 63,
         "h": 7,
-        "ink": 0.380952
+        "ink": 0.4526017275409204,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1326,11 +2054,16 @@
       "probe": "nav-value",
       "text": "SUPPLY CACHE 02",
       "bbox": {
-        "x": 1136,
+        "x": 1137,
         "y": 773,
-        "w": 120,
+        "w": 118,
         "h": 9,
-        "ink": 0.500926
+        "ink": 0.4321326051754011,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1344,7 +2077,12 @@
         "y": 191,
         "w": 85,
         "h": 8,
-        "ink": 0.35
+        "ink": 0.4458353301662501,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1358,80 +2096,1750 @@
         "y": 190,
         "w": 62,
         "h": 8,
-        "ink": 0.28629
+        "ink": 0.2824815898448814,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
       "state": "map",
       "compare": "gpui/unity",
-      "rmse": 0.0676196
+      "rmse": 0.0675408
     },
     {
       "state": "map",
       "compare": "unity/godot",
-      "rmse": 0.0620562
+      "rmse": 0.0594148
     },
     {
       "state": "map",
       "compare": "gpui/godot",
-      "rmse": 0.0731462
+      "rmse": 0.0709985
     },
     {
       "state": "map",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/map.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/map.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "map",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/map.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/map.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "map",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/map.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/map.webp",
+      "rmse": 0,
+      "limit": 0.02
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 4,
+      "y": 4,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 4,
+      "y": 780,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 3,
+      "y": 107,
+      "expected": "#B83F16",
+      "actual": "rgb(184,63,22)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 317,
+      "y": 157,
+      "expected": "#B83F16",
+      "actual": "rgb(184,63,22)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 323,
+      "y": 132,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 900,
+      "y": 150,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 48,
+      "y": 240,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field top-left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 872,
+      "y": 704,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field bottom-right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 30,
+      "y": 222,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field top-left"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 890,
+      "y": 722,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field bottom-right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1000,
+      "y": 700,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "icon panel background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1178,
+      "y": 234,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch corner outside pill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1188,
+      "y": 234,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch stadium arc filled"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1180,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch track left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "ON switch thumb centre (24px circle)"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1242,
+      "y": 248,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch outside track right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1178,
+      "y": 474,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch corner outside pill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1188,
+      "y": 474,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch stadium arc filled"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1230,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch track right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "OFF switch thumb centre"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1242,
+      "y": 488,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "relay-01 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "relay-01 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 296,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "cache-02 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 296,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "cache-02 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 344,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "pad-03 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 344,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "pad-03 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 392,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "vein-04 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 392,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "vein-04 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 440,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "beacon-05 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 440,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "beacon-05 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "weather-06 OFF switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "weather-06 OFF switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 536,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "rover-07 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 536,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "rover-07 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1208,
+      "y": 584,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "camp-08 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 1224,
+      "y": 584,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "camp-08 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 394,
+      "y": 273,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "popover top accent"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 394,
+      "y": 502,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "popover background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 411,
+      "y": 323,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "popover status badge background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 411,
+      "y": 469,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "popover primary action position"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "x": 636,
+      "y": 480,
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
+      "delta": 0,
+      "description": "popover close left border position"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 4,
+      "y": 4,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 4,
+      "y": 780,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 3,
+      "y": 107,
+      "expected": "#B83F16",
+      "actual": "rgb(184,63,22)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 317,
+      "y": 157,
+      "expected": "#B83F16",
+      "actual": "rgb(184,63,22)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 323,
+      "y": 132,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 900,
+      "y": 150,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 48,
+      "y": 240,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field top-left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 872,
+      "y": 704,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field bottom-right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 30,
+      "y": 222,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field top-left"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 890,
+      "y": 722,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field bottom-right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1000,
+      "y": 700,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "icon panel background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1178,
+      "y": 234,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch corner outside pill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1188,
+      "y": 234,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch stadium arc filled"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1180,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch track left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "ON switch thumb centre (24px circle)"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1242,
+      "y": 248,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch outside track right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1178,
+      "y": 474,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch corner outside pill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1188,
+      "y": 474,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch stadium arc filled"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1230,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch track right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "OFF switch thumb centre"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1242,
+      "y": 488,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "relay-01 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "relay-01 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 296,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "cache-02 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 296,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "cache-02 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 344,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "pad-03 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 344,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "pad-03 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 392,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "vein-04 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 392,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "vein-04 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 440,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "beacon-05 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 440,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "beacon-05 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "weather-06 OFF switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "weather-06 OFF switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 536,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "rover-07 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 536,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "rover-07 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1208,
+      "y": 584,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "camp-08 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 1224,
+      "y": 584,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "camp-08 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 394,
+      "y": 273,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "popover top accent"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 394,
+      "y": 502,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "popover background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 411,
+      "y": 323,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "popover status badge background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 411,
+      "y": 469,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "popover primary action position"
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "x": 636,
+      "y": 480,
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
+      "delta": 0,
+      "description": "popover close left border position"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 4,
+      "y": 4,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "header background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 4,
+      "y": 780,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "footer background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 3,
+      "y": 107,
+      "expected": "#B83F16",
+      "actual": "rgb(184,63,22)",
+      "delta": 0,
+      "description": "active tab top-left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 317,
+      "y": 157,
+      "expected": "#B83F16",
+      "actual": "rgb(184,63,22)",
+      "delta": 0,
+      "description": "active tab bottom-right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 323,
+      "y": 132,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "inactive tab background beside active tab"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 900,
+      "y": 150,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "inactive tab background (opposite side)"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 48,
+      "y": 240,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field top-left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 872,
+      "y": 704,
+      "expected": "#C6D9C7",
+      "actual": "rgb(198,217,199)",
+      "delta": 0,
+      "description": "map field bottom-right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 30,
+      "y": 222,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field top-left"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 890,
+      "y": 722,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "outside map field bottom-right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1000,
+      "y": 700,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "icon panel background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1178,
+      "y": 234,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch corner outside pill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1188,
+      "y": 234,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch stadium arc filled"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1180,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "ON switch track left fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "ON switch thumb centre (24px circle)"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1242,
+      "y": 248,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "ON switch outside track right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1178,
+      "y": 474,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch corner outside pill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1188,
+      "y": 474,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch stadium arc filled"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1230,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "OFF switch track right fill"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "OFF switch thumb centre"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1242,
+      "y": 488,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "OFF switch outside track right"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 248,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "relay-01 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 248,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "relay-01 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 296,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "cache-02 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 296,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "cache-02 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 344,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "pad-03 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 344,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "pad-03 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 392,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "vein-04 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 392,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "vein-04 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 440,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "beacon-05 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 440,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "beacon-05 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 488,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "weather-06 OFF switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1192,
+      "y": 488,
+      "expected": "#F4F1E6",
+      "actual": "rgb(244,241,230)",
+      "delta": 0,
+      "description": "weather-06 OFF switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 536,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "rover-07 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 536,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "rover-07 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1208,
+      "y": 584,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "camp-08 ON switch track"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 1224,
+      "y": 584,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "camp-08 ON switch thumb"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 394,
+      "y": 273,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "popover top accent"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 394,
+      "y": 502,
+      "expected": "#232320",
+      "actual": "rgb(35,35,32)",
+      "delta": 0,
+      "description": "popover background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 411,
+      "y": 323,
+      "expected": "#2E2E29",
+      "actual": "rgb(46,46,41)",
+      "delta": 0,
+      "description": "popover status badge background"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 411,
+      "y": 469,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "popover primary action position"
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "x": 636,
+      "y": 480,
+      "expected": "#56564C",
+      "actual": "rgb(86,86,76)",
+      "delta": 0,
+      "description": "popover close left border position"
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-title",
+      "text": "DISTRESS BEACON",
+      "bbox": {
+        "x": 410,
+        "y": 289,
+        "w": 221,
+        "h": 18,
+        "ink": 0.46829468420821857,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-status",
+      "text": "ACTIVE",
+      "bbox": {
+        "x": 431,
+        "y": 325,
+        "w": 37,
+        "h": 8,
+        "ink": 0.4382972614048311,
+        "background": [
+          46,
+          46,
+          41
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-meta",
+      "text": "HECATE FLATS · 11.2 KM",
+      "bbox": {
+        "x": 505,
+        "y": 323,
+        "w": 115,
+        "h": 8,
+        "ink": 0.26141857200546115,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-body",
+      "text": "Repeating civilian distress ping. No transponder ID. Hellforge crews have passed close twice without reporting.",
+      "bbox": {
+        "x": 409,
+        "y": 353,
+        "w": 311,
+        "h": 45,
+        "ink": 0.13796314090535436,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-reward",
+      "text": "+1500 CR BOUNTY",
+      "bbox": {
+        "x": 409,
+        "y": 447,
+        "w": 91,
+        "h": 8,
+        "ink": 0.424575130242083,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-action",
+      "text": "SET AS NAV TARGET",
+      "bbox": {
+        "x": 457,
+        "y": 475,
+        "w": 121,
+        "h": 9,
+        "ink": 0.42915310133822926,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "popover-cancel",
+      "text": "CLOSE",
+      "bbox": {
+        "x": 667,
+        "y": 475,
+        "w": 38,
+        "h": 9,
+        "ink": 0.46193025433493784,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-title",
+      "text": "DISTRESS BEACON",
+      "bbox": {
+        "x": 410,
+        "y": 292,
+        "w": 221,
+        "h": 17,
+        "ink": 0.4768623294357989,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-status",
+      "text": "ACTIVE",
+      "bbox": {
+        "x": 431,
+        "y": 326,
+        "w": 37,
+        "h": 7,
+        "ink": 0.4280992888164204,
+        "background": [
+          46,
+          46,
+          41
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-meta",
+      "text": "HECATE FLATS · 11.2 KM",
+      "bbox": {
+        "x": 505,
+        "y": 324,
+        "w": 115,
+        "h": 8,
+        "ink": 0.2432431782781766,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-body",
+      "text": "Repeating civilian distress ping. No transponder ID. Hellforge crews have passed close twice without reporting.",
+      "bbox": {
+        "x": 409,
+        "y": 353,
+        "w": 311,
+        "h": 44,
+        "ink": 0.1269398704193181,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-reward",
+      "text": "+1500 CR BOUNTY",
+      "bbox": {
+        "x": 409,
+        "y": 448,
+        "w": 91,
+        "h": 8,
+        "ink": 0.38372338429790775,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-action",
+      "text": "SET AS NAV TARGET",
+      "bbox": {
+        "x": 457,
+        "y": 476,
+        "w": 122,
+        "h": 8,
+        "ink": 0.4216464667715916,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "popover-cancel",
+      "text": "CLOSE",
+      "bbox": {
+        "x": 667,
+        "y": 476,
+        "w": 38,
+        "h": 8,
+        "ink": 0.46095143461065685,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-title",
+      "text": "DISTRESS BEACON",
+      "bbox": {
+        "x": 410,
+        "y": 293,
+        "w": 221,
+        "h": 17,
+        "ink": 0.48421541158642073,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-status",
+      "text": "ACTIVE",
+      "bbox": {
+        "x": 431,
+        "y": 324,
+        "w": 37,
+        "h": 8,
+        "ink": 0.4406257851476979,
+        "background": [
+          46,
+          46,
+          41
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-meta",
+      "text": "HECATE FLATS · 11.2 KM",
+      "bbox": {
+        "x": 505,
+        "y": 324,
+        "w": 115,
+        "h": 8,
+        "ink": 0.2644342634078805,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-body",
+      "text": "Repeating civilian distress ping. No transponder ID. Hellforge crews have passed close twice without reporting.",
+      "bbox": {
+        "x": 409,
+        "y": 354,
+        "w": 312,
+        "h": 44,
+        "ink": 0.12606375960799368,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-reward",
+      "text": "+1500 CR BOUNTY",
+      "bbox": {
+        "x": 409,
+        "y": 448,
+        "w": 91,
+        "h": 8,
+        "ink": 0.4239559958535665,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-action",
+      "text": "SET AS NAV TARGET",
+      "bbox": {
+        "x": 458,
+        "y": 475,
+        "w": 121,
+        "h": 9,
+        "ink": 0.43849600498150515,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "map-popover",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "popover-cancel",
+      "text": "CLOSE",
+      "bbox": {
+        "x": 667,
+        "y": 475,
+        "w": 38,
+        "h": 9,
+        "ink": 0.46831775765914985,
+        "background": [
+          35,
+          35,
+          32
+        ]
+      }
     },
     {
       "state": "map-popover",
       "compare": "gpui/unity",
-      "rmse": 0.128272
+      "rmse": 0.0729092
     },
     {
       "state": "map-popover",
       "compare": "unity/godot",
-      "rmse": 0.125245
+      "rmse": 0.0628597
     },
     {
       "state": "map-popover",
       "compare": "gpui/godot",
-      "rmse": 0.0966982
+      "rmse": 0.0776413
     },
     {
       "state": "map-popover",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/map-popover.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/map-popover.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "map-popover",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/map-popover.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/map-popover.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "map-popover",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/map-popover.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/map-popover.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "progress",
@@ -1894,7 +4302,12 @@
         "y": 236,
         "w": 320,
         "h": 21,
-        "ink": 0.411161
+        "ink": 0.43338171581269447,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1906,9 +4319,14 @@
       "bbox": {
         "x": 50,
         "y": 274,
-        "w": 207,
+        "w": 206,
         "h": 8,
-        "ink": 0.354469
+        "ink": 0.28977381052858836,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -1922,49 +4340,50 @@
         "y": 330,
         "w": 482,
         "h": 10,
-        "ink": 0.229253
+        "ink": 0.26854067803789294,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
       "state": "progress",
       "lane": "gpui",
       "kind": "typography",
-      "probe": "roster-name",
-      "text": "ARES LOGISTICS GUILD",
+      "probe": "drawer-brief-label",
+      "text": "BRIEF",
       "bbox": {
-        "x": 54,
-        "y": 230,
-        "w": 320,
-        "h": 20,
-        "ink": 0.672969
+        "x": 50,
+        "y": 312,
+        "w": 26,
+        "h": 8,
+        "ink": 0.5423816714925338,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
       "state": "progress",
       "lane": "gpui",
       "kind": "typography",
-      "probe": "roster-tagline",
-      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "probe": "roster-meta",
+      "text": "5 TRACKED · 3 ACCESSIBLE",
       "bbox": {
-        "x": 54,
-        "y": 250,
-        "w": 280,
-        "h": 14,
-        "ink": 0.795408
-      }
-    },
-    {
-      "state": "progress",
-      "lane": "gpui",
-      "kind": "typography",
-      "probe": "list-title",
-      "text": "FACTION ROSTER",
-      "bbox": {
-        "x": 38,
-        "y": 180,
-        "w": 240,
-        "h": 20,
-        "ink": 1
+        "x": 1107,
+        "y": 192,
+        "w": 132,
+        "h": 8,
+        "ink": 0.2805139202516807,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -1978,7 +4397,12 @@
         "y": 247,
         "w": 41,
         "h": 8,
-        "ink": 0.509146
+        "ink": 0.45576504721790684,
+        "background": [
+          239,
+          106,
+          60
+        ]
       }
     },
     {
@@ -1988,11 +4412,16 @@
       "probe": "dossier",
       "text": "OPEN →",
       "bbox": {
-        "x": 1180,
+        "x": 1181,
         "y": 247,
-        "w": 39,
+        "w": 38,
         "h": 8,
-        "ink": 0.461538
+        "ink": 0.4175428010858918,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2006,7 +4435,12 @@
         "y": 239,
         "w": 320,
         "h": 20,
-        "ink": 0.4175
+        "ink": 0.438553344483022,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -2018,9 +4452,14 @@
       "bbox": {
         "x": 49,
         "y": 276,
-        "w": 207,
+        "w": 206,
         "h": 6,
-        "ink": 0.348631
+        "ink": 0.2655908658775205,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -2034,49 +4473,50 @@
         "y": 329,
         "w": 483,
         "h": 11,
-        "ink": 0.16582
+        "ink": 0.22187788944945872,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
       "state": "progress",
       "lane": "unity",
       "kind": "typography",
-      "probe": "roster-name",
-      "text": "ARES LOGISTICS GUILD",
+      "probe": "drawer-brief-label",
+      "text": "BRIEF",
       "bbox": {
-        "x": 54,
-        "y": 230,
-        "w": 320,
-        "h": 20,
-        "ink": 0.732031
+        "x": 49,
+        "y": 313,
+        "w": 27,
+        "h": 7,
+        "ink": 0.5090550181896549,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
       "state": "progress",
       "lane": "unity",
       "kind": "typography",
-      "probe": "roster-tagline",
-      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "probe": "roster-meta",
+      "text": "5 TRACKED · 3 ACCESSIBLE",
       "bbox": {
-        "x": 54,
-        "y": 250,
-        "w": 280,
-        "h": 14,
-        "ink": 0.752041
-      }
-    },
-    {
-      "state": "progress",
-      "lane": "unity",
-      "kind": "typography",
-      "probe": "list-title",
-      "text": "FACTION ROSTER",
-      "bbox": {
-        "x": 38,
-        "y": 180,
-        "w": 240,
-        "h": 20,
-        "ink": 1
+        "x": 1105,
+        "y": 194,
+        "w": 132,
+        "h": 8,
+        "ink": 0.260572012632494,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2090,7 +4530,12 @@
         "y": 250,
         "w": 40,
         "h": 7,
-        "ink": 0.507143
+        "ink": 0.4700611169904432,
+        "background": [
+          239,
+          106,
+          60
+        ]
       }
     },
     {
@@ -2104,7 +4549,12 @@
         "y": 247,
         "w": 38,
         "h": 7,
-        "ink": 0.477444
+        "ink": 0.4155584308677511,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2118,7 +4568,12 @@
         "y": 239,
         "w": 321,
         "h": 21,
-        "ink": 0.42783
+        "ink": 0.44393855768337476,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -2132,7 +4587,12 @@
         "y": 274,
         "w": 207,
         "h": 8,
-        "ink": 0.350242
+        "ink": 0.29632252212669524,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
@@ -2146,49 +4606,50 @@
         "y": 330,
         "w": 483,
         "h": 10,
-        "ink": 0.219669
+        "ink": 0.24127332220316908,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
       "state": "progress",
       "lane": "godot",
       "kind": "typography",
-      "probe": "roster-name",
-      "text": "ARES LOGISTICS GUILD",
+      "probe": "drawer-brief-label",
+      "text": "BRIEF",
       "bbox": {
-        "x": 54,
-        "y": 230,
-        "w": 320,
-        "h": 20,
-        "ink": 0.744688
+        "x": 49,
+        "y": 312,
+        "w": 26,
+        "h": 8,
+        "ink": 0.5461658118149437,
+        "background": [
+          198,
+          217,
+          199
+        ]
       }
     },
     {
       "state": "progress",
       "lane": "godot",
       "kind": "typography",
-      "probe": "roster-tagline",
-      "text": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "probe": "roster-meta",
+      "text": "5 TRACKED · 3 ACCESSIBLE",
       "bbox": {
-        "x": 54,
-        "y": 250,
-        "w": 280,
-        "h": 14,
-        "ink": 0.715306
-      }
-    },
-    {
-      "state": "progress",
-      "lane": "godot",
-      "kind": "typography",
-      "probe": "list-title",
-      "text": "FACTION ROSTER",
-      "bbox": {
-        "x": 38,
-        "y": 180,
-        "w": 240,
-        "h": 20,
-        "ink": 1
+        "x": 1106,
+        "y": 190,
+        "w": 133,
+        "h": 8,
+        "ink": 0.2843409563513412,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2202,7 +4663,12 @@
         "y": 246,
         "w": 40,
         "h": 8,
-        "ink": 0.5125
+        "ink": 0.469710836001191,
+        "background": [
+          239,
+          106,
+          60
+        ]
       }
     },
     {
@@ -2212,48 +4678,56 @@
       "probe": "dossier",
       "text": "OPEN →",
       "bbox": {
-        "x": 1180,
+        "x": 1181,
         "y": 248,
-        "w": 38,
+        "w": 37,
         "h": 8,
-        "ink": 0.414474
+        "ink": 0.42493642174034657,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
       "state": "progress",
       "compare": "gpui/unity",
-      "rmse": 0.0906528
+      "rmse": 0.0908481
     },
     {
       "state": "progress",
       "compare": "unity/godot",
-      "rmse": 0.0790054
+      "rmse": 0.0788955
     },
     {
       "state": "progress",
       "compare": "gpui/godot",
-      "rmse": 0.0828127
+      "rmse": 0.0831835
     },
     {
       "state": "progress",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/progress.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/progress.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "progress",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/progress.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/progress.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "progress",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/progress.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/progress.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "abilities",
@@ -2592,11 +5066,16 @@
       "probe": "grid-title",
       "text": "ABILITY CATALOG",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 192,
-        "w": 97,
+        "w": 98,
         "h": 8,
-        "ink": 0.380155
+        "ink": 0.4261557442935517,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2610,7 +5089,12 @@
         "y": 192,
         "w": 203,
         "h": 6,
-        "ink": 0.252874
+        "ink": 0.25273431497500665,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2620,11 +5104,16 @@
       "probe": "card-name",
       "text": "THREADING",
       "bbox": {
-        "x": 82,
+        "x": 81,
         "y": 310,
-        "w": 69,
+        "w": 71,
         "h": 9,
-        "ink": 0.404187
+        "ink": 0.48129894762019554,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2638,7 +5127,12 @@
         "y": 192,
         "w": 84,
         "h": 8,
-        "ink": 0.4375
+        "ink": 0.42954617649274096,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2652,7 +5146,12 @@
         "y": 235,
         "w": 148,
         "h": 18,
-        "ink": 0.442943
+        "ink": 0.44647001034457157,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2666,7 +5165,12 @@
         "y": 297,
         "w": 345,
         "h": 23,
-        "ink": 0.138374
+        "ink": 0.13018261821622584,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2680,7 +5184,12 @@
         "y": 194,
         "w": 97,
         "h": 6,
-        "ink": 0.331615
+        "ink": 0.4044457270156354,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2694,7 +5203,12 @@
         "y": 194,
         "w": 203,
         "h": 4,
-        "ink": 0.231527
+        "ink": 0.24118979069148888,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2708,7 +5222,12 @@
         "y": 313,
         "w": 70,
         "h": 8,
-        "ink": 0.439286
+        "ink": 0.4809223343026537,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2722,7 +5241,12 @@
         "y": 194,
         "w": 80,
         "h": 6,
-        "ink": 0.435417
+        "ink": 0.4209051990922223,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2736,7 +5260,12 @@
         "y": 234,
         "w": 148,
         "h": 18,
-        "ink": 0.43994
+        "ink": 0.43865154095709125,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2750,7 +5279,12 @@
         "y": 297,
         "w": 345,
         "h": 23,
-        "ink": 0.129931
+        "ink": 0.11826810871677607,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2760,11 +5294,16 @@
       "probe": "grid-title",
       "text": "ABILITY CATALOG",
       "bbox": {
-        "x": 41,
+        "x": 40,
         "y": 191,
-        "w": 97,
+        "w": 98,
         "h": 8,
-        "ink": 0.345361
+        "ink": 0.4254384638208263,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2778,7 +5317,12 @@
         "y": 190,
         "w": 203,
         "h": 8,
-        "ink": 0.272167
+        "ink": 0.2709084343225403,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2788,11 +5332,16 @@
       "probe": "card-name",
       "text": "THREADING",
       "bbox": {
-        "x": 81,
+        "x": 80,
         "y": 311,
-        "w": 69,
+        "w": 70,
         "h": 9,
-        "ink": 0.415459
+        "ink": 0.4947581594592064,
+        "background": [
+          35,
+          35,
+          32
+        ]
       }
     },
     {
@@ -2806,7 +5355,12 @@
         "y": 191,
         "w": 84,
         "h": 8,
-        "ink": 0.361607
+        "ink": 0.43025527572283323,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2820,7 +5374,12 @@
         "y": 235,
         "w": 148,
         "h": 17,
-        "ink": 0.448728
+        "ink": 0.4586057634959925,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2834,7 +5393,12 @@
         "y": 298,
         "w": 346,
         "h": 22,
-        "ink": 0.116132
+        "ink": 0.11034473132498208,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -2845,33 +5409,36 @@
     {
       "state": "abilities",
       "compare": "unity/godot",
-      "rmse": 0.0816383
+      "rmse": 0.0813516
     },
     {
       "state": "abilities",
       "compare": "gpui/godot",
-      "rmse": 0.0810164
+      "rmse": 0.0806676
     },
     {
       "state": "abilities",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/abilities.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/abilities.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "abilities",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/abilities.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/abilities.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "abilities",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/abilities.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/abilities.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "abilities-hover",
@@ -2881,33 +5448,36 @@
     {
       "state": "abilities-hover",
       "compare": "unity/godot",
-      "rmse": 0.0930967
+      "rmse": 0.0956054
     },
     {
       "state": "abilities-hover",
       "compare": "gpui/godot",
-      "rmse": 0.0933925
+      "rmse": 0.0946033
     },
     {
       "state": "abilities-hover",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/abilities-hover.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/abilities-hover.webp",
+      "rmse": 0,
+      "limit": 0.06
     },
     {
       "state": "abilities-hover",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/abilities-hover.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/abilities-hover.webp",
+      "rmse": 0,
+      "limit": 0.06
     },
     {
       "state": "abilities-hover",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/abilities-hover.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/abilities-hover.webp",
+      "rmse": 0,
+      "limit": 0.06
     },
     {
       "state": "settings",
@@ -3091,6 +5661,16 @@
     },
     {
       "state": "settings",
+      "lane": "gpui",
+      "x": 667,
+      "y": 697,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "subtitle preview selected background"
+    },
+    {
+      "state": "settings",
       "lane": "unity",
       "x": 4,
       "y": 4,
@@ -3271,6 +5851,16 @@
     },
     {
       "state": "settings",
+      "lane": "unity",
+      "x": 667,
+      "y": 697,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "subtitle preview selected background"
+    },
+    {
+      "state": "settings",
       "lane": "godot",
       "x": 4,
       "y": 4,
@@ -3448,6 +6038,16 @@
       "actual": "rgb(25,25,23)",
       "delta": 0,
       "description": "settings switch thumb centre"
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "x": 667,
+      "y": 697,
+      "expected": "#191917",
+      "actual": "rgb(25,25,23)",
+      "delta": 0,
+      "description": "subtitle preview selected background"
     },
     {
       "state": "settings",
@@ -3460,7 +6060,12 @@
         "y": 190,
         "w": 50,
         "h": 8,
-        "ink": 0.495
+        "ink": 0.5009522384980396,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3470,11 +6075,16 @@
       "probe": "general-meta",
       "text": "PERSONAL PREFERENCES",
       "bbox": {
-        "x": 490,
+        "x": 491,
         "y": 190,
-        "w": 125,
+        "w": 124,
         "h": 6,
-        "ink": 0.458667
+        "ink": 0.3179176368155533,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3488,7 +6098,12 @@
         "y": 221,
         "w": 71,
         "h": 9,
-        "ink": 0.405321
+        "ink": 0.4282011933447266,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3498,11 +6113,16 @@
       "probe": "row-sub",
       "text": "Write a checkpoint on every pad handshake.",
       "bbox": {
-        "x": 38,
-        "y": 236,
-        "w": 330,
-        "h": 18,
-        "ink": 1
+        "x": 40,
+        "y": 237,
+        "w": 206,
+        "h": 10,
+        "ink": 0.21663070837828122,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3516,7 +6136,12 @@
         "y": 221,
         "w": 111,
         "h": 9,
-        "ink": 0.451451
+        "ink": 0.43322793256085373,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3530,7 +6155,12 @@
         "y": 222,
         "w": 31,
         "h": 10,
-        "ink": 0.406452
+        "ink": 0.40529146728604976,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3544,7 +6174,12 @@
         "y": 501,
         "w": 49,
         "h": 9,
-        "ink": 0.492063
+        "ink": 0.5024344487812317,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3558,7 +6193,50 @@
         "y": 501,
         "w": 60,
         "h": 9,
-        "ink": 0.453704
+        "ink": 0.45841413933017,
+        "background": [
+          86,
+          86,
+          76
+        ]
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "subtitle-preview-line",
+      "text": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD.",
+      "bbox": {
+        "x": 672,
+        "y": 703,
+        "w": 337,
+        "h": 8,
+        "ink": 0.28686891165880235,
+        "background": [
+          25,
+          25,
+          23
+        ]
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "subtitle-preview-meta",
+      "text": "ENGLISH · CHARCOAL",
+      "bbox": {
+        "x": 1124,
+        "y": 703,
+        "w": 107,
+        "h": 8,
+        "ink": 0.43192050649465585,
+        "background": [
+          25,
+          25,
+          23
+        ]
       }
     },
     {
@@ -3572,7 +6250,12 @@
         "y": 192,
         "w": 47,
         "h": 6,
-        "ink": 0.507092
+        "ink": 0.4940630089241428,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3584,9 +6267,14 @@
       "bbox": {
         "x": 488,
         "y": 192,
-        "w": 125,
+        "w": 124,
         "h": 4,
-        "ink": 0.432
+        "ink": 0.29116048534461175,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3600,7 +6288,12 @@
         "y": 223,
         "w": 71,
         "h": 9,
-        "ink": 0.416275
+        "ink": 0.4118123499265311,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3610,11 +6303,16 @@
       "probe": "row-sub",
       "text": "Write a checkpoint on every pad handshake.",
       "bbox": {
-        "x": 38,
-        "y": 236,
-        "w": 330,
-        "h": 18,
-        "ink": 1
+        "x": 40,
+        "y": 239,
+        "w": 206,
+        "h": 9,
+        "ink": 0.21315274281833055,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3628,7 +6326,12 @@
         "y": 223,
         "w": 111,
         "h": 9,
-        "ink": 0.457457
+        "ink": 0.41827165174940373,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3642,7 +6345,12 @@
         "y": 223,
         "w": 31,
         "h": 10,
-        "ink": 0.416129
+        "ink": 0.40573408670921585,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3656,7 +6364,12 @@
         "y": 501,
         "w": 49,
         "h": 9,
-        "ink": 0.505669
+        "ink": 0.48186042406325974,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3670,7 +6383,50 @@
         "y": 501,
         "w": 60,
         "h": 9,
-        "ink": 0.477778
+        "ink": 0.4403714656131961,
+        "background": [
+          86,
+          86,
+          76
+        ]
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "subtitle-preview-line",
+      "text": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD.",
+      "bbox": {
+        "x": 672,
+        "y": 703,
+        "w": 338,
+        "h": 8,
+        "ink": 0.263787215011832,
+        "background": [
+          25,
+          25,
+          23
+        ]
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "subtitle-preview-meta",
+      "text": "ENGLISH · CHARCOAL",
+      "bbox": {
+        "x": 1124,
+        "y": 703,
+        "w": 108,
+        "h": 8,
+        "ink": 0.391979552115514,
+        "background": [
+          25,
+          25,
+          23
+        ]
       }
     },
     {
@@ -3684,7 +6440,12 @@
         "y": 190,
         "w": 50,
         "h": 8,
-        "ink": 0.4575
+        "ink": 0.5010029915411592,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3698,7 +6459,12 @@
         "y": 190,
         "w": 125,
         "h": 6,
-        "ink": 0.382667
+        "ink": 0.3224880462920657,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3712,7 +6478,12 @@
         "y": 223,
         "w": 72,
         "h": 9,
-        "ink": 0.447531
+        "ink": 0.43204283588083414,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3722,11 +6493,16 @@
       "probe": "row-sub",
       "text": "Write a checkpoint on every pad handshake.",
       "bbox": {
-        "x": 38,
-        "y": 236,
-        "w": 330,
-        "h": 18,
-        "ink": 1
+        "x": 40,
+        "y": 238,
+        "w": 206,
+        "h": 10,
+        "ink": 0.2176944744096851,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3740,7 +6516,12 @@
         "y": 223,
         "w": 111,
         "h": 9,
-        "ink": 0.451451
+        "ink": 0.4367059033450617,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3754,7 +6535,12 @@
         "y": 223,
         "w": 30,
         "h": 11,
-        "ink": 0.430303
+        "ink": 0.41132292597941467,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3768,7 +6554,12 @@
         "y": 503,
         "w": 49,
         "h": 9,
-        "ink": 0.535147
+        "ink": 0.5113114048773804,
+        "background": [
+          86,
+          86,
+          76
+        ]
       }
     },
     {
@@ -3782,116 +6573,312 @@
         "y": 501,
         "w": 55,
         "h": 8,
-        "ink": 0.409091
+        "ink": 0.46051234440547456,
+        "background": [
+          86,
+          86,
+          76
+        ]
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "subtitle-preview-line",
+      "text": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD.",
+      "bbox": {
+        "x": 672,
+        "y": 702,
+        "w": 339,
+        "h": 8,
+        "ink": 0.2909206414870204,
+        "background": [
+          25,
+          25,
+          23
+        ]
+      }
+    },
+    {
+      "state": "settings",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "subtitle-preview-meta",
+      "text": "ENGLISH · CHARCOAL",
+      "bbox": {
+        "x": 1124,
+        "y": 702,
+        "w": 107,
+        "h": 8,
+        "ink": 0.4323109598825523,
+        "background": [
+          25,
+          25,
+          23
+        ]
       }
     },
     {
       "state": "settings",
       "compare": "gpui/unity",
-      "rmse": 0.0868898
+      "rmse": 0.0829377
     },
     {
       "state": "settings",
       "compare": "unity/godot",
-      "rmse": 0.0790767
+      "rmse": 0.0772519
     },
     {
       "state": "settings",
       "compare": "gpui/godot",
-      "rmse": 0.085476
+      "rmse": 0.0837584
     },
     {
       "state": "settings",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/settings.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/settings.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/settings.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/settings.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/settings.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/settings.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings-remap-modal",
       "compare": "gpui/unity",
-      "rmse": 0.0457348
+      "rmse": 0.0453767
     },
     {
       "state": "settings-remap-modal",
       "compare": "unity/godot",
-      "rmse": 0.0466174
+      "rmse": 0.0466509
     },
     {
       "state": "settings-remap-modal",
       "compare": "gpui/godot",
-      "rmse": 0.0456999
+      "rmse": 0.0457319
     },
     {
       "state": "settings-remap-modal",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/settings-remap-modal.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/settings-remap-modal.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings-remap-modal",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/settings-remap-modal.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/settings-remap-modal.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings-remap-modal",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/settings-remap-modal.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/settings-remap-modal.webp",
+      "rmse": 0,
+      "limit": 0.02
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "gpui",
+      "x": 667,
+      "y": 697,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "subtitle preview selected background"
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "unity",
+      "x": 667,
+      "y": 697,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "subtitle preview selected background"
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "godot",
+      "x": 667,
+      "y": 697,
+      "expected": "#EF6A3C",
+      "actual": "rgb(239,106,60)",
+      "delta": 0,
+      "description": "subtitle preview selected background"
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "subtitle-preview-line",
+      "text": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD.",
+      "bbox": {
+        "x": 672,
+        "y": 703,
+        "w": 337,
+        "h": 8,
+        "ink": 0.2868901156621192,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "gpui",
+      "kind": "typography",
+      "probe": "subtitle-preview-meta",
+      "text": "FRANÇAIS · SIGNAL",
+      "bbox": {
+        "x": 1135,
+        "y": 703,
+        "w": 96,
+        "h": 10,
+        "ink": 0.353317373061863,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "subtitle-preview-line",
+      "text": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD.",
+      "bbox": {
+        "x": 672,
+        "y": 703,
+        "w": 338,
+        "h": 8,
+        "ink": 0.26380004182960787,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "unity",
+      "kind": "typography",
+      "probe": "subtitle-preview-meta",
+      "text": "FRANÇAIS · SIGNAL",
+      "bbox": {
+        "x": 1136,
+        "y": 703,
+        "w": 96,
+        "h": 10,
+        "ink": 0.3190790164738014,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "subtitle-preview-line",
+      "text": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD.",
+      "bbox": {
+        "x": 672,
+        "y": 702,
+        "w": 339,
+        "h": 8,
+        "ink": 0.2911196727807385,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
+    },
+    {
+      "state": "settings-subtitle",
+      "lane": "godot",
+      "kind": "typography",
+      "probe": "subtitle-preview-meta",
+      "text": "FRANÇAIS · SIGNAL",
+      "bbox": {
+        "x": 1136,
+        "y": 702,
+        "w": 95,
+        "h": 10,
+        "ink": 0.35793212745980535,
+        "background": [
+          239,
+          106,
+          60
+        ]
+      }
     },
     {
       "state": "settings-subtitle",
       "compare": "gpui/unity",
-      "rmse": 0.0848254
+      "rmse": 0.0832413
     },
     {
       "state": "settings-subtitle",
       "compare": "unity/godot",
-      "rmse": 0.0775242
+      "rmse": 0.0764091
     },
     {
       "state": "settings-subtitle",
       "compare": "gpui/godot",
-      "rmse": 0.0827947
+      "rmse": 0.0822947
     },
     {
       "state": "settings-subtitle",
       "lane": "gpui",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/gpui/settings-subtitle.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/gpui/settings-subtitle.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings-subtitle",
       "lane": "unity",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/unity/settings-subtitle.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/unity/settings-subtitle.webp",
+      "rmse": 0,
+      "limit": 0.02
     },
     {
       "state": "settings-subtitle",
       "lane": "godot",
       "kind": "golden",
-      "golden": "examples/game-pause-menu/evidence/goldens/godot/settings-subtitle.webp",
-      "rmse": 0
+      "golden": "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/review-error-ratchets/examples/game-pause-menu/evidence/goldens/godot/settings-subtitle.webp",
+      "rmse": 0,
+      "limit": 0.02
     }
   ],
   "failures": []

@@ -4,14 +4,14 @@ authority: spec
 status: active
 title: Document Governance
 owner: "@darianrosebrook"
-updated: 2026-09-04
+updated: 2026-11-05
 governs:
   - docs/**/*.md
 ---
 
 # Document Governance
 
-This spec defines the frontmatter contract that documents under `docs/` must follow. It is checked advisory-only by the active CAWS hook at `.caws/hooks/doc-frontmatter-check.sh`, which warns on `Write`/`Edit` of any non-exempt `docs/**/*.md` file that is missing or misuses these fields. This is an edit-time warning, not a repository-wide compliance certificate: generator-written reports do not pass through the `Write`/`Edit` hook, and `pnpm run docs:check-claims` gates marked values and verified-stamp freshness rather than the full frontmatter schema.
+This spec defines the frontmatter contract that documents under `docs/` must follow. `pnpm run docs:check-links` runs fixture-tested metadata and location checks over tracked documents before checking relative links. The CAWS hook at `.caws/hooks/doc-frontmatter-check.sh` provides separate advisory warnings on `Write`/`Edit`; generator-written reports do not pass through that edit-time hook. `pnpm run docs:check-claims` separately gates marked values and verified-stamp freshness. Metadata validation does not verify narrative claims or establish that an authority/status label accurately describes its content.
 
 ## Scope
 
@@ -71,7 +71,7 @@ The `authority` value determines where the doc lives on disk. The tree is partit
 
 **Collaboration.** `docs/internal/` is contributor-local. Teams that need to share roadmaps or working notes do so through an out-of-band surface (a team doc folder, an issue tracker, a wiki) — not through this repository.
 
-**Enforcement.** Currently advisory: the hook (`.caws/hooks/doc-frontmatter-check.sh`) does not yet check authority-vs-location consistency. Contributors are expected to honor the partition on Write. A future hook extension could enforce it mechanically by warning when a `docs/*.md` file declares `authority: roadmap | working | ephemeral`, or when a `docs/internal/*.md` file declares a durable authority.
+**Enforcement.** `scripts/docs-metadata-check.mjs`, invoked by `pnpm run docs:check-links`, rejects tracked documents under `docs/internal/` and tracked durable-surface documents declaring `authority: roadmap | working | ephemeral`. Local ignored notes remain outside the tracked-document check. README/archive frontmatter exemptions do not permit tracked contributor-local output. The edit-time hook remains advisory.
 
 ## Tree layout
 

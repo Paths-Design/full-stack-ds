@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { PageNavigator } from "../PageNavigator";
@@ -42,11 +42,6 @@ describe("PageNavigator — unit", () => {
   it("has the correct ARIA role", () => {
     render(<PageNavigator data-testid="page-navigator" />);
     expect(screen.getByTestId("page-navigator")).toHaveAttribute("role", "group");
-  });
-
-  it("calls onIndexChange when page changes", async () => {
-    const onIndexChangeSpy = vi.fn();
-    expect(() => render(<PageNavigator data-testid="page-navigator" index={0} onIndexChange={onIndexChangeSpy} />)).not.toThrow();
   });
 });
 

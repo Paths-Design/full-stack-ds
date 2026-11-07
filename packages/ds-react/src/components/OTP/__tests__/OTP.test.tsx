@@ -53,11 +53,6 @@ describe("OTP — unit", () => {
     render(<OTP data-testid="otp" mode="alphanumeric" />);
     expect(screen.getByTestId("otp")).toHaveClass("otp--alphanumeric");
   });
-
-  it("calls onChange when value changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<OTP data-testid="otp" value={""} onChange={onChangeSpy} />)).not.toThrow();
-  });
 });
 
 describe("OTP — accessibility", () => {

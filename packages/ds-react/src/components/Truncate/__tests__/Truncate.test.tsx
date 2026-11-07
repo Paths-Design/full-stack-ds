@@ -38,11 +38,6 @@ describe("Truncate — unit", () => {
     render(<Truncate data-testid="truncate" className="custom"><span>content</span></Truncate>);
     expect(screen.getByTestId("truncate")).toHaveClass("truncate", "custom");
   });
-
-  it("calls onExpandedChange when expanded changes", async () => {
-    const onExpandedChangeSpy = vi.fn();
-    expect(() => render(<Truncate data-testid="truncate" expanded={false} onExpandedChange={onExpandedChangeSpy}><span>content</span></Truncate>)).not.toThrow();
-  });
 });
 
 describe("Truncate — accessibility", () => {

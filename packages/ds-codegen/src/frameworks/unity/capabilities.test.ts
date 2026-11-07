@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, it, expect } from "vitest";
 import { listComponentContracts } from "../../contracts-fs.js";
-import { loadBoundary, loadContractWithSidecars, type Boundary, type BoundaryRule } from "./boundary.js";
+import { loadBoundary, loadContractWithSidecars, type BoundaryRule } from "./boundary.js";
 import { accountComponent, auditUnityTarget, declaredLeaves, inventory, ledgerViolations, unsupportedLedgerPath } from "./capabilities.js";
 const root = path.resolve(__dirname, "../../../../..");
 const fixture = (name: string) => loadContractWithSidecars(root, name);
@@ -107,11 +107,12 @@ describe("Unity capability accounting", () => {
     expect(ledgerViolations(root)).toEqual([]);
     await yieldToWorker();
     const committed = loadBoundary();
-    const entriesOf = (boundary: Boundary) => [...new Set(ledgerViolations(root, boundary).map(v => v.slice(0, v.indexOf("):") + 1)))].sort();
+    const entriesOf = (violations: readonly string[]) => [...new Set(violations.map(v => v.slice(0, v.indexOf("):") + 1)))].sort();
     // A box-shadow lowering placed ahead of its refusal contradicts both shadow rows.
     const shadow: BoundaryRule = { id: "box-shadow-lowered", match: ["styles:/*/box-shadow/**"], disposition: "lowered", via: "test" };
     const lowered = { ...committed, rules: [shadow, ...committed.rules] };
-    expect(entriesOf(lowered)).toEqual([
+    const loweredViolations = ledgerViolations(root, lowered);
+    expect(entriesOf(loweredViolations)).toEqual([
       "ledger Calendar .calendar__day[aria-current=\"date\"] (uss-selector)",
       "ledger Calendar root box-shadow (uss-property)",
       "ledger Card .card--interactive:active box-shadow (uss-selector)",
@@ -131,13 +132,13 @@ describe("Unity capability accounting", () => {
       "ledger Walkthrough root box-shadow (uss-property)",
     ]);
     await yieldToWorker();
-    expect(ledgerViolations(root, lowered)).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
+    expect(loweredViolations).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
     // The join's findings fail the corpus audit (audit:unity-boundary --check).
-    expect(auditUnityTarget(root, lowered).violations).toEqual(expect.arrayContaining(ledgerViolations(root, lowered)));
+    expect(auditUnityTarget(root, lowered).violations).toEqual(expect.arrayContaining(loweredViolations));
     await yieldToWorker();
     // Without the token and selector refusals, token rows and refused-selector rows fall to the blanket lowered rules.
     const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
-    expect(entriesOf(without("tokens-non-scalar"))).toEqual([
+    expect(entriesOf(ledgerViolations(root, without("tokens-non-scalar")))).toEqual([
       "ledger Avatar tokens avatar.typography.fontFamily.sans (uss-scalar)",
       "ledger Button tokens button.motion.easing.standard (uss-scalar)",
       "ledger Calendar tokens calendar.elevation (uss-scalar)",
@@ -163,7 +164,7 @@ describe("Unity capability accounting", () => {
       "ledger Walkthrough tokens walkthrough.surface.shadow (uss-scalar)",
     ]);
     await yieldToWorker();
-    expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
+    expect(entriesOf(ledgerViolations(root, without("styles-outside-native-grammar")))).toEqual([
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
       "ledger Accordion @starting-style (uss-selector)",
       'ledger Button .button[aria-busy="true"] .button__loadingText (uss-selector)',

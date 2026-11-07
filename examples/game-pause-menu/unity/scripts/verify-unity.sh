@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Runs the committed Unity lane's EditMode tests (fixture seam + I1..I15 interaction coverage).
 # Requires an activated Unity 6000.5.3f1 Editor; override with UNITY_EDITOR.
+# Python 3's standard XML parser validates the complete test receipt.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 lane="$(cd "$here/.." && pwd)"
@@ -31,15 +32,48 @@ if [[ ! -f "$results" ]]; then
     exit 1
 fi
 
-summary="$(grep -o '<test-run[^>]*>' "$results" | head -n 1)"
-echo "$summary"
-passed="$(sed -n 's/.*passed="\([0-9]*\)".*/\1/p' <<<"$summary" | head -n 1)"
-failed="$(sed -n 's/.*failed="\([0-9]*\)".*/\1/p' <<<"$summary" | head -n 1)"
-results_attr="$(sed -n 's/.*result="\([A-Za-z]*\)".*/\1/p' <<<"$summary" | head -n 1)"
+python3 - "$results" "$status" "$log" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
 
-if [[ "$status" -ne 0 || "$results_attr" != "Passed" || "${passed:-0}" -eq 0 || "${failed:-0}" -ne 0 ]]; then
-    echo "EditMode lane FAILED (exit $status, result=${results_attr:-unknown}, passed=${passed:-0}, failed=${failed:-0})." >&2
-    echo "Log: $log  Results: $results" >&2
-    exit 1
-fi
-echo "EditMode lane passed: ${passed} tests, ${failed} failures, result=${results_attr}."
+results, editor_status, log = sys.argv[1:]
+
+def fail(reason):
+    print(f"EditMode lane FAILED: {reason}. Log: {log} Results: {results}", file=sys.stderr)
+    sys.exit(1)
+
+if int(editor_status) != 0:
+    fail(f"Unity Editor exited {editor_status}")
+try:
+    run = ET.parse(results).getroot()
+except (ET.ParseError, OSError) as error:
+    fail(f"invalid XML receipt: {error}")
+if run.tag != "test-run":
+    fail("receipt root must be test-run")
+
+counts = {}
+for field in ("total", "passed", "failed", "skipped", "inconclusive"):
+    value = run.get(field)
+    if value is None or re.fullmatch(r"[0-9]+", value) is None:
+        fail(f"missing or invalid {field} counter")
+    counts[field] = int(value)
+
+if run.get("result") != "Passed":
+    fail(f"receipt result is {run.get('result', 'missing')}")
+if counts["passed"] == 0 or counts["total"] != counts["passed"]:
+    fail("total must equal a nonzero passed count")
+if any(counts[field] != 0 for field in ("failed", "skipped", "inconclusive")):
+    fail(f"failed/skipped/inconclusive counts must be zero: {counts}")
+
+cases = list(run.iter("test-case"))
+if len(cases) != counts["total"]:
+    fail(f"test-case record count {len(cases)} does not match total {counts['total']}")
+for case in cases:
+    if case.get("result") != "Passed":
+        fail(f"test-case result is {case.get('result', 'missing')}")
+for suite in run.iter("test-suite"):
+    if suite.get("result") != "Passed":
+        fail(f"test-suite result is {suite.get('result', 'missing')}")
+print(f"EditMode lane passed: {counts['passed']} tests, 0 failures, 0 skipped, 0 inconclusive.")
+PY

@@ -228,19 +228,24 @@ static func prepare_popover(node) -> void:
 	node.trigger.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
-static func style_popover_surface(node, rect_value: Rect2) -> void:
+static func style_popover_surface(node, rect_value: Rect2, content_style: Dictionary = {}) -> void:
 	if node.surface == null:
 		return
 	# NOT FSDS: generated surface node has no token/theme channel; the lane sets
 	# the parity surface style + size after the surface is attached.
+	var shared_content := not content_style.is_empty()
 	node.surface.add_theme_stylebox_override("panel", orion.flat(
-		orion.color("charcoal"),
-		orion.color("rule"),
-		int(parity.style.get("panelBorder", 1)),
-		16.0
+		orion.color(str(content_style.get("background", "charcoal"))),
+		orion.color(str(content_style.get("border", "rule"))),
+		int(content_style.get("borderWidth", parity.style.get("panelBorder", 1))),
+		0.0 if shared_content else 16.0
 	))
 	node.surface.size = rect_value.size
 	node.surface.position = rect_value.position
+	if shared_content:
+		node.content.custom_minimum_size = rect_value.size
+		node.content.set_deferred("size", rect_value.size)
+		node.surface.set_deferred("size", rect_value.size)
 
 
 # --- actions -----------------------------------------------------------------
@@ -262,9 +267,33 @@ static func action(text: String, role := "primary", width := 0.0, height := 0.0,
 	if width > 0.0:
 		overrides["min-width"] = "%dpx" % int(width)
 	node.token_overrides = overrides
+	node.ready.connect(_prepare_action_font.bind(node), CONNECT_ONE_SHOT)
 	if width > 0.0 or height > 0.0:
 		node.custom_minimum_size = Vector2(width, height)
 	return node
+
+
+## Generated refreshes install their own SystemFont override. Keep the app's
+## bundled face on the actual text control, including later content/state updates.
+static func _prepare_action_font(node) -> void:
+	_pin_inter_font(node.rendered, int(node.rendered.get_theme_font_size("font_size")), int(node.token_overrides["button.design.root.typography.weight"]))
+
+
+static func _pin_inter_font(control: Control, font_size: int, weight: int) -> void:
+	var restore := _restore_inter_font.bind(control, font_size, weight)
+	if not control.theme_changed.is_connected(restore):
+		control.theme_changed.connect(restore)
+	restore.call()
+
+
+static func _restore_inter_font(control: Control, font_size: int, weight: int) -> void:
+	var face := orion.font(font_size, weight)
+	# Adding an override emits theme_changed too; identity checks make the
+	# callback idempotent and stop it from recursively reapplying itself.
+	if control.get_theme_font("font") != face:
+		control.add_theme_font_override("font", face)
+	if control.get_theme_font_size("font_size") != font_size:
+		control.add_theme_font_size_override("font_size", font_size)
 
 
 static func _role_font_size(role: String) -> int:
@@ -372,6 +401,9 @@ static func prepare_chip(node: Control) -> void:
 	# centers its projected content label for parity chip geometry.
 	if node == null:
 		return
+	if not node.is_node_ready():
+		node.ready.connect(prepare_chip.bind(node), CONNECT_ONE_SHOT)
+		return
 	# Typography parity: the generated Badge exposes no font-family channel, so
 	# pin the bundled Inter Bold face at the chip's own size and let the content
 	# label fill the chip box so Godot's horizontal alignment can centre it.
@@ -383,8 +415,7 @@ static func prepare_chip(node: Control) -> void:
 		node.content_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		node.content_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		node.content_label.custom_minimum_size = Vector2(chip_size.x, 0)
-		node.content_label.add_theme_font_override("font", orion.font(font_size, 700))
-		node.content_label.add_theme_font_size_override("font_size", font_size)
+		_pin_inter_font(node.content_label, font_size, 700)
 
 
 # --- card / icon / passive ---------------------------------------------------

@@ -74,11 +74,6 @@ describe("Toast — unit", () => {
     expect(screen.getByTestId("toast")).toHaveClass("toast--assertive");
   });
 
-  it("calls onOpenChange when open changes", async () => {
-    const onOpenChangeSpy = vi.fn();
-    expect(() => render(<Toast data-testid="toast" open={false} onOpenChange={onOpenChangeSpy}><span>content</span></Toast>)).not.toThrow();
-  });
-
   it("closes on Escape key", () => {
     const onOpenChangeSpy = vi.fn();
     render(<Toast data-testid="toast" open={true} onOpenChange={onOpenChangeSpy}><span>content</span></Toast>);

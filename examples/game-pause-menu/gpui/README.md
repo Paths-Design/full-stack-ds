@@ -2,21 +2,23 @@
 
 A standalone macOS **GPUI** consumer lane for the game pause-menu example
 ([`../spec.md`](../spec.md)), rebuilt in the parity pass
-([`../parity.md`](../parity.md)) so its four required captures are structurally
-indistinguishable from the Unity and Godot lanes: same 1280 × 800 grid, same
-panel/row/card rectangles, same copy, same palette, same canonical switch.
+([`../parity.md`](../parity.md)). Its declared capture states implement shared
+viewport, layout, palette, switch and selected-copy contracts with Unity and
+Godot. The parity note records checked regions, limits and retained variations.
 
 The lane consumes ONLY the public API of the bounded GPUI package
-(`packages/ds-gpui`, path dependency `full-stack-ds-gpui`): the target's
-7-component allowlist — **Switch, ToggleSwitch, Checkbox, Text, Badge, Divider,
-Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
-marked `// NOT FSDS: <reason>`.
+(`packages/ds-gpui`, path dependency `full-stack-ds-gpui`): Switch, Text, Badge,
+Divider and Stat, plus a lane-local data/domain seam and hand-authored plain-gpui
+regions marked `// NOT FSDS: <reason>`. The current registry admits
+<!-- target-component-count:gpui -->55 components; expanded admission does not
+establish adoption by this consumer.
 
-> Status: **`cargo build` clean (0 warnings), 70 tests pass (default) / 73 with
-> `--features capture`; all I1–I15 interactions are real code paths; the eight
-> parity capture states are produced at exactly 1280 × 800; all 26 shared
-> colour probes and all measured parity region boxes pass on this lane's
-> captures** — see [Parity pass](#parity-pass) and [Evidence](#evidence).
+> Status: Native macOS consumer with default domain/layout tests and additional
+> capture-feature tests. State-driven frame captures have committed regression
+> goldens and shared colour, geometry and typography probes. Test runners and
+> parity reports supply observed results; these witnesses do not establish
+> physical end-to-end interaction coverage. See [Tests](#tests) and
+> [Evidence](#evidence).
 
 ## Claim
 
@@ -24,7 +26,7 @@ The framework-neutral pause-menu spec — four tabs (MAP / PROGRESS / ABILITIES 
 SETTINGS), interactions I1–I15 over one fixture corpus, and the parity layout
 authority — can be realized in a native GPUI app from the generated package's
 public exports alone, at the **same absolute geometry and colours** as the other
-engine lanes, with every region the 7-component allowlist does not admit
+engine lanes, with every region this consumer does not realize through generated exports
 ledgered as a hand-authored fallback rather than silently counted as
 design-system realization.
 
@@ -39,9 +41,10 @@ failure. Any lane source reaching into package internals is a boundary failure.
 
 ```bash
 # From the lane directory (rust-toolchain.toml pins 1.94.1):
-cargo +1.94.1 build --locked          # clean build, 0 warnings
-cargo +1.94.1 test  --locked          # 70 tests (3 lib + 2 palette + 16 parity + 49 seam)
-cargo +1.94.1 build --features capture
+cargo +1.94.1 build --locked
+cargo +1.94.1 test --locked           # default library, binary and integration tests
+cargo +1.94.1 test --locked --features capture  # also capture helpers and mounted tests
+cargo +1.94.1 build --locked --features capture
 cargo run                             # opens the 1280x800 pause menu on MAP
 cargo run -- --tab settings           # open a specific tab
 
@@ -193,8 +196,7 @@ the shared app-authority art, not a package change.
 | Subtitle background swatches + live preview | hand-authored swatches; FSDS `Text` preview; foreground picked from the palette | NOT FSDS — no ColorPicker |
 | Rules / separators | FSDS `Divider` (margin zeroed via tokens) at JSON rects | **FSDS** |
 
-Five of the seven admitted components are used (Switch, Text, Badge, Divider,
-Stat); ToggleSwitch and Checkbox have no spec region requiring their semantics.
+The lane uses Switch, Text, Badge, Divider and Stat; ToggleSwitch and Checkbox have no spec region requiring their semantics. Expanded target admission does not establish migration of the other lane-owned surfaces.
 No layout number, colour or type size is re-typed in `src/app/`: geometry/colour
 come from the parsed JSON; the handful of parity-document-pinned type/chrome
 values live in `src/app/style.rs` with their source named.
@@ -230,16 +232,16 @@ not a global font setting.
 
 ### Verification
 
-- Per-state **colour probes** from `examples/game-pause-menu/parity-check.mjs`:
-  all 26 probes match the JSON palette on this lane's captures (including both
+- Per-state **colour probes** from `examples/game-pause-menu/parity-check.mjs`
+  compare captures with the JSON palette (including both
   switch tracks, the active tab fills, map field, panels, drawer ground, ACCESS
   chip and footer ground).
-- **Region boxes** measured from the captures match the authority: map field
+- **Region probes** check the authority's declared geometry: map field
   `40,232,840,480`; active tab columns `0/320/640/960 × 320 × 56`; switch ON
   `1176,232,64,32` and OFF `1176,472,64,32`; SETTINGS general switch
   `552,222,64,32`; ACCESS chip `1080,240,76,22`; footer NAV TARGET value
   right-aligned to x = 1256; drawer mint occupies `24,176,560,552`.
-- The lane's `tests/parity.rs` (13 tests) pins the JSON contract (shell rects,
+- The lane's `tests/parity.rs` pins the JSON contract (shell rects,
   tab columns, per-tab rects, switch contract incl. off/on colours and pill
   math, palette/type maps, capture plan, settings sub-layout, nav-target pin)
   and the negative authoring paths.
@@ -266,19 +268,29 @@ state and a `capture-manifest.json`, then exits. Captures are written to
 Screenshots are sampled states of the running app, not physical-device proof and
 not an interaction recording.
 
+The shared checker compares these captures with the committed lossless goldens
+under [`../evidence/goldens/`](../evidence/goldens/) when passed
+`--goldens examples/game-pause-menu/evidence/goldens`. Its `parity-report.json`
+records the declared state set, probe results, lane-pair RMSE and golden
+comparisons. This is a bounded regression baseline on the pinned macOS host,
+not pixel identity across engines or coverage of arbitrary states, DPI or OS.
+
 ## Tests
 
-- `cargo +1.94.1 test --locked` → **70 tests**: 3 lib (`Switch` resolved-style + token resolver)
-  token cascade), 2 colour helpers, 15 parity-layout contract tests (incl. the
-  icon-art code language), 49 seam tests (fixture parsing/validation and every
-  I1–I15 domain rule).
-- `cargo +1.94.1 test --features capture` → **70 tests**: adds the 2 capture
-  frame sanity tests and the mounted `Switch` geometry test (`TestAppContext`
-  `debug_bounds`; 64×32 component box, 64×32 track, 24×24 thumb at slot origin).
+- `cargo +1.94.1 test --locked` runs library and binary unit tests plus the
+  `tests/parity.rs` and `tests/seam.rs` integration suites: token/style
+  resolution, colour and presentation helpers, fixture validation, shared layout
+  and capture-plan constraints, and the I1–I15 domain rules.
+- `cargo +1.94.1 test --locked --features capture` also compiles the
+  feature-gated capture module and mounted `TestAppContext` tests. These cover
+  frame validation and device-to-logical geometry normalization, mounted
+  `Switch` bounds (64×32 component/track and 24×24 thumb), and simulated settings
+  clicks for slider endpoints and language choices.
 
-The GPUI app has no automated end-to-end interaction/screenshot baseline; the
-domain interactions are seam-tested and the parity evidence is state-driven
-frame capture.
+The runner reports the selected suites and executed totals. Passing default
+tests does not exercise the capture-feature cases, and passing either command
+does not generate screenshots or establish physical end-to-end input traces.
+Run the capture command and shared parity checker separately for image evidence.
 
 ## Interaction coverage (I1–I15)
 
@@ -289,17 +301,18 @@ disabled locked shop, I7–I9 ability selection / compatible install / reject +
 remove, I10 hover popover, I11 General switches, I12 controller sliders, I13
 remap wait/capture/cancel, I14 audio/language/subtitle swatch + preview, I15
 one-overlay-at-a-time Escape dismissal. Escape and 1–4 tab keys are bound at the
-window level; the domain rules are covered by the 49 seam tests.
+window level; the domain rules are covered by `tests/seam.rs`.
 
 ## Non-claims
 
-- **No automated visual/interaction proof.** The parity evidence is sampled
-  frames of the running app; no screenshot baseline, mounted input test or
-  cross-engine pixel-parity claim is made here.
+- **Bounded visual and input witnesses.** Committed goldens and declared image
+  probes cover the sampled capture states; capture-feature tests cover specific
+  mounted geometry and simulated settings clicks. They do not establish
+  physical end-to-end traces, every interaction path or cross-engine pixel
+  identity.
 - **Not accessibility proof.** Focus keys and hover paths exist; no a11y
   standard is claimed. Gamepad navigation is not simulated.
-- **Partial realization.** Every NOT-FSDS row above is a fallback forced by the
-  7-component allowlist, not a claim that the hand-authored surface equals a
+- **Partial realization.** Every NOT-FSDS row above is a retained consumer fallback, not a claim that the hand-authored surface equals a
   package component.
 - **Theme delivery is explicit overrides, not brand-graph loading.** GPUI has no
   automatic brand/dark loader; the lane applies the JSON palette through

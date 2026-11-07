@@ -19,6 +19,7 @@ import {
   type ClassifiedLeaf,
   type ContractWithSidecars,
   type Leaf,
+  type RequirementCondition,
 } from "./boundary.js";
 
 const root = path.resolve(__dirname, "../../../../..");
@@ -244,6 +245,69 @@ describe("Unity support boundary", () => {
     expect(classifyLeaf({ ...leaf, value: "no" }, boundary).rule).toBe("first");
     boundary.rules.reverse();
     expect(classifyLeaf({ ...leaf, value: "no" }, boundary).rule).toBe("fallback");
+  });
+
+  it.each([false, true])("scans a shared contract prerequisite once when it is %s", present => {
+    const contract: ContractWithSidecars = {
+      name: "PrerequisiteFixture",
+      dataModel: { semantics: Object.fromEntries(Array.from({ length: 64 }, (_, i) => [`fact${i}`, `value${i}`])) },
+    };
+    const boundary = boundaryOf([
+      rule({ id: "conditioned", match: ["contract:/**"], requiresAny: [{ match: [present ? "contract:/dataModel/semantics/fact63" : "contract:/absent"] }] }),
+      rule({ id: "fallback", match: ["contract:/**"] }),
+    ]);
+    const prerequisite = boundary.rules[0]!.requiresAny![0]!;
+    const patterns = prerequisite.match;
+    let scans = 0;
+    Object.defineProperty(prerequisite, "match", { get: () => { scans++; return patterns; } });
+
+    const classified = classifyContract(contract, boundary);
+
+    expect(classified.map(leaf => leaf.rule)).toEqual(Array(classified.length).fill(present ? "conditioned" : "fallback"));
+    // The successful condition is on the final leaf; absence also requires a
+    // complete scan. Repeating that scan for every output leaf is quadratic.
+    expect(scans).toBe(classified.length);
+  });
+
+  it("rechecks prerequisites and rule identity for each contract classification", () => {
+    const contract: ContractWithSidecars = { name: "PrerequisiteFixture", dataModel: { semantics: { mode: "enabled" } } };
+    const prerequisite: RequirementCondition = { match: ["contract:/dataModel/semantics/mode"], valueIn: ["enabled"] };
+    const boundary = boundaryOf([
+      rule({ id: "conditioned", match: ["contract:/**"], requiresAny: [prerequisite] }),
+      rule({ id: "fallback", match: ["contract:/**"] }),
+    ]);
+    const rules = () => classifyContract(contract, boundary).map(leaf => leaf.rule);
+    expect(rules()).toEqual(["conditioned", "conditioned"]);
+    contract.dataModel!.semantics!.mode = "disabled";
+    expect(rules()).toEqual(["fallback", "fallback"]);
+    prerequisite.valueIn = ["disabled"];
+    expect(rules()).toEqual(["conditioned", "conditioned"]);
+    prerequisite.match = ["contract:/absent"];
+    expect(rules()).toEqual(["fallback", "fallback"]);
+    prerequisite.match = ["contract:/dataModel/semantics/mode"];
+    boundary.rules.reverse();
+    expect(rules()).toEqual(["fallback", "fallback"]);
+    boundary.rules.reverse();
+    expect(rules()).toEqual(["conditioned", "conditioned"]);
+    boundary.rules[0] = { ...boundary.rules[0]!, requiresAny: [{ match: ["contract:/absent"] }] };
+    expect(rules()).toEqual(["fallback", "fallback"]);
+    expect(classifyContract({ name: "OtherFixture" }, boundary).map(leaf => leaf.rule)).toEqual(["fallback"]);
+  });
+
+  it("direct leaf classification rechecks supplied prerequisite leaves and edited conditions", () => {
+    const prerequisite: RequirementCondition = { match: ["contract:/mode"], valueIn: ["enabled"] };
+    const boundary = boundaryOf([
+      rule({ id: "conditioned", match: ["contract:/**"], requiresAny: [prerequisite] }),
+      rule({ id: "fallback", match: ["contract:/**"] }),
+    ]);
+    const leaf: Leaf = { source: "contract", pointer: "/name", keyed: "/name", value: "Fixture" };
+    const candidates = keyedLeaves({ mode: "enabled" }, "contract");
+    expect(classifyLeaf(leaf, boundary, candidates).rule).toBe("conditioned");
+    candidates[0]!.value = "disabled";
+    expect(classifyLeaf(leaf, boundary, candidates).rule).toBe("fallback");
+    prerequisite.valueIn = ["disabled"];
+    expect(classifyLeaf(leaf, boundary, candidates).rule).toBe("conditioned");
+    expect(classifyLeaf(leaf, boundary).rule).toBe("fallback");
   });
 
   it("an unclassified leaf fails generation for any component, allowlisted or not", () => {

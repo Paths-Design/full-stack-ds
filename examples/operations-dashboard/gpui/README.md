@@ -3,7 +3,7 @@
 A standalone macOS **GPUI** consumer lane for the operations-dashboard example
 ([`../spec.md`](../spec.md)). It realizes the app shape by consuming ONLY the
 public API of the bounded GPUI package (`packages/ds-gpui`, consumed as the
-path dependency `full-stack-ds-gpui`): the target's 7-component allowlist —
+path dependency `full-stack-ds-gpui`): a selected set of generated controls —
 **Switch, ToggleSwitch, Checkbox, Text, Badge, Divider, Stat** — plus a
 lane-local port of the data/API seam and its tests. This is the first example
 lane for the GPUI target; its conventions mirror the other native lanes
@@ -19,7 +19,7 @@ A native macOS GPUI app can compose the operations-dashboard assembly —
 multi-axis filtering, a dense incident queue with exactly-one selection, a
 selection-driven detail pane with progressive-disclosure timeline, summary
 `Stat`/`Badge` tiles derived from the filtered queue, and confirm-dialog / side
-sheet / toast overlay workflows — from the 7-component public allowlist of
+sheet / toast overlay workflows — from selected public controls of
 `full_stack_ds_gpui`, without importing package internals or copying generated
 component code, with loading / empty / error / pending states as real async
 transitions driven through gpui's executor (fixed-latency timer + explicit
@@ -34,10 +34,7 @@ package, not the consumer.
 
 ## Partial-realization ledger
 
-The GPUI target admits exactly 7 components. Every other region the spec
-requires is hand-authored plain gpui, marked `NOT FSDS` in source, and listed
-here so the boundary stays visible — the same discipline as the Compose and
-Swift settings lanes:
+The current GPUI registry admits <!-- target-component-count:gpui -->55 components. This lane retains its original selected controls and hand-authored fallbacks, marked `NOT FSDS` in source. Expanded admission does not establish that this consumer adopts a component or realizes its semantics. The table records consumer ownership; it does not inventory missing target emissions:
 
 | Spec region | Realized through | Status |
 |---|---|---|
@@ -48,19 +45,19 @@ Swift settings lanes:
 | Section chrome (titles, labels, section rules) | FSDS `Text` (variant/size/weight) + FSDS `Divider` | **FSDS** |
 | Simulated-load-failure switch (error → retry driver) | FSDS `Switch`, controlled | **FSDS** |
 | Free-text search field | hand-authored minimal `TextField` (`src/text_input.rs`: FocusHandle + key-down accumulation + painted text/caret) | NOT FSDS — gpui 0.2.2 ships no text-input widget |
-| Environment selector | hand-authored segmented buttons | NOT FSDS — no `Select` on the target |
-| Clear-filters affordance, action buttons | hand-authored button primitive (`src/dashboard.rs`) | NOT FSDS — no `Button` on the target |
-| Queue pane (columns, rows, exactly-one selection, selected indication, scroll) | hand-authored flex row grid | NOT FSDS — no `Table`/`List` on the target; no row-selection channel exists to consume |
-| Loading skeletons (queue + detail) | hand-authored gray placeholder bars | NOT FSDS — no `Skeleton`/`Spinner`/`Progress` on the target |
-| Error region + retry | hand-authored bordered error panel + retry button | NOT FSDS — no `Alert`/`AlertNotice` on the target |
+| Environment selector | hand-authored segmented buttons | NOT FSDS — this lane supplies segmented buttons |
+| Clear-filters affordance, action buttons | hand-authored button primitive (`src/dashboard.rs`) | NOT FSDS — this lane supplies its button primitive |
+| Queue pane (columns, rows, exactly-one selection, selected indication, scroll) | hand-authored flex row grid | NOT FSDS — this lane owns its row grid and selection state |
+| Loading skeletons (queue + detail) | hand-authored gray placeholder bars | NOT FSDS — this lane supplies placeholder bars |
+| Error region + retry | hand-authored bordered error panel + retry button | NOT FSDS — this lane supplies the error panel |
 | Empty states (queue + detail) | hand-authored bordered hint panels | NOT FSDS — no empty-state surface on the target |
-| Confirm dialog (Resolve & close) | hand-authored modal: backdrop + panel, Escape/backdrop dismissal, hand-authored focus trap (Tab cycles the dialog's controls) | NOT FSDS — no `Dialog` on the target |
-| Assign side sheet | hand-authored right sheet: backdrop, panel, assignee `TextField`, complete/cancel | NOT FSDS — no `Sheet` on the target |
-| Toast region | hand-authored bottom-right stack with per-toast dismiss | NOT FSDS — no `Toast` on the target |
+| Confirm dialog (Resolve & close) | hand-authored modal: backdrop + panel, Escape/backdrop dismissal, hand-authored focus trap (Tab cycles the dialog's controls) | NOT FSDS — this lane supplies its modal and focus handling |
+| Assign side sheet | hand-authored right sheet: backdrop, panel, assignee `TextField`, complete/cancel | NOT FSDS — this lane supplies its sheet |
+| Toast region | hand-authored bottom-right stack with per-toast dismiss | NOT FSDS — this lane supplies its toast stack |
 | Detail pane (title, description, meta, disclosure, action row) | hybrid: FSDS `Text` title + `Badge` status; hand-authored disclosure, meta, actions | mixed (marked in source) |
 | Page frame (three-pane layout, spacing) | plain gpui flex layout | NOT FSDS — page-frame layout the target's allowlist does not claim |
 | Responsive tier thresholds (wide ≥1280 / medium 900–1279 / narrow <900) | app-computed from `window.viewport_size()` each frame (`Tier::from_viewport_width`) | NOT FSDS — no breakpoint concept exists on the gpui target (recorded finding); tier is derived, never persisted |
-| Responsive Filters toggle (medium/narrow) | hand-authored toggle button + FSDS `Badge` (variant `counter`) showing the active-filter count | mixed: toggle NOT FSDS (no Button); count Badge **FSDS** |
+| Responsive Filters toggle (medium/narrow) | hand-authored toggle button + FSDS `Badge` (variant `counter`) showing the active-filter count | mixed: toggle is lane-owned; count Badge **FSDS** |
 | Inline filter disclosure (medium/narrow, expanded) | the wide-tier rail controls re-flowed as a wrapping panel above the queue | NOT FSDS — page-frame plumbing; the controls inside are the same FSDS/hand-authored surfaces as the rail |
 
 Every hand-authored region carries a `// NOT FSDS: <reason>` marker (or a
@@ -155,12 +152,7 @@ graph). `Cargo.lock` is committed after a successful resolve, mirroring
 
 ## GPUI-target posture
 
-- **7-component allowlist**: Switch, ToggleSwitch, Checkbox, Text, Badge,
-  Divider, Stat (`fsds.targets.json` → `gpui`). Everything else the spec
-  expects (Table/List, Field/Input, Select, Button, Stack/Card, Tabs/
-  Accordion/Details, Dialog, Sheet, Toast, Alert/AlertNotice, Skeleton,
-  Spinner, Progress, Tooltip, Popover, Status) is **not emitted for this
-  target**, so those regions are hand-authored fallbacks, not parity claims.
+- **Registry admission**: <!-- target-component-count:gpui -->55 components (`fsds.targets.json` → `gpui`), with capability receipts distinguishing bounded realization from omitted facts. This lane consumes Switch, ToggleSwitch, Checkbox, Text, Badge, Divider and Stat. Its other regions retain hand-authored fallbacks; target admission does not establish their integration or parity.
 - **macOS-pinned**: gpui + gpui_platform at the same zed rev as
   `packages/ds-gpui` (`a38fc8c8de6e4010fadcfde7dd111d90dfd66845`),
   `default-features = false` + the `font-kit` gpui_platform feature. No
@@ -265,8 +257,7 @@ generated components they exercise, not this consumer).
 - **No parity claim.** This lane does not assert cross-framework semantic
   parity with the React lane (or with future Vue/Svelte/Angular/Lit lanes);
   the shared seam shape and interaction list are realized independently here.
-- **Partial realization.** Every `NOT FSDS` region above is a fallback the
-  7-component allowlist forces, not a claim that the hand-authored surface is
+- **Partial realization.** Every `NOT FSDS` region above is a retained consumer fallback, not a claim that the hand-authored surface is
   equivalent to a package component.
 - **Not accessibility proof.** The hand-authored focus trap and painted text
   field prove compile-level wiring only; no a11y standard is claimed.

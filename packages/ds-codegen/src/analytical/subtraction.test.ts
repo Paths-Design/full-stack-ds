@@ -486,8 +486,7 @@ describe("a PRESENCE witness needs a pair the erasure is a no-op on one side of"
   // CONTENT, and both sides carry rows. The shape that makes the measurement about presence is
   // a pair where the erasure changes one side and not the other -- collision then says that
   // side IS the other minus the holder.
-  const presencePairs = (): string[] => {
-    const s = specimens();
+  const presencePairs = (s = specimens()): string[] => {
     const plans = loadPlans();
     const oracle = loadOracle();
     const baseline = s.fixtures.map(canonical);
@@ -544,6 +543,6 @@ describe("a PRESENCE witness needs a pair the erasure is a no-op on one side of"
     const rowless = s.fixtures.filter((f) => (f as unknown as { evidence?: { rows?: unknown } }).evidence?.rows === undefined);
     expect(rowless.length).toBe(163);
     expect(rowless.filter((f) => oracle.outcomeOf(f.id)).length).toBe(130);
-    expect(presencePairs()).not.toContain("evidence.rows.*#present");
+    expect(presencePairs(s)).not.toContain("evidence.rows.*#present");
   });
 });

@@ -286,20 +286,30 @@ export function generateLitTest(ir: ComponentIR): string {
   // dom-tree components the real event binding is in the shadow subtree;
   // those components have exhaustive custom test blocks. Only emit for
   // stack-only components where host-level event dispatch reaches the prop.
-  const emitChannelInteraction = plan.channels.length > 0 && !ir.dom;
+  // Omit channel cases whose action this test backend cannot exercise.
+  const channelInteractions = !ir.dom
+    ? plan.channels.filter((entry) => entry.interaction === "click")
+    : [];
+  const emitChannelInteraction = channelInteractions.length > 0;
   // Only import vi when the generated section uses it. Dom-tree components
   // have vi in their @custom block imports already, so we don't add it here
   // to avoid duplicate identifier errors.
   const needsVi = emitChannelInteraction || emitEscape || emitOverlayClick;
 
   const importsBody = [
-    `import { describe, expect, it${needsVi ? ", vi" : ""} } from "vitest";`,
+    `import { afterEach, describe, expect, it${needsVi ? ", vi" : ""} } from "vitest";`,
     `import { axe } from "vitest-axe";`,
     `import "../${plan.name}";`,
   ].join("\n");
 
   const lines: string[] = [];
 
+  lines.push(`const renderedContainers = new Set<HTMLElement>();`);
+  lines.push(`afterEach(() => {`);
+  lines.push(`  for (const container of renderedContainers) container.remove();`);
+  lines.push(`  renderedContainers.clear();`);
+  lines.push(`});`);
+  lines.push(``);
   emitComponentAxeOptions(lines);
   const hasRequiredProps = plan.requiredProps.length > 0;
   if (hasRequiredProps) {
@@ -421,40 +431,21 @@ export function generateLitTest(ir: ComponentIR): string {
   }
 
   if (emitChannelInteraction) {
-    for (const testCase of plan.channels) {
+    for (const testCase of channelInteractions) {
       const { channel, spyName } = testCase;
       lines.push(``);
       lines.push(
         `  it("calls ${channel.changeHandlerProp} when ${channel.name} changes", async () => {`,
       );
       lines.push(`    const ${spyName} = vi.fn();`);
-      if (testCase.interaction === "click") {
-        lines.push(
-          `    const { element } = await renderElement("${elementName}");`,
-        );
-        lines.push(
-          `    (element as unknown as Record<string, unknown>)["${channel.changeHandlerProp}"] = ${spyName};`,
-        );
-        lines.push(`    element.click();`);
-        lines.push(`    expect(${spyName}).toHaveBeenCalled();`);
-      } else if (testCase.interaction === "change") {
-        // Stack-only Lit elements have no native change event binding on the
-        // host. Verify the handler prop is assignable without throwing.
-        lines.push(
-          `    const { element } = await renderElement("${elementName}");`,
-        );
-        lines.push(
-          `    expect(() => { (element as unknown as Record<string, unknown>)["${channel.changeHandlerProp}"] = ${spyName}; }).not.toThrow();`,
-        );
-      } else {
-        // render-only: verify the prop is assignable without throwing
-        lines.push(
-          `    const { element } = await renderElement("${elementName}", { "${channel.valueProp}": false });`,
-        );
-        lines.push(
-          `    expect(() => { (element as unknown as Record<string, unknown>)["${channel.changeHandlerProp}"] = ${spyName}; }).not.toThrow();`,
-        );
-      }
+      lines.push(
+        `    const { element } = await renderElement("${elementName}");`,
+      );
+      lines.push(
+        `    (element as unknown as Record<string, unknown>)["${channel.changeHandlerProp}"] = ${spyName};`,
+      );
+      lines.push(`    element.click();`);
+      lines.push(`    expect(${spyName}).toHaveBeenCalled();`);
       lines.push(`  });`);
     }
   }
@@ -803,6 +794,7 @@ export function generateLitTest(ir: ComponentIR): string {
   // from prior test renders when scoping to this element's context.
   lines.push(`  const container = document.createElement("div");`);
   lines.push(`  container.append(element);`);
+  lines.push(`  renderedContainers.add(container);`);
   lines.push(`  document.body.append(container);`);
   if (!hasRequiredProps) {
     lines.push(`  await customElements.whenDefined(tagName);`);

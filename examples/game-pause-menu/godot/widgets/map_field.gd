@@ -59,6 +59,12 @@ func _marker_center(icon: Dictionary) -> Vector2:
 func apply_state(next_visibility: Dictionary, next_nav_target: String) -> void:
 	visibility = next_visibility
 	nav_target = next_nav_target
+	if _note != null:
+		var plotted := 0
+		for icon in icons:
+			if bool(visibility.get(str(icon.get("id", "")), false)):
+				plotted += 1
+		_note.text = str(DSFactory.parity.map["fieldNote"]["text"]).replace("{visible}", str(plotted)).replace("{total}", str(icons.size()))
 	var marker_size := float(DSFactory.parity.map["marker"]["size"])
 	for icon in icons:
 		var icon_id := str(icon.get("id", ""))

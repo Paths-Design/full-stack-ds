@@ -229,7 +229,7 @@ plus a rebuild:
 - The generated Unity stylesheet gains `.fsds-theme.fsds-brand-orion` scopes
   (light + dark), so a Unity consumer selects it with
   `Theme.SetBrand(container, "orion")`; the stylesheet on this branch is
-  generated from the current target (48 admitted Unity components) and carries
+  generated from the current target (<!-- target-component-count:unity -->55 admitted Unity components) and carries
   the brand tokens alongside them.
 - The brand carries zero control/card/component radii, compact density, heavy
   heading weight, and dark/light semantic surfaces; the app-level graphic
@@ -292,7 +292,7 @@ benchmark, and the parity pass supersedes the earlier visual differences.
 
 ### GPUI — most custom control, least design system
 
-GPUI's target admits only seven basic components, so the lane used the DS for
+At the parity pass, GPUI admitted seven basic components, so the lane used the DS for
 boolean controls, typography, tags, rules and stat readouts and hand-authored
 everything structural: tab bar, map plot/markers/watermark, marker popover,
 faction roster + left drawer, ability card grid + hover tooltip, loadout rows,

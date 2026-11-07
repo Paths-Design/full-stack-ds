@@ -221,7 +221,7 @@ impl Menu {
         let eyebrow = self.text_at(
             cx,
             "drawer:eyebrow",
-            style::micro(&layout.type_scale),
+            style::drawer_label(&layout.type_scale),
             &layout.colors.paper_muted,
             "FACTION DOSSIER",
             padding,
@@ -282,7 +282,7 @@ impl Menu {
         let brief_label = self.text_at(
             cx,
             "drawer:brief-label",
-            style::micro(&layout.type_scale),
+            style::drawer_label(&layout.type_scale),
             &layout.colors.paper_muted,
             "BRIEF",
             padding,
@@ -304,7 +304,7 @@ impl Menu {
         let history_label = self.text_at(
             cx,
             "drawer:history-label",
-            style::micro(&layout.type_scale),
+            style::drawer_label(&layout.type_scale),
             &layout.colors.paper_muted,
             "HISTORY",
             padding,
@@ -326,7 +326,7 @@ impl Menu {
         let perks_label = self.text_at(
             cx,
             "drawer:perks-label",
-            style::micro(&layout.type_scale),
+            style::drawer_label(&layout.type_scale),
             &layout.colors.paper_muted,
             "PERKS",
             padding,
@@ -347,7 +347,7 @@ impl Menu {
         let parts_label = self.text_at(
             cx,
             "drawer:parts-label",
-            style::micro(&layout.type_scale),
+            style::drawer_label(&layout.type_scale),
             &layout.colors.paper_muted,
             "PARTS",
             padding,
@@ -362,7 +362,7 @@ impl Menu {
             perk_children.push(self.text_at(
                 cx,
                 format!("drawer:parts-header:{label}"),
-                style::micro(&layout.type_scale),
+                style::drawer_label(&layout.type_scale),
                 &layout.colors.paper_muted,
                 label,
                 x,

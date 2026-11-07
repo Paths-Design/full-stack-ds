@@ -378,6 +378,23 @@ impl AppState {
         self.icon_visible.iter().filter(|visible| !**visible).count()
     }
 
+    /// Capture selectors describe the complete filter, independently of fixture defaults.
+    pub fn apply_capture_icon_visibility(&mut self, hidden_icons: &[String]) {
+        for (index, icon) in self.fixtures.icons().iter().enumerate() {
+            self.icon_visible[index] = !hidden_icons.contains(&icon.id);
+        }
+        if self.marker_popover.as_ref().is_some_and(|id| !self.icon_visible(id)) {
+            self.marker_popover = None;
+        }
+    }
+
+    /// Resolve fixture-owned copy from the filter the map actually renders.
+    pub fn icon_visibility_text(&self, template: &str) -> String {
+        template
+            .replace("{visible}", &self.visible_icons().len().to_string())
+            .replace("{total}", &self.fixtures.icons().len().to_string())
+    }
+
     /// Toggle exactly one icon's marker visibility (I2). Returns the new
     /// visibility, or `None` for an unknown icon id. Other icons are untouched
     /// and the fixture itself is never mutated.

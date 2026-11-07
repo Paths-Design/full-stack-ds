@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Details } from "../Details";
@@ -67,11 +67,6 @@ describe("Details — unit", () => {
   it("applies icon=none variant class", () => {
     render(<Details data-testid="details" summary={"placeholder"} icon="none" open={true}><span>content</span></Details>);
     expect(screen.getByTestId("details")).toHaveClass("details--none");
-  });
-
-  it("calls onOpenChange when open changes", async () => {
-    const onOpenChangeSpy = vi.fn();
-    expect(() => render(<Details data-testid="details" summary={"placeholder"} open={false} onOpenChange={onOpenChangeSpy}><span>content</span></Details>)).not.toThrow();
   });
 });
 

@@ -122,7 +122,7 @@ preview strip `(664, 694, 576, 26)`; footer nav value right-aligned to x=1256 at
 
 ### Generated vs fallback per region
 
-Generated components carry the structural realization wherever the 48-component Unity allowlist
+Generated components carry the structural realization wherever the <!-- target-component-count:unity -->55-component Unity allowlist
 admits one; the lane stylesheet only pins geometry/state colours the generated sheets cannot
 express. Full machine-readable ledger: [`realization-ledger.json`](realization-ledger.json).
 

@@ -96,6 +96,14 @@ namespace GamePauseMenu
             Map.ApplyVisibility(iconId);
         }
 
+        /// <summary>Capture hiddenIcons is a complete filter, including an empty selection.</summary>
+        public void ApplyCaptureIconVisibility(CaptureLayout capture)
+        {
+            if (capture == null) throw new ArgumentNullException(nameof(capture));
+            foreach (var icon in State.Fixtures.Map.Icons)
+                SetIconVisible(icon.Id, !capture.HiddenIcons.Contains(icon.Id));
+        }
+
         public void SetNavTarget(string iconId)
         {
             var icon = FixtureRepository.FindIcon(State.Fixtures.Map, iconId);

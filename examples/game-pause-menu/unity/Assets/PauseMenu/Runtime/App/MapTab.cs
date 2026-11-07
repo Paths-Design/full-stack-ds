@@ -21,6 +21,7 @@ namespace GamePauseMenu
         private readonly Dictionary<string, Switch> visibilitySwitches = new Dictionary<string, Switch>();
         private readonly Dictionary<string, VisualElement> iconTiles = new Dictionary<string, VisualElement>();
         private readonly Text popoverTitle;
+        private readonly Badge popoverStatus;
         private readonly Text popoverMeta;
         private readonly Text popoverBody;
         private readonly Text popoverReward;
@@ -31,6 +32,8 @@ namespace GamePauseMenu
         public VisualElement PopoverHost { get; }
         public Popover MarkerPopover { get; }
         public VisualElement Field { get; }
+        public Text FieldNote { get; }
+        public Text IconPanelMeta { get; }
         public bool HasOpenPopover => MarkerPopover.Open;
 
         public MapTab(PauseMenuApp app)
@@ -52,6 +55,7 @@ namespace GamePauseMenu
             Field = Ui.MakeBox("map-field");
             Field.name = "map-field";
             Ui.At(Field, fieldRect);
+            Ui.Radius(Field, 0);
             Field.style.backgroundColor = layout.Color("sage");
             BuildPlot();
             foreach (var icon in fixtures.Map.Icons)
@@ -63,13 +67,15 @@ namespace GamePauseMenu
             Root.Add(Field);
 
             var note = layout.Map.FieldNote;
-            var fieldNote = Ui.MakeText(layout, note.Text, "micro", "ink", false);
-            Ui.Point(fieldNote, note.X - fieldRect.X, fieldRect.H + note.YOffsetFromFieldBottom);
-            Field.Add(fieldNote);
+            FieldNote = Ui.MakeText(layout, string.Empty, "micro", "ink", false);
+            Ui.Point(FieldNote, note.X - fieldRect.X, fieldRect.H + note.YOffsetFromFieldBottom);
+            Field.Add(FieldNote);
 
             var iconPanel = layout.Map.IconPanel;
-            Root.Add(Ui.MakePanel(layout, iconPanel, layout.Map.IconPanelTitle, layout.Map.IconPanelMeta,
-                layout.Panels.HeaderHeight).Root);
+            var visibilityPanel = Ui.MakePanel(layout, iconPanel, layout.Map.IconPanelTitle, string.Empty,
+                layout.Panels.HeaderHeight);
+            IconPanelMeta = visibilityPanel.Meta;
+            Root.Add(visibilityPanel.Root);
             BuildIconRows();
             var panelNote = layout.Map.IconPanelNote;
             var filterNote = Ui.MakeText(layout, panelNote.Text, "micro", "muted", false);
@@ -85,6 +91,13 @@ namespace GamePauseMenu
             Ui.StripBox(MarkerPopover);
             var anchor = new PopoverTrigger { name = "map-popover-anchor", text = string.Empty };
             Ui.At(anchor, new LayoutRect(layout.Map.Popover.Rect.X, layout.Map.Popover.Rect.Y - 4, 0, 0));
+            // A positional anchor has no native Button chrome or intrinsic size.
+            // Ui.At leaves zero dimensions automatic for text call sites, so pin
+            // this anchor's zero-sized box explicitly before surface placement.
+            Ui.StripBox(anchor);
+            Ui.BorderWidth(anchor, 0);
+            anchor.style.width = 0;
+            anchor.style.height = 0;
             anchor.pickingMode = PickingMode.Ignore;
             anchor.style.opacity = 0;
             MarkerPopover.Add(anchor);
@@ -93,33 +106,55 @@ namespace GamePauseMenu
             content.AddToClassList("parity-popover-content");
             Ui.At(content, layout.Map.Popover.Rect);
             Ui.StripBox(content);
-            content.style.backgroundColor = layout.Color("charcoal");
-            Ui.BorderWidth(content, layout.PanelBorder);
-            Ui.BorderColor(content, layout.Color("rule"));
-            content.style.borderTopWidth = 2;
-            content.style.borderTopColor = layout.Color("signal");
+            var inner = layout.Map.Popover.Content;
+            content.style.backgroundColor = layout.Color(inner.Background);
+            Ui.BorderWidth(content, inner.BorderWidth);
+            Ui.BorderColor(content, layout.Color(inner.Border));
+            content.style.borderTopWidth = (float)inner.AccentWidth;
+            content.style.borderTopColor = layout.Color(inner.Accent);
             content.style.overflow = Overflow.Hidden;
             content.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
             content.verticalScrollerVisibility = ScrollerVisibility.Hidden;
 
-            popoverTitle = Ui.MakeText(layout, layout.Map.Popover.Title, "title", "boneBright", true);
-            Ui.Point(popoverTitle, 16, 14);
+            popoverTitle = Ui.MakePopoverText(layout, layout.Map.Popover.Title, inner.Title, "map-popover-title");
             content.Add(popoverTitle);
-            popoverMeta = Ui.MakeText(layout, string.Empty, "rowSub", "muted", false);
-            Ui.Point(popoverMeta, 16, 48);
+            popoverStatus = Ui.MakeBadge(layout, string.Empty, inner.Status.TypeKey, inner.Status.Rect,
+                layout.Color(inner.Status.Background), layout.Color(inner.Status.Color), false,
+                layout.Color(inner.Status.Border));
+            popoverStatus.name = "map-popover-status";
+            Ui.BorderWidth(popoverStatus, inner.BorderWidth);
+            Ui.BorderColor(popoverStatus, layout.Color(inner.Status.Border));
+            Ui.ApplyPopoverTypography(layout, popoverStatus.Q<Text>(), inner.Status);
+            content.Add(popoverStatus);
+            popoverMeta = Ui.MakePopoverText(layout, string.Empty, inner.Meta, "map-popover-meta");
             content.Add(popoverMeta);
-            popoverBody = Ui.MakeText(layout, string.Empty, "body", "textSecondary", false,
-                new LayoutRect(16, 70, layout.Map.Popover.Rect.W - 32, 106), wrap: true);
+            popoverBody = Ui.MakePopoverText(layout, string.Empty, inner.Body, "map-popover-body", wrap: true);
             content.Add(popoverBody);
-            popoverReward = Ui.MakeText(layout, string.Empty, "micro", "signal", true);
-            Ui.Point(popoverReward, 16, 180);
+            popoverReward = Ui.MakePopoverText(layout, string.Empty, inner.Reward, "map-popover-reward");
             content.Add(popoverReward);
             setNavTargetButton = Ui.MakeButton(layout, layout.Map.Popover.Action,
-                new LayoutRect(16, 194, 196, 28), () => app.SetNavTarget(currentIcon.Id), true);
+                inner.Action.Rect, () => app.SetNavTarget(currentIcon.Id), true);
+            setNavTargetButton.name = "map-popover-action";
+            Ui.ApplyPopoverTypography(layout, setNavTargetButton, inner.Action);
             content.Add(setNavTargetButton);
             var close = Ui.MakeButton(layout, layout.Map.Popover.Cancel,
-                new LayoutRect(220, 194, 124, 28), () => ClosePopovers(), false);
+                inner.Cancel.Rect, () => ClosePopovers(), false);
+            close.name = "map-popover-cancel";
+            Ui.ApplyPopoverTypography(layout, close, inner.Cancel);
             content.Add(close);
+            // Shared part rectangles start at the surface's outer border box.
+            // ScrollView positions its children from the inset viewport instead.
+            // Lower that origin difference without changing the fixture geometry.
+            foreach (var part in new[] {
+                new KeyValuePair<VisualElement, PopoverPartLayout>(popoverTitle, inner.Title),
+                new KeyValuePair<VisualElement, PopoverPartLayout>(popoverStatus, inner.Status),
+                new KeyValuePair<VisualElement, PopoverPartLayout>(popoverMeta, inner.Meta),
+                new KeyValuePair<VisualElement, PopoverPartLayout>(popoverBody, inner.Body),
+                new KeyValuePair<VisualElement, PopoverPartLayout>(popoverReward, inner.Reward),
+                new KeyValuePair<VisualElement, PopoverPartLayout>(setNavTargetButton, inner.Action),
+                new KeyValuePair<VisualElement, PopoverPartLayout>(close, inner.Cancel),
+            })
+                Ui.At(part.Key, part.Value.Rect, inner.BorderWidth, inner.AccentWidth);
             MarkerPopover.Add(content);
             PopoverHost.Add(MarkerPopover);
             ApplyAll();
@@ -150,8 +185,10 @@ namespace GamePauseMenu
             if (icon == null) throw new ArgumentException("Unknown map icon id '" + iconId + "'.");
             currentIcon = icon;
             popoverTitle.text = icon.Label;
-            popoverMeta.text = icon.Sector + "  ·  " + icon.DistanceKm.ToString("0.0", CultureInfo.InvariantCulture)
-                               + " KM  ·  " + icon.Status;
+            popoverStatus.Q<Text>().text = icon.Status;
+            popoverMeta.text = layout.Map.Popover.Content.Meta.Template
+                .Replace("{sector}", icon.Sector)
+                .Replace("{distanceKm}", icon.DistanceKm.ToString("0.0", CultureInfo.InvariantCulture));
             popoverBody.text = icon.Detail;
             popoverReward.text = icon.Reward;
             MarkerPopover.Open = true;
@@ -180,6 +217,19 @@ namespace GamePauseMenu
             toggle.SetValueWithoutNotify(visible);
             // Silent value changes do not raise ChangeEvent, so re-apply the inline on/off colours.
             Ui.ApplySwitchState(layout, toggle, visible);
+            RefreshVisibilityCopy();
+        }
+
+        private void RefreshVisibilityCopy()
+        {
+            var visible = 0;
+            foreach (var icon in fixtures.Map.Icons)
+                if (app.State.IsIconVisible(icon.Id)) visible++;
+            string Resolve(string template) => template
+                .Replace("{visible}", visible.ToString(CultureInfo.InvariantCulture))
+                .Replace("{total}", fixtures.Map.Icons.Count.ToString(CultureInfo.InvariantCulture));
+            FieldNote.text = Resolve(layout.Map.FieldNote.Text);
+            IconPanelMeta.text = Resolve(layout.Map.IconPanelMeta);
         }
 
         public void ApplyNavTarget(string iconId)
@@ -218,6 +268,7 @@ namespace GamePauseMenu
             for (var corner = 0; corner < 4; corner++)
             {
                 var element = Ui.MakeBox("map-corner-tick");
+                Ui.Radius(element, 0);
                 Ui.Point(element, corner % 2 == 0 ? 0 : field.W - tick, corner < 2 ? 0 : field.H - tick);
                 element.style.width = tick;
                 element.style.height = tick;

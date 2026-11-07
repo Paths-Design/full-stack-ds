@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import { Checkbox } from "../Checkbox";
@@ -52,11 +52,6 @@ describe("Checkbox — unit", () => {
   it("applies size=lg variant class", () => {
     render(<Checkbox data-testid="checkbox" size="lg" />);
     expect(screen.getByTestId("checkbox")).toHaveClass("checkbox--lg");
-  });
-
-  it("calls onChange when checked changes", async () => {
-    const onChangeSpy = vi.fn();
-    expect(() => render(<Checkbox data-testid="checkbox" checked={false} onChange={onChangeSpy} />)).not.toThrow();
   });
 
   it("sets .indeterminate as a DOM property (not an attribute) and lowers aria-checked to mixed", () => {

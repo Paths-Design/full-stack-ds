@@ -13,26 +13,8 @@ import {
 import { isSurfaceComponent } from "./surface-emit.js";
 import { generateReactSurfaceTest } from "./surface-tests.js";
 import { identifierRegex } from "./component-source.js";
+import ts from "typescript";
 
-/**
- * Map a channel `valueType` to a placeholder JS literal for use in
- * generated render-only test JSX. The emitter previously hardcoded
- * `{false}` for every controlled channel, which produced TS2322
- * errors when the channel type was actually string, number, union,
- * or Date.
- *
- * Corpus value types currently include:
- *   - boolean
- *   - string
- *   - string | string[]
- *   - number
- *   - Date | Date[] | null
- *
- * The placeholder is used in render-only assertions (`expect(() =>
- * render(...)).not.toThrow()`) — the actual value doesn't matter
- * semantically; it just has to be type-assignable so the emitted
- * JSX passes tsc.
- */
 /**
  * Extract type alias names from required-prop placeholder
  * expressions. Names follow the pattern `{} as Name` (object alias
@@ -55,27 +37,67 @@ function collectRequiredPropTypeImports(plan: {
   return out;
 }
 
-function channelValuePlaceholder(valueType: string | undefined): string {
-  // A union is satisfied by any one arm, in any order: a nullable channel
-  // by null, otherwise by a value of its first arm.
-  const arms = (valueType ?? "").split("|").map((arm) => arm.trim()).filter(Boolean);
-  if (arms.includes("null")) return "null";
-  const [arm] = arms;
-  if (arm === "boolean") return "false";
-  if (arm === "number") return "0";
-  if (arm === "string") return '""';
-  if (arm === "Date") return "new Date(0)";
-  // Array channels (e.g. Shuttle's selection: string[]). An empty array
-  // satisfies any array-typed prop and is the cleanest no-op placeholder.
-  if (arm?.endsWith("[]")) return "[]";
-  // Unknown / unspecified valueType. Default to `false` to match the
-  // pre-fix behavior for boolean channels (which is the common case)
-  // and avoid surfacing the unknown placeholder as a regression. New
-  // valueTypes added later should extend the switch above explicitly;
-  // this fallback is intentionally not `null as never` because it
-  // would surface as a test-side TS-error for any channel whose
-  // contract author forgot to set valueType.
-  return "false";
+// Source fact: framework grammar, including bindings in preserved test code.
+// Applies by: free value references to the Vitest spy helper in the shared module.
+// Removable when: authored and generated tests no longer share imports.
+function needsSpyImport(sourceText: string): boolean {
+  const fileName = "/__fsds_test_imports__.tsx";
+  const file = ts.createSourceFile(fileName, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const references: ts.Identifier[] = [];
+  function visitTypeQueries(node: ts.Node): void {
+    // typeof requires a value binding even when it appears in erased syntax.
+    if (ts.isTypeQueryNode(node)) {
+      let name = node.exprName;
+      while (ts.isQualifiedName(name)) name = name.left;
+      if (name.text === "vi") references.push(name);
+    }
+    ts.forEachChild(node, visitTypeQueries);
+  }
+  function visit(node: ts.Node): void {
+    // Plain type names need no spy import. Retain value queries nested in
+    // their syntax, and keep class extends expressions on the value path.
+    if ((ts.isTypeNode(node) && (!ts.isExpressionWithTypeArguments(node) || ts.isPartOfTypeNode(node))) ||
+        ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) {
+      visitTypeQueries(node);
+      return;
+    }
+    if (ts.isImportDeclaration(node) || ts.isImportEqualsDeclaration(node)) return;
+    if (ts.isExportDeclaration(node) && (node.isTypeOnly || node.moduleSpecifier)) return;
+    if (ts.isExportSpecifier(node)) {
+      const local = node.propertyName ?? node.name;
+      if (!node.isTypeOnly && ts.isIdentifier(local) && local.text === "vi") references.push(local);
+      return;
+    }
+    if (ts.isIdentifier(node) && node.text === "vi") {
+      const parent = node.parent;
+      const declarationName = (parent as ts.NamedDeclaration).name === node &&
+        !ts.isShorthandPropertyAssignment(parent);
+      const bindingKey = ts.isBindingElement(parent) && parent.propertyName === node;
+      const label = (ts.isLabeledStatement(parent) || ts.isBreakStatement(parent) || ts.isContinueStatement(parent)) &&
+        parent.label === node;
+      const intrinsicTag = (ts.isJsxOpeningElement(parent) || ts.isJsxClosingElement(parent) ||
+        ts.isJsxSelfClosingElement(parent)) && parent.tagName === node;
+      if (!declarationName && !bindingKey && !label && !intrinsicTag) references.push(node);
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(file);
+  if (references.length === 0) return false;
+  const compilerOptions: ts.CompilerOptions = { noLib: true, noResolve: true, noEmit: true, module: ts.ModuleKind.ESNext };
+  const host = ts.createCompilerHost(compilerOptions);
+  host.getSourceFile = (name) => name === fileName ? file : undefined;
+  const checker = ts.createProgram([fileName], compilerOptions, host).getTypeChecker();
+  return references.some((reference) => {
+    const parent = reference.parent;
+    // A shorthand's ordinary symbol is the object property, not its value's
+    // lexical binding. Ask for the value symbol so an unbound { vi } is kept.
+    const symbol = ts.isShorthandPropertyAssignment(parent)
+      ? checker.getShorthandAssignmentValueSymbol(parent)
+      : ts.isExportSpecifier(parent)
+        ? checker.getExportSpecifierLocalTargetSymbol(parent)
+        : checker.getSymbolAtLocation(reference);
+    return !symbol;
+  });
 }
 
 export interface ReactTestEmitOptions {
@@ -204,8 +226,8 @@ export function generateReactTest(
     lines.push(`  });`);
   }
 
-  // Channel interaction tests — one per normalized channel
-  for (const testCase of plan.channels) {
+  // Only name a callback behavior when the plan supplies a reachable action.
+  for (const testCase of plan.channels.filter((entry) => entry.interaction !== "render-only")) {
     const { channel, spyName } = testCase;
     lines.push(``);
     lines.push(
@@ -222,23 +244,6 @@ export function generateReactTest(
         `    await userEvent.setup().click(screen.getByTestId("${plan.testId}"));`,
       );
       lines.push(`    expect(${spyName}).toHaveBeenCalled();`);
-    } else if (testCase.interaction === "render-only") {
-      // Overlay component (Modal, Tooltip, Dropdown): clicking the root does
-      // not toggle the channel — verify the handler prop is accepted without throwing.
-      // Suppress `renderProps` when the channel's valueProp matches
-      // plan.renderOpenProp; otherwise the emitted JSX has both
-      // `${valueProp}=...` and `${renderOpenProp}={true}` on the same
-      // element (TS17001 / React duplicate-attr).
-      const renderPropsForChannel =
-        plan.renderOpenProp === channel.valueProp ? "" : renderProps;
-      // Placeholder typed by channel.valueType. Previously hardcoded
-      // `{false}`, which produced TS2322 for string/number/union/Date
-      // channels (Calendar, Accordion, Command, OTP, Select, Tabs,
-      // TextField, Walkthrough).
-      const placeholder = channelValuePlaceholder(channel.valueType);
-      lines.push(
-        `    expect(() => render(<${plan.name} data-testid="${plan.testId}"${requiredPropsAttrs} ${channel.valueProp}={${placeholder}} ${channel.changeHandlerProp}={${spyName}}${renderPropsForChannel}${closer})).not.toThrow();`,
-      );
     } else {
       // Non-boolean channel: fire a synthetic change event with target.value
       lines.push(
@@ -420,13 +425,14 @@ export function generateReactTest(
   const usesAct = /\bact\(/.test(testsBody);
   const usesFireEvent = /\bfireEvent\./.test(testsBody);
   const usesUserEvent = /\buserEvent\./.test(testsBody);
+  const usesVi = needsSpyImport(usageHaystack);
   const allImports = [
     plan.name,
     ...usedCompoundImports,
     ...usedRequiredPropTypeImports.map((name) => `type ${name}`),
   ].join(", ");
   const importsBody = [
-    `import { describe, it, expect${plan.hasBehaviorTests ? ", vi" : ""} } from "vitest";`,
+    `import { describe, it, expect${usesVi ? ", vi" : ""} } from "vitest";`,
     `import { render, screen${usesAct ? ", act" : ""}${usesFireEvent ? ", fireEvent" : ""} } from "@testing-library/react";`,
     ...(usesUserEvent
       ? [`import userEvent from "@testing-library/user-event";`]

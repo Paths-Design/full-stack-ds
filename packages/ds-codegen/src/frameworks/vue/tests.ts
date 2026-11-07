@@ -38,7 +38,11 @@ export function generateVueTest(ir: ComponentIR): string {
   // components already have exhaustive custom test blocks. Only emit
   // interaction tests for stack-only components where @click/@change on the
   // root wrapper correctly reaches the prop handler.
-  const emitChannelInteraction = plan.channels.length > 0 && !ir.dom;
+  // Omit channel cases whose action this test backend cannot exercise.
+  const channelInteractions = !ir.dom
+    ? plan.channels.filter((entry) => entry.interaction !== "render-only")
+    : [];
+  const emitChannelInteraction = channelInteractions.length > 0;
   // The vitest import set is derived from emitted-body usage: `vi` is
   // imported only when the generated tests section itself references it
   // (the vi.fn() spies emitted below). @custom test blocks import their
@@ -148,7 +152,7 @@ export function generateVueTest(ir: ComponentIR): string {
   }
 
   if (emitChannelInteraction) {
-    for (const testCase of plan.channels) {
+    for (const testCase of channelInteractions) {
       const { channel, spyName } = testCase;
       lines.push(``);
       lines.push(
@@ -167,10 +171,6 @@ export function generateVueTest(ir: ComponentIR): string {
         );
         lines.push(`    await wrapper.trigger("change");`);
         lines.push(`    expect(${spyName}).toHaveBeenCalled();`);
-      } else {
-        lines.push(
-          `    expect(() => ${mountExpression(plan.name, plan, { props: { [channel.valueProp]: false, [channel.changeHandlerProp]: { code: spyName } } })}).not.toThrow();`,
-        );
       }
       lines.push(`  });`);
     }

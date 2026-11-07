@@ -211,7 +211,7 @@ export function keyedLeaves(value: unknown, source: LeafSource, roles: Map<strin
   return out;
 }
 
-// Cache syntax, never classification results: values and rule order are live inputs.
+// Shared caches hold syntax, never classification results: values and rule order are live inputs.
 const segmentPatterns = new Map<string, RegExp>();
 const pointerPatterns = new Map<string, string[]>();
 const valuePatterns = new Map<string, RegExp>();
@@ -274,14 +274,18 @@ function valueTest(condition: { valueIn?: (string | number | boolean | null)[]; 
  * distinguish facts the identity-keyed pointer collapses (a DOM button
  * `type` versus an item group selection `type`) without component identity.
  */
-function ruleMatches(rule: BoundaryRule, leaf: Leaf, contractLeaves?: readonly Leaf[]): boolean {
+function ruleMatches(rule: BoundaryRule, leaf: Leaf, contractLeaves?: readonly Leaf[], prerequisiteResults?: Map<BoundaryRule, boolean>): boolean {
   // Cheap pointer test first: a precondition scan is only worth doing for the
   // leaves this rule's family can match.
   if (!rule.match.some(pattern => patternMatches(pattern, leaf))) return false;
   if (rule.requiresAny) {
-    const leaves = contractLeaves ?? [];
-    const applies = rule.requiresAny.some(condition =>
-      leaves.some(candidate => condition.match.some(pattern => patternMatches(pattern, candidate)) && valueTest(condition, candidate)));
+    let applies = prerequisiteResults?.get(rule);
+    if (applies === undefined) {
+      const leaves = contractLeaves ?? [];
+      applies = rule.requiresAny.some(condition =>
+        leaves.some(candidate => condition.match.some(pattern => patternMatches(pattern, candidate)) && valueTest(condition, candidate)));
+      prerequisiteResults?.set(rule, applies);
+    }
     if (!applies) return false;
   }
   if (!valueTest(rule, leaf)) return false;
@@ -386,7 +390,11 @@ export function loadBoundary(): Boundary {
 
 /** First matching rule wins; rule order in the file is authoritative. */
 export function classifyLeaf(leaf: Leaf, boundary: Boundary = loadBoundary(), contractLeaves?: readonly Leaf[]): ClassifiedLeaf {
-  const rule = boundary.rules.find(r => ruleMatches(r, leaf, contractLeaves));
+  return classifyLeafInContext(leaf, boundary, contractLeaves);
+}
+
+function classifyLeafInContext(leaf: Leaf, boundary: Boundary, contractLeaves?: readonly Leaf[], prerequisiteResults?: Map<BoundaryRule, boolean>): ClassifiedLeaf {
+  const rule = boundary.rules.find(r => ruleMatches(r, leaf, contractLeaves, prerequisiteResults));
   return rule
     ? { ...leaf, rule: rule.id, disposition: rule.disposition, catchAll: rule.catchAll === true }
     : { ...leaf, rule: null, disposition: "unclassified", catchAll: false };
@@ -439,7 +447,10 @@ export function contractLeaves(contract: ContractWithSidecars): Leaf[] {
 
 export function classifyContract(contract: ContractWithSidecars, boundary: Boundary = loadBoundary()): ClassifiedLeaf[] {
   const leaves = contractLeaves(contract);
-  return leaves.map(leaf => classifyLeaf(leaf, boundary, leaves));
+  // These leaves are fixed for this invocation. Share only each rule object's
+  // contract-wide prerequisite result; later calls and direct leaf calls are fresh.
+  const prerequisiteResults = new Map<BoundaryRule, boolean>();
+  return leaves.map(leaf => classifyLeafInContext(leaf, boundary, leaves, prerequisiteResults));
 }
 
 const describe = (leaves: ClassifiedLeaf[]): string =>

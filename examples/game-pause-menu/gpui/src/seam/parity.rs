@@ -17,7 +17,7 @@ use std::fmt;
 use serde::Deserialize;
 
 use super::tokens::{TokenProvenance, resolve_palette, resolve_type_scale};
-use super::types::hex_rgb;
+use super::types::{MapIcon, hex_rgb};
 
 pub const PARITY_LAYOUT_JSON: &str =
     include_str!("../../fixtures/parity-layout.json");
@@ -176,6 +176,11 @@ pub struct TypeScale {
 }
 
 impl TypeScale {
+    pub fn size(&self, name: &str) -> Option<f32> {
+        let mut copy = *self;
+        copy.slot_mut(name).map(|value| *value)
+    }
+
     pub(crate) fn apply_tokens(&mut self, sizes: &BTreeMap<String, f32>) -> Result<(), ParityError> {
         for name in [
             "wordmark", "mission", "statLabel", "statValue", "statSub", "chip", "tab",
@@ -471,6 +476,53 @@ pub struct PopoverSpec {
     pub title: String,
     pub action: String,
     pub cancel: String,
+    pub content: PopoverContentLayout,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct PopoverPartLayout {
+    pub rect: Rect,
+    #[serde(rename = "type")]
+    pub type_key: String,
+    pub weight: u32,
+    pub color: String,
+    #[serde(default)]
+    pub background: Option<String>,
+    #[serde(default)]
+    pub border: Option<String>,
+    #[serde(default)]
+    pub template: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PopoverContentLayout {
+    pub title: PopoverPartLayout,
+    pub status: PopoverPartLayout,
+    pub meta: PopoverPartLayout,
+    pub body: PopoverPartLayout,
+    pub reward: PopoverPartLayout,
+    pub action: PopoverPartLayout,
+    pub cancel: PopoverPartLayout,
+    pub background: String,
+    pub border: String,
+    pub border_width: f32,
+    pub accent: String,
+    pub accent_width: f32,
+}
+
+impl PopoverContentLayout {
+    pub fn parts(&self) -> [(&str, &PopoverPartLayout); 7] {
+        [("title", &self.title), ("status", &self.status), ("meta", &self.meta),
+         ("body", &self.body), ("reward", &self.reward), ("action", &self.action),
+         ("cancel", &self.cancel)]
+    }
+
+    pub fn metadata(&self, icon: &MapIcon) -> String {
+        self.meta.template.as_deref().expect("validated popover metadata template")
+            .replace("{sector}", &icon.sector)
+            .replace("{distanceKm}", &format!("{:.1}", icon.distance_km))
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -676,8 +728,49 @@ pub struct SettingsLayout {
     pub binding_button: FixedBox,
     pub dropdown: FixedBox,
     pub swatch: SwatchSpec,
-    pub preview: Rect,
+    pub preview: PreviewLayout,
     pub remap_modal: RemapModalSpec,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct PreviewPartLayout {
+    pub rect: Rect,
+    #[serde(rename = "type")]
+    pub type_key: String,
+    pub weight: u32,
+    #[serde(default)]
+    pub template: Option<String>,
+    #[serde(rename = "case", default)]
+    pub case_transform: Option<String>,
+    #[serde(default)]
+    pub align: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct PreviewContentLayout {
+    pub line: PreviewPartLayout,
+    pub meta: PreviewPartLayout,
+}
+
+impl PreviewContentLayout {
+    pub fn metadata(&self, language: &str, background_label: &str) -> String {
+        self.meta.template.as_deref().expect("validated preview metadata template")
+            .replace("{language}", language).replace("{background}", background_label).to_uppercase()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct PreviewLayout {
+    pub x: f32,
+    pub y: f32,
+    pub w: f32,
+    pub h: f32,
+    pub content: PreviewContentLayout,
+}
+
+impl PreviewLayout {
+    pub fn rect(&self) -> Rect { Rect { x: self.x, y: self.y, w: self.w, h: self.h } }
+    pub fn bottom(&self) -> f32 { self.y + self.h }
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -961,6 +1054,8 @@ fn validate(layout: &ParityLayout) -> Result<(), ParityError> {
     validate_colours(layout)?;
     validate_captures(layout)?;
     validate_icon_art(layout)?;
+    validate_popover(layout)?;
+    validate_preview(layout)?;
     Ok(())
 }
 
@@ -970,6 +1065,63 @@ fn check_rect(name: &str, rect: Rect, viewport: Size) -> Result<(), ParityError>
     }
     if rect.right() > viewport.width + 0.5 || rect.bottom() > viewport.height + 0.5 {
         return Err(invalid(format!("{name} extends beyond the viewport")));
+    }
+    Ok(())
+}
+
+fn validate_popover(layout: &ParityLayout) -> Result<(), ParityError> {
+    let popover = &layout.map.popover;
+    let content = &popover.content;
+    let bounds = Size { width: popover.w, height: popover.h };
+    for (name, part) in content.parts() {
+        check_rect(&format!("map.popover.content.{name}.rect"), part.rect, bounds)?;
+        if layout.type_scale.size(&part.type_key).is_none_or(|size| size <= 0.0)
+            || ![400, 700].contains(&part.weight) {
+            return Err(invalid(format!("map.popover.content.{name} has invalid typography")));
+        }
+        for color in [Some(part.color.as_str()), part.background.as_deref(), part.border.as_deref()]
+            .into_iter().flatten() {
+            if layout.colors.role(color).is_none() {
+                return Err(invalid(format!("map.popover.content.{name} references unknown colour role '{color}'")));
+            }
+        }
+    }
+    for color in [&content.background, &content.border, &content.accent] {
+        if layout.colors.role(color).is_none() {
+            return Err(invalid("map.popover.content frame references unknown colour role"));
+        }
+    }
+    if content.status.background.is_none() || content.status.border.is_none()
+        || !content.border_width.is_finite() || content.border_width < 0.0
+        || !content.accent_width.is_finite() || content.accent_width < 0.0
+        || content.accent_width > popover.h {
+        return Err(invalid("map.popover.content has invalid frame or status styling"));
+    }
+    let template = content.meta.template.as_deref().unwrap_or("");
+    if !template.contains("{sector}") || !template.contains("{distanceKm}")
+        || template.replace("{sector}", "").replace("{distanceKm}", "").contains(['{', '}']) {
+        return Err(invalid("map.popover.content.meta.template must bind sector and distanceKm only"));
+    }
+    Ok(())
+}
+
+fn validate_preview(layout: &ParityLayout) -> Result<(), ParityError> {
+    let preview = &layout.settings.preview;
+    for (name, part) in [("line", &preview.content.line), ("meta", &preview.content.meta)] {
+        check_rect(&format!("settings.preview.content.{name}.rect"), part.rect,
+            Size { width: preview.w, height: preview.h })?;
+        if layout.type_scale.size(&part.type_key).is_none_or(|size| size <= 0.0)
+            || ![400, 700].contains(&part.weight) {
+            return Err(invalid(format!("settings.preview.content.{name} has invalid typography")));
+        }
+    }
+    let meta = &preview.content.meta;
+    let template = meta.template.as_deref().unwrap_or("");
+    let remaining = template.replace("{language}", "").replace("{background}", "");
+    if !template.contains("{language}") || !template.contains("{background}")
+        || remaining.contains(['{', '}']) || meta.case_transform.as_deref() != Some("upper")
+        || meta.align.as_deref() != Some("right") {
+        return Err(invalid("settings.preview.content.meta must bind language and background with upper case and right alignment"));
     }
     Ok(())
 }
@@ -1082,7 +1234,7 @@ fn validate_rects(layout: &ParityLayout) -> Result<(), ParityError> {
         ("abilities.gridPanel", layout.abilities.grid_panel),
         ("abilities.detailPanel", layout.abilities.detail_panel),
         ("abilities.hoverPopover", layout.abilities.hover_popover),
-        ("settings.preview", layout.settings.preview),
+        ("settings.preview", layout.settings.preview.rect()),
         (
             "settings.remapModal",
             Rect {

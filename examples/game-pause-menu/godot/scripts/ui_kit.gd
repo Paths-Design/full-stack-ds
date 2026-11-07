@@ -66,6 +66,11 @@ static func place(control: Control, x: float, y: float, width: float, height: fl
 	control.position = Vector2(x, y)
 	control.size = Vector2(width, height)
 	control.custom_minimum_size = Vector2(width, height)
+	# Labels can retain the larger default-font minimum used before entering the
+	# tree, even after their explicit font lowers that minimum. Reapply the box
+	# after the ready/font pass so centring uses the declared rectangle.
+	if control is Label:
+		control.set_deferred("size", Vector2(width, height))
 
 
 static func place_rect(control: Control, rect_value: Rect2) -> void:

@@ -1,3 +1,12 @@
+---
+doc_id: REF-PREFORMATTED-CONTENT-001
+authority: reference
+status: active
+title: Preformatted content
+owner: "@darianrosebrook"
+updated: 2026-11-05
+---
+
 # Preformatted content
 
 `CODEBLOCK-PREFORMATTED-WHITESPACE-01` repairs a browser finding where Vue and

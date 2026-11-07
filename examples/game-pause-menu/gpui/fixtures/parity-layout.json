@@ -252,7 +252,7 @@
     "fieldNote": {
       "x": 48,
       "yOffsetFromFieldBottom": -26,
-      "text": "MARKERS 7/8 VISIBLE \u00b7 CLICK A MARKER FOR DETAIL \u00b7 ORANGE = NAV TARGET"
+      "text": "MARKERS {visible}/{total} VISIBLE \u00b7 CLICK A MARKER FOR DETAIL \u00b7 ORANGE = NAV TARGET"
     },
     "iconPanel": {
       "x": 912,
@@ -261,7 +261,7 @@
       "h": 552
     },
     "iconPanelTitle": "ICON VISIBILITY",
-    "iconPanelMeta": "7/8 PLOTTED",
+    "iconPanelMeta": "{visible}/{total} PLOTTED",
     "iconRows": {
       "x": 928,
       "firstY": 224,
@@ -286,7 +286,94 @@
       "h": 232,
       "title": "DISTRESS BEACON",
       "action": "SET AS NAV TARGET",
-      "cancel": "CLOSE"
+      "cancel": "CLOSE",
+      "content": {
+        "title": {
+          "rect": {
+            "x": 16,
+            "y": 14,
+            "w": 328,
+            "h": 28
+          },
+          "type": "title",
+          "weight": 700,
+          "color": "boneBright"
+        },
+        "status": {
+          "rect": {
+            "x": 16,
+            "y": 48,
+            "w": 84,
+            "h": 18
+          },
+          "type": "micro",
+          "weight": 700,
+          "color": "boneBright",
+          "background": "graphite",
+          "border": "ruleStrong"
+        },
+        "meta": {
+          "rect": {
+            "x": 112,
+            "y": 50,
+            "w": 232,
+            "h": 16
+          },
+          "type": "micro",
+          "weight": 400,
+          "color": "muted",
+          "template": "{sector} \u00b7 {distanceKm} KM"
+        },
+        "body": {
+          "rect": {
+            "x": 16,
+            "y": 78,
+            "w": 328,
+            "h": 88
+          },
+          "type": "body",
+          "weight": 400,
+          "color": "bone"
+        },
+        "reward": {
+          "rect": {
+            "x": 16,
+            "y": 174,
+            "w": 328,
+            "h": 14
+          },
+          "type": "micro",
+          "weight": 700,
+          "color": "signalHot"
+        },
+        "action": {
+          "rect": {
+            "x": 16,
+            "y": 194,
+            "w": 220,
+            "h": 28
+          },
+          "type": "rowLabel",
+          "weight": 700,
+          "color": "onSignal"
+        },
+        "cancel": {
+          "rect": {
+            "x": 244,
+            "y": 194,
+            "w": 100,
+            "h": 28
+          },
+          "type": "rowLabel",
+          "weight": 700,
+          "color": "boneBright"
+        },
+        "background": "charcoal",
+        "border": "ruleStrong",
+        "borderWidth": 1,
+        "accent": "signal",
+        "accentWidth": 2
+      }
     }
   },
   "progress": {
@@ -492,7 +579,32 @@
       "x": 664,
       "y": 694,
       "w": 576,
-      "h": 26
+      "h": 26,
+      "content": {
+        "line": {
+          "rect": {
+            "x": 8,
+            "y": 6,
+            "w": 390,
+            "h": 14
+          },
+          "type": "micro",
+          "weight": 400
+        },
+        "meta": {
+          "rect": {
+            "x": 400,
+            "y": 6,
+            "w": 168,
+            "h": 14
+          },
+          "type": "micro",
+          "weight": 700,
+          "template": "{language} \u00b7 {background}",
+          "case": "upper",
+          "align": "right"
+        }
+      }
     },
     "remapModal": {
       "x": 430,
@@ -862,33 +974,23 @@
       },
       {
         "state": "progress",
-        "id": "roster-name",
-        "color": "boneBright",
-        "x": 54,
-        "y": 230,
-        "w": 320,
-        "h": 20,
-        "text": "ARES LOGISTICS GUILD"
+        "id": "drawer-brief-label",
+        "color": "paperMuted",
+        "x": 46,
+        "y": 306,
+        "w": 100,
+        "h": 18,
+        "text": "BRIEF"
       },
       {
         "state": "progress",
-        "id": "roster-tagline",
-        "color": "muted",
-        "x": 54,
-        "y": 250,
-        "w": 280,
-        "h": 14,
-        "text": "FREIGHT, FUEL AND THE ROADS BETWEEN"
-      },
-      {
-        "state": "progress",
-        "id": "list-title",
-        "color": "boneBright",
-        "x": 38,
-        "y": 180,
-        "w": 240,
+        "id": "roster-meta",
+        "color": "textSecondary",
+        "x": 960,
+        "y": 186,
+        "w": 282,
         "h": 20,
-        "text": "FACTION ROSTER"
+        "text": "5 TRACKED · 3 ACCESSIBLE"
       },
       {
         "state": "progress",

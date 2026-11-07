@@ -163,6 +163,23 @@ namespace GamePauseMenu
             return text;
         }
 
+        public static Text MakePopoverText(ParityLayoutData layout, string content, PopoverPartLayout part,
+            string name, bool wrap = false)
+        {
+            var text = MakeText(layout, content, part.TypeKey, part.Color, part.Weight == 700,
+                part.Rect, TextAnchor.UpperLeft, wrap);
+            text.name = name;
+            return text;
+        }
+
+        public static void ApplyPopoverTypography(ParityLayoutData layout, VisualElement element,
+            PopoverPartLayout part)
+        {
+            element.style.fontSize = (float)layout.Size(part.TypeKey);
+            element.style.color = layout.Color(part.Color);
+            UseFont(element, part.Weight == 700);
+        }
+
         public static Divider MakeRule(ParityLayoutData layout, Color color, LayoutRect rect)
         {
             var divider = new Divider { Orientation = "horizontal" };
@@ -339,6 +356,7 @@ namespace GamePauseMenu
         {
             public Card Root;
             public CardHeader Header;
+            public Text Meta;
             public CardContent Body;
             public LayoutRect Rect;
             public double HeaderHeight;
@@ -396,6 +414,7 @@ namespace GamePauseMenu
             body.style.marginBottom = 0;
             root.Add(body);
             panel.Header = header;
+            panel.Meta = metaText;
             panel.Body = body;
             return panel;
         }
