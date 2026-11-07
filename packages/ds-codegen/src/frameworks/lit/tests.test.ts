@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import ts from "typescript";
 import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { corpusIR } from "../corpus-fixtures.js";
@@ -19,6 +20,80 @@ describe("generateLitTest", () => {
   it("emits channel behavior assertions for a boolean channel", () => {
     const source = generateLitTest(buildComponentIR(makeContract()));
     expect(source).toContain("checked");
+  });
+
+  it("disconnects only its own fixtures after successful and failed renders", async () => {
+    const cleanup: Array<() => void> = [];
+    const emitted: {
+      renderElement?: (tag: string, props?: Record<string, unknown>) => Promise<{ element: HTMLElement }>;
+    } = {};
+    const source = generateLitTest(buildComponentIR(makeContract()));
+    const javascript = ts.transpileModule(`${source}\nexport { renderElement };`, {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    }).outputText;
+    const require = (name: string) => name === "vitest" ? {
+      afterEach: (callback: () => void) => cleanup.push(callback),
+      describe: () => {},
+    } : {};
+    new Function("require", "exports", javascript)(require, emitted);
+    expect(cleanup).toHaveLength(1);
+    expect(emitted.renderElement).toBeTypeOf("function");
+    const render = emitted.renderElement!;
+
+    let notifications = 0;
+    let disconnections = 0;
+    class LifecycleFixture extends HTMLElement {
+      updateComplete = Promise.resolve();
+      private notify = () => { notifications++; };
+      connectedCallback() { document.addEventListener("fixture-notification", this.notify); }
+      disconnectedCallback() {
+        disconnections++;
+        document.removeEventListener("fixture-notification", this.notify);
+      }
+    }
+    const tag = "fsds-test-fixture-lifetime";
+    customElements.define(tag, LifecycleFixture);
+    const sentinel = document.createElement("aside");
+    document.body.append(sentinel);
+    try {
+      const first = await render(tag);
+      const firstContainer = first.element.parentElement!;
+      document.dispatchEvent(new Event("fixture-notification"));
+      expect(notifications).toBe(1);
+      cleanup[0]();
+      expect(first.element.isConnected).toBe(false);
+      expect(firstContainer.isConnected).toBe(false);
+      expect(disconnections).toBe(1);
+      expect(sentinel.isConnected).toBe(true);
+      document.dispatchEvent(new Event("fixture-notification"));
+      expect(notifications).toBe(1);
+
+      // A rejected render must remain owned even though its helper never returns.
+      const failure = new Error("fixture update failed");
+      await expect(render(tag, { updateComplete: Promise.reject(failure) })).rejects.toBe(failure);
+      const failed = document.querySelector(tag)!;
+      expect(failed.isConnected).toBe(true);
+      cleanup[0]();
+      expect(failed.isConnected).toBe(false);
+      expect(disconnections).toBe(2);
+      expect(sentinel.isConnected).toBe(true);
+      document.dispatchEvent(new Event("fixture-notification"));
+      expect(notifications).toBe(1);
+
+      const next = await render(tag);
+      expect(next.element.isConnected).toBe(true);
+      expect(document.querySelectorAll(tag)).toHaveLength(1);
+      document.dispatchEvent(new Event("fixture-notification"));
+      expect(notifications).toBe(2);
+      cleanup[0]();
+      cleanup[0]();
+      expect(next.element.isConnected).toBe(false);
+      expect(disconnections).toBe(3);
+      expect(sentinel.isConnected).toBe(true);
+    } finally {
+      for (const dispose of cleanup) dispose();
+      sentinel.remove();
+    }
   });
 });
 

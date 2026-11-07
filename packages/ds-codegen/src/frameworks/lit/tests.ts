@@ -297,13 +297,19 @@ export function generateLitTest(ir: ComponentIR): string {
   const needsVi = emitChannelInteraction || emitEscape || emitOverlayClick;
 
   const importsBody = [
-    `import { describe, expect, it${needsVi ? ", vi" : ""} } from "vitest";`,
+    `import { afterEach, describe, expect, it${needsVi ? ", vi" : ""} } from "vitest";`,
     `import { axe } from "vitest-axe";`,
     `import "../${plan.name}";`,
   ].join("\n");
 
   const lines: string[] = [];
 
+  lines.push(`const renderedContainers = new Set<HTMLElement>();`);
+  lines.push(`afterEach(() => {`);
+  lines.push(`  for (const container of renderedContainers) container.remove();`);
+  lines.push(`  renderedContainers.clear();`);
+  lines.push(`});`);
+  lines.push(``);
   emitComponentAxeOptions(lines);
   const hasRequiredProps = plan.requiredProps.length > 0;
   if (hasRequiredProps) {
@@ -788,6 +794,7 @@ export function generateLitTest(ir: ComponentIR): string {
   // from prior test renders when scoping to this element's context.
   lines.push(`  const container = document.createElement("div");`);
   lines.push(`  container.append(element);`);
+  lines.push(`  renderedContainers.add(container);`);
   lines.push(`  document.body.append(container);`);
   if (!hasRequiredProps) {
     lines.push(`  await customElements.whenDefined(tagName);`);
