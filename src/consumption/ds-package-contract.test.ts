@@ -54,12 +54,19 @@ async function runOwnedCommand(
   let stderr = "";
   let failure: Error | undefined;
   const cleanupErrors: unknown[] = [];
-  const terminateGroup = () => {
-    if (child.pid === undefined) return;
+  let groupTerminationSettled = false;
+  const terminateGroup = (phase: "command-error" | "watchdog" | "after-close") => {
+    if (child.pid === undefined || groupTerminationSettled) return;
     try {
       process.kill(-child.pid, "SIGKILL");
+      // An accepted SIGKILL is terminal; do not target the group again after reaping.
+      groupTerminationSettled = true;
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "ESRCH") cleanupErrors.push(error);
+      if ((error as NodeJS.ErrnoException).code === "ESRCH") {
+        groupTerminationSettled = true;
+      } else {
+        cleanupErrors.push(Object.assign(error as Error, { cleanupPhase: phase, processGroupId: child.pid }));
+      }
     }
   };
   child.stdout.setEncoding("utf8").on("data", (data: string) => { stdout += data; });
@@ -73,13 +80,13 @@ async function runOwnedCommand(
   });
   child.once("error", (error) => {
     failure ??= error;
-    terminateGroup();
+    terminateGroup("command-error");
   });
   const watchdog = setTimeout(() => {
     failure ??= Object.assign(new Error(`${command} timed out after ${timeoutMs}ms`), {
       code: "COMMAND_TIMEOUT",
     });
-    terminateGroup();
+    terminateGroup("watchdog");
     closeDeadline = setTimeout(() => {
       reportClosed({ closeError: Object.assign(new Error(
         `${command}: owned process group ${child.pid} did not close within ${closeTimeoutMs}ms after termination`,
@@ -98,7 +105,7 @@ async function runOwnedCommand(
       failure = Object.assign(new Error(`${command} exited with ${signal ?? code}`), { code, signal });
     }
     // A command can close its own streams while leaving a descendant alive.
-    terminateGroup();
+    terminateGroup("after-close");
   }
   if (failure) Object.assign(failure, { stdout, stderr, processGroupId: child.pid });
   if (cleanupErrors.length) {
@@ -260,6 +267,12 @@ describe("@full-stack-ds/react published consumption contract", () => {
 });
 
 describe("owned package-build command lifecycle", () => {
+  // Controlled waits fit inside each case's explicit budget, independently of
+  // the root runner's functional-test default. Readiness and PIDs remain real.
+  const CASE_TIMEOUT_MS = 5_000;
+  const COMMAND_TIMEOUT_MS = 2_000;
+  const CLOSE_TIMEOUT_MS = 500;
+  const PID_OBSERVATION_TIMEOUT_MS = 500;
   const controlledCommand = 'process.stdout.write("build output"); process.stderr.write("build diagnostic");';
   const descendant = 'require("node:fs").writeFileSync(process.argv[1], "ready"); setInterval(() => {}, 1000);';
   const runningCommand = `
@@ -288,21 +301,36 @@ describe("owned package-build command lifecycle", () => {
   it("captures successful command diagnostics before resolving", async () => {
     await expect(runOwnedCommand(process.execPath, ["-e", controlledCommand], {
       cwd: REPO_ROOT,
-      timeoutMs: 5_000,
+      timeoutMs: COMMAND_TIMEOUT_MS,
+      closeTimeoutMs: CLOSE_TIMEOUT_MS,
     })).resolves.toEqual({ stdout: "build output", stderr: "build diagnostic" });
-  });
+  }, CASE_TIMEOUT_MS);
 
   it("preserves a nonzero command failure and both diagnostic streams", async () => {
     await expect(runOwnedCommand(process.execPath, ["-e", controlledCommand + "process.exit(7);"], {
       cwd: REPO_ROOT,
-      timeoutMs: 5_000,
+      timeoutMs: COMMAND_TIMEOUT_MS,
+      closeTimeoutMs: CLOSE_TIMEOUT_MS,
     })).rejects.toMatchObject({ code: 7, stdout: "build output", stderr: "build diagnostic" });
-  });
+  }, CASE_TIMEOUT_MS);
 
   it("stops a timed-out command and its descendant while preserving an independent sibling", async () => {
     const directory = mkdtempSync(join(tmpdir(), "fsds-package-command-"));
     const pids = join(directory, "pids.json");
     const ready = join(directory, "descendant-ready");
+    const originalKill = process.kill.bind(process);
+    let signaledGroup: number | undefined;
+    const repeatedSignal = Object.assign(new Error("controlled repeated terminal signal denial"), { code: "EPERM" });
+    const kill = vi.spyOn(process, "kill").mockImplementation((pid, signal) => {
+      if (pid < 0 && signal === "SIGKILL") {
+        // The first request really kills the fixture; only a repeated request is denied.
+        if (signaledGroup === pid) throw repeatedSignal;
+        const result = originalKill(pid, signal);
+        signaledGroup = pid;
+        return result;
+      }
+      return originalKill(pid, signal);
+    });
     const sibling = spawn(process.execPath, ["-e", "setInterval(() => {}, 1000);"], { stdio: "ignore" });
     const siblingClosed = new Promise<void>((resolve, reject) => {
       sibling.once("close", () => resolve());
@@ -310,6 +338,7 @@ describe("owned package-build command lifecycle", () => {
     });
     let fixtureStopped = false;
     onTestFinished(async () => {
+      kill.mockRestore();
       try {
         // This independent cleanup also runs if an assertion or the test times out.
         if (!fixtureStopped && existsSync(pids)) {
@@ -328,18 +357,20 @@ describe("owned package-build command lifecycle", () => {
     });
     await expect(runOwnedCommand(process.execPath, ["-e", runningCommand, pids, ready], {
       cwd: REPO_ROOT,
-      timeoutMs: 5_000,
+      timeoutMs: COMMAND_TIMEOUT_MS,
+      closeTimeoutMs: CLOSE_TIMEOUT_MS,
     })).rejects.toMatchObject({ code: "COMMAND_TIMEOUT" });
     expect(existsSync(ready)).toBe(true);
     const ownedPids = JSON.parse(readFileSync(pids, "utf8")) as number[];
     expect(ownedPids).toHaveLength(2);
+    expect(kill.mock.calls).toEqual([[-ownedPids[0], "SIGKILL"]]);
     for (const pid of ownedPids) {
-      await expect.poll(() => isRunning(pid), { timeout: 5_000 }).toBe(false);
+      await expect.poll(() => isRunning(pid), { timeout: PID_OBSERVATION_TIMEOUT_MS }).toBe(false);
     }
     expect(sibling.pid).toBeDefined();
     expect(await isRunning(sibling.pid!)).toBe(true);
     fixtureStopped = true;
-  });
+  }, CASE_TIMEOUT_MS);
 
   it("reports a denied group termination and bounded missing-close failure before independently reaping its fixture", async () => {
     const directory = mkdtempSync(join(tmpdir(), "fsds-package-denial-"));
@@ -372,7 +403,7 @@ describe("owned package-build command lifecycle", () => {
           }
         }
         for (const pid of ownedPids) {
-          await expect.poll(() => isRunning(pid), { timeout: 5_000 }).toBe(false);
+          await expect.poll(() => isRunning(pid), { timeout: PID_OBSERVATION_TIMEOUT_MS }).toBe(false);
         }
       } finally {
         rmSync(directory, { recursive: true, force: true });
@@ -383,8 +414,8 @@ describe("owned package-build command lifecycle", () => {
     try {
       const error = await runOwnedCommand(process.execPath, ["-e", runningCommand, pids, ready], {
         cwd: REPO_ROOT,
-        timeoutMs: 5_000,
-        closeTimeoutMs: 1_000,
+        timeoutMs: COMMAND_TIMEOUT_MS,
+        closeTimeoutMs: CLOSE_TIMEOUT_MS,
       }).catch((error: unknown) => error);
       expect(error).toBeInstanceOf(AggregateError);
       const failures = (error as AggregateError).errors;
@@ -395,11 +426,12 @@ describe("owned package-build command lifecycle", () => {
       const ownedPids = JSON.parse(readFileSync(pids, "utf8")) as number[];
       expect(ownedPids).toHaveLength(2);
       expect(deniedGroup).toBe(-ownedPids[0]);
+      expect(denial).toMatchObject({ cleanupPhase: "watchdog", processGroupId: ownedPids[0] });
       for (const pid of ownedPids) expect(await isRunning(pid)).toBe(true);
     } finally {
       await reapFixture();
     }
-  });
+  }, CASE_TIMEOUT_MS);
 
   it("preserves the primary command failure when owned cleanup also reports an error", async () => {
     const originalKill = process.kill.bind(process);
@@ -415,16 +447,18 @@ describe("owned package-build command lifecycle", () => {
     try {
       const error = await runOwnedCommand(process.execPath, ["-e", controlledCommand + "process.exit(7);"], {
         cwd: REPO_ROOT,
-        timeoutMs: 5_000,
+        timeoutMs: COMMAND_TIMEOUT_MS,
+        closeTimeoutMs: CLOSE_TIMEOUT_MS,
       }).catch((error: unknown) => error);
       expect(error).toBeInstanceOf(AggregateError);
       const failures = (error as AggregateError).errors;
       expect(failures[0]).toMatchObject({ code: 7, stdout: "build output", stderr: "build diagnostic" });
       expect(failures).toContain(cleanupFailure);
+      expect(cleanupFailure).toMatchObject({ cleanupPhase: "after-close", processGroupId: expect.any(Number) });
       expect(kill).toHaveBeenCalledWith(expect.any(Number), "SIGKILL");
       expect(kill.mock.calls.every(([pid]) => pid < 0)).toBe(true);
     } finally {
       kill.mockRestore();
     }
-  });
+  }, CASE_TIMEOUT_MS);
 });
