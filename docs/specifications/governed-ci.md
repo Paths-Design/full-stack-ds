@@ -5,7 +5,7 @@ status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
 updated: 2026-11-06
-verified_at_commit: da97894c647d63ee20f466aed2b49159ac5c3d92
+verified_at_commit: 38201b4248ad04002db3f27c6475a2af37bcca1d
 governs:
   - package.json
   - pnpm-lock.yaml
@@ -209,8 +209,8 @@ documentation gates. The root TypeScript command does not include those files.
 ### Functional test resources
 
 `pnpm test` runs both root Vitest shards in sequence. The root runner uses the
-threads pool, a finite 30-second functional-test default and the dot reporter. Explicit case
-and hook limits take precedence; the controlled process-cleanup fixtures retain
+threads pool, a finite 30-second functional-test default and the dot reporter.
+Explicit case and hook limits take precedence; the controlled process-cleanup fixtures retain
 their five-second case limits and the production package-build hook retains
 its 120-second limit. These checks exercise complete corpus, compiler, render
 and accessibility behavior; their runner allowance is not a product latency
