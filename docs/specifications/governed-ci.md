@@ -208,20 +208,23 @@ documentation gates. The root TypeScript command does not include those files.
 
 ### Functional test resources
 
-`pnpm test` runs both root Vitest shards in sequence. The root runner uses a
-finite 30-second functional-test default and the dot reporter. Explicit case
+`pnpm test` runs both root Vitest shards in sequence. The root runner uses the
+threads pool, a finite 30-second functional-test default and the dot reporter. Explicit case
 and hook limits take precedence; the controlled process-cleanup fixtures retain
 their five-second case limits and the production package-build hook retains
 its 120-second limit. These checks exercise complete corpus, compiler, render
 and accessibility behavior; their runner allowance is not a product latency
 contract.
 
-The root worker cap is at most four. On a shared host, use Vitest's supported fork
-limits to serialize work while retaining every test and assertion:
+The default root worker cap is at most four. Vitest's pool-specific environment
+options take precedence. On a shared host, use its thread limits for root tests
+and both thread and fork limits for a push, whose framework packages select
+their own pools. These resource limits retain every test and assertion:
 
 ```bash
-VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 pnpm test
-VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main
+VITEST_MAX_THREADS=1 VITEST_MIN_THREADS=1 pnpm test
+VITEST_MAX_THREADS=1 VITEST_MIN_THREADS=1 \
+  VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main
 ```
 
 The push runs the ordinary pre-push hook with those resource limits. It retains

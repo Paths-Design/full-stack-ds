@@ -63,7 +63,10 @@ export default defineConfig({
     // checks. Explicit case/hook deadlines override this finite allowance.
     testTimeout: 30_000,
     reporters: ["dot"],
-    // Bound CPU contention; VITEST_{MAX,MIN}_FORKS can serialize shared hosts.
+    // Vitest 3's fork transport can report false RPC timeouts across bounded
+    // synchronous cases (upstream #8297). Threads retain reporting and limits.
+    pool: "threads",
+    // Bound CPU contention; VITEST_{MAX,MIN}_THREADS can serialize shared hosts.
     maxWorkers: Math.min(4, Math.max(1, availableParallelism() - 1)),
     environment: "jsdom",
     setupFiles: ["./src/test-setup.ts"],

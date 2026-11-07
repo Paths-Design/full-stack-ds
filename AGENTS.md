@@ -71,8 +71,8 @@ pnpm exec vitest run path/to/file.test.ts
 pnpm exec vitest run -t "test name pattern"
 pnpm --filter @full-stack-ds/vue exec vitest run path/to/file.test.ts
 
-# Shared-host root tests (same cases and assertions, one fork)
-VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 pnpm test
+# Shared-host root tests (same cases and assertions, one thread)
+VITEST_MAX_THREADS=1 VITEST_MIN_THREADS=1 pnpm test
 
 # Type checking (separate per target because tsconfig differs)
 pnpm run typecheck                             # root + codegen
@@ -125,11 +125,12 @@ pnpm run docs:check-claims:fix                 # Rewrites stale marked counts in
 pnpm run docs:check-links                      # Tracked doc metadata/location + relative .md links
 ```
 
-The root Vitest runner gives functional tests 30 seconds and uses the dot
-reporter. Explicit case and hook deadlines take precedence, including the
-five-second controlled process-cleanup fixtures. On a shared host, the fork
-limits above also apply to the normal guarded push:
-`VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main`.
+The root Vitest runner uses the threads pool, gives functional tests 30 seconds
+and uses the dot reporter. Explicit case and hook deadlines take precedence,
+including the five-second controlled process-cleanup fixtures. Framework packages
+select their own pools. To serialize both thread and fork pools on a shared host,
+prefix the normal guarded push with both pairs:
+`VITEST_MAX_THREADS=1 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main`.
 
 `build:all` derives package order from workspace dependencies, runs existing
 workspace `build` scripts, and builds the root showcase last. Packages without
