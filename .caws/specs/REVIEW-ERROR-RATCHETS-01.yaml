@@ -2,7 +2,6 @@ id: REVIEW-ERROR-RATCHETS-01
 title: 'Repair corroborated callback, capture-state and documentation errors with recurring checks'
 mode: fix
 lifecycle_state: active
-worktree: review-error-ratchets
 created_at: '2026-11-05T23:17:20.604Z'
 updated_at: '2026-11-07T03:07:25.890Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
