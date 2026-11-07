@@ -170,13 +170,13 @@ evidence:
     artifact_path: scripts/docs-metadata-check.test.mjs
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A5
-    status: unchecked
-    evidence_ref: "Candidate ec8d6e55f on bound review-ratchet-push-repair passed ordinary pnpm test BOTH shards:400files5969tests, no skips or unhandled errors, Node22.19/rootthreads4/min1 with configured finite30sdefault and unchanged explicitcase/hookbudgets. Root source/fixtures and supportedthreadtransport are committed; raw tmp/review-errors/push-repair-thread-root.log. Paired35s blocking controls refute forks with and without singleyield; threads passed withoutRPCsuppression. Owner01a1addb retains fresh rail/generated/framework sequence now running and ordinary guarded main publication; A5 remains unchecked until required combined result and push are established. No remote update."
-    recorded_at: "2026-11-07T08:09:09.658Z"
-    command: "VITEST_MAX_THREADS=4 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 pnpm test"
+    status: pass
+    evidence_ref: "Observed candidate ec8d6e55f pass ordinary root tests400files5969cases, all five framework suites854/622/754/641/319cases, required-mode admission, fresh committed-output checks and all realization/derived-artifact ratchets. Merged source is byte-identical outside CAWS metadata. Ordinary git push origin main at1ee9ad26f completed0 after every selected full-hook gate; independent ls-remote matched1ee9ad26f and workingtree was clean. Node22.19/rootthreads4/min1/frameworkforks1; configured finite30s functional default with explicit case/hook limits preserved. Raw executions remain ignored at tmp/review-errors/push-repair-thread-*.log and push-main-threaded.log; tracked config identifies the tested source. CLI citation verification checks artifact/commit existence, not test execution. No fresh CI/browser/minimum SDK or global visual claim."
+    recorded_at: "2026-11-07T08:50:22.286Z"
+    command: "VITEST_MAX_THREADS=4 VITEST_MIN_THREADS=1 VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main"
     exit_code: 0
     artifact_path: vitest.config.ts
-    commit_sha: ec8d6e55f97c4484a99fd6f31777a16ac0c80eab
+    commit_sha: "1ee9ad26f197329b77817470356aa4ee4aa9dcb3"
   - criterion_id: A6
     status: pass
     evidence_ref: "Native regressions and fresh three-engine macOS captures verify shared seven-field popover rectangles and data-derived selected titles. The strengthened checker passed 375 colour probes, 147 typography measurements, 24 lane image pairs and 24 goldens. All unordered typography lane pairs are compared; the non-transitive triplet regression rejects the old anchor-only result. Text coverage is not OCR or global visual parity. Raw: tmp/review-errors/parity-goldens-final.log."
