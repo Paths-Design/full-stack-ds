@@ -3,7 +3,7 @@ title: 'Repair corroborated callback, capture-state and documentation errors wit
 mode: fix
 lifecycle_state: active
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-07T06:02:44.221Z'
+updated_at: '2026-11-07T06:02:59.407Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
@@ -60,6 +60,8 @@ scope:
     - packages/ds-codegen/src/analytical/authority.test.ts
     - src/consumption/ds-package-contract.test.ts
     - packages/ds-codegen/src/frameworks/unity/capabilities.test.ts
+    - vitest.config.ts
+    - packages/ds-codegen/src/analytical/erasure-plan.test.ts
   out: []
   support:
     - packages/ds-unity
