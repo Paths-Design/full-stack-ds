@@ -17,16 +17,99 @@
  * Covers acceptance A1 (exports map resolves), A2 (built entrypoint exports the
  * component surface), A3 (styles.css carries component selectors).
  */
-import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { execFile, spawn } from "node:child_process";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { beforeAll, describe, expect, it } from "vitest";
+import { promisify } from "node:util";
+import { beforeAll, describe, expect, it, onTestFinished, vi } from "vitest";
 
+const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(HERE, "..", ".."); // src/consumption -> repo root
 const PKG_DIR = resolve(REPO_ROOT, "packages", "ds-react");
 const PKG_JSON = resolve(PKG_DIR, "package.json");
+
+/** The publication check runs on POSIX hosts and owns only its new process group. */
+async function runOwnedCommand(
+  command: string,
+  args: string[],
+  { cwd, timeoutMs = 115_000, closeTimeoutMs = 4_000 }: {
+    cwd: string;
+    timeoutMs?: number;
+    closeTimeoutMs?: number;
+  },
+): Promise<{ stdout: string; stderr: string }> {
+  if (process.platform === "win32") {
+    throw new Error("The package-build command requires POSIX process-group containment");
+  }
+
+  const child = spawn(command, args, {
+    cwd,
+    detached: true,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let stdout = "";
+  let stderr = "";
+  let failure: Error | undefined;
+  const cleanupErrors: unknown[] = [];
+  const terminateGroup = () => {
+    if (child.pid === undefined) return;
+    try {
+      process.kill(-child.pid, "SIGKILL");
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ESRCH") cleanupErrors.push(error);
+    }
+  };
+  child.stdout.setEncoding("utf8").on("data", (data: string) => { stdout += data; });
+  child.stderr.setEncoding("utf8").on("data", (data: string) => { stderr += data; });
+  type CloseResult = { code: number | null; signal: NodeJS.Signals | null } | { closeError: Error };
+  let reportClosed!: (result: CloseResult) => void;
+  let closeDeadline: ReturnType<typeof setTimeout> | undefined;
+  const closed = new Promise<CloseResult>((resolve) => {
+    reportClosed = resolve;
+    child.once("close", (code, signal) => resolve({ code, signal }));
+  });
+  child.once("error", (error) => {
+    failure ??= error;
+    terminateGroup();
+  });
+  const watchdog = setTimeout(() => {
+    failure ??= Object.assign(new Error(`${command} timed out after ${timeoutMs}ms`), {
+      code: "COMMAND_TIMEOUT",
+    });
+    terminateGroup();
+    closeDeadline = setTimeout(() => {
+      reportClosed({ closeError: Object.assign(new Error(
+        `${command}: owned process group ${child.pid} did not close within ${closeTimeoutMs}ms after termination`,
+      ), { code: "COMMAND_CLOSE_TIMEOUT", processGroupId: child.pid }) });
+    }, closeTimeoutMs);
+  }, timeoutMs);
+
+  const result = await closed;
+  clearTimeout(watchdog);
+  clearTimeout(closeDeadline);
+  if ("closeError" in result) {
+    cleanupErrors.push(result.closeError);
+  } else {
+    const { code, signal } = result;
+    if (!failure && code !== 0) {
+      failure = Object.assign(new Error(`${command} exited with ${signal ?? code}`), { code, signal });
+    }
+    // A command can close its own streams while leaving a descendant alive.
+    terminateGroup();
+  }
+  if (failure) Object.assign(failure, { stdout, stderr, processGroupId: child.pid });
+  if (cleanupErrors.length) {
+    throw new AggregateError(
+      [...(failure ? [failure] : []), ...cleanupErrors],
+      `${command}: owned command cleanup failed`,
+    );
+  }
+  if (failure) throw failure;
+  return { stdout, stderr };
+}
 
 /** Collect every "./…"-relative string leaf in a (possibly nested) exports map. */
 function collectExportTargets(node: unknown, out: string[] = []): string[] {
@@ -40,19 +123,17 @@ function collectExportTargets(node: unknown, out: string[] = []): string[] {
   return out;
 }
 
-beforeAll(() => {
-  // Build the package exactly as it is published. The test asserts against the
-  // resulting dist, so the build is part of what is being proven. `dist/` is
-  // gitignored and CI does not build ds-react before `pnpm test`, so this must
-  // be self-contained.
-  execFileSync("pnpm", ["-F", "@full-stack-ds/react", "build"], {
-    cwd: REPO_ROOT,
-    stdio: "pipe",
-    encoding: "utf8",
-  });
-}, 120_000);
-
 describe("@full-stack-ds/react published consumption contract", () => {
+  beforeAll(async () => {
+    // Build the package exactly as it is published. The test asserts against the
+    // resulting dist, so the build is part of what is being proven. `dist/` is
+    // gitignored and CI does not build ds-react before `pnpm test`, so this must
+    // be self-contained. Await the build without blocking worker reporting.
+    await runOwnedCommand("pnpm", ["-F", "@full-stack-ds/react", "build"], {
+      cwd: REPO_ROOT,
+    });
+  }, 120_000);
+
   it("A1: every exports-map / main / module / types target resolves to a real file", () => {
     const pkg = JSON.parse(readFileSync(PKG_JSON, "utf8")) as Record<
       string,
@@ -174,6 +255,176 @@ describe("@full-stack-ds/react published consumption contract", () => {
       ".chip",
     ]) {
       expect(css, `styles.css missing ${selector}`).toContain(selector);
+    }
+  });
+});
+
+describe("owned package-build command lifecycle", () => {
+  const controlledCommand = 'process.stdout.write("build output"); process.stderr.write("build diagnostic");';
+  const descendant = 'require("node:fs").writeFileSync(process.argv[1], "ready"); setInterval(() => {}, 1000);';
+  const runningCommand = `
+    const { spawn } = require("node:child_process");
+    const fs = require("node:fs");
+    const descendant = spawn(process.execPath, ["-e", ${JSON.stringify(descendant)}, process.argv[2]], { stdio: "ignore" });
+    const ready = setInterval(() => {
+      if (fs.existsSync(process.argv[2])) {
+        fs.writeFileSync(process.argv[1], JSON.stringify([process.pid, descendant.pid]));
+        clearInterval(ready);
+      }
+    }, 10);
+    setInterval(() => {}, 1000);
+  `;
+  const isRunning = async (pid: number) => {
+    try {
+      const { stdout } = await execFileAsync("ps", ["-o", "stat=", "-p", String(pid)], { encoding: "utf8" });
+      // A killed orphan can remain a zombie until its system reaper runs.
+      return stdout.trim().length > 0 && !stdout.trim().startsWith("Z");
+    } catch (error) {
+      if ((error as { code?: string | number }).code === 1) return false;
+      throw error;
+    }
+  };
+
+  it("captures successful command diagnostics before resolving", async () => {
+    await expect(runOwnedCommand(process.execPath, ["-e", controlledCommand], {
+      cwd: REPO_ROOT,
+      timeoutMs: 5_000,
+    })).resolves.toEqual({ stdout: "build output", stderr: "build diagnostic" });
+  });
+
+  it("preserves a nonzero command failure and both diagnostic streams", async () => {
+    await expect(runOwnedCommand(process.execPath, ["-e", controlledCommand + "process.exit(7);"], {
+      cwd: REPO_ROOT,
+      timeoutMs: 5_000,
+    })).rejects.toMatchObject({ code: 7, stdout: "build output", stderr: "build diagnostic" });
+  });
+
+  it("stops a timed-out command and its descendant while preserving an independent sibling", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "fsds-package-command-"));
+    const pids = join(directory, "pids.json");
+    const ready = join(directory, "descendant-ready");
+    const sibling = spawn(process.execPath, ["-e", "setInterval(() => {}, 1000);"], { stdio: "ignore" });
+    const siblingClosed = new Promise<void>((resolve, reject) => {
+      sibling.once("close", () => resolve());
+      sibling.once("error", reject);
+    });
+    let fixtureStopped = false;
+    onTestFinished(async () => {
+      try {
+        // This independent cleanup also runs if an assertion or the test times out.
+        if (!fixtureStopped && existsSync(pids)) {
+          const [pid] = JSON.parse(readFileSync(pids, "utf8")) as number[];
+          try {
+            process.kill(-pid, "SIGKILL");
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+          }
+        }
+      } finally {
+        sibling.kill("SIGKILL");
+        await siblingClosed;
+        rmSync(directory, { recursive: true, force: true });
+      }
+    });
+    await expect(runOwnedCommand(process.execPath, ["-e", runningCommand, pids, ready], {
+      cwd: REPO_ROOT,
+      timeoutMs: 5_000,
+    })).rejects.toMatchObject({ code: "COMMAND_TIMEOUT" });
+    expect(existsSync(ready)).toBe(true);
+    const ownedPids = JSON.parse(readFileSync(pids, "utf8")) as number[];
+    expect(ownedPids).toHaveLength(2);
+    for (const pid of ownedPids) {
+      await expect.poll(() => isRunning(pid), { timeout: 5_000 }).toBe(false);
+    }
+    expect(sibling.pid).toBeDefined();
+    expect(await isRunning(sibling.pid!)).toBe(true);
+    fixtureStopped = true;
+  });
+
+  it("reports a denied group termination and bounded missing-close failure before independently reaping its fixture", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "fsds-package-denial-"));
+    const pids = join(directory, "pids.json");
+    const ready = join(directory, "descendant-ready");
+    const originalKill = process.kill.bind(process);
+    const denial = Object.assign(new Error("controlled transient group denial"), { code: "EPERM" });
+    let deniedGroup: number | undefined;
+    const kill = vi.spyOn(process, "kill").mockImplementation((pid, signal) => {
+      if (pid < 0 && signal === "SIGKILL") {
+        deniedGroup = pid;
+        throw denial;
+      }
+      return originalKill(pid, signal);
+    });
+    let fixtureReaped = false;
+    const reapFixture = async () => {
+      if (fixtureReaped) return;
+      kill.mockRestore();
+      try {
+        const ownedPids = existsSync(pids)
+          ? JSON.parse(readFileSync(pids, "utf8")) as number[]
+          : [];
+        const group = deniedGroup ?? (ownedPids.length ? -ownedPids[0] : undefined);
+        if (group !== undefined) {
+          try {
+            originalKill(group, "SIGKILL");
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+          }
+        }
+        for (const pid of ownedPids) {
+          await expect.poll(() => isRunning(pid), { timeout: 5_000 }).toBe(false);
+        }
+      } finally {
+        rmSync(directory, { recursive: true, force: true });
+      }
+      fixtureReaped = true;
+    };
+    onTestFinished(reapFixture);
+    try {
+      const error = await runOwnedCommand(process.execPath, ["-e", runningCommand, pids, ready], {
+        cwd: REPO_ROOT,
+        timeoutMs: 5_000,
+        closeTimeoutMs: 1_000,
+      }).catch((error: unknown) => error);
+      expect(error).toBeInstanceOf(AggregateError);
+      const failures = (error as AggregateError).errors;
+      expect(failures[0]).toMatchObject({ code: "COMMAND_TIMEOUT" });
+      expect(failures).toContain(denial);
+      expect(failures).toContainEqual(expect.objectContaining({ code: "COMMAND_CLOSE_TIMEOUT" }));
+      expect(existsSync(ready)).toBe(true);
+      const ownedPids = JSON.parse(readFileSync(pids, "utf8")) as number[];
+      expect(ownedPids).toHaveLength(2);
+      expect(deniedGroup).toBe(-ownedPids[0]);
+      for (const pid of ownedPids) expect(await isRunning(pid)).toBe(true);
+    } finally {
+      await reapFixture();
+    }
+  });
+
+  it("preserves the primary command failure when owned cleanup also reports an error", async () => {
+    const originalKill = process.kill.bind(process);
+    const cleanupFailure = new Error("controlled cleanup failure");
+    const kill = vi.spyOn(process, "kill").mockImplementation((pid, signal) => {
+      try {
+        originalKill(pid, signal);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+      }
+      throw cleanupFailure;
+    });
+    try {
+      const error = await runOwnedCommand(process.execPath, ["-e", controlledCommand + "process.exit(7);"], {
+        cwd: REPO_ROOT,
+        timeoutMs: 5_000,
+      }).catch((error: unknown) => error);
+      expect(error).toBeInstanceOf(AggregateError);
+      const failures = (error as AggregateError).errors;
+      expect(failures[0]).toMatchObject({ code: 7, stdout: "build output", stderr: "build diagnostic" });
+      expect(failures).toContain(cleanupFailure);
+      expect(kill).toHaveBeenCalledWith(expect.any(Number), "SIGKILL");
+      expect(kill.mock.calls.every(([pid]) => pid < 0)).toBe(true);
+    } finally {
+      kill.mockRestore();
     }
   });
 });
