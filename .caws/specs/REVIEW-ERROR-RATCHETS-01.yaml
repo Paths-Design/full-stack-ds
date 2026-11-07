@@ -179,3 +179,9 @@ evidence:
     recorded_at: "2026-11-07T04:21:39.850Z"
     artifact_path: examples/game-pause-menu/evidence/parity-report.json
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "Native assertions plus the recurring root parity suite verify the authored subtitle line and fixture-owned language/background template and rectangles in all three engines. Fresh settings/subtitle captures passed the strengthened bounded checker. Native font bindings survive refresh. GPUI89, Godot402 and Unity43 cases passed; the committed comparison report records the captured macOS slice, with no all-state/DPI/OS claim."
+    recorded_at: "2026-11-07T04:21:41.507Z"
+    artifact_path: examples/game-pause-menu/evidence/parity-report.json
+    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
