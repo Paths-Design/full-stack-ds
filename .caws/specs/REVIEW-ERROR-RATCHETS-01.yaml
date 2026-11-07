@@ -193,10 +193,9 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A9
     status: pass
-    evidence_ref: "The full root run executes native boundary regressions for per-rule/per-classification prerequisite scan counts, first-match order and changed contracts/prerequisites. The memo is local to one classification and retains false results. Full authority/capability rerun also passed all32 cases with original explicit budgets. No stale cross-call classification cache or gate exception was introduced."
-    recorded_at: "2026-11-07T04:21:45.017Z"
-    test_nodeid: packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    evidence_ref: "Observed full root run exercises per-rule/per-classification prerequisite scan counts, first-match ordering and changed contract/prerequisite inputs. Local memo retains false outcomes without stale cross-call state. Full authority/capability rerun passed32 cases under unchanged explicit budgets. Tracked artifact is the executable regression source; ignored raw executions remain under tmp/review-errors."
+    recorded_at: "2026-11-07T04:28:47.249Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: packages/ds-codegen/src/frameworks/unity/boundary.test.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
