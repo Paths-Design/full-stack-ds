@@ -1,9 +1,11 @@
 id: REVIEW-ERROR-RATCHETS-01
 title: 'Repair corroborated callback, capture-state and documentation errors with recurring checks'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Corroborated repairs and recurring falsifiers are merged and published; root5969, all framework suites, admission, generated-output and full pre-push ratchets passed on Node22 with explicit case limits and ledger floors preserved. Native visual scope and unverified CI, browser and minimum SDK bounds remain in the evidence. Closed legacy YAML is archived to isolate tooling schema drift while retaining original history.'
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-07T07:27:24.679Z'
+updated_at: '2026-11-07T08:52:34.371Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
