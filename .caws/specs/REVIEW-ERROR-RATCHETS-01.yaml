@@ -157,3 +157,11 @@ evidence:
     exit_code: 0
     artifact_path: tmp/review-errors/root-dot-final.log
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "docs:check-links passed nine hostile metadata/location fixtures, 62 tracked metadata documents and 279 links. docs:check-claims passed its freshness/remainder falsifiers and 93 derived claims; no freshness allowance was added. Portable instructions reference tracked hook documentation; protected runtime hooks were not edited. Pre-push scope fixtures passed."
+    recorded_at: "2026-11-07T04:21:36.186Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: tmp/review-errors/docs-links-contained-final.log
+    commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
