@@ -165,11 +165,11 @@ evidence:
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A5
     status: pass
-    evidence_ref: "Tested 9112ed23e: 400 root files and 5966 tests passed with no skips/unhandled errors; Vue854, Lit622, Svelte754, Angular641 and RN319 passed. Six admitted generation targets, generated-tree, typecheck, lint and docs gates passed. All 62 emitter-source hashes remain bound. Local Node22.19, one worker, CLI default30s; explicit case/hook budgets unchanged. Merge90966c560 has identical source except owned CAWS metadata. Native/visual proof remains bounded; CI was not run."
-    recorded_at: "2026-11-07T04:21:37.544Z"
+    evidence_ref: "Observed tested9112ed23e: 400 files/5966 root tests, Vue854/Lit622/Svelte754/Angular641/RN319, six admitted generation targets, generated-tree/type/lint/docs checks passed. Node22.19, one worker, CLI default30s; explicit case/hook budgets unchanged. Landed source matches tested source apart from owned CAWS metadata. Tracked artifact is the runnable suite definition; citation verification proves source/commit existence, while the actual execution is in ignored root-dot-final.log. Native proof is bounded; remote CI unrun."
+    recorded_at: "2026-11-07T04:28:39.724Z"
     command: "pnpm exec vitest run --maxWorkers=1 --minWorkers=1 --testTimeout=30000 --reporter=dot"
     exit_code: 0
-    artifact_path: tmp/review-errors/root-dot-final.log
+    artifact_path: vitest.config.ts
     commit_sha: "9112ed23e7c88b5c0db569523f6bbb33fcb7cabf"
   - criterion_id: A6
     status: pass
