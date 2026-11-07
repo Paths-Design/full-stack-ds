@@ -1,9 +1,15 @@
 # Visual review record — Orion N5 pause menu
 
-**Status: human review accepted; bounded claim recorded.** The first human
+**Historical status: human review accepted; bounded claim recorded.** The first human
 review decision was “require the Orion style restyle first”; passes 1–4
 implemented that request, and the second human review accepted the bounded claim
 (see the sign-off block below).
+
+The human decisions in this record apply to the pre-repair capture set retained
+in Git at `70e5f7b0275bd3f43f570c9f76ea6150485becdb`. The linked parity report,
+goldens and montages contain the regression-repair capture baseline. They have
+technical probe coverage; no new human review or source-design acceptance is
+attributed to those replacement images. The historical oracle report is preserved.
 
 This record separates three questions that are often conflated:
 
@@ -35,10 +41,11 @@ This record separates three questions that are often conflated:
     --goldens examples/game-pause-menu/evidence/goldens
   ```
 
-  The checker now covers all eight states for RMSE and goldens, and the four
-  base states for the authority probes. The committed montages are review
-  artifacts derived from the reviewed capture set, not regression baselines;
-  the goldens are the baselines.
+  The checker covers all eight states for RMSE and goldens, with authority
+  probes over declared regions including the popover and subtitle preview.
+  The committed montages derive from the regression-repair capture set;
+  the goldens are the regression baselines. The human review below refers to
+  the historical images identified above.
 
 ## Human review decision
 

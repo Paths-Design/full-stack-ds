@@ -320,7 +320,7 @@ for (const state of STATES) {
 
   // Committed image goldens: one per lane and state under
   // examples/game-pause-menu/evidence/goldens/<lane>/<state>.webp. These are
-  // lossless WebP encodings of the reviewed captures, so a later capture is
+  // lossless WebP encodings of the native captures, so a later capture is
   // compared image-for-image rather than only through point samples.
   if (goldens) {
     for (const lane of LANES) {
