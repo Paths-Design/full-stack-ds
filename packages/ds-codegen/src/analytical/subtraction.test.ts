@@ -441,6 +441,7 @@ describe("required derived vocabulary is a third outcome, not a flavour of artif
     // required vocabulary would immediately orphan it — the invariant would
     // punish the one verdict that says the coordinate legitimately persists.
     const orphans = orphanedCoordinates([]).map((o) => o.coordinate);
+    expect(orphans.length).toBeGreaterThan(0);
     const x = orphans[0];
     const decided: ExperimentBasis = {
       file: "subtraction-vocab.json",

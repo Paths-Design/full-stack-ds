@@ -5,9 +5,12 @@ status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
 updated: 2026-11-06
-verified_at_commit: 3bc83f1918150f2b40c725619fe07cf170515b40
+verified_at_commit: 38201b4248ad04002db3f27c6475a2af37bcca1d
 governs:
   - package.json
+  - pnpm-lock.yaml
+  - fsds.targets.json
+  - vitest.config.ts
   - .github/workflows/ci.yml
   - .githooks/pre-push
   - scripts/committed-tree-check.mjs
@@ -196,6 +199,36 @@ Validating first, then refusing drift, is the only ordering that catches "contra
 2. **After `governed:rail`**, when the hook's classifier selects the rail group, `committed-tree-check.mjs generated --against <tip>` refuses regenerated output the pushed commit does not carry.
 
 On a working branch, run `pnpm run governed:rail` on its own: a dirty tree is routine there, and the rail's verdict is still meaningful evidence about the bytes on disk.
+
+Changes to the root `package.json`, `pnpm-lock.yaml` or `fsds.targets.json`
+select every local gate family: scripts, dependencies, locked tools and target
+registration can affect downstream checks without moving their source files.
+Root test configuration and its preview loaders select tests, lint and the
+documentation gates. The root TypeScript command does not include those files.
+
+### Functional test resources
+
+`pnpm test` runs both root Vitest shards in sequence. The root runner uses the
+threads pool, a finite 30-second functional-test default and the dot reporter.
+Explicit case and hook limits take precedence; the controlled process-cleanup fixtures retain
+their five-second case limits and the production package-build hook retains
+its 120-second limit. These checks exercise complete corpus, compiler, render
+and accessibility behavior; their runner allowance is not a product latency
+contract.
+
+The default root worker cap is at most four. Vitest's pool-specific environment
+options take precedence. On a shared host, use its thread limits for root tests
+and both thread and fork limits for a push, whose framework packages select
+their own pools. These resource limits retain every test and assertion:
+
+```bash
+VITEST_MAX_THREADS=1 VITEST_MIN_THREADS=1 pnpm test
+VITEST_MAX_THREADS=1 VITEST_MIN_THREADS=1 \
+  VITEST_MAX_FORKS=1 VITEST_MIN_FORKS=1 git push origin main
+```
+
+The push runs the ordinary pre-push hook with those resource limits. It retains
+failures, cleanup checks, generated-output checks and the selected audit families.
 
 ### Documentation gates
 

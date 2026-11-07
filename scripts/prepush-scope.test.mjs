@@ -17,6 +17,37 @@ test("token theming sources and audit selftest reach the retoken gate", () => {
 const on = (r, ...k) => k.every((key) => r[key] === true);
 const off = (r, ...k) => k.every((key) => r[key] === false);
 
+test("root test configuration and preview loaders reach their consuming gates", () => {
+  for (const path of ["vitest.config.ts", "vite-plugin-fsds-data.ts", "scripts/analytical-composite-preview.ts"]) {
+    const flags = classify([path]);
+    assert.ok(on(flags, "RUN_TESTS", "RUN_LINT", "RUN_DOCS_CLAIMS"), path);
+    assert.ok(off(flags, "RUN_RAIL", "RUN_GENERATE_CHECK", "RUN_TYPECHECK"), path);
+  }
+});
+
+test("shared package, locked toolchain and target authorities select every gate family", () => {
+  const full = classify([], { full: true });
+  for (const path of ["package.json", "pnpm-lock.yaml", "fsds.targets.json"]) {
+    const flags = classify([path]);
+    for (const key of Object.keys(full).filter((key) => key.startsWith("RUN_"))) {
+      assert.equal(flags[key], true, `${path}: ${key}`);
+    }
+    assert.match(flags.REASON, /shared .*authority/);
+  }
+});
+
+test("lookalikes do not inherit root runner or shared authority scope", () => {
+  for (const path of [
+    "nested/vitest.config.ts", "vitest.config.ts.bak", "vite-plugin-fsds-data.ts.map",
+    "scripts/analytical-composite-preview.ts.bak", "nested/package.json",
+    "pnpm-lock.yaml.bak", "fsds.targets.json.bak",
+  ]) {
+    const flags = classify([path]);
+    assert.ok(off(flags, "RUN_TESTS", "RUN_DOCS_CLAIMS", "RUN_RAIL"), path);
+    assert.doesNotMatch(flags.REASON, /shared .*authority/, path);
+  }
+});
+
 test("docs-only push: docs-claims only — no token/generate/rail/lint/typecheck/tests", () => {
   const r = classify(["docs/foo.md", "docs/component-audit/README.md"]);
   assert.equal(r.RUN_DOCS_CLAIMS, true);

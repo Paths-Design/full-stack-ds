@@ -1,30 +1,63 @@
 // In-process CLI main-path suites. cli.ts runs main() at module top level,
 // so importing the module WITH a stubbed process.argv IS the invocation —
 // process.exit is mocked to throw PROCESS_EXIT so error branches assert
-// via the rejection instead of killing the test runner. The suite runs
-// from the repo root (the codegen cwd contract), against the real
-// contracts corpus; generation paths use --dry-run so nothing is written.
+// via the rejection instead of killing the test runner. The eight argument-only
+// guards replace post-guard pipeline boundaries with hostile spies. Other cases
+// use the real contracts corpus from the repo root (the codegen cwd contract);
+// generation uses --dry-run or isolated temporary package roots.
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+// Acquire the real generator dependency graph during fixture collection. These
+// libraries declare emitters/validators; they do not invoke the CLI entrypoint.
+// Every case still resets and imports cli.ts with its own arguments and bindings.
+import "./registry.js";
+import "./validation/component-token-consumption.js";
 import { mergeBoxModelDefaults } from "./box-model.js";
 import type { ComponentContract, TokenResolution } from "./contract.js";
 import type { FrameworkEmitter, TargetId } from "./emitter.js";
 import type { RegistryOptions, TargetBinding, TargetRegistry } from "./registry.js";
 import { ADMITTED_FRAMEWORKS } from "./validation/admission-descriptor.js";
 
-// Every case resets the module registry and re-imports cli.ts against the real
-// contracts corpus, so the import graph is rebuilt per test rather than shared:
-// ~2.6s for the file alone, ~12.5s under the root suite's 244-file parallel
-// load. Individual cases overrun vitest's 5s default there, so the budget is
-// raised for this file only — the re-import is what makes the module-level
-// main() observable and cannot be amortised away.
+// Every invocation resets the module registry and re-imports the real cli.ts,
+// making its module-level main() observable with fresh arguments and bindings.
+// Guard-only cases exclude the unused emitter/validation graph; corpus and
+// generation cases retain it. The import and invocation share this finite budget.
 vi.setConfig({ testTimeout: 20000 });
 
 const PROCESS_EXIT = "PROCESS_EXIT";
+const EXPIRED_INVOCATION = "CLI import completed after teardown began; refusing to resume the expired invocation.";
+const pendingCliInvocations = new Map<Promise<unknown>, { expired: boolean }>();
+
+function invokeCli() {
+  const lifecycle = { expired: false };
+  const assertLive = () => {
+    if (lifecycle.expired) throw new Error(EXPIRED_INVOCATION);
+  };
+  const invocation = import("./cli.js").then(
+    (module) => { assertLive(); return module; },
+    (error: unknown) => { assertLive(); throw error; },
+  );
+  pendingCliInvocations.set(invocation, lifecycle);
+  void invocation.then(
+    () => pendingCliInvocations.delete(invocation),
+    () => pendingCliInvocations.delete(invocation),
+  );
+  return invocation;
+}
+
+async function settleCliInvocations(expire = false) {
+  if (expire) for (const lifecycle of pendingCliInvocations.values()) lifecycle.expired = true;
+  while (pendingCliInvocations.size > 0) {
+    await Promise.allSettled([...pendingCliInvocations.keys()]);
+  }
+}
 
 function prepare(args: string[]) {
+  if (pendingCliInvocations.size > 0) {
+    throw new Error("A previous CLI import is still pending; refusing to replace its arguments or bindings.");
+  }
   vi.resetModules();
   vi.spyOn(process, "argv", "get").mockReturnValue(["node", "cli.js", ...args]);
   const exit = vi
@@ -36,11 +69,103 @@ function prepare(args: string[]) {
   return { exit, log };
 }
 
-afterEach(() => {
+afterEach(async () => {
+  // A timed-out test does not cancel import(). Retain its argv/exit mocks until
+  // top-level main() finishes, and refuse a later prepare() while it is pending.
+  await settleCliInvocations(true);
   vi.restoreAllMocks();
 });
 
+function prepareGuard(args: string[]) {
+  const handles = prepare(args);
+  const pipeline = vi.fn(() => {
+    throw new Error("An argument-only guard reached the generation pipeline.");
+  });
+  vi.doMock("./registry.js", () => ({ createDefaultRegistry: pipeline }));
+  vi.doMock("./validate.js", () => ({ createContractValidator: pipeline, formatIssues: pipeline }));
+  vi.doMock("./contracts-fs.js", () => ({
+    findComponentStyles: pipeline,
+    findComponentTokens: pipeline,
+    findComponentUsage: pipeline,
+    listComponentContracts: pipeline,
+  }));
+  vi.doMock("./validation/component-token-consumption.js", () => ({ validateComponentTokenConsumption: pipeline }));
+  return { ...handles, pipeline };
+}
+
+describe("cli invocation fixture", () => {
+  it("retains an unfinished import's arguments until it settles and refuses the next invocation", async () => {
+    prepare(["--watch", "--validate"]);
+    let finishImport!: (module: Record<string, never>) => void;
+    const moduleReady = new Promise<Record<string, never>>((resolve) => { finishImport = resolve; });
+    vi.doMock("./cli.js", () => moduleReady);
+    const invocation = invokeCli();
+    let settled = false;
+    const teardown = settleCliInvocations().then(() => { settled = true; });
+    try {
+      expect(() => prepare(["--dry-run", "Button"])).toThrow("A previous CLI import is still pending");
+      expect(process.argv).toEqual(["node", "cli.js", "--watch", "--validate"]);
+      await Promise.resolve();
+      expect(settled).toBe(false);
+      finishImport({});
+      await invocation;
+      await teardown;
+      expect(settled).toBe(true);
+      expect(() => prepare(["--dry-run", "Button"])).not.toThrow();
+      expect(process.argv).toEqual(["node", "cli.js", "--dry-run", "Button"]);
+    } finally {
+      finishImport({});
+      await Promise.allSettled([invocation, teardown]);
+      vi.doUnmock("./cli.js");
+    }
+  });
+
+  it.each(["fulfilled", "rejected"] as const)("waits for an expired %s import without resuming its test's later CLI work", async (outcome) => {
+    prepare(["--watch", "--validate"]);
+    let finishImport!: (module: Record<string, never>) => void;
+    let failImport!: (error: Error) => void;
+    const moduleReady = new Promise<Record<string, never>>((resolve, reject) => {
+      finishImport = resolve;
+      failImport = reject;
+    });
+    const underlyingOutcome = outcome === "rejected"
+      ? expect(moduleReady).rejects.toThrow(PROCESS_EXIT)
+      : expect(moduleReady).resolves.toEqual({});
+    vi.doMock("./cli.js", () => moduleReady);
+    const invocation = invokeCli();
+    let continued = false;
+    const continuation = invocation.then(() => { continued = true; }, () => undefined);
+    let settled = false;
+    const teardown = settleCliInvocations(true).then(() => { settled = true; });
+    try {
+      expect(() => prepare(["--dry-run", "Button"])).toThrow("A previous CLI import is still pending");
+      expect(process.argv).toEqual(["node", "cli.js", "--watch", "--validate"]);
+      await Promise.resolve();
+      expect(settled).toBe(false);
+      if (outcome === "rejected") failImport(new Error(PROCESS_EXIT));
+      else finishImport({});
+      await expect(invocation).rejects.toThrow(EXPIRED_INVOCATION);
+      await underlyingOutcome;
+      await teardown;
+      await continuation;
+      expect(settled).toBe(true);
+      expect(continued).toBe(false);
+    } finally {
+      finishImport({});
+      await Promise.allSettled([invocation, teardown, continuation, underlyingOutcome]);
+      vi.doUnmock("./cli.js");
+    }
+  });
+});
+
 describe("cli main — incompatible flag guards", () => {
+  afterEach(async () => {
+    await settleCliInvocations(true);
+    vi.doUnmock("./registry.js");
+    vi.doUnmock("./validate.js");
+    vi.doUnmock("./contracts-fs.js");
+    vi.doUnmock("./validation/component-token-consumption.js");
+  });
   const cases: { args: string[]; message: string }[] = [
     { args: ["--watch", "--validate"], message: "--watch is incompatible with --validate." },
     { args: ["--watch", "--dry-run"], message: "--watch is incompatible with --dry-run." },
@@ -59,32 +184,36 @@ describe("cli main — incompatible flag guards", () => {
 
   for (const c of cases) {
     it(`exits 1 for ${c.args.join(" ")}`, async () => {
-      const { exit } = prepare(c.args);
+      const { exit, log, pipeline } = prepareGuard(c.args);
       const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-      await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+      await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
       expect(exit).toHaveBeenCalledWith(1);
       expect(
         errSpy.mock.calls.some((call) => String(call[0]).includes(c.message)),
       ).toBe(true);
+      expect(pipeline).not.toHaveBeenCalled();
+      expect(log).not.toHaveBeenCalled();
     });
   }
 
   it("exits 1 for an unknown --prune value", async () => {
-    const { exit } = prepare(["--prune=bogus"]);
+    const { exit, log, pipeline } = prepareGuard(["--prune=bogus"]);
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+    await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
     expect(exit).toHaveBeenCalledWith(1);
     expect(
       errSpy.mock.calls.some((call) =>
         String(call[0]).includes('Unknown --prune value "bogus"'),
       ),
     ).toBe(true);
+    expect(pipeline).not.toHaveBeenCalled();
+    expect(log).not.toHaveBeenCalled();
   });
 
   it("exits 1 for an unknown target id", async () => {
     const { exit } = prepare(["--dry-run", "--target=not-a-real-target", "Button"]);
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+    await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
     expect(exit).toHaveBeenCalledWith(1);
     void errSpy;
   });
@@ -93,7 +222,7 @@ describe("cli main — incompatible flag guards", () => {
 describe("cli main — happy paths", () => {
   it("runs shape validation for a single component and exits 0", async () => {
     const { exit, log } = prepare(["--validate", "Button"]);
-    await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+    await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
     expect(exit).toHaveBeenCalledWith(0);
     expect(
       log.mock.calls.some((call) => String(call[0]).includes("Found 1 component contract")),
@@ -109,7 +238,7 @@ describe("cli main — happy paths", () => {
       "--check-semantics",
       "Button",
     ]);
-    await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+    await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
     expect(exit).toHaveBeenCalledWith(0);
     expect(
       log.mock.calls.some((call) => String(call[0]).includes("Found 1 component contract")),
@@ -118,7 +247,7 @@ describe("cli main — happy paths", () => {
 
   it("runs usage validation over the full corpus and exits 0", async () => {
     const { exit, log } = prepare(["--validate", "--check-usage"]);
-    await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+    await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
     expect(exit).toHaveBeenCalledWith(0);
     expect(
       log.mock.calls.some((call) => String(call[0]).includes("Usage validation")),
@@ -132,7 +261,7 @@ describe("cli main — happy paths", () => {
     // --check-usage exits 1 and names the unresolvable ref.
     const { exit } = prepare(["--validate", "--check-usage", "Button"]);
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    await expect(import("./cli.js")).rejects.toThrow(PROCESS_EXIT);
+    await expect(invokeCli()).rejects.toThrow(PROCESS_EXIT);
     expect(exit).toHaveBeenCalledWith(1);
     expect(
       errSpy.mock.calls.some((call) => String(call[0]).includes("INVALID")),
@@ -141,7 +270,7 @@ describe("cli main — happy paths", () => {
 
   it("dry-runs react generation for a single component without writing", async () => {
     const { exit, log } = prepare(["--dry-run", "--target=react", "Button"]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     expect(
       log.mock.calls.some((call) => String(call[0]).includes("Found 1 component contract")),
@@ -150,13 +279,13 @@ describe("cli main — happy paths", () => {
 
   it("dry-runs react generation with --force", async () => {
     const { exit } = prepare(["--dry-run", "--force", "--target=react", "Button"]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
   });
 
   it("filters multiple names down to the matching contracts", async () => {
     const { exit, log } = prepare(["--dry-run", "--target=react", "Button", "Dialog"]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     expect(
       log.mock.calls.some((call) => String(call[0]).includes("Found 2 component contract")),
@@ -165,7 +294,7 @@ describe("cli main — happy paths", () => {
 
   it("dry-runs the migrate path for a single component", async () => {
     const { exit } = prepare(["--dry-run", "--migrate", "--target=react", "Button"]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
   });
 });
@@ -238,7 +367,8 @@ function readComponentJson(name: string, file: string): unknown {
 }
 
 describe("cli main — emitter admitContract seam", () => {
-  afterEach(() => {
+  afterEach(async () => {
+    await settleCliInvocations(true);
     vi.doUnmock("./registry.js");
   });
 
@@ -248,7 +378,7 @@ describe("cli main — emitter admitContract seam", () => {
       "--target=react",
       "Button",
     ]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     expect(events).toEqual([
       { kind: "admit", target: "react", component: "Button", admitted: true },
@@ -287,7 +417,7 @@ describe("cli main — emitter admitContract seam", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     // The emitter may reject Pagination; this case pins only the admission context,
     // which is recorded before any emit.
-    await import("./cli.js").catch(() => undefined);
+    await invokeCli().catch(() => undefined);
     expect(events[0]).toEqual({
       kind: "admit",
       target: "jetpack-compose",
@@ -302,7 +432,7 @@ describe("cli main — emitter admitContract seam", () => {
       "--target=unity",
       "Switch",
     ]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     expect(events).toEqual([
       { kind: "admit", target: "unity", component: "Switch", admitted: true },
@@ -312,7 +442,7 @@ describe("cli main — emitter admitContract seam", () => {
 
   it("admits exactly the allowlisted components, each admitted=true, on a full-corpus run", async () => {
     const { exit, events } = prepareWithAdmissionRecorder(["--dry-run", "--target=unity"]);
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     const admits = events.filter((e) => e.kind === "admit");
     expect(admits.map((e) => e.component).sort()).toEqual([
@@ -380,7 +510,7 @@ describe("cli main — emitter admitContract seam", () => {
       ["--dry-run", "--target=react", "Badge", "Button", "Calendar", "Card"],
       "Button",
     );
-    await expect(import("./cli.js")).rejects.toThrow(
+    await expect(invokeCli()).rejects.toThrow(
       "ADMISSION_REFUSED: react refuses Button",
     );
     // A refusal is a thrown generation failure, not a handled exit.
@@ -478,7 +608,8 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     vi.doUnmock("./registry.js");
     vi.doUnmock("./validation/emission-manifest-path.js");
   };
-  afterEach(() => {
+  afterEach(async () => {
+    await settleCliInvocations(true);
     unmock();
     for (const dir of scratch.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
   });
@@ -488,7 +619,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     const { exit, log, calls } = prepareWithAssetRecorder(["--dry-run", "--target=unity"], {
       assets: () => [{ relativePath: sentinel, contents: "sentinel\n" }],
     });
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
     expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar", "Command", "Spinner", "Markdown"], afterEmits: 55 }]);
@@ -503,7 +634,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     const { exit, log, calls } = prepareWithAssetRecorder(["--dry-run", "--target=unity", "Switch"], {
       assets: () => [{ relativePath: "never.txt", contents: "" }],
     });
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     expect(calls).toEqual([]);
     expect(log.mock.calls.some((call) => String(call[0]).startsWith("  TARGET ASSETS skipped for unity"))).toBe(true);
@@ -513,7 +644,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     prepareWithAssetRecorder(["--dry-run", "--target=unity"], {
       assets: () => [{ relativePath: "../outside.txt", contents: "" }],
     });
-    await expect(import("./cli.js")).rejects.toThrow('Target unity: target asset path "../outside.txt" escapes the package root packages/ds-unity.');
+    await expect(invokeCli()).rejects.toThrow('Target unity: target asset path "../outside.txt" escapes the package root packages/ds-unity.');
   }, 180_000);
 
   it("refuses to guess a package root the binding's components root does not end in", async () => {
@@ -522,7 +653,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
       assets: () => [{ relativePath: "a.txt", contents: "" }],
       binding: (binding) => ({ ...binding, componentsRoot: path.join(root, "Elsewhere") }),
     });
-    await expect(import("./cli.js")).rejects.toThrow('does not end with the target pack\'s outputs.componentsRoot "Runtime/Components"');
+    await expect(invokeCli()).rejects.toThrow('does not end with the target pack\'s outputs.componentsRoot "Runtime/Components"');
   }, 180_000);
 
   it("writes the assets under the package root and records them for a rail target, bound to the target registry", async () => {
@@ -538,7 +669,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
       binding: (binding) => ({ ...binding, componentsRoot: path.join(root, "Runtime", "Components"), railFrameworkId: "react" }),
       manifestPath,
     });
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     expect(fs.readFileSync(path.join(root, "Runtime/Resources/Sheet.txt"), "utf8")).toBe("sheet\n");
     expect(fs.readFileSync(path.join(root, "Runtime/Resources/Sheet.ledger.json"), "utf8")).toBe("{}\n");
@@ -581,14 +712,14 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     const handEdited = { relativePath: "HandEdited.txt", contents: "no marker\n" };
     let emitted = [kept, dropped, handEdited];
     prepareWithAssetRecorder(["--target=unity"], { assets: () => emitted, binding, manifestPath });
-    await import("./cli.js");
+    await invokeCli();
     for (const file of emitted) expect(fs.existsSync(path.join(root, file.relativePath)), file.relativePath).toBe(true);
     vi.restoreAllMocks();
     unmock();
 
     emitted = [kept];
     const { exit, log } = prepareWithAssetRecorder(["--target=all", "--prune"], { assets: () => emitted, binding, manifestPath, available: ["unity"] });
-    await import("./cli.js");
+    await invokeCli();
     expect(exit).not.toHaveBeenCalled();
     // The still-emitted asset survives; the dropped generated one is removed;
     // the dropped hand-edited one stays under the default (skip) policy.
