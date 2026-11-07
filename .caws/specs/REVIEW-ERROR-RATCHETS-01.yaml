@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: review-error-ratchets
 created_at: '2026-11-05T23:17:20.604Z'
-updated_at: '2026-11-07T02:35:34.503Z'
+updated_at: '2026-11-07T02:48:04.559Z'
 created_by_session: '01a1addb-1caf-7322-a344-4af297045d4d'
 blast_radius:
   modules:
@@ -59,6 +59,7 @@ scope:
     - docs/architecture/unity-target.md
     - docs/specifications/governed-ci.md
     - packages/ds-codegen/src/analytical/authority.test.ts
+    - src/consumption/ds-package-contract.test.ts
   out: []
   support:
     - packages/ds-unity
